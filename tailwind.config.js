@@ -4,9 +4,14 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  import:'#root', // mui style이 tailwindCss보다 우선순위를 가지게 함
   theme: {
     extend: {},
   },
   plugins: [],
+  // mui setting
+  corePlugins: {
+      preflight: false,// Tailwind의 기본 스타일을 비활성화
+   },
 }
 
