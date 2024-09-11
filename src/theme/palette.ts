@@ -17,6 +17,7 @@ const _palette: PaletteOptions = {
     tabBg: "#eff2f6",
     tabColor: "#2a374e",
     tabItemActiveBg: "#ffffff",
+    tabIconColor: "#98A2B3",
   },
   appbar: {
     appbarBg: "#ffffff",
@@ -44,7 +45,6 @@ const _palette: PaletteOptions = {
     statusCommonError: "#231f47",
     error: "#f4475f",
   },
-
   primary: {
     main: "#2d2a48",
     light: "#5a5482",

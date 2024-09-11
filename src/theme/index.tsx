@@ -41,7 +41,7 @@ export default function ThemeProvider({ children }: { children: ReactNode }) {
     <MUIThemeProvider theme={theme}>
       <LocalizationProvider
         dateAdapter={AdapterDayjs}
-        dateFormats={{ monthShort: `M` }}
+        dateFormats={{ monthShort: `M` }} // 월 단축 형식
       >
         <CssBaseline>{children}</CssBaseline>
       </LocalizationProvider>

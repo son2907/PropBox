@@ -21,6 +21,7 @@ declare module "@mui/material/styles" {
       tabBg: string;
       tabColor: string;
       tabItemActiveBg: string;
+      tabIconColor: string;
     };
     appbar: {
       appbarBg: string;
@@ -64,6 +65,7 @@ declare module "@mui/material/styles" {
       tabBg: string;
       tabColor: string;
       tabItemActiveBg: string;
+      tabIconColor: string;
     };
     appbar: {
       appbarBg: string;
