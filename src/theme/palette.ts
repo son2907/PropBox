@@ -2,14 +2,21 @@ import { PaletteOptions, alpha } from "@mui/material";
 
 const _palette: PaletteOptions = {
   sidebar: {
-    menuBg: "#2d2a48",
-    menuItemColor: "#a8adbc",
-    menuItemHoverColor: "#a8adbc",
-    menuItemHoverBg: "#3b375d",
-    menuItemActiveColor: "#ffffff",
-    menuItemActiveBg1: "#4c4771",
-    menuItemActiveBg2: "#3b375d",
-    helpBoxBg: alpha("#ffffff", 0.07),
+    menuBg: "#ffffff",
+    menuItemColor: "#111827",
+    menuIconColor: "#22a7f5",
+    menuItemHoverColor: "#e8eaec",
+    menuItemHoverBg: "#f3f4f6",
+    menuItemActiveColor: "#111827",
+    menuItemActiveBg: "#111827",
+    menuLineColor: "#e5e7eb",
+    menuUnableItemColor: "#b3b3b3",
+    menuUnableIconColor: "#b3b3b3",
+  },
+  tabbar: {
+    tabBg: "#eff2f6",
+    tabColor: "#2a374e",
+    tabItemActiveBg: "#ffffff",
   },
   appbar: {
     appbarBg: "#ffffff",

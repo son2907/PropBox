@@ -8,12 +8,19 @@ declare module "@mui/material/styles" {
     sidebar: {
       menuBg: string;
       menuItemColor: string;
+      menuIconColor: string;
       menuItemHoverColor: string;
       menuItemHoverBg: string;
       menuItemActiveColor: string;
-      menuItemActiveBg1: string;
-      menuItemActiveBg2: string;
-      helpBoxBg: string;
+      menuItemActiveBg: string;
+      menuLineColor: string;
+      menuUnableItemColor: string;
+      menuUnableIconColor: string;
+    };
+    tabbar: {
+      tabBg: string;
+      tabColor: string;
+      tabItemActiveBg: string;
     };
     appbar: {
       appbarBg: string;
@@ -44,12 +51,19 @@ declare module "@mui/material/styles" {
     sidebar: {
       menuBg: string;
       menuItemColor: string;
+      menuIconColor: string;
       menuItemHoverColor: string;
       menuItemHoverBg: string;
       menuItemActiveColor: string;
-      menuItemActiveBg1: string;
-      menuItemActiveBg2: string;
-      helpBoxBg: string;
+      menuItemActiveBg: string;
+      menuLineColor: string;
+      menuUnableItemColor: string;
+      menuUnableIconColor: string;
+    };
+    tabbar: {
+      tabBg: string;
+      tabColor: string;
+      tabItemActiveBg: string;
     };
     appbar: {
       appbarBg: string;
