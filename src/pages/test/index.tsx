@@ -1,6 +1,6 @@
 import { Slider, Typography } from "@mui/material";
 
-function Home() {
+function Test() {
   return (
     <>
       <h1 className="text-3xl font-bold underline">Hello world!</h1>
@@ -17,4 +17,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Test;

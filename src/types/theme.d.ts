@@ -7,15 +7,7 @@ declare module "@mui/material/styles" {
   interface Palette {
     sidebar: {
       menuBg: string;
-      menuItemColor: string;
-      menuIconColor: string;
-      menuItemHoverColor: string;
-      menuItemHoverBg: string;
-      menuItemActiveColor: string;
       menuItemActiveBg: string;
-      menuLineColor: string;
-      menuUnableItemColor: string;
-      menuUnableIconColor: string;
     };
     tabbar: {
       tabBg: string;
@@ -51,15 +43,7 @@ declare module "@mui/material/styles" {
   interface PaletteOptions {
     sidebar: {
       menuBg: string;
-      menuItemColor: string;
-      menuIconColor: string;
-      menuItemHoverColor: string;
-      menuItemHoverBg: string;
-      menuItemActiveColor: string;
       menuItemActiveBg: string;
-      menuLineColor: string;
-      menuUnableItemColor: string;
-      menuUnableIconColor: string;
     };
     tabbar: {
       tabBg: string;
