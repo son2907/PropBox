@@ -2,8 +2,9 @@ import { Box, styled } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import { appBarHeight } from "../config";
 import Sidebar from "../components/layout/Sidebar";
-import { MenuType } from "../types/menu";
+import { MenuListType } from "../types/menu";
 import { StarBorder } from "@mui/icons-material";
+import { useState } from "react";
 
 // PageContainer 컴포넌트: 페이지 전체를 감싸는 컨테이너
 const PageContainer = styled(Box)(({ theme }) => ({
@@ -49,62 +50,76 @@ const Content = styled(Box)(() => ({
   backgroundColor: "green",
 }));
 
-const testData: MenuType[] = [
+const menuList: MenuListType = [
   {
-    label: "테스트하나",
-    url: "test",
+    label: "Dashboard",
+    auth: true,
+    subMenu: [
+      { label: "Overview", url: "/overview" },
+      { label: "Stats", url: "/stats" },
+      { label: "Reports", url: "/reports" },
+    ],
   },
   {
-    label: "테스트 둘",
-    url: "test2",
+    label: "Settings",
+    auth: false,
+    subMenu: [
+      { label: "Profile", url: "/profile" },
+      { label: "Account", url: "/account" },
+      { label: "Security", url: "/security" },
+    ],
   },
   {
-    label: "테스트 셋",
-    url: "test3",
+    label: "Support",
+    auth: true,
+    subMenu: [
+      { label: "FAQs", url: "/faqs" },
+      { label: "Contact", url: "/contact" },
+    ],
   },
 ];
 
-const SideMenu = styled(Box)(() => ({
+const SideMenu = styled(Box, {
+  shouldForwardProp: (prop) => prop !== "fold", // oepn 속성을 DOM으로 전달하지 않음
+})<{ fold: boolean }>(({ theme, fold }) => ({
   display: "flex",
   flexDirection: "column",
-  width: "250px",
+  backgroundColor: theme.palette.sidebar.menuBg,
+  width: fold ? "50px" : "250px",
   justifyContent: "center",
   alignItems: "center",
 }));
 
 export default function DefaultLayout() {
+  //여기서 메뉴의 햄버거 여부를 전달해서
+  // 메뉴 컴포넌트에서 글자를 숨기거나 어쩌고 한다
+  const [fold, setFold] = useState<boolean>(false);
+
+  const onClick = () => {
+    setFold(!fold);
+  };
+
   return (
     <Box>
       <PageContainer>
-        <SideMenu>
-          <Sidebar
-            label={"대메뉴명"}
-            icon={<StarBorder />}
-            menuListData={testData}
-            isAble={true}
-            isOpen={true}
-          />
-          <Sidebar
-            label={"대메뉴명"}
-            icon={<StarBorder />}
-            menuListData={testData}
-            isAble={false}
-            isOpen={false}
-          />
-          <Sidebar
-            label={"대메뉴명"}
-            icon={<StarBorder />}
-            menuListData={testData}
-            isAble={true}
-            isOpen={false}
-          />
-          <Sidebar
-            label={"대메뉴명"}
-            icon={<StarBorder />}
-            menuListData={testData}
-            isAble={false}
-            isOpen={false}
-          />
+        <SideMenu fold={fold}>
+          <div>
+            {" "}
+            로고 <button onClick={onClick}>햄버거 버튼</button>{" "}
+          </div>
+          {menuList.map((item, index) => {
+            return (
+              <Sidebar
+                key={index}
+                label={"대메뉴명"}
+                icon={<StarBorder />}
+                menuListData={item.subMenu}
+                auth={item.auth}
+                isOpen={true}
+                fold={fold}
+              />
+            );
+          })}
         </SideMenu>
         <ContentArea>
           <AppBarArea>앱바</AppBarArea>

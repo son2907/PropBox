@@ -7,13 +7,11 @@ import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { styled } from "@mui/material";
+import { SolutionType } from "../../types/menu";
 
-interface SolutionProps {
+interface SolutionProps extends SolutionType {
   children: React.ReactNode;
-  label: string;
-  icon: React.ReactNode;
-  isOpen: boolean;
-  isAble: boolean;
+  fold: boolean;
 }
 
 const SolutionList = styled(List)(({ theme }) => ({
@@ -23,11 +21,11 @@ const SolutionList = styled(List)(({ theme }) => ({
 
 // shouldForwardProp을 사용하여 oepn이 DOM에 전달되지 않도록 설정
 const MainMenu = styled(ListItemButton, {
-  shouldForwardProp: (prop) => prop !== "open" && prop !== "isAble", // oepn 속성을 DOM으로 전달하지 않음
-})<{ open: boolean; isAble: boolean }>(({ theme, open, isAble }) => ({
+  shouldForwardProp: (prop) => prop !== "open" && prop !== "auth", // oepn 속성을 DOM으로 전달하지 않음
+})<{ open: boolean; auth: boolean }>(({ theme, open, auth }) => ({
   borderRadius: "10px",
   backgroundColor:
-    open && isAble
+    open && auth
       ? theme.palette.sidebar.menuItemActiveBg
       : theme.palette.sidebar.menuBg, // oepn에 따라 배경색 변경
   padding: 0,
@@ -35,20 +33,19 @@ const MainMenu = styled(ListItemButton, {
 }));
 
 const SolutionIcon = styled(ListItemIcon, {
-  shouldForwardProp: (prop) => prop !== "isAble", // oepn 속성을 DOM으로 전달하지 않음
-})<{ isAble: boolean }>(({ theme, isAble }) => ({
-  color: isAble ? theme.palette.primary.main : theme.palette.root.coolGray400, // oepn에 따라 배경색 변경
+  shouldForwardProp: (prop) => prop !== "auth", // oepn 속성을 DOM으로 전달하지 않음
+})<{ auth: boolean }>(({ theme, auth }) => ({
+  color: auth ? theme.palette.primary.main : theme.palette.root.coolGray400, // oepn에 따라 배경색 변경
   paddingLeft: 1,
   minWidth: 40,
 }));
 
 export default function Solution({
   children,
-  label,
-  icon,
-  isOpen = false,
-  isAble,
+  ...solutionProps
 }: SolutionProps) {
+  const { label, icon, isOpen = false, auth, fold } = solutionProps; // 필요한 부분만 구조분해
+
   const [open, setOpen] = React.useState(isOpen);
 
   const handleClick = () => {
@@ -57,12 +54,12 @@ export default function Solution({
 
   return (
     <SolutionList>
-      <MainMenu open={open} isAble={isAble} onClick={handleClick}>
-        <SolutionIcon isAble={isAble}>{icon}</SolutionIcon>
-        <ListItemText sx={{ pl: 0.5 }} primary={label} />
-        {open && isAble ? <ExpandLess /> : <ExpandMore />}
+      <MainMenu open={open} auth={auth} onClick={handleClick}>
+        <SolutionIcon auth={auth}>{icon}</SolutionIcon>
+        {!fold && <ListItemText sx={{ pl: 0.5 }} primary={label} />}
+        {!fold && (open && auth ? <ExpandLess /> : <ExpandMore />)}
       </MainMenu>
-      {isAble && (
+      {auth && (
         <Collapse in={open} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             {children}
@@ -72,3 +69,13 @@ export default function Solution({
     </SolutionList>
   );
 }
+
+Solution.Icon = ({
+  children,
+  auth,
+}: {
+  children: React.ReactNode;
+  auth: boolean;
+}) => {
+  return <SolutionIcon auth={auth}>{children}</SolutionIcon>;
+};
