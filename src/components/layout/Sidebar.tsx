@@ -14,7 +14,6 @@ const menuList: MenuListType = [
   {
     label: "Dashboard",
     auth: true,
-    icon: <StarBorder />,
     subMenu: [
       { label: "Overview", url: "/overview" },
       { label: "Stats", url: "/stats" },
@@ -24,7 +23,6 @@ const menuList: MenuListType = [
   {
     label: "Settings",
     auth: false,
-    icon: <StarBorder />,
     subMenu: [
       { label: "Profile", url: "/profile" },
       { label: "Account", url: "/account" },
@@ -34,7 +32,6 @@ const menuList: MenuListType = [
   {
     label: "Support",
     auth: true,
-    icon: <StarBorder />,
     subMenu: [
       { label: "FAQs", url: "/faqs" },
       { label: "Contact", url: "/contact" },

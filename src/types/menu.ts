@@ -24,7 +24,6 @@ export type SubMenuType = {
 export type MainMenuType = {
   label: string;
   auth: boolean;
-  icon: ReactNode;
   subMenu: SubMenuType[]; // 소메뉴 리스트
 };
 
