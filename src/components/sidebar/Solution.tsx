@@ -21,21 +21,21 @@ const SolutionList = styled(List)(({ theme }) => ({
 
 // shouldForwardProp을 사용하여 oepn이 DOM에 전달되지 않도록 설정
 const MainMenu = styled(ListItemButton, {
-  shouldForwardProp: (prop) => prop !== "open" && prop !== "auth", // oepn 속성을 DOM으로 전달하지 않음
+  shouldForwardProp: (prop) => prop !== "open" && prop !== "auth",
 })<{ open: boolean; auth: boolean }>(({ theme, open, auth }) => ({
   borderRadius: "10px",
   backgroundColor:
     open && auth
       ? theme.palette.sidebar.menuItemActiveBg
-      : theme.palette.sidebar.menuBg, // oepn에 따라 배경색 변경
+      : theme.palette.sidebar.menuBg,
   padding: 0,
   margin: "0px 12px 0px 12px",
 }));
 
 const SolutionIcon = styled(ListItemIcon, {
-  shouldForwardProp: (prop) => prop !== "auth", // oepn 속성을 DOM으로 전달하지 않음
+  shouldForwardProp: (prop) => prop !== "auth",
 })<{ auth: boolean }>(({ theme, auth }) => ({
-  color: auth ? theme.palette.primary.main : theme.palette.root.coolGray400, // oepn에 따라 배경색 변경
+  color: auth ? theme.palette.primary.main : theme.palette.root.coolGray400,
   paddingLeft: 1,
   minWidth: 40,
 }));
@@ -44,7 +44,7 @@ export default function Solution({
   children,
   ...solutionProps
 }: SolutionProps) {
-  const { label, icon, isOpen = false, auth, fold } = solutionProps; // 필요한 부분만 구조분해
+  const { label, icon, isOpen = false, auth, fold } = solutionProps;
 
   const [open, setOpen] = React.useState(isOpen);
 
@@ -69,13 +69,3 @@ export default function Solution({
     </SolutionList>
   );
 }
-
-Solution.Icon = ({
-  children,
-  auth,
-}: {
-  children: React.ReactNode;
-  auth: boolean;
-}) => {
-  return <SolutionIcon auth={auth}>{children}</SolutionIcon>;
-};
