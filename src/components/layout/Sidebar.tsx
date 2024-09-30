@@ -54,10 +54,10 @@ const SideMenu = styled(Box, {
   justifyContent: "center",
   alignItems: "center",
   transition: "width 0.3s ease", // width 애니메이션 추가
+  borderRight: "2px solid #e5e7eb",
 }));
 
 export default function Sidebar() {
-  // 메뉴 컴포넌트에서 글자를 숨기거나 어쩌고 한다
   const [fold, setFold] = useState<boolean>(false);
 
   // 추후 useMenu()로 바꾸어주어야 함 ... (api없음)

@@ -2,6 +2,7 @@ import { RouteObject } from "react-router-dom";
 import DefaultLayout from "../layout";
 import PathConstants from "./path";
 import Main from "../pages/main";
+import Test from "../pages/test";
 
 export const routes: RouteObject[] = [
   {
@@ -21,7 +22,7 @@ export const routes: RouteObject[] = [
         children: [
           {
             path: PathConstants.Test,
-            element: <div>테스트</div>,
+            element: <Test />,
           },
         ],
       },

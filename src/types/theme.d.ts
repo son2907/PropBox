@@ -17,8 +17,9 @@ declare module "@mui/material/styles" {
     };
     appbar: {
       appbarBg: string;
-      appbarItemColor: string;
-      appbarItemHoverColor: string;
+      appbarItemColorGreen: string;
+      appbarItemColorRed: string;
+      appbarItemTextColor: string;
     };
     modal: {
       modalBg: string;
@@ -53,8 +54,9 @@ declare module "@mui/material/styles" {
     };
     appbar: {
       appbarBg: string;
-      appbarItemColor: string;
-      appbarItemHoverColor: string;
+      appbarItemColorGreen: string;
+      appbarItemColorRed: string;
+      appbarItemTextColor: string;
     };
     modal: {
       modalBg: string;

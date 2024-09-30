@@ -1,7 +1,7 @@
 import { Box, styled } from "@mui/material";
 import { Outlet } from "react-router-dom";
-import { appBarHeight } from "../config";
 import Sidebar from "../components/layout/Sidebar";
+import Appbar from "../components/layout/Appbar";
 
 // PageContainer 컴포넌트: 페이지 전체를 감싸는 컨테이너
 const PageContainer = styled(Box)(({ theme }) => ({
@@ -13,21 +13,12 @@ const PageContainer = styled(Box)(({ theme }) => ({
 }));
 
 // ContentArea 컴포넌트: 컨텐츠와 앱바를 포함하는 메인 영역
-const ContentArea = styled(Box)(() => ({
+const ContentArea = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   width: "100%",
   height: "100%",
-  backgroundColor: "yellow",
-}));
-
-// AppBarArea 컴포넌트: 앱바 영역
-const AppBarArea = styled(Box)(() => ({
-  display: "flex",
-  height: `${appBarHeight}px`,
-  alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: "skyblue",
+  backgroundColor: theme.palette.common.white,
 }));
 
 // Content 컴포넌트: 메인 컨텐츠 영역
@@ -43,7 +34,7 @@ export default function DefaultLayout() {
       <PageContainer>
         <Sidebar />
         <ContentArea>
-          <AppBarArea>앱바</AppBarArea>
+          <Appbar />
           <Content>
             컨텐츠 영역
             <Outlet />

@@ -13,8 +13,9 @@ const _palette: PaletteOptions = {
   },
   appbar: {
     appbarBg: "#ffffff",
-    appbarItemColor: "#6c757d",
-    appbarItemHoverColor: "#8738ff",
+    appbarItemColorGreen: "#86E57F",
+    appbarItemColorRed: "#FFA7A7",
+    appbarItemTextColor: "#ffffff",
   },
   modal: {
     modalBg: "#37404a",
