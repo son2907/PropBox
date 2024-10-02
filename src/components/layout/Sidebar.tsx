@@ -8,6 +8,7 @@ import Menu from "../../assets/svg/hambuger.svg";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import AllInboxIcon from "@mui/icons-material/AllInbox";
 import { StarBorder } from "@mui/icons-material";
+import { appBarHeight } from "../../config";
 
 // 예시 데이터
 const menuList: MenuListType = [
@@ -54,7 +55,16 @@ const SideMenu = styled(Box, {
   alignItems: "center",
   transition: "width 0.3s ease", // width 애니메이션 추가
   borderRight: "2px solid #e5e7eb",
-  paddingTop: 10,
+}));
+
+const LogoArea = styled(Box)(() => ({
+  width: "100%",
+  height: 60,
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  gap: 10,
+  padding: "0 10px 0 10px",
 }));
 
 export default function Sidebar() {
@@ -68,10 +78,28 @@ export default function Sidebar() {
 
   return (
     <SideMenu fold={fold}>
-      <div>
-        {fold ? <></> : <img src={Logo} style={{ width: "160px" }} />}
-        <img src={Menu} onClick={onClick} style={{ cursor: "pointer" }} />
-      </div>
+      <LogoArea>
+        {fold ? (
+          <></>
+        ) : (
+          <img src={Logo} style={{ width: "130px", height: "fit-content" }} />
+        )}
+        <img
+          src={Menu}
+          onClick={onClick}
+          style={{ cursor: "pointer", width: "20px" }}
+        />
+      </LogoArea>
+      <hr
+        style={{
+          margin: 0,
+          width: "90%",
+          height: "1px",
+          border: "none",
+          color: "#e5e7eb",
+          backgroundColor: "#e5e7eb",
+        }}
+      />
       {data.map((item, index) => {
         return (
           <Solution

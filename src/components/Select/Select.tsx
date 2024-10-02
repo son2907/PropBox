@@ -6,10 +6,11 @@ import { useState } from "react";
 
 interface SelectProps {
   selectData: { value: number; data: string }[];
+  text: string;
 }
 
-export default function PSelect({ selectData }: SelectProps) {
-  const [value, setValue] = useState<string>(selectData[0].value.toString());
+export default function PSelect({ selectData, text }: SelectProps) {
+  const [value, setValue] = useState<string>("");
 
   const handleChange = (event: SelectChangeEvent) => {
     setValue(event.target.value);
@@ -17,14 +18,13 @@ export default function PSelect({ selectData }: SelectProps) {
 
   return (
     <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-      <InputLabel id="demo-select-small-label">Age</InputLabel>
-      <Select
-        labelId="demo-select-small-label"
-        id="demo-select-small"
-        value={value}
-        label="Age"
-        onChange={handleChange}
+      <InputLabel
+        id="demo-select-small-label"
+        sx={{ backgroundColor: "white" }}
       >
+        {text}
+      </InputLabel>
+      <Select value={value} label="Age" onChange={handleChange}>
         {selectData.map((item) => (
           <MenuItem key={item.value} value={item.value}>
             {item.data}

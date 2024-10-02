@@ -46,7 +46,7 @@ export default function Appbar() {
           left: 0,
         }}
       >
-        <Select selectData={testData} />
+        <Select selectData={testData} text={"현장 선택"} />
       </Box>
       <AppbarButton state={state} text={text} />
     </AppBarArea>
