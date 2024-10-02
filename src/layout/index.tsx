@@ -1,30 +1,38 @@
-import { Box, Stack, styled } from "@mui/material";
+import { Box, styled } from "@mui/material";
 import { Outlet } from "react-router-dom";
-import { appBarHeight } from "../config";
+import Sidebar from "../components/layout/Sidebar";
+import Appbar from "../components/layout/Appbar";
+import Content from "../components/layout/Content";
 
-const PageContainer = styled(Box)(() => ({
+// PageContainer 컴포넌트: 페이지 전체를 감싸는 컨테이너
+const PageContainer = styled(Box)(({ theme }) => ({
   position: "relative",
+  display: "flex",
+  flexGrow: 1,
+  height: "100dvh", // 뷰포트 전체 높이를 차지
+  backgroundColor: theme.palette.common.white,
 }));
 
-type ContentWrapperProps = {
-  full?: boolean;
-};
-
-const ContentWrapper = styled(Stack)<ContentWrapperProps>(({ theme }) => ({
-  flexGrow: 1,
+// ContentArea 컴포넌트: 컨텐츠와 앱바를 포함하는 메인 영역
+const ContentArea = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  width: "100%",
+  height: "100%",
   backgroundColor: theme.palette.common.white,
-  height: `calc(100dvh - ${appBarHeight}px)`,
 }));
 
 export default function DefaultLayout() {
   return (
     <Box>
       <PageContainer>
-        {/* 이곳에 상단 바와 */}
-        {/* 사이드 메뉴 삽입 필요 */}
-        <ContentWrapper>
-          <Outlet />
-        </ContentWrapper>
+        <Sidebar />
+        <ContentArea>
+          <Appbar />
+          <Content>
+            <Outlet />
+          </Content>
+        </ContentArea>
       </PageContainer>
     </Box>
   );

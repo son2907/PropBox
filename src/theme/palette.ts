@@ -3,15 +3,7 @@ import { PaletteOptions, alpha } from "@mui/material";
 const _palette: PaletteOptions = {
   sidebar: {
     menuBg: "#ffffff",
-    menuItemColor: "#111827",
-    menuIconColor: "#22a7f5",
-    menuItemHoverColor: "#e8eaec",
-    menuItemHoverBg: "#f3f4f6",
-    menuItemActiveColor: "#111827",
-    menuItemActiveBg: "#111827",
-    menuLineColor: "#e5e7eb",
-    menuUnableItemColor: "#b3b3b3",
-    menuUnableIconColor: "#b3b3b3",
+    menuItemActiveBg: "#f3f4f6",
   },
   tabbar: {
     tabBg: "#eff2f6",
@@ -21,8 +13,10 @@ const _palette: PaletteOptions = {
   },
   appbar: {
     appbarBg: "#ffffff",
-    appbarItemColor: "#6c757d",
-    appbarItemHoverColor: "#8738ff",
+    appbarItemColorGreen: "#86E57F",
+    appbarItemColorRed: "#FFA7A7",
+    appbarItemTextColor: "#ffffff",
+    appbarBorderColor: "#e5e7eb",
   },
   modal: {
     modalBg: "#37404a",
@@ -46,7 +40,7 @@ const _palette: PaletteOptions = {
     error: "#f4475f",
   },
   primary: {
-    main: "#2d2a48",
+    main: "#22a7F5",
     light: "#5a5482",
     dark: "#231f47",
     A100: "#e6e2ff",
