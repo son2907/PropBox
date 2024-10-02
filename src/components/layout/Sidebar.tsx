@@ -8,8 +8,6 @@ import Menu from "../../assets/svg/hambuger.svg";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import AllInboxIcon from "@mui/icons-material/AllInbox";
 import { StarBorder } from "@mui/icons-material";
-import { appBarHeight } from "../../config";
-
 // 예시 데이터
 const menuList: MenuListType = [
   {

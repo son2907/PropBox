@@ -2,6 +2,7 @@ import { Box, styled } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components/layout/Sidebar";
 import Appbar from "../components/layout/Appbar";
+import Content from "../components/layout/Content";
 
 // PageContainer 컴포넌트: 페이지 전체를 감싸는 컨테이너
 const PageContainer = styled(Box)(({ theme }) => ({
@@ -19,12 +20,6 @@ const ContentArea = styled(Box)(({ theme }) => ({
   width: "100%",
   height: "100%",
   backgroundColor: theme.palette.common.white,
-}));
-
-// Content 컴포넌트: 메인 컨텐츠 영역
-const Content = styled(Box)(() => ({
-  height: "100%",
-  overflow: "auto", // 스크롤 필요 시 활성화
 }));
 
 export default function DefaultLayout() {
