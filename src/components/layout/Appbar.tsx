@@ -10,6 +10,8 @@ const AppBarArea = styled(Box)(({ theme }) => ({
   alignItems: "center",
   justifyContent: "center",
   backgroundColor: theme.palette.appbar.appbarBg,
+  borderBottom: "1px solid",
+  borderColor: theme.palette.appbar.appbarBorderColor,
 }));
 
 // 실시간으로 상태를 받아서 보여주어야 함
@@ -18,6 +20,7 @@ export default function Appbar() {
   const text = "010-1111-1111";
   return (
     <AppBarArea>
+      <div>현장 선택 아이템</div>
       <AppbarButton state={state} text={text} />
     </AppBarArea>
   );

@@ -25,7 +25,6 @@ const ContentArea = styled(Box)(({ theme }) => ({
 const Content = styled(Box)(() => ({
   height: "100%",
   overflow: "auto", // 스크롤 필요 시 활성화
-  backgroundColor: "green",
 }));
 
 export default function DefaultLayout() {
@@ -36,7 +35,6 @@ export default function DefaultLayout() {
         <ContentArea>
           <Appbar />
           <Content>
-            컨텐츠 영역
             <Outlet />
           </Content>
         </ContentArea>
