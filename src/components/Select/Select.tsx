@@ -5,11 +5,11 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { useState } from "react";
 
 interface SelectProps {
-  selectData: [{ value: number; data: string }];
+  selectData: { value: number; data: string }[];
 }
 
-export default function SelectSmall({ selectData }: SelectProps) {
-  const [value, setValue] = useState("");
+export default function PSelect({ selectData }: SelectProps) {
+  const [value, setValue] = useState<string>(selectData[0].value.toString());
 
   const handleChange = (event: SelectChangeEvent) => {
     setValue(event.target.value);
@@ -25,9 +25,6 @@ export default function SelectSmall({ selectData }: SelectProps) {
         label="Age"
         onChange={handleChange}
       >
-        <MenuItem value="">
-          <em>None</em>
-        </MenuItem>
         {selectData.map((item) => (
           <MenuItem key={item.value} value={item.value}>
             {item.data}
