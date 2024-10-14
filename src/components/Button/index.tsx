@@ -1,8 +1,10 @@
 import IconButton from "./IconButton";
-
+import ButtonBase from "./ButtonBase";
+import BasicButton from "./BasicButton";
+import GrayButton from "./GrayButton";
 import { ButtonProps, Button as MUIButton } from "@mui/material";
 
-export { IconButton };
+export { IconButton, ButtonBase, BasicButton, GrayButton };
 
 export default function Button({ children, ...rest }: ButtonProps) {
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {

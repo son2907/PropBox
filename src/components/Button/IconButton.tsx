@@ -1,5 +1,6 @@
 import { IconButtonProps, IconButton as MUIIconButton } from "@mui/material";
 
+// 아이콘만 버튼으로 사용할 때
 export default function IconButton({ children, ...rest }: IconButtonProps) {
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     rest.onClick?.(e);
