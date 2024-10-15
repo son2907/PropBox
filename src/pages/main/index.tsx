@@ -1,7 +1,6 @@
 import Button, { BasicButton, GrayButton } from "../../components/Button";
 import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
 import RowDraggableTable from "../../components/Table/RowDraggableTable";
-import { useState } from "react";
 import DraggableTable from "../../components/Table/DraggableTable";
 import { useCheckboxSelection } from "../../hooks/useCheckboxSelection";
 
@@ -16,13 +15,9 @@ const initialData: Data[] = [
   { id: "3", name: "Sam Johnson", age: 45, job: "Manager" },
 ];
 export default function Main() {
-  const [data, setData] = useState<Data[]>(initialData);
   // 커스텀 훅 사용
   const { selectedRows, toggleRowSelection } = useCheckboxSelection();
 
-  const handleReorder = (newData: Data[]) => {
-    setData(newData);
-  };
   console.log(selectedRows);
   return (
     <>
@@ -32,11 +27,16 @@ export default function Main() {
       <Button>
         <AccessAlarmIcon /> 아이콘 버튼
       </Button>
-      <RowDraggableTable data={data} onReorder={handleReorder} />
-      <DraggableTable
-        initialData={data}
-        selectedRows={selectedRows}
+      <RowDraggableTable
+        initialData={initialData}
         checkbox={true}
+        selectedRows={selectedRows}
+        toggleRowSelection={toggleRowSelection}
+      />
+      <DraggableTable
+        initialData={initialData}
+        checkbox={true}
+        selectedRows={selectedRows}
         toggleRowSelection={toggleRowSelection}
       />
     </>

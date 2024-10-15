@@ -1,54 +1,105 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   DndContext,
+  DragEndEvent,
   closestCenter,
+  MouseSensor,
   useSensor,
   useSensors,
-  PointerSensor,
-  KeyboardSensor,
-  DragEndEvent,
 } from "@dnd-kit/core";
 import {
   arrayMove,
   SortableContext,
-  sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import Move from "../../assets/images/move.png";
-import Switch from "../../assets/images/switch.png";
 
-interface Data {
-  id: string; // 각 행의 고유 ID
-  [key: string]: any; // 다양한 필드가 가능하도록 설정
+interface Row {
+  id: any;
+  [key: string]: string | number;
 }
 
-interface DraggableTableProps {
-  data: Data[];
-  onReorder: (newData: Data[]) => void;
+interface TableProps {
+  initialData: Row[];
+  checkbox?: boolean; // 체크박스 플래그
+  selectedRows: string[];
+  toggleRowSelection: (id: string) => void;
 }
 
-const RowDraggableTable: React.FC<DraggableTableProps> = ({
-  data,
-  onReorder,
+const DraggableTable: React.FC<TableProps> = ({
+  initialData,
+  checkbox = false,
+  selectedRows,
+  toggleRowSelection,
 }) => {
+  const [rows, setRows] = useState<Row[]>(initialData);
+  const [cols, setCols] = useState<string[]>(() => {
+    // 열 제목을 초기 데이터의 첫 번째 행에서 추출
+    if (initialData.length > 0) {
+      const firstRow = initialData[0];
+      return Object.keys(firstRow);
+    }
+    return [];
+  });
+
+  // DnD 센서 설정
   const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 10, // 드래그 시작 최소 거리
+      },
     })
   );
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  // 행 드래그 앤 드롭
+  const RowItem: React.FC<{ row: Row }> = ({ row }) => {
+    const { attributes, listeners, setNodeRef, transform, transition } =
+      useSortable({ id: row.id });
+
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+      cursor: "grab", // 커서 모양 변경
+    };
+
+    const handleCheckboxChange = () => {
+      toggleRowSelection(row.id);
+    };
+
+    return (
+      <tr ref={setNodeRef} style={style} {...attributes} {...listeners}>
+        {checkbox && (
+          <td>
+            <input
+              type="checkbox"
+              checked={selectedRows.includes(row.id)}
+              onChange={handleCheckboxChange}
+            />
+          </td>
+        )}
+        <td>
+          <img src={Move} alt="Move icon" />
+        </td>
+        {cols.map((col, colIndex) => (
+          <td key={colIndex}>{row[col]}</td> // 각 열의 데이터를 셀에 표시
+        ))}
+      </tr>
+    );
+  };
+
+  // 행 드래그 종료 처리
+  const handleRowDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (over && active.id !== over.id) {
-      const oldIndex = data.findIndex((item) => item.id === active.id);
-      const newIndex = data.findIndex((item) => item.id === over.id);
-
-      const newData = arrayMove(data, oldIndex, newIndex);
-      onReorder(newData);
+    if (active?.id !== over?.id) {
+      // 드래그 시작 항목과 종료 항목의 인덱스
+      const oldIndex = rows.findIndex((row) => row.id === active?.id);
+      const newIndex = rows.findIndex((row) => row.id === over?.id);
+      if (oldIndex >= 0 && newIndex >= 0) {
+        setRows(arrayMove(rows, oldIndex, newIndex)); // 순서 변경
+      }
     }
   };
 
@@ -56,59 +107,33 @@ const RowDraggableTable: React.FC<DraggableTableProps> = ({
     <DndContext
       sensors={sensors}
       collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
+      onDragEnd={handleRowDragEnd} // 행 드래그 종료 시 처리
     >
-      <SortableContext
-        items={data.map((item) => item.id)}
-        strategy={verticalListSortingStrategy}
-      >
-        <table>
-          <thead>
-            <tr>
-              <th>
-                <img src={Switch} />
-              </th>
-              {Object.keys(data[0]).map((key) => (
-                <th key={key}>{key}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((item) => (
-              <SortableRow key={item.id} item={item} />
+      <table>
+        <thead>
+          <tr>
+            {checkbox && <th></th>} {/* 체크박스 헤더 */}
+            <th>
+              <img src={Move} alt="Move icon" />
+            </th>
+            {cols.map((col) => (
+              <th key={col}>{col}</th> // 열 제목 표시
             ))}
-          </tbody>
-        </table>
-      </SortableContext>
+          </tr>
+        </thead>
+        <tbody>
+          <SortableContext
+            items={rows.map((row) => row.id)}
+            strategy={verticalListSortingStrategy} // 행 정렬
+          >
+            {rows.map((row) => (
+              <RowItem key={row.id} row={row} />
+            ))}
+          </SortableContext>
+        </tbody>
+      </table>
     </DndContext>
   );
 };
 
-interface SortableRowProps {
-  item: Data;
-}
-
-const SortableRow: React.FC<SortableRowProps> = ({ item }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({
-      id: item.id,
-    });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
-  return (
-    <tr ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <td style={{ cursor: "grab", width: "30px", textAlign: "center" }}>
-        <img src={Move} />
-      </td>
-      {Object.keys(item).map((key) => (
-        <td key={key}>{item[key]}</td>
-      ))}
-    </tr>
-  );
-};
-
-export default RowDraggableTable;
+export default DraggableTable;
