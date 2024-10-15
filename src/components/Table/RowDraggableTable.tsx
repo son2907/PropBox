@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import {
   DndContext,
   DragEndEvent,
@@ -27,6 +27,7 @@ interface TableProps {
   checkbox?: boolean; // 체크박스 플래그
   selectedRows: string[];
   toggleRowSelection: (id: string) => void;
+  children?: (row: Row) => ReactNode; // 사용자 정의 열
 }
 
 const DraggableTable: React.FC<TableProps> = ({
@@ -34,6 +35,7 @@ const DraggableTable: React.FC<TableProps> = ({
   checkbox = false,
   selectedRows,
   toggleRowSelection,
+  children,
 }) => {
   const [rows, setRows] = useState<Row[]>(initialData);
   const [cols, setCols] = useState<string[]>(() => {
@@ -87,23 +89,26 @@ const DraggableTable: React.FC<TableProps> = ({
     };
 
     return (
-      <tr ref={setNodeRef} style={style} {...attributes} {...listeners}>
-        <td>
-          <img src={Move} alt="Move icon" />
-        </td>
-        {checkbox && (
+      <>
+        <tr ref={setNodeRef} style={style} {...attributes} {...listeners}>
           <td>
-            <input
-              type="checkbox"
-              checked={selectedRows.includes(row.id)}
-              onChange={handleCheckboxChange}
-            />
+            <img src={Move} alt="Move icon" />
           </td>
-        )}
-        {cols.map((col, colIndex) => (
-          <td key={colIndex}>{row[col]}</td> // 각 열의 데이터를 셀에 표시
-        ))}
-      </tr>
+          {checkbox && (
+            <td>
+              <input
+                type="checkbox"
+                checked={selectedRows.includes(row.id)}
+                onChange={handleCheckboxChange}
+              />
+            </td>
+          )}
+          {cols.map((col, colIndex) => (
+            <td key={colIndex}>{row[col]}</td> // 각 열의 데이터를 셀에 표시
+          ))}
+          {children && <td>{children(row)}</td>} {/* 사용자 정의 셀 */}
+        </tr>
+      </>
     );
   };
 
@@ -146,6 +151,7 @@ const DraggableTable: React.FC<TableProps> = ({
             {cols.map((col) => (
               <th key={col}>{col}</th> // 열 제목 표시
             ))}
+            {children && <th>Actions</th>} {/* 추가된 사용자 정의 열 */}
           </tr>
         </thead>
         <tbody>
@@ -164,3 +170,19 @@ const DraggableTable: React.FC<TableProps> = ({
 };
 
 export default DraggableTable;
+
+{
+  /* <RowDraggableTable
+        initialData={initialData}
+        checkbox={true}
+        selectedRows={selectedRows}
+        toggleRowSelection={toggleRowSelection}
+      >
+        {(row) => (
+          <>
+            <button onClick={() => handleDelete(row.id)}>Delete</button>
+            <button onClick={() => handleAlert(row.id)}>Alert</button>
+          </>
+        )}
+      </RowDraggableTable> */
+}

@@ -205,3 +205,12 @@ const DraggableTable: React.FC<TableProps> = ({
 };
 
 export default DraggableTable;
+
+{
+  /* <DraggableTable
+        initialData={initialData}
+        checkbox={true}
+        selectedRows={selectedRows}
+        toggleRowSelection={toggleRowSelection}
+      /> */
+}
