@@ -25,9 +25,17 @@ interface Row {
 
 interface TableProps {
   initialData: Row[];
+  checkbox?: boolean; // 체크박스 플래그
+  selectedRows: string[];
+  toggleRowSelection: (id: string) => void;
 }
 
-const DraggableTable: React.FC<TableProps> = ({ initialData }) => {
+const DraggableTable: React.FC<TableProps> = ({
+  initialData,
+  checkbox = false,
+  selectedRows,
+  toggleRowSelection,
+}) => {
   const [rows, setRows] = useState<Row[]>(initialData);
   const [cols, setCols] = useState<string[]>(() => {
     // 열 제목을 초기 데이터의 첫 번째 행에서 추출
@@ -58,10 +66,23 @@ const DraggableTable: React.FC<TableProps> = ({ initialData }) => {
       cursor: "grab", // 커서 모양 변경
     };
 
+    const handleCheckboxChange = () => {
+      toggleRowSelection(row.id);
+    };
+
     return (
       <tr ref={setNodeRef} style={style} {...attributes} {...listeners}>
+        {checkbox && (
+          <td>
+            <input
+              type="checkbox"
+              checked={selectedRows.includes(row.id)}
+              onChange={handleCheckboxChange}
+            />
+          </td>
+        )}
         <td>
-          <img src={Move} />
+          <img src={Move} alt="Move icon" />
         </td>
         {cols.map((col, colIndex) => (
           <td key={colIndex}>{row[col]}</td> // 각 열의 데이터를 셀에 표시
@@ -132,8 +153,9 @@ const DraggableTable: React.FC<TableProps> = ({ initialData }) => {
             strategy={horizontalListSortingStrategy} // 열 정렬
           >
             <tr>
+              {checkbox && <th></th>} {/* 체크박스 헤더 */}
               <th>
-                <img src={Switch} />
+                <img src={Switch} alt="Switch icon" />
               </th>
               {cols.map((col) => (
                 <ColumnHeader key={col} column={col} />

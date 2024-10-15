@@ -3,6 +3,7 @@ import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
 import RowDraggableTable from "../../components/Table/RowDraggableTable";
 import { useState } from "react";
 import DraggableTable from "../../components/Table/DraggableTable";
+import { useCheckboxSelection } from "../../hooks/useCheckboxSelection";
 
 interface Data {
   id: string;
@@ -16,10 +17,13 @@ const initialData: Data[] = [
 ];
 export default function Main() {
   const [data, setData] = useState<Data[]>(initialData);
+  // 커스텀 훅 사용
+  const { selectedRows, toggleRowSelection } = useCheckboxSelection();
 
   const handleReorder = (newData: Data[]) => {
     setData(newData);
   };
+  console.log(selectedRows);
   return (
     <>
       <div>메인페이지</div>
@@ -29,7 +33,12 @@ export default function Main() {
         <AccessAlarmIcon /> 아이콘 버튼
       </Button>
       <RowDraggableTable data={data} onReorder={handleReorder} />
-      <DraggableTable initialData={data} />
+      <DraggableTable
+        initialData={data}
+        selectedRows={selectedRows}
+        checkbox={true}
+        toggleRowSelection={toggleRowSelection}
+      />
     </>
   );
 }
