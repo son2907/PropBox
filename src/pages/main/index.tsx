@@ -33,12 +33,12 @@ export default function Main() {
         selectedRows={selectedRows}
         toggleRowSelection={toggleRowSelection}
       />
-      <DraggableTable
+      {/* <DraggableTable
         initialData={initialData}
         checkbox={true}
         selectedRows={selectedRows}
         toggleRowSelection={toggleRowSelection}
-      />
+      /> */}
     </>
   );
 }

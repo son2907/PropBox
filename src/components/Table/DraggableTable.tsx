@@ -46,6 +46,23 @@ const DraggableTable: React.FC<TableProps> = ({
     return [];
   });
 
+  // 전체 선택 상태 관리
+  const allSelected = selectedRows.length === rows.length;
+
+  const handleSelectAllChange = () => {
+    if (allSelected) {
+      // 모든 체크박스 선택 해제
+      selectedRows.forEach((rowId) => toggleRowSelection(rowId)); // 현재 선택된 모든 행 해제
+    } else {
+      // 체크되지 않은 행 모두 선택
+      rows.forEach((row) => {
+        if (!selectedRows.includes(row.id)) {
+          toggleRowSelection(row.id); // 선택되지 않은 행 선택
+        }
+      });
+    }
+  };
+
   // DnD 센서 설정
   const sensors = useSensors(
     useSensor(MouseSensor, {
@@ -72,6 +89,9 @@ const DraggableTable: React.FC<TableProps> = ({
 
     return (
       <tr ref={setNodeRef} style={style} {...attributes} {...listeners}>
+        <td>
+          <img src={Move} alt="Move icon" />
+        </td>
         {checkbox && (
           <td>
             <input
@@ -81,9 +101,6 @@ const DraggableTable: React.FC<TableProps> = ({
             />
           </td>
         )}
-        <td>
-          <img src={Move} alt="Move icon" />
-        </td>
         {cols.map((col, colIndex) => (
           <td key={colIndex}>{row[col]}</td> // 각 열의 데이터를 셀에 표시
         ))}
@@ -153,10 +170,19 @@ const DraggableTable: React.FC<TableProps> = ({
             strategy={horizontalListSortingStrategy} // 열 정렬
           >
             <tr>
-              {checkbox && <th></th>} {/* 체크박스 헤더 */}
               <th>
                 <img src={Switch} alt="Switch icon" />
               </th>
+              {checkbox && (
+                <th>
+                  <input
+                    type="checkbox"
+                    checked={allSelected}
+                    onChange={handleSelectAllChange}
+                  />
+                </th>
+              )}{" "}
+              {/* 체크박스 헤더 */}
               {cols.map((col) => (
                 <ColumnHeader key={col} column={col} />
               ))}
