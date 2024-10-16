@@ -35,7 +35,7 @@ const MainMenu = styled(ListItemButton, {
 const SolutionIcon = styled(ListItemIcon, {
   shouldForwardProp: (prop) => prop !== "auth",
 })<{ auth: boolean }>(({ theme, auth }) => ({
-  color: auth ? theme.palette.primary.main : theme.palette.root.coolGray400,
+  color: auth ? "#22A7F5" : theme.palette.root.coolGray400,
   paddingLeft: 1,
   minWidth: 40,
 }));

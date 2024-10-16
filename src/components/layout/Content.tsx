@@ -2,6 +2,7 @@ import { Box, styled, Typography } from "@mui/material";
 // Content 컴포넌트: 메인 컨텐츠 영역
 const ContentArea = styled(Box)(() => ({
   height: "100%",
+  width: "100%",
 }));
 
 interface ContentProps {
