@@ -8,13 +8,12 @@ import Content from "../components/layout/Content";
 const PageContainer = styled(Box)(({ theme }) => ({
   position: "relative",
   display: "flex",
-  flexGrow: 1,
-  height: "100dvh", // 뷰포트 전체 높이를 차지
+  height: "100%", // 뷰포트 전체 높이를 차지
   backgroundColor: theme.palette.common.white,
 }));
 
 // ContentArea 컴포넌트: 컨텐츠와 앱바를 포함하는 메인 영역
-const ContentArea = styled(Box)(({ theme }) => ({
+const PageArea = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   width: "100%",
@@ -22,18 +21,26 @@ const ContentArea = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.common.white,
 }));
 
+const ContentArea = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  width: "100%",
+  height: "calc(100% - 162px)",
+  backgroundColor: theme.palette.common.white,
+}));
+
 export default function DefaultLayout() {
   return (
-    <Box>
-      <PageContainer>
-        <Sidebar />
+    <PageContainer>
+      <Sidebar />
+      <PageArea>
+        <Appbar />
         <ContentArea>
-          <Appbar />
           <Content>
             <Outlet />
           </Content>
         </ContentArea>
-      </PageContainer>
-    </Box>
+      </PageArea>
+    </PageContainer>
   );
 }
