@@ -7,6 +7,7 @@ import { Select } from "../Select";
 // AppBarArea 컴포넌트: 앱바 영역
 const AppBarArea = styled(Box)(({ theme }) => ({
   display: "flex",
+  height: `${appBarHeight}px`,
   minHeight: `${appBarHeight}px`,
   alignItems: "center",
   justifyContent: "center",

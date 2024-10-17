@@ -26,7 +26,7 @@ interface TableProps {
 
 const Theader: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
-    <th className="border-solid bg-gray-200 border border-gray-300 border-b-0 border-t-0 p-2 text-left last:border-0">
+    <th className="border-solid bg-gray-200 border border-gray-300 border-b-0 border-t-0 p-2 text-left last:border-0 whitespace-nowrap">
       {children}
     </th>
   );
@@ -51,7 +51,7 @@ const SortableRow = ({ id, children }: { id: string; children: ReactNode }) => {
 
 const Td: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
-    <td className="border-solid border border-b-0 border-t-0 border-gray-300 p-2 text-left last:border-0">
+    <td className="border-solid border border-b-0 border-t-0 border-gray-300 p-2 text-left last:border-0 whitespace-nowrap">
       {children}
     </td>
   );
@@ -66,12 +66,16 @@ const EmptyTable = () => {
     <table className="table-auto  w-full  border-collapse">
       <thead>
         <tr>
-          <th className="p-2">조회 데이터가 존재하지 않습니다.</th>
+          <th className="border-solid flex justify-center bg-gray-200 border border-gray-300 border-b-0 border-t-0 p-2 text-left last:border-0">
+            조회 데이터가 존재하지 않습니다.
+          </th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td className="p-2">조회 데이터가 존재하지 않습니다.</td>
+          <td className="border-solid flex justify-center border border-b-0 border-t-0 border-gray-300 p-2 text-left last:border-0">
+            조회 데이터가 존재하지 않습니다.
+          </td>
         </tr>
       </tbody>
     </table>
@@ -134,60 +138,50 @@ const RowDragTable: React.FC<TableProps> & {
       {data.length === 0 ? (
         <EmptyTable /> // data가 없을 경우 EmptyTable 렌더링
       ) : (
-        <div
-          style={{
-            display: "flex",
-            width: "100%",
-            height: "100%",
-            overflow: "auto",
-          }}
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
         >
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <table className="table-auto w-full border-gray-300 border-collapse">
-              <thead>
-                <tr>
-                  <Theader> </Theader>
-                  {checkbox && (
-                    <Theader>
-                      <input
-                        type="checkbox"
-                        checked={allSelected}
-                        onChange={handleSelectAllChange}
-                      />
-                    </Theader>
-                  )}
-                  {React.Children.map(children, (child) => {
-                    if (
-                      (child as React.ReactElement<any>).type ===
-                      RowDragTable.Theader
-                    ) {
-                      return child; // Theader 컴포넌트를 렌더링
-                    }
-                    return null; // 헤더가 아닌 경우 무시
-                  })}
-                </tr>
-              </thead>
-              <SortableContext
-                items={data.map((item) => item.id)} // 드래그 가능한 항목 목록
-                strategy={verticalListSortingStrategy}
-              >
+          <table className="table-auto w-full border-gray-300 border-collapse">
+            <thead>
+              <tr>
+                <Theader> </Theader>
+                {checkbox && (
+                  <Theader>
+                    <input
+                      type="checkbox"
+                      checked={allSelected}
+                      onChange={handleSelectAllChange}
+                    />
+                  </Theader>
+                )}
                 {React.Children.map(children, (child) => {
                   if (
                     (child as React.ReactElement<any>).type ===
-                    RowDragTable.Tbody
+                    RowDragTable.Theader
                   ) {
-                    return child; // Tbody를 그대로 렌더링
+                    return child; // Theader 컴포넌트를 렌더링
                   }
-                  return null; // Tbody가 아닌 경우 무시
+                  return null; // 헤더가 아닌 경우 무시
                 })}
-              </SortableContext>
-            </table>
-          </DndContext>
-        </div>
+              </tr>
+            </thead>
+            <SortableContext
+              items={data.map((item) => item.id)} // 드래그 가능한 항목 목록
+              strategy={verticalListSortingStrategy}
+            >
+              {React.Children.map(children, (child) => {
+                if (
+                  (child as React.ReactElement<any>).type === RowDragTable.Tbody
+                ) {
+                  return child; // Tbody를 그대로 렌더링
+                }
+                return null; // Tbody가 아닌 경우 무시
+              })}
+            </SortableContext>
+          </table>
+        </DndContext>
       )}
     </>
   );

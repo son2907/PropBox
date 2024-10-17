@@ -62,6 +62,7 @@ const SideMenu = styled(Box, {
   flexDirection: "column",
   backgroundColor: theme.palette.sidebar.menuBg,
   width: fold ? "50px" : "250px",
+  flexShrink: 0,
   alignItems: "center",
   transition: "width 0.3s ease", // width 애니메이션 추가
   borderRight: "2px solid #e5e7eb",
