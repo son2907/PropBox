@@ -557,38 +557,23 @@ export default function Main() {
 
   return (
     <>
-      <div>메인페이지</div>
-      <BasicButton>베이직 스타일 버튼</BasicButton>
-      <GrayButton>그레이 버튼 스타일</GrayButton>
-      <BasicButton>베이직 스타일 버튼</BasicButton>
-      <GrayButton>그레이 버튼 스타일</GrayButton>
-      <BasicButton>베이직 스타일 버튼</BasicButton>
-      <GrayButton>그레이 버튼 스타일</GrayButton>
-      <BasicButton>베이직 스타일 버튼</BasicButton>
-      <GrayButton>그레이 버튼 스타일</GrayButton>
-      <BasicButton>베이직 스타일 버튼</BasicButton>
-      <BasicButton>베이직 스타일 버튼</BasicButton>
-      <GrayButton>그레이 버튼 스타일</GrayButton>
-      <BasicButton>베이직 스타일 버튼</BasicButton>
-      <GrayButton>그레이 버튼 스타일</GrayButton>
-      <BasicButton>베이직 스타일 버튼</BasicButton>
-      <GrayButton>그레이 버튼 스타일</GrayButton>
-      <BasicButton>베이직 스타일 버튼</BasicButton>
-      <GrayButton>그레이 버튼 스타일</GrayButton>
-      <BasicButton>베이직 스타일 버튼</BasicButton>
-      <GrayButton>그레이 버튼 스타일</GrayButton>
-      <BasicButton>베이직 스타일 버튼</BasicButton>
-      <GrayButton>그레이 버튼 스타일</GrayButton>
-      <GrayButton>그레이 버튼 스타일</GrayButton>
-
-      <Button>
-        <AccessAlarmIcon /> 아이콘 버튼
-      </Button>
       <div
         style={{
-          width: "100%",
+          display: "flex",
+        }}
+      >
+        {" "}
+        <div>메인페이지</div>
+        <BasicButton>베이직 스타일 버튼</BasicButton>
+        <GrayButton>그레이 버튼 스타일</GrayButton>
+        <Button>
+          <AccessAlarmIcon /> 아이콘 버튼
+        </Button>
+      </div>
+
+      <div
+        style={{
           height: "100%",
-          minHeight: 0,
           overflow: "scroll",
         }}
       >
