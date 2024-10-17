@@ -20,19 +20,19 @@ const AppBarArea = styled(Box)(({ theme }) => ({
 const testData = [
   {
     value: 1,
-    data: "하나",
+    data: "대구 수성구 센터",
   },
   {
     value: 2,
-    data: "둘",
+    data: "대구 OO구 센터2",
   },
   {
     value: 3,
-    data: "셋",
+    data: "대구 OO구 센터3",
   },
   {
     value: 4,
-    data: "넷",
+    data: "대구 OO구 센터4",
   },
 ];
 // 실시간으로 상태를 받아서 보여주어야 함
@@ -47,7 +47,11 @@ export default function Appbar() {
           left: 0,
         }}
       >
-        <Select selectData={testData} text={"현장 선택"} />
+        <Select
+          selectData={testData}
+          text={"현장 선택"}
+          sx={{ width: "160px" }}
+        />
       </Box>
       <AppbarButton state={state} text={text} />
     </AppBarArea>

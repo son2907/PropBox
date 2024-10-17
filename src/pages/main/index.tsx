@@ -5,6 +5,8 @@ import RowDragTable from "../../components/Table/RowDragTable";
 import { useState } from "react";
 import { Pagination } from "../../components/Pagination";
 import { usePagination } from "../../hooks/usePagination";
+import TableSelect from "../../components/Select/TableSelect";
+import SearchResult from "../../components/Table/SearchResult";
 
 interface Data {
   id: string;
@@ -568,8 +570,6 @@ export default function Main() {
           display: "flex",
         }}
       >
-        {" "}
-        <div>메인페이지</div>
         <BasicButton>베이직 스타일 버튼</BasicButton>
         <GrayButton>그레이 버튼 스타일</GrayButton>
         <Button>
@@ -650,7 +650,11 @@ export default function Main() {
             ))}
           </RowDragTable.Tbody>
         </RowDragTable>
+      </div>
+      <div>
+        <SearchResult total={100} />
         <Pagination count={25} page={currentPage} onChange={onChange} />
+        <TableSelect total={100} />
       </div>
     </>
   );
