@@ -3,6 +3,8 @@ import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
 import { useCheckboxSelection } from "../../hooks/useCheckboxSelection";
 import RowDragTable from "../../components/Table/RowDragTable";
 import { useState } from "react";
+import { Pagination } from "../../components/Pagination";
+import { usePagination } from "../../hooks/usePagination";
 
 interface Data {
   id: string;
@@ -555,6 +557,10 @@ export default function Main() {
     },
   ]); // 드래그 후 데이터를 업데이트할 상태
 
+  // usePagination에
+  const { currentPage, onChange } = usePagination();
+  console.log(currentPage);
+
   return (
     <>
       <div
@@ -644,6 +650,7 @@ export default function Main() {
             ))}
           </RowDragTable.Tbody>
         </RowDragTable>
+        <Pagination count={25} page={currentPage} onChange={onChange} />
       </div>
     </>
   );

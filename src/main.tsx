@@ -6,8 +6,8 @@ import { StyledEngineProvider } from "@mui/material";
 
 createRoot(document.getElementById("root")!).render(
   <StyledEngineProvider injectFirst>
-    <StrictMode>
-      <App />
-    </StrictMode>
+    {/* <StrictMode> */}
+    <App />
+    {/* </StrictMode> */}
   </StyledEngineProvider>
 );
