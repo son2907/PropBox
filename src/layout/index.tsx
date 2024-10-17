@@ -18,6 +18,7 @@ const PageContainer = styled(Box)(({ theme }) => ({
 // ContentArea 컴포넌트: 컨텐츠와 앱바를 포함하는 메인 영역
 const PageArea = styled(Box)(({ theme }) => ({
   display: "flex",
+  width: "100%",
   height: "100%",
   minHeight: 0,
   maxHeight: "100%",
