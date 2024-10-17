@@ -8,6 +8,7 @@ import Menu from "../../assets/svg/hambuger.svg";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import AllInboxIcon from "@mui/icons-material/AllInbox";
 import { StarBorder } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 // 예시 데이터
 const menuList: MenuListType = [
   {
@@ -74,6 +75,7 @@ const LogoArea = styled(Box)(() => ({
   alignItems: "center",
   gap: 10,
   padding: "0 10px 0 10px",
+  cursor: "pointer",
 }));
 
 export default function Sidebar() {
@@ -84,10 +86,14 @@ export default function Sidebar() {
   const onClick = () => {
     setFold(!fold);
   };
+  const navigate = useNavigate();
+  const moveMain = () => {
+    navigate("/");
+  };
 
   return (
     <SideMenu fold={fold}>
-      <LogoArea>
+      <LogoArea onClick={moveMain}>
         {fold ? (
           <></>
         ) : (
