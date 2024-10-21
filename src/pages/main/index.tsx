@@ -2,7 +2,7 @@ import Button, { BasicButton, GrayButton } from "../../components/Button";
 import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
 import { useCheckboxSelection } from "../../hooks/useCheckboxSelection";
 import RowDragTable from "../../components/Table/RowDragTable";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Pagination } from "../../components/Pagination";
 import { usePagination } from "../../hooks/usePagination";
 import TableSelect from "../../components/Select/TableSelect";
@@ -10,6 +10,7 @@ import SearchResult from "../../components/Table/SearchResult";
 import SelectorTabs from "../../components/Tab/SelectorTabs";
 import TabPanel from "../../components/Tab/TabPanner";
 import BasicTable from "../../components/Table/BasicTable";
+import CheckboxTable from "../../components/Table/CheckboxTable";
 
 interface Data {
   id: string;
@@ -19,6 +20,13 @@ interface Data {
 export default function Main() {
   // 커스텀 훅 사용
   const { selectedRows, toggleRowSelection } = useCheckboxSelection();
+  const {
+    selectedRows: selectedRows2,
+    toggleRowSelection: toggleRowSelection2,
+  } = useCheckboxSelection();
+
+  console.log(selectedRows2);
+
   const [data, setData] = useState<Data[]>([
     {
       id: "1",
@@ -562,6 +570,17 @@ export default function Main() {
     },
   ]); // 드래그 후 데이터를 업데이트할 상태
 
+  // useRef를 사용하여 여러 input 요소를 관리
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const handleGetValues = () => {
+    inputRefs.current.forEach((input, index) => {
+      if (input) {
+        console.log(`Input ${index} value:`, input.value);
+      }
+    });
+  };
+
   const [value, setValue] = useState(0); // 탭 값
   console.log(value);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -570,7 +589,6 @@ export default function Main() {
 
   // usePagination에
   const { currentPage, onChange } = usePagination();
-  // console.log(currentPage);
 
   return (
     <>
@@ -601,6 +619,44 @@ export default function Main() {
           <AccessAlarmIcon /> 아이콘 버튼
         </Button>
       </div>
+      <div
+        style={{
+          height: "100%",
+          width: "100%",
+          overflow: "auto",
+        }}
+      >
+        <CheckboxTable
+          data={data}
+          checkbox={true}
+          selectedRows={selectedRows2}
+          toggleRowSelection={toggleRowSelection2}
+        >
+          <CheckboxTable.Theader>헤더하나</CheckboxTable.Theader>
+          <CheckboxTable.Theader>헤더둘</CheckboxTable.Theader>
+          <CheckboxTable.Tbody>
+            {data.map((item, index) => (
+              <CheckboxTable.Tr key={item.id} id={item.id}>
+                <CheckboxTable.Td>
+                  <input
+                    type="checkbox"
+                    checked={selectedRows2.includes(item.id)}
+                    onChange={() => toggleRowSelection2(item.id)}
+                  />
+                </CheckboxTable.Td>
+                <CheckboxTable.Td>
+                  <input
+                    defaultValue={item.id}
+                    ref={(el) => (inputRefs.current[index] = el)} // ref 배열에 각 input 연결
+                  />
+                </CheckboxTable.Td>
+                <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
+              </CheckboxTable.Tr>
+            ))}
+          </CheckboxTable.Tbody>
+        </CheckboxTable>
+      </div>
+      <button onClick={handleGetValues}>Get All Input Values</button>
       <div
         style={{
           height: "100%",

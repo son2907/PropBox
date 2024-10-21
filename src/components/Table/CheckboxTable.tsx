@@ -2,6 +2,9 @@ import React, { ReactNode, useState } from "react";
 
 interface TableProps {
   data: { id: string; [key: string]: any }[]; // Table data
+  checkbox: boolean;
+  selectedRows: string[];
+  toggleRowSelection: (id: string) => void;
   children: ReactNode;
 }
 
@@ -31,7 +34,6 @@ const Tr: React.FC<TableItemProps> = ({ children, ...rest }) => {
       }}
       style={{
         backgroundColor: click ? "#F1F1F1" : "white",
-        border: click ? "2px solid #6AA5FE" : "none",
       }}
       {...rest}
     >
@@ -40,7 +42,7 @@ const Tr: React.FC<TableItemProps> = ({ children, ...rest }) => {
   );
 };
 
-const Tbody: React.FC<{ children: ReactNode }> = ({ children, ...rest }) => {
+const Tbody: React.FC<TableItemProps> = ({ children, ...rest }) => {
   return <tbody {...rest}>{children}</tbody>;
 };
 
@@ -65,13 +67,29 @@ const EmptyTable = () => {
   );
 };
 
-const BasicTable: React.FC<TableProps> & {
+const CheckboxTable: React.FC<TableProps> & {
   Theader: typeof Theader;
   Tr: typeof Tr;
   Td: typeof Td;
   Tbody: typeof Tbody;
+
   EmptyTable: typeof EmptyTable;
-} = ({ data, children }) => {
+} = ({ data, checkbox = true, selectedRows, toggleRowSelection, children }) => {
+  // 전체 선택 상태 관리
+  const allSelected = selectedRows.length === data.length;
+
+  // 전체 선택/해제 핸들러
+  const handleSelectAllChange = () => {
+    data.forEach((row) => {
+      const isSelected = selectedRows.includes(row.id);
+      if (allSelected && isSelected) {
+        toggleRowSelection(row.id); // 이미 선택된 행 해제
+      } else if (!allSelected && !isSelected) {
+        toggleRowSelection(row.id); // 선택되지 않은 행 선택
+      }
+    });
+  };
+
   return (
     <>
       {data.length === 0 ? (
@@ -80,9 +98,19 @@ const BasicTable: React.FC<TableProps> & {
         <table className="table-auto w-full border-gray-300 border-collapse">
           <thead>
             <tr>
+              {checkbox && (
+                <Theader>
+                  <input
+                    type="checkbox"
+                    checked={allSelected}
+                    onChange={handleSelectAllChange}
+                  />
+                </Theader>
+              )}
               {React.Children.map(children, (child) => {
                 if (
-                  (child as React.ReactElement<any>).type === BasicTable.Theader
+                  (child as React.ReactElement<any>).type ===
+                  CheckboxTable.Theader
                 ) {
                   return child; // Theader 컴포넌트를 렌더링
                 }
@@ -91,7 +119,9 @@ const BasicTable: React.FC<TableProps> & {
             </tr>
           </thead>
           {React.Children.map(children, (child) => {
-            if ((child as React.ReactElement<any>).type === BasicTable.Tbody) {
+            if (
+              (child as React.ReactElement<any>).type === CheckboxTable.Tbody
+            ) {
               return child; // Tbody를 그대로 렌더링
             }
             return null; // Tbody가 아닌 경우 무시
@@ -102,10 +132,10 @@ const BasicTable: React.FC<TableProps> & {
   );
 };
 
-BasicTable.EmptyTable = EmptyTable;
-BasicTable.Theader = Theader;
-BasicTable.Tr = Tr;
-BasicTable.Td = Td;
-BasicTable.Tbody = Tbody;
+CheckboxTable.EmptyTable = EmptyTable;
+CheckboxTable.Theader = Theader;
+CheckboxTable.Tr = Tr;
+CheckboxTable.Td = Td;
+CheckboxTable.Tbody = Tbody;
 
-export default BasicTable;
+export default CheckboxTable;
