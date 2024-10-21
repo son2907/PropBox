@@ -9,6 +9,7 @@ import TableSelect from "../../components/Select/TableSelect";
 import SearchResult from "../../components/Table/SearchResult";
 import SelectorTabs from "../../components/Tab/SelectorTabs";
 import TabPanel from "../../components/Tab/TabPanner";
+import BasicTable from "../../components/Table/BasicTable";
 
 interface Data {
   id: string;
@@ -600,7 +601,44 @@ export default function Main() {
           <AccessAlarmIcon /> 아이콘 버튼
         </Button>
       </div>
-
+      <div
+        style={{
+          height: "100%",
+          width: "100%",
+          overflow: "auto",
+        }}
+      >
+        <BasicTable data={data}>
+          <BasicTable.Theader>고객정보</BasicTable.Theader>
+          <BasicTable.Theader>고객정보</BasicTable.Theader>
+          <BasicTable.Theader>고객정보</BasicTable.Theader>
+          <BasicTable.Theader>고객정보</BasicTable.Theader>
+          <BasicTable.Theader>고객정보</BasicTable.Theader>
+          <BasicTable.Theader>고객정보</BasicTable.Theader>
+          <BasicTable.Theader>고객정보</BasicTable.Theader>
+          <BasicTable.Theader>고객정보</BasicTable.Theader>
+          <BasicTable.Theader>고객정보</BasicTable.Theader>
+          <BasicTable.Theader>고객정보</BasicTable.Theader>
+          <BasicTable.Tbody>
+            {data.map((item, index) => {
+              return (
+                <BasicTable.Tr key={index}>
+                  <BasicTable.Td>{item.id}</BasicTable.Td>
+                  <BasicTable.Td>{item.id}</BasicTable.Td>
+                  <BasicTable.Td>{item.id}</BasicTable.Td>
+                  <BasicTable.Td>{item.id}</BasicTable.Td>
+                  <BasicTable.Td>{item.id}</BasicTable.Td>
+                  <BasicTable.Td>{item.id}</BasicTable.Td>
+                  <BasicTable.Td>{item.id}</BasicTable.Td>
+                  <BasicTable.Td>{item.id}</BasicTable.Td>
+                  <BasicTable.Td>{item.id}</BasicTable.Td>
+                  <BasicTable.Td>{item.id}</BasicTable.Td>
+                </BasicTable.Tr>
+              );
+            })}
+          </BasicTable.Tbody>
+        </BasicTable>
+      </div>
       <div
         style={{
           height: "100%",
