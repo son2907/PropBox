@@ -657,6 +657,22 @@ export default function Main() {
         </CheckboxTable>
       </div>
       <button onClick={handleGetValues}>Get All Input Values</button>
+
+      <div>
+        {" "}
+        <BasicTable data={data}>
+          <BasicTable.Theader>세부항목</BasicTable.Theader>
+          <BasicTable.Tbody>
+            {[1, 2, 3, 4, 5].map((item, index) => {
+              return (
+                <BasicTable.Tr>
+                  <BasicTable.Td>데이터만</BasicTable.Td>
+                </BasicTable.Tr>
+              );
+            })}
+          </BasicTable.Tbody>
+        </BasicTable>
+      </div>
       <div
         style={{
           height: "100%",
