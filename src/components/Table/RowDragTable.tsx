@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
 import {
   DndContext,
   closestCenter,
@@ -32,18 +32,48 @@ const Theader: React.FC<{ children: ReactNode }> = ({ children }) => {
   );
 };
 
+// const SortableRow = ({ id, children }: { id: string; children: ReactNode }) => {
+//   const { attributes, listeners, setNodeRef, transform, transition } =
+//     useSortable({ id });
+
+//   const style = {
+//     transform: CSS.Transform.toString(transform),
+//     transition,
+//   };
+
+//   return (
+//     <tr ref={setNodeRef} style={style} {...attributes} {...listeners}>
+//       <td style={{ cursor: "grab" }}>=</td>
+//       {children}
+//     </tr>
+//   );
+// };
+
+// ----------- = 부분만 드래그 할 수 있게 하는 코드 -----------
 const SortableRow = ({ id, children }: { id: string; children: ReactNode }) => {
+  const [selected, setSelected] = useState(false);
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    backgroundColor: selected ? "#F4F6FA" : "white", // 선택된 상태에 따른 배경색 설정
   };
 
   return (
-    <tr ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <td style={{ cursor: "grab" }}>=</td>
+    <tr
+      onClick={() => {
+        setSelected(!selected);
+      }}
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+    >
+      {/* 이 <td>만 드래그 가능하게 listeners를 적용 */}
+      <td style={{ cursor: "grab" }} {...listeners}>
+        =
+      </td>
       {children}
     </tr>
   );

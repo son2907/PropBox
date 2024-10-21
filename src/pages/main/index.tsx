@@ -7,6 +7,8 @@ import { Pagination } from "../../components/Pagination";
 import { usePagination } from "../../hooks/usePagination";
 import TableSelect from "../../components/Select/TableSelect";
 import SearchResult from "../../components/Table/SearchResult";
+import SelectorTabs from "../../components/Tab/SelectorTabs";
+import TabPanel from "../../components/Tab/TabPanner";
 
 interface Data {
   id: string;
@@ -559,9 +561,15 @@ export default function Main() {
     },
   ]); // 드래그 후 데이터를 업데이트할 상태
 
+  const [value, setValue] = useState(0); // 탭 값
+  console.log(value);
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
   // usePagination에
   const { currentPage, onChange } = usePagination();
-  console.log(currentPage);
+  // console.log(currentPage);
 
   return (
     <>
@@ -570,6 +578,22 @@ export default function Main() {
           display: "flex",
         }}
       >
+        <SelectorTabs value={value} handleChange={handleChange}>
+          <SelectorTabs.Tab label="전송하나" disableRipple />
+          <SelectorTabs.Tab label="전송둘" disableRipple />
+          <SelectorTabs.Tab label="전송셋" disableRipple />
+        </SelectorTabs>
+
+        <TabPanel value={value} index={0}>
+          전송하나
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          전송둘
+        </TabPanel>
+        <TabPanel value={value} index={2}>
+          전송셋
+        </TabPanel>
+
         <BasicButton>베이직 스타일 버튼</BasicButton>
         <GrayButton>그레이 버튼 스타일</GrayButton>
         <Button>
