@@ -11,6 +11,8 @@ import SelectorTabs from "../../components/Tab/SelectorTabs";
 import TabPanel from "../../components/Tab/TabPanner";
 import BasicTable from "../../components/Table/BasicTable";
 import CheckboxTable from "../../components/Table/CheckboxTable";
+import ToggleButton from "../../components/Button/ToggleButton";
+import useToggleButtton from "../../hooks/useToggleButton";
 
 interface Data {
   id: string;
@@ -573,6 +575,10 @@ export default function Main() {
   // useRef를 사용하여 여러 input 요소를 관리
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
+  const { toggle, onChange: setToggle } = useToggleButtton({
+    defaultValue: true,
+  });
+
   const handleGetValues = () => {
     inputRefs.current.forEach((input, index) => {
       if (input) {
@@ -597,6 +603,7 @@ export default function Main() {
           display: "flex",
         }}
       >
+        <ToggleButton checked={toggle} onChange={setToggle} label="라벨" />
         <SelectorTabs value={value} handleChange={handleChange}>
           <SelectorTabs.Tab label="전송하나" disableRipple />
           <SelectorTabs.Tab label="전송둘" disableRipple />
