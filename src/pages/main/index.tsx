@@ -22,6 +22,7 @@ import PasswordInput from "../../components/Input/PasswordInput";
 import TextArea from "../../components/TextArea/TextArea";
 import TransferList from "../../components/List/TransferList";
 import { useTransferList } from "../../hooks/useTransferList";
+import CustomAlert from "../../components/Alert/CustomAlert";
 
 interface Data {
   id: string;
@@ -621,6 +622,8 @@ export default function Main() {
   const inputValue = useRef<HTMLInputElement | null>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null); // ref 생성
 
+  const [openAlert, setOpenAlert] = useState<boolean>(false);
+
   return (
     <>
       <div
@@ -689,6 +692,34 @@ export default function Main() {
           right={right}
           {...other}
         />
+      </div>
+      <div>
+        <button
+          onClick={() => {
+            setOpenAlert(true);
+          }}
+        >
+          얼럿 띄우기
+        </button>
+        {openAlert && (
+          <CustomAlert>
+            <CustomAlert.Title>전화상담</CustomAlert.Title>
+            <CustomAlert.Content>
+              상담사가 포함되지 않았습니다. <br /> 로그인된 아이디로
+              저장하시겠습니까?
+            </CustomAlert.Content>
+            <CustomAlert.ButtonZone>
+              <BasicButton>예</BasicButton>
+              <GrayButton
+                onClick={() => {
+                  setOpenAlert(false);
+                }}
+              >
+                닫기
+              </GrayButton>
+            </CustomAlert.ButtonZone>
+          </CustomAlert>
+        )}
       </div>
 
       {/*  
