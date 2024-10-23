@@ -1,9 +1,21 @@
-import { Input, OutlinedInput } from "@mui/material";
+import { forwardRef } from "react";
+import { OutlinedInput, OutlinedInputProps } from "@mui/material";
 
-interface Inputprops {
-  value: string;
+interface InputProps extends OutlinedInputProps {
   placeholder: string;
 }
-export default function BasicInput({ value, placeholder }: Inputprops) {
-  return <OutlinedInput id="outlined-basic" placeholder={placeholder} />;
-}
+
+// forwardRef를 사용하여 BasicInput 컴포넌트를 정의합니다.
+const BasicInput = forwardRef<HTMLInputElement, InputProps>(
+  ({ placeholder, ...rest }, ref) => {
+    return (
+      <OutlinedInput
+        placeholder={placeholder}
+        inputRef={ref} // ref를 OutlinedInput에 전달합니다.
+        {...rest} // 나머지 props를 전달합니다.
+      />
+    );
+  }
+);
+
+export default BasicInput;
