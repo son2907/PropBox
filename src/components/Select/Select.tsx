@@ -26,12 +26,18 @@ export default function PSelect({
   return (
     <FormControl fullWidth sx={{ m: 1, width: "max-content" }} size="small">
       <InputLabel
+        shrink={!!value}
+        style={{ display: value ? "none" : "block" }}
         id="demo-select-small-label"
-        sx={{ backgroundColor: "white" }}
       >
         {text}
       </InputLabel>
-      <Select {...rest} value={value} onChange={handleChange}>
+      <Select
+        {...rest}
+        value={value}
+        onChange={handleChange}
+        placeholder="어쩌고"
+      >
         {selectData.map((item) => (
           <MenuItem key={item.value} value={item.value}>
             {item.data}

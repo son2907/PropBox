@@ -22,6 +22,9 @@ import PasswordInput from "../../components/Input/PasswordInput";
 import TextArea from "../../components/TextArea/TextArea";
 import TransferList from "../../components/List/TransferList";
 import { useTransferList } from "../../hooks/useTransferList";
+import CustomAlert from "../../components/Alert/CustomAlert";
+import useAlert from "../../hooks/useAlert";
+import BasicAlert from "../../components/Alert/BasicAlert";
 
 interface Data {
   id: string;
@@ -621,6 +624,8 @@ export default function Main() {
   const inputValue = useRef<HTMLInputElement | null>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null); // ref 생성
 
+  const { openAlert, onOpenAlert, onCloseAlert } = useAlert();
+
   return (
     <>
       <div
@@ -628,6 +633,13 @@ export default function Main() {
           display: "flex",
         }}
       >
+        <button
+          onClick={() => {
+            alert("엥");
+          }}
+        >
+          테스트
+        </button>
         <ToggleButton checked={toggle} onChange={setToggle} label="라벨" />
         <CheckboxList data={checkboxListData} refArray={inputRefs2.current} />
         <button onClick={getInputValues2}>버튼</button>
@@ -689,6 +701,31 @@ export default function Main() {
           right={right}
           {...other}
         />
+      </div>
+      <div>
+        <button onClick={onOpenAlert}>얼럿 띄우기</button>
+        {/* {openAlert && (
+          <CustomAlert onClose={onCloseAlert}>
+            <CustomAlert.Title>전화상담</CustomAlert.Title>
+            <CustomAlert.Content>
+              상담사가 포함되지 않았습니다. <br /> 로그인된 아이디로
+              저장하시겠습니까?
+            </CustomAlert.Content>
+            <CustomAlert.ButtonZone>
+              <BasicButton>예</BasicButton>
+              <GrayButton onClick={onCloseAlert}>닫기</GrayButton>
+            </CustomAlert.ButtonZone>
+          </CustomAlert>
+        )} */}
+        {openAlert && (
+          <BasicAlert>
+            <BasicAlert.Content>선택된 항목이 없습니다.</BasicAlert.Content>
+            <BasicAlert.ButtonZone>
+              <BasicButton>확인</BasicButton>
+              <GrayButton onClick={onCloseAlert}>취소</GrayButton>
+            </BasicAlert.ButtonZone>
+          </BasicAlert>
+        )}
       </div>
 
       {/*  
