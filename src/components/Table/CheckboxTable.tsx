@@ -24,7 +24,7 @@ const Td: React.FC<TableItemProps> = ({ children, ...rest }) => {
   return <td {...rest}>{children}</td>;
 };
 
-const Tr: React.FC<TableItemProps> = ({ children, ...rest }) => {
+const Tr: React.FC<TableItemProps> = React.memo(({ children, ...rest }) => {
   const [click, setClick] = useState(false);
 
   return (
@@ -40,7 +40,7 @@ const Tr: React.FC<TableItemProps> = ({ children, ...rest }) => {
       {children}
     </tr>
   );
-};
+});
 
 const Tbody: React.FC<TableItemProps> = ({ children, ...rest }) => {
   return <tbody {...rest}>{children}</tbody>;
@@ -66,6 +66,11 @@ const EmptyTable = () => {
     </table>
   );
 };
+
+const Checkbox: React.FC<{ checked: boolean; onChange: () => void }> =
+  React.memo(({ checked, onChange }) => {
+    return <input type="checkbox" checked={checked} onChange={onChange} />;
+  });
 
 const CheckboxTable: React.FC<TableProps> & {
   Theader: typeof Theader;
@@ -100,8 +105,7 @@ const CheckboxTable: React.FC<TableProps> & {
             <tr>
               {checkbox && (
                 <Theader>
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     checked={allSelected}
                     onChange={handleSelectAllChange}
                   />

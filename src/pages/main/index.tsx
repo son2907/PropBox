@@ -20,6 +20,8 @@ import SearchInput from "../../components/Input/SearchInput";
 import DeleteBtnInput from "../../components/Input/DeleteBtnInput";
 import PasswordInput from "../../components/Input/PasswordInput";
 import TextArea from "../../components/TextArea/TextArea";
+import TransferList from "../../components/List/TransferList";
+import { useTransferList } from "../../hooks/useTransferList";
 
 interface Data {
   id: string;
@@ -582,6 +584,19 @@ export default function Main() {
   const { toggle, onChange: setToggle } = useToggleButtton({
     defaultValue: true,
   });
+  const initialLeft = [
+    { id: 1, label: "Item 1" },
+    { id: 2, label: "Item 2" },
+    { id: 3, label: "Item 3" },
+    { id: 4, label: "Item 4" },
+  ];
+
+  const initialRight = [
+    { id: 5, label: "Item 5" },
+    { id: 6, label: "Item 6" },
+  ];
+
+  const { left, right, ...other } = useTransferList(initialLeft, initialRight);
 
   const { inputRefs, getInputValues } = useMultiInputValue();
   const { inputRefs: inputRefs2, getInputValues: getInputValues2 } =
@@ -651,7 +666,7 @@ export default function Main() {
         <SearchInput placeholder="검색" />
         <DeleteBtnInput />
         <PasswordInput ref={inputValue} />
-        <div style={{ width: "100%", height: "150px" }}>
+        <div style={{ width: "100%", height: "50px" }}>
           <TextArea
             placeholder="내용을 입력하세요"
             resize={"none"}
@@ -666,6 +681,17 @@ export default function Main() {
           텍스트 에이리어 값 가져옴
         </button>
       </div>
+      <div>
+        <TransferList
+          leftTitle="왼쪽타이틀"
+          rightTitle="오른쪽타이틀"
+          left={left}
+          right={right}
+          {...other}
+        />
+      </div>
+
+      {/*  
       <div
         style={{
           height: "100%",
@@ -837,6 +863,7 @@ export default function Main() {
         <Pagination count={25} page={currentPage} onChange={onChangePage} />
         <TableSelect total={100} />
       </div>
+     */}
     </>
   );
 }
