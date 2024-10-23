@@ -2,7 +2,7 @@ import Button, { BasicButton, GrayButton } from "../../components/Button";
 import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
 import { useCheckboxSelection } from "../../hooks/useCheckboxSelection";
 import RowDragTable from "../../components/Table/RowDragTable";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Pagination } from "../../components/Pagination";
 import { usePagination } from "../../hooks/usePagination";
 import TableSelect from "../../components/Select/TableSelect";
@@ -11,6 +11,10 @@ import SelectorTabs from "../../components/Tab/SelectorTabs";
 import TabPanel from "../../components/Tab/TabPanner";
 import BasicTable from "../../components/Table/BasicTable";
 import CheckboxTable from "../../components/Table/CheckboxTable";
+import ToggleButton from "../../components/Button/ToggleButton";
+import useToggleButtton from "../../hooks/useToggleButton";
+import CheckboxList from "../../components/List/CheckboxList";
+import useMultiInputValue from "../../hooks/useMultiInputValue";
 
 interface Data {
   id: string;
@@ -570,25 +574,29 @@ export default function Main() {
     },
   ]); // 드래그 후 데이터를 업데이트할 상태
 
-  // useRef를 사용하여 여러 input 요소를 관리
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const { toggle, onChange: setToggle } = useToggleButtton({
+    defaultValue: true,
+  });
 
-  const handleGetValues = () => {
-    inputRefs.current.forEach((input, index) => {
-      if (input) {
-        console.log(`Input ${index} value:`, input.value);
-      }
-    });
-  };
+  const { inputRefs, getInputValues } = useMultiInputValue();
+  const { inputRefs: inputRefs2, getInputValues: getInputValues2 } =
+    useMultiInputValue();
+
+  console.log("인풋 배열:", inputRefs2);
 
   const [value, setValue] = useState(0); // 탭 값
-  console.log(value);
+
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
+  const checkboxListData = [
+    { id: "id", label: "아이디" },
+    { id: "age", label: "나이" },
+  ];
+
   // usePagination에
-  const { currentPage, onChange } = usePagination();
+  const { currentPage, onChangePage } = usePagination();
 
   return (
     <>
@@ -597,6 +605,10 @@ export default function Main() {
           display: "flex",
         }}
       >
+        <ToggleButton checked={toggle} onChange={setToggle} label="라벨" />
+        <CheckboxList data={checkboxListData} refArray={inputRefs2.current} />
+        <button onClick={getInputValues2}>버튼</button>
+
         <SelectorTabs value={value} handleChange={handleChange}>
           <SelectorTabs.Tab label="전송하나" disableRipple />
           <SelectorTabs.Tab label="전송둘" disableRipple />
@@ -656,7 +668,7 @@ export default function Main() {
           </CheckboxTable.Tbody>
         </CheckboxTable>
       </div>
-      <button onClick={handleGetValues}>Get All Input Values</button>
+      <button onClick={getInputValues}>Get All Input Values</button>
 
       <div>
         {" "}
@@ -787,7 +799,7 @@ export default function Main() {
       </div>
       <div>
         <SearchResult total={100} />
-        <Pagination count={25} page={currentPage} onChange={onChange} />
+        <Pagination count={25} page={currentPage} onChange={onChangePage} />
         <TableSelect total={100} />
       </div>
     </>
