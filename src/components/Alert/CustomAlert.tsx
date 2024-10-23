@@ -1,9 +1,16 @@
 import React, { ReactNode } from "react";
 import ReactDOM from "react-dom";
 import { renderChild } from "../../utils/renderChild";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close"; // Close 아이콘
 
-export default function CustomAlert({ children }: { children: ReactNode }) {
+export default function CustomAlert({
+  children,
+  onClose,
+}: {
+  children: ReactNode;
+  onClose: () => void;
+}) {
   return ReactDOM.createPortal(
     <Box
       sx={{
@@ -29,9 +36,22 @@ export default function CustomAlert({ children }: { children: ReactNode }) {
           zIndex: 1300, // MUI의 기본 모달 z-index
         }}
       >
-        <Box>{renderChild(children, CustomAlert.Title)}</Box>
-        <Box>{renderChild(children, CustomAlert.Content)}</Box>
-        <Box>{renderChild(children, CustomAlert.ButtonZone)}</Box>
+        <Box sx={{ position: "relative" }}>
+          <IconButton
+            sx={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              backgroundColor: "#E5E5E5",
+            }} // 오른쪽 위에 위치
+            onClick={onClose} // 닫기 버튼 클릭 시 onClose 호출
+          >
+            <CloseIcon />
+          </IconButton>
+          {renderChild(children, CustomAlert.Title)}
+          {renderChild(children, CustomAlert.Content)}
+          {renderChild(children, CustomAlert.ButtonZone)}
+        </Box>
       </Box>
     </Box>,
     document.getElementById("alert")!
