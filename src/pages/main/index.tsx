@@ -2,7 +2,7 @@ import Button, { BasicButton, GrayButton } from "../../components/Button";
 import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
 import { useCheckboxSelection } from "../../hooks/useCheckboxSelection";
 import RowDragTable from "../../components/Table/RowDragTable";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Pagination } from "../../components/Pagination";
 import { usePagination } from "../../hooks/usePagination";
 import TableSelect from "../../components/Select/TableSelect";
@@ -15,6 +15,11 @@ import ToggleButton from "../../components/Button/ToggleButton";
 import useToggleButtton from "../../hooks/useToggleButton";
 import CheckboxList from "../../components/List/CheckboxList";
 import useMultiInputValue from "../../hooks/useMultiInputValue";
+import BasicInput from "../../components/Input/BasicInput";
+import SearchInput from "../../components/Input/SearchInput";
+import DeleteBtnInput from "../../components/Input/DeleteBtnInput";
+import PasswordInput from "../../components/Input/PasswordInput";
+import TextArea from "../../components/TextArea/TextArea";
 
 interface Data {
   id: string;
@@ -598,6 +603,9 @@ export default function Main() {
   // usePagination에
   const { currentPage, onChangePage } = usePagination();
 
+  const inputValue = useRef<HTMLInputElement | null>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null); // ref 생성
+
   return (
     <>
       <div
@@ -630,6 +638,33 @@ export default function Main() {
         <Button>
           <AccessAlarmIcon /> 아이콘 버튼
         </Button>
+      </div>
+      <div>
+        <BasicInput placeholder="플레이스홀더" />
+        <button
+          onClick={() => {
+            console.log("값:", inputValue.current?.value);
+          }}
+        >
+          인풋 값 가져옴
+        </button>
+        <SearchInput placeholder="검색" />
+        <DeleteBtnInput />
+        <PasswordInput ref={inputValue} />
+        <div style={{ width: "100%", height: "150px" }}>
+          <TextArea
+            placeholder="내용을 입력하세요"
+            resize={"none"}
+            ref={textAreaRef}
+          />
+        </div>
+        <button
+          onClick={() => {
+            console.log(textAreaRef.current?.value);
+          }}
+        >
+          텍스트 에이리어 값 가져옴
+        </button>
       </div>
       <div
         style={{
