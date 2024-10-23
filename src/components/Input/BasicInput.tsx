@@ -10,6 +10,7 @@ const BasicInput = forwardRef<HTMLInputElement, InputProps>(
   ({ placeholder, ...rest }, ref) => {
     return (
       <OutlinedInput
+        size="small"
         placeholder={placeholder}
         inputRef={ref} // ref를 OutlinedInput에 전달합니다.
         {...rest} // 나머지 props를 전달합니다.

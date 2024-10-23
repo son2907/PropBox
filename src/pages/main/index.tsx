@@ -19,6 +19,7 @@ import BasicInput from "../../components/Input/BasicInput";
 import SearchInput from "../../components/Input/SearchInput";
 import DeleteBtnInput from "../../components/Input/DeleteBtnInput";
 import PasswordInput from "../../components/Input/PasswordInput";
+import TextArea from "../../components/TextArea/TextArea";
 
 interface Data {
   id: string;
@@ -648,6 +649,9 @@ export default function Main() {
         <SearchInput placeholder="검색" />
         <DeleteBtnInput />
         <PasswordInput ref={inputValue} />
+        <div style={{ width: "100%", height: "150px" }}>
+          <TextArea placeholder="내용을 입력하세요" resize={"none"} />
+        </div>
       </div>
       <div
         style={{

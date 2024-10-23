@@ -15,6 +15,7 @@ const SearchInput = forwardRef<HTMLInputElement, InputProps>(
         <OutlinedInput
           placeholder={placeholder}
           inputRef={ref} // ref를 OutlinedInput에 전달합니다.
+          size="small"
           endAdornment={<img src={SearchIcon} alt="search-icon" />}
           {...rest} // 나머지 props를 전달합니다.
         />

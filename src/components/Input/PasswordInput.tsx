@@ -36,6 +36,7 @@ const PasswordInput = forwardRef<HTMLInputElement, InputProps>(
         type={showPassword ? "text" : "password"}
         placeholder={placeholder}
         inputRef={ref}
+        size="small"
         {...rest}
         endAdornment={
           <InputAdornment position="end">

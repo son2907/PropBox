@@ -27,6 +27,7 @@ const DeleteBtnInput = forwardRef<HTMLInputElement, InputProps>(
         <OutlinedInput
           placeholder={placeholder}
           inputRef={ref}
+          size="small"
           endAdornment={
             <InputAdornment position="end">
               <button
