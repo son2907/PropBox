@@ -604,6 +604,8 @@ export default function Main() {
   const { currentPage, onChangePage } = usePagination();
 
   const inputValue = useRef<HTMLInputElement | null>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null); // ref 생성
+
   return (
     <>
       <div
@@ -650,8 +652,19 @@ export default function Main() {
         <DeleteBtnInput />
         <PasswordInput ref={inputValue} />
         <div style={{ width: "100%", height: "150px" }}>
-          <TextArea placeholder="내용을 입력하세요" resize={"none"} />
+          <TextArea
+            placeholder="내용을 입력하세요"
+            resize={"none"}
+            ref={textAreaRef}
+          />
         </div>
+        <button
+          onClick={() => {
+            console.log(textAreaRef.current?.value);
+          }}
+        >
+          텍스트 에이리어 값 가져옴
+        </button>
       </div>
       <div
         style={{
