@@ -704,7 +704,7 @@ export default function Main() {
       </div>
       <div>
         <button onClick={onOpenAlert}>얼럿 띄우기</button>
-        {/* {openAlert && (
+        {openAlert && (
           <CustomAlert onClose={onCloseAlert}>
             <CustomAlert.Title>전화상담</CustomAlert.Title>
             <CustomAlert.Content>
@@ -716,8 +716,8 @@ export default function Main() {
               <GrayButton onClick={onCloseAlert}>닫기</GrayButton>
             </CustomAlert.ButtonZone>
           </CustomAlert>
-        )} */}
-        {openAlert && (
+        )}
+        {/* {openAlert && (
           <BasicAlert>
             <BasicAlert.Content>선택된 항목이 없습니다.</BasicAlert.Content>
             <BasicAlert.ButtonZone>
@@ -725,7 +725,7 @@ export default function Main() {
               <GrayButton onClick={onCloseAlert}>취소</GrayButton>
             </BasicAlert.ButtonZone>
           </BasicAlert>
-        )}
+        )} */}
       </div>
 
       {/*  

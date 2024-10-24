@@ -12,9 +12,12 @@ interface TableItemProps {
   children: ReactNode;
   [property: string]: any; // ...rest를 받기 위함
 }
-const Theader: React.FC<TableItemProps> = ({ children }) => {
+const Theader: React.FC<TableItemProps> = ({ children, ...rest }) => {
   return (
-    <th className="border-solid bg-gray-200 border border-gray-300 border-b-0 border-t-0 last:border-0 text-left whitespace-nowrap">
+    <th
+      {...rest}
+      className="border-solid bg-gray-200 border border-gray-300 border-b-0 border-t-0 last:border-0 text-left whitespace-nowrap"
+    >
       {children}
     </th>
   );
