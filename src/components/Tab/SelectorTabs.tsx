@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
 import { Tabs, Tab, Box } from "@mui/material";
 import { styled } from "@mui/system";
+import { renderChild } from "../../utils/renderChild";
 
 const StyledTabs = styled(Tabs)({
   backgroundColor: "#f5f7fa", // 탭의 기본 배경색
@@ -59,15 +60,7 @@ export default function SelectorTabs({
         TabIndicatorProps={{ style: { display: "none" } }}
       >
         {/* children에서 SelectorTabs.Tab 타입만 필터링하여 렌더링 */}
-        {React.Children.map(children, (child) => {
-          if (
-            React.isValidElement(child) && // 유효한 React 엘리먼트인지 확인
-            (child as React.ReactElement<any>).type === SelectorTabs.Tab
-          ) {
-            return child; // SelectorTabs.Tab 요소만 렌더링
-          }
-          return null; // 다른 타입의 children은 무시
-        })}
+        {renderChild(children, SelectorTabs.Tab)}
         <TabIndicator
           sx={{
             width: `${100 / React.Children.count(children)}%`, // 탭의 수에 따라 너비 조정

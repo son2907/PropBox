@@ -25,6 +25,9 @@ import { useTransferList } from "../../hooks/useTransferList";
 import CustomAlert from "../../components/Alert/CustomAlert";
 import useAlert from "../../hooks/useAlert";
 import BasicAlert from "../../components/Alert/BasicAlert";
+import Toast from "../../components/Toast/Toast";
+import { Box } from "@mui/material";
+import useToast from "../../hooks/useToast";
 
 interface Data {
   id: string;
@@ -626,6 +629,9 @@ export default function Main() {
 
   const { openAlert, onOpenAlert, onCloseAlert } = useAlert();
 
+  const { openToast, toastOpen, toastClose } = useToast();
+  console.log(openToast);
+
   return (
     <>
       <div
@@ -703,6 +709,36 @@ export default function Main() {
         />
       </div>
       <div>
+        <Toast
+          open={openToast}
+          vertical={"bottom"}
+          horizontal={"right"}
+          toastClose={toastClose}
+          duration={3000}
+        >
+          <Toast.Row>
+            <Toast.InfoHeader>헤더</Toast.InfoHeader>
+            <Toast.InfoContent>내용</Toast.InfoContent>
+          </Toast.Row>
+          <Toast.Row>
+            <Toast.InfoHeader>헤더</Toast.InfoHeader>
+            <Toast.InfoContent>
+              길게길게길게길게길게길게길게길게 길게 길게길게 길게 길게 길게 길게
+              길게 길게 길게 길게 길게 길게 길게 길게 길게길게 길게 길게 길게
+              길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게
+              길게 길게 길게 길게 길게 길게 길게길게 길게 길게 길게길게 길게
+              길게
+            </Toast.InfoContent>
+          </Toast.Row>
+        </Toast>
+        <button
+          onClick={() => {
+            toastOpen();
+          }}
+        >
+          토스트 메세지 띄우기
+        </button>
+
         <button onClick={onOpenAlert}>얼럿 띄우기</button>
         {openAlert && (
           <CustomAlert onClose={onCloseAlert}>
