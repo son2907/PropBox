@@ -50,6 +50,7 @@ export default function RangeCalendar() {
             display: "flex",
             justifyContent: "center",
             backgroundColor: "white",
+            border: "none",
           }}
         >
           <button
@@ -60,6 +61,7 @@ export default function RangeCalendar() {
             {"<"}
           </button>
           <select
+            style={{ border: "none", fontSize: "16px" }}
             value={date.getFullYear()}
             onChange={({ target: { value } }) => changeYear(Number(value))}
           >
@@ -74,6 +76,7 @@ export default function RangeCalendar() {
           </select>
 
           <select
+            style={{ border: "none", fontSize: "16px" }}
             value={date.getMonth()}
             onChange={({ target: { value } }) => changeMonth(Number(value))}
           >
