@@ -1,14 +1,22 @@
 import { ko } from "date-fns/locale";
-import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./RangeCalendar.css"; // 스타일 파일 import
 import CustomInput from "./CustomInput";
 
-export default function RangeCalendar() {
-  const [startDate, setStartDate] = useState<Date | undefined>(new Date());
-  const [endDate, setEndDate] = useState<Date | undefined>(new Date());
+interface CalendarProps {
+  startDate: Date;
+  setStartDate: (date: Date) => void;
+  endDate: Date;
+  setEndDate: (date: Date) => void;
+}
 
+export default function RangeCalendar({
+  startDate,
+  setStartDate,
+  endDate,
+  setEndDate,
+}: CalendarProps) {
   // 날짜별 클래스를 설정
   const dayClassName = (date: Date) => {
     if (startDate && endDate) {
@@ -25,7 +33,7 @@ export default function RangeCalendar() {
       startDate={startDate}
       endDate={endDate}
       onChange={(dates) => {
-        const [start, end] = dates as [Date | undefined, Date | undefined];
+        const [start, end] = dates as [Date, Date];
         setStartDate(start);
         setEndDate(end);
       }}

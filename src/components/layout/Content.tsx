@@ -1,6 +1,7 @@
 import { Typography } from "@mui/material";
 import PageTab from "../Tab/PageTab";
 import { useState } from "react";
+import { MdCloseFullscreen } from "react-icons/md";
 
 interface ContentProps {
   children: React.ReactNode;
@@ -14,8 +15,8 @@ export default function Content({ children }: ContentProps) {
   // 현재 열린 메뉴 목록을 zuStatnd로 사용해야 함
   // x버튼을 누르면 tabItem에서 클릭한 url을 받아 tabItem [] 에서 삭제해야 함
   const [tabItem, setTabItem] = useState([
-    { tabName: "탭이름", url: "/" },
-    { tabName: "탭이름2", url: "/test" },
+    { icon: <MdCloseFullscreen />, tabName: "탭이름", url: "/" },
+    { icon: <MdCloseFullscreen />, tabName: "탭이름2", url: "/test" },
   ]);
 
   const onDelete = (url: string) => {
@@ -35,6 +36,7 @@ export default function Content({ children }: ContentProps) {
         {tabItem.map((item, index) => {
           return (
             <PageTab
+              icon={item.icon}
               key={index}
               tabName={item.tabName}
               url={item.url}

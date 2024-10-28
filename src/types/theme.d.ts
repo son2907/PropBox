@@ -22,6 +22,12 @@ declare module "@mui/material/styles" {
       appbarItemTextColor: string;
       appbarBorderColor: string;
     };
+    // 페이지 탭 컬러
+    pageTab: {
+      tabBg: string;
+      selectedTabBg: string;
+      tabIcon: string;
+    };
     modal: {
       modalBg: string;
       modalBorderColor: string;
@@ -59,6 +65,12 @@ declare module "@mui/material/styles" {
       appbarItemColorRed: string;
       appbarItemTextColor: string;
       appbarBorderColor: string;
+    };
+    // 페이지 탭 컬러
+    pageTab: {
+      tabBg: string;
+      selectedTabBg: string;
+      tabIcon: string;
     };
     modal: {
       modalBg: string;

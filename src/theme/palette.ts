@@ -18,6 +18,14 @@ const _palette: PaletteOptions = {
     appbarItemTextColor: "#ffffff",
     appbarBorderColor: "#e5e7eb",
   },
+
+  // 페이지 탭 컬러
+  pageTab: {
+    tabBg: "#F7F9FA",
+    selectedTabBg: "#FFFFFF",
+    tabIcon: "#6AA5FE",
+  },
+
   modal: {
     modalBg: "#37404a",
     modalBorderColor: "#dee2e6",

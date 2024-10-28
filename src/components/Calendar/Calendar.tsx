@@ -1,12 +1,18 @@
 import { ko } from "date-fns/locale";
-import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./RangeCalendar.css"; // 스타일 파일 import
 import CustomInput from "./CustomInput";
 
-export default function Calendar() {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+interface CalendarProps {
+  selectedDate: Date;
+  setSelectedDate: (date: Date) => void;
+}
+export default function Calendar({
+  selectedDate,
+  setSelectedDate,
+}: CalendarProps) {
+  // const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
 
   return (
     <DatePicker

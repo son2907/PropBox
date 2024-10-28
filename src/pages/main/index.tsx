@@ -606,6 +606,10 @@ export default function Main() {
 
   const { left, right, ...other } = useTransferList(initialLeft, initialRight);
 
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [startDate, setStartDate] = useState<Date>(new Date());
+  const [endDate, setEndDate] = useState<Date>(new Date());
+
   const { inputRefs, getInputValues } = useMultiInputValue();
   const { inputRefs: inputRefs2, getInputValues: getInputValues2 } =
     useMultiInputValue();
@@ -702,13 +706,13 @@ export default function Main() {
         </button>
       </div>
       <div>
-        <TransferList
+        {/* <TransferList
           leftTitle="왼쪽타이틀"
           rightTitle="오른쪽타이틀"
           left={left}
           right={right}
           {...other}
-        />
+        /> */}
       </div>
       <div>
         <Toast
@@ -755,8 +759,16 @@ export default function Main() {
             </CustomAlert.ButtonZone>
           </CustomAlert>
         )}
-        <Calendar />
-        <RangeCalendar />
+        <Calendar
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+        />
+        <RangeCalendar
+          startDate={startDate}
+          setStartDate={setStartDate}
+          endDate={endDate}
+          setEndDate={setEndDate}
+        />
         {/* {openAlert && (
           <BasicAlert>
             <BasicAlert.Content>선택된 항목이 없습니다.</BasicAlert.Content>
