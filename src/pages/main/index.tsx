@@ -28,6 +28,8 @@ import BasicAlert from "../../components/Alert/BasicAlert";
 import Toast from "../../components/Toast/Toast";
 import { Box } from "@mui/material";
 import useToast from "../../hooks/useToast";
+import Calendar from "../../components/Calendar/Calendar";
+import RangeCalendar from "../../components/Calendar/RangeCalendar";
 
 interface Data {
   id: string;
@@ -753,6 +755,8 @@ export default function Main() {
             </CustomAlert.ButtonZone>
           </CustomAlert>
         )}
+        <Calendar />
+        <RangeCalendar />
         {/* {openAlert && (
           <BasicAlert>
             <BasicAlert.Content>선택된 항목이 없습니다.</BasicAlert.Content>

@@ -17,15 +17,18 @@
     "@mui/icons-material": "^6.1.1",
     "@mui/material": "^6.0.2",
     "@mui/x-date-pickers": "^7.16.0",
+    "date-fns": "^3.6.0",
     "dayjs": "^1.11.13",
     "notistack": "^3.0.1",
     "react": "^18.3.1",
+    "react-datepicker": "^7.5.0",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
     "@types/react": "^18.3.3",
+    "@types/react-datepicker": "^7.0.0",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.20",
