@@ -17,6 +17,12 @@
   width: 1.93rem !important;
   font-size: 15px;
 }
+
+.react-datepicker__day--selected {
+  background-color: #6aa5fe !important;
+  color: white !important;
+  font-weight: bold !important;
+}
 /* 선택된 아이템 */
 .react-datepicker__day--in-selecting-range:not(
     .react-datepicker__day--in-range,
@@ -24,12 +30,12 @@
     .react-datepicker__quarter-text--in-range,
     .react-datepicker__year-text--in-range
   ) {
-  background-color: #d7e5ff;
+  background-color: #d7e5ff !important;
 }
 
 /* 마우스 오버 중 */
 .react-datepicker__day--keyboard-selected:not([aria-disabled="true"]):hover {
-  background-color: #6aa5fe;
+  background-color: #6aa5fe !important;
 }
 
 /* 마우스 오버중인 마지막 아이템 */
@@ -41,6 +47,9 @@
 /* 선택된 가운데 아이템 */
 .react-datepicker__day--in-range {
   background-color: #d7e5ff !important;
+}
+.react-datepicker__day--in-range:hover {
+  border: none;
 }
 
 /* 선택된 시작일 */

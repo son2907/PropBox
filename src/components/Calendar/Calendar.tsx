@@ -2,6 +2,8 @@ import { ko } from "date-fns/locale";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import "./RangeCalendar.css"; // 스타일 파일 import
+import CustomInput from "./CustomInput";
 
 export default function Calendar() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
@@ -9,6 +11,7 @@ export default function Calendar() {
   return (
     <DatePicker
       locale={ko}
+      customInput={<CustomInput />}
       dateFormat="yyyy.MM.dd" // 날짜 형태
       shouldCloseOnSelect // 날짜를 선택하면 datepicker가 자동으로 닫힘
       minDate={new Date("2000-01-01")} // minDate 이전 날짜 선택 불가
@@ -29,12 +32,19 @@ export default function Calendar() {
             margin: 10,
             display: "flex",
             justifyContent: "center",
+            backgroundColor: "white",
+            border: "none",
           }}
         >
-          <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
+          <button
+            style={{ backgroundColor: "transparent", border: "none" }}
+            onClick={decreaseMonth}
+            disabled={prevMonthButtonDisabled}
+          >
             {"<"}
           </button>
           <select
+            style={{ border: "none", fontSize: "16px" }}
             value={date.getFullYear()}
             onChange={({ target: { value } }) => changeYear(Number(value))}
           >
@@ -49,6 +59,7 @@ export default function Calendar() {
           </select>
 
           <select
+            style={{ border: "none", fontSize: "16px" }}
             value={date.getMonth()}
             onChange={({ target: { value } }) => changeMonth(Number(value))}
           >
@@ -58,7 +69,11 @@ export default function Calendar() {
               </option>
             ))}
           </select>
-          <button onClick={increaseMonth} disabled={nextMonthButtonDisabled}>
+          <button
+            style={{ backgroundColor: "transparent", border: "none" }}
+            onClick={increaseMonth}
+            disabled={nextMonthButtonDisabled}
+          >
             {">"}
           </button>
         </div>

@@ -3,6 +3,7 @@ import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./RangeCalendar.css"; // 스타일 파일 import
+import CustomInput from "./CustomInput";
 
 export default function RangeCalendar() {
   const [startDate, setStartDate] = useState<Date | undefined>(new Date());
@@ -17,10 +18,10 @@ export default function RangeCalendar() {
     }
     return "";
   };
-
   return (
     <DatePicker
       selectsRange
+      customInput={<CustomInput />}
       startDate={startDate}
       endDate={endDate}
       onChange={(dates) => {
