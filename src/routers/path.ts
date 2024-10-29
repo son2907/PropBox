@@ -11,7 +11,7 @@ const PathConstants = {
   Message: {
     Auto: "/message/auto",
     Bulk: "/message/bulk",
-    Declaration: "/message/declartion", // 오타 수정: declartion -> declaration
+    Declaration: "/message/declartion",
     Reject: "/message/reject",
   },
   Customer: {
