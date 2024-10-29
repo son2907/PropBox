@@ -656,7 +656,7 @@ export default function Main() {
         <CheckboxList data={checkboxListData} refArray={inputRefs2.current} />
         <button onClick={getInputValues2}>버튼</button>
 
-        <SelectorTabs value={value} handleChange={handleChange}>
+        {/* <SelectorTabs value={value} handleChange={handleChange}>
           <SelectorTabs.Tab label="전송하나" disableRipple />
           <SelectorTabs.Tab label="전송둘" disableRipple />
           <SelectorTabs.Tab label="전송셋" disableRipple />
@@ -670,7 +670,7 @@ export default function Main() {
         </TabPanel>
         <TabPanel value={value} index={2}>
           전송셋
-        </TabPanel>
+        </TabPanel> */}
 
         <BasicButton>베이직 스타일 버튼</BasicButton>
         <GrayButton>그레이 버튼 스타일</GrayButton>

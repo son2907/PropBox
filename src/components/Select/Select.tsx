@@ -2,41 +2,40 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { useState } from "react";
+import { selectType } from "../../types/Select";
 
 interface SelectProps {
   selectData: { value: number; data: string }[];
-  text?: string;
-  defaultValue?: number;
+  defaultValue?: selectType;
+  value: selectType;
+  onChange: (e: SelectChangeEvent) => void;
+  placeholder?: string;
   sx?: any;
 }
 
 export default function PSelect({
   selectData,
-  text,
   defaultValue,
+  value,
+  onChange,
+  placeholder = "항목을 선택해주세요",
   ...rest
 }: SelectProps) {
-  const [value, setValue] = useState<string>(defaultValue?.toString() || "");
-
-  const handleChange = (event: SelectChangeEvent) => {
-    setValue(event.target.value);
-  };
-
   return (
-    <FormControl fullWidth sx={{ m: 1, width: "max-content" }} size="small">
+    <FormControl sx={{ m: 1 }} size="small">
       <InputLabel
         shrink={!!value}
         style={{ display: value ? "none" : "block" }}
         id="demo-select-small-label"
       >
-        {text}
+        {placeholder}
       </InputLabel>
       <Select
         {...rest}
+        defaultValue={defaultValue}
         value={value}
-        onChange={handleChange}
-        placeholder="어쩌고"
+        onChange={onChange}
+        placeholder={placeholder}
       >
         {selectData.map((item) => (
           <MenuItem key={item.value} value={item.value}>
