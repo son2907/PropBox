@@ -49,7 +49,7 @@ export default function Appbar() {
       >
         <Select
           selectData={testData}
-          text={"현장 선택"}
+          placeholder={"현장 선택"}
           sx={{ width: "160px" }}
         />
       </Box>
