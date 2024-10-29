@@ -18,6 +18,7 @@ export default function BasicButton({ children, ...rest }: ButtonProps) {
       color="primary"
       onClick={handleClick}
       onKeyDown={handleKeyDown}
+      fullWidth
       {...rest}
     >
       {children}
