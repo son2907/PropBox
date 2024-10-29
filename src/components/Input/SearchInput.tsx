@@ -3,7 +3,7 @@ import { OutlinedInput, OutlinedInputProps } from "@mui/material";
 import SearchIcon from "../../assets/images/Search.png";
 
 interface InputProps extends OutlinedInputProps {
-  placeholder: string;
+  placeholder?: string;
   children?: ReactNode;
 }
 
