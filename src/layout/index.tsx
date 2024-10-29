@@ -1,8 +1,10 @@
 import { Box, styled } from "@mui/material";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "../components/layout/Sidebar";
 import Appbar from "../components/layout/Appbar";
 import Content from "../components/layout/Content";
+import { useMemo } from "react";
+import PathConstants from "../routers/path";
 
 // PageContainer 컴포넌트: 페이지 전체를 감싸는 컨테이너
 const PageContainer = styled(Box)(({ theme }) => ({
@@ -29,7 +31,25 @@ const PageArea = styled(Box)(({ theme }) => ({
 }));
 
 export default function DefaultLayout() {
-  return (
+  const location = useLocation();
+
+  const isHideAll = useMemo(
+    () => location.pathname === PathConstants.Login,
+    [location]
+  );
+
+  return isHideAll ? (
+    <Box
+      display={"flex"}
+      width={"100%"}
+      height={"100%"}
+      justifyContent={"center"}
+      alignItems={"center"}
+      bgcolor={"primary.light"}
+    >
+      <Outlet />
+    </Box>
+  ) : (
     <PageContainer>
       <Sidebar />
       <PageArea>

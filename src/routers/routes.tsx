@@ -3,6 +3,7 @@ import DefaultLayout from "../layout";
 import PathConstants from "./path";
 import Main from "../pages/main";
 import Test from "../pages/test";
+import Login from "../pages/Login";
 
 export const routes: RouteObject[] = [
   {
@@ -14,7 +15,7 @@ export const routes: RouteObject[] = [
         children: [
           {
             path: PathConstants.Login,
-            element: <div>로그인</div>,
+            element: <Login />,
           },
         ],
       },
