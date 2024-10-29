@@ -4,6 +4,7 @@ import PathConstants from "./path";
 import Main from "../pages/main";
 import Test from "../pages/test";
 import Login from "../pages/Login";
+import CallConsultation from "../pages/CalManagement/Consultation";
 
 export const routes: RouteObject[] = [
   {
@@ -31,7 +32,7 @@ export const routes: RouteObject[] = [
         children: [
           {
             path: PathConstants.Call.Consultation,
-            element: <div>전화 상담</div>,
+            element: <CallConsultation />,
           },
           {
             path: PathConstants.Call.Analysis,

@@ -645,7 +645,7 @@ export default function Main() {
           display: "flex",
         }}
       >
-        <button
+        {/* <button
           onClick={() => {
             alert("엥");
           }}
@@ -656,7 +656,7 @@ export default function Main() {
         <CheckboxList data={checkboxListData} refArray={inputRefs2.current} />
         <button onClick={getInputValues2}>버튼</button>
 
-        {/* <SelectorTabs value={value} handleChange={handleChange}>
+        <SelectorTabs value={value} handleChange={handleChange}>
           <SelectorTabs.Tab label="전송하나" disableRipple />
           <SelectorTabs.Tab label="전송둘" disableRipple />
           <SelectorTabs.Tab label="전송셋" disableRipple />
@@ -670,15 +670,15 @@ export default function Main() {
         </TabPanel>
         <TabPanel value={value} index={2}>
           전송셋
-        </TabPanel> */}
+        </TabPanel>
 
         <BasicButton>베이직 스타일 버튼</BasicButton>
         <GrayButton>그레이 버튼 스타일</GrayButton>
         <Button>
           <AccessAlarmIcon /> 아이콘 버튼
         </Button>
-      </div>
-      <div>
+      </div> */}
+        {/* <div>
         <BasicInput placeholder="플레이스홀더" />
         <button
           onClick={() => {
@@ -704,17 +704,17 @@ export default function Main() {
         >
           텍스트 에이리어 값 가져옴
         </button>
-      </div>
-      <div>
-        {/* <TransferList
+      </div> */}
+        {/* <div>
+        <TransferList
           leftTitle="왼쪽타이틀"
           rightTitle="오른쪽타이틀"
           left={left}
           right={right}
           {...other}
-        /> */}
-      </div>
-      <div>
+        />
+      </div> */}
+        {/* <div>
         <Toast
           open={openToast}
           vertical={"bottom"}
@@ -768,7 +768,7 @@ export default function Main() {
           setStartDate={setStartDate}
           endDate={endDate}
           setEndDate={setEndDate}
-        />
+        /> */}
         {/* {openAlert && (
           <BasicAlert>
             <BasicAlert.Content>선택된 항목이 없습니다.</BasicAlert.Content>
@@ -780,7 +780,7 @@ export default function Main() {
         )} */}
       </div>
 
-      {/*  
+      {/*  ============== CheckboxTable ============== */}
       <div
         style={{
           height: "100%",
@@ -820,8 +820,8 @@ export default function Main() {
       </div>
       <button onClick={getInputValues}>Get All Input Values</button>
 
+      {/*============== BasicTable ==============*/}
       <div>
-        {" "}
         <BasicTable data={data}>
           <BasicTable.Theader>세부항목</BasicTable.Theader>
           <BasicTable.Tbody>
@@ -835,6 +835,8 @@ export default function Main() {
           </BasicTable.Tbody>
         </BasicTable>
       </div>
+
+      {/* {/*============== BasicTable Lot of data ============== */}
       <div
         style={{
           height: "100%",
@@ -873,6 +875,9 @@ export default function Main() {
           </BasicTable.Tbody>
         </BasicTable>
       </div>
+
+      {/*============== RowDragTable ==============*/}
+
       <div
         style={{
           height: "100%",
@@ -952,7 +957,6 @@ export default function Main() {
         <Pagination count={25} page={currentPage} onChange={onChangePage} />
         <TableSelect total={100} />
       </div>
-     */}
     </>
   );
 }
