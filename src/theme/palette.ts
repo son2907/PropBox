@@ -50,7 +50,7 @@ const _palette: PaletteOptions = {
   primary: {
     main: "#D9D9D9", // 중간 명도의 회색
     light: "#ffffff", // 흰색
-    dark: "#000000", // 어두운 회색
+    dark: "#2C2C2C", // 검은색
     A100: "#f1f1f1", // 연한 회색
     "50": "#f0f0f0", // 아주 연한 회색
     "100": "#d9d9d9", // 더 밝은 회색
@@ -112,7 +112,7 @@ const _palette: PaletteOptions = {
     contrastText: "#ffffff",
   },
   warning: {
-    main: "#f9ba0d",
+    main: "#f9ba0d", // 메인 붉은 컬러
     light: "#f8e318",
     dark: "#f57600",
     "50": "#fffce5",
@@ -128,7 +128,7 @@ const _palette: PaletteOptions = {
     contrastText: "#ffffff",
   },
   error: {
-    main: "#f4475f",
+    main: "#EC221F",
     light: "#fd5e74",
     dark: "#f51837",
     A100: "#ffe4e8",

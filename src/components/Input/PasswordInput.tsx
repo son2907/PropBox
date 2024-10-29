@@ -14,7 +14,7 @@ interface InputProps extends OutlinedInputProps {
 }
 
 const PasswordInput = forwardRef<HTMLInputElement, InputProps>(
-  ({ placeholder = "비밀번호", ...rest }, ref) => {
+  ({ placeholder = "비밀번호를 입력하세요", ...rest }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const handleClickShowPassword = () => setShowPassword(!showPassword);
@@ -37,6 +37,7 @@ const PasswordInput = forwardRef<HTMLInputElement, InputProps>(
         placeholder={placeholder}
         inputRef={ref}
         size="small"
+        fullWidth
         {...rest}
         endAdornment={
           <InputAdornment position="end">
