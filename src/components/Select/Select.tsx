@@ -3,6 +3,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { selectType } from "../../types/Select";
+import { MdOutlineUnfoldMore } from "react-icons/md";
 
 interface SelectProps {
   selectData: { value: number; data: string }[];
@@ -22,7 +23,7 @@ export default function PSelect({
   ...rest
 }: SelectProps) {
   return (
-    <FormControl sx={{ m: 1 }} size="small">
+    <FormControl size="small">
       <InputLabel
         shrink={!!value}
         style={{ display: value ? "none" : "block" }}
@@ -36,6 +37,7 @@ export default function PSelect({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
+        IconComponent={MdOutlineUnfoldMore}
       >
         {selectData.map((item) => (
           <MenuItem key={item.value} value={item.value}>

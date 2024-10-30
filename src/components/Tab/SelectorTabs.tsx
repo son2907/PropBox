@@ -5,6 +5,7 @@ import { renderChild } from "../../utils/renderChild";
 
 const StyledTabs = styled(Tabs)(({ theme }) => ({
   backgroundColor: "#f5f7fa", // 탭의 기본 배경색
+  borderRadius: "5px",
   width: "100%", // 부모의 너비를 꽉 채우도록 설정
   minHeight: "48px", // 최소 높이 설정
   padding: "0", // 패딩 제거
@@ -34,6 +35,7 @@ const CustomTab = styled(Tab)(({ theme }) => ({
 
 const TabIndicator = styled(Box)(({ theme }) => ({
   position: "absolute",
+  left: "2%",
   height: "80%", // 높이를 적절히 설정
   top: "10%", // 위쪽 여백 조정
   borderRadius: "7px",
@@ -56,7 +58,6 @@ export default function SelectorTabs({
 }: SelectorTabsProps) {
   return (
     <Box position="relative" display="flex" width="100%">
-      {" "}
       {/* display를 flex로 변경 */}
       <StyledTabs
         value={value}
@@ -69,7 +70,7 @@ export default function SelectorTabs({
       </StyledTabs>
       <TabIndicator
         sx={{
-          width: `${100 / React.Children.count(children)}%`, // 탭의 수에 따라 너비 조정
+          width: `${100 / React.Children.count(children) - 2}%`, // 탭의 수에 따라 너비 조정
           transform: `translateX(${value * 100}%)`,
         }}
       />

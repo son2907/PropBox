@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import PageTab from "../Tab/PageTab";
 import { useState } from "react";
 import { MdCloseFullscreen } from "react-icons/md";
@@ -46,7 +46,18 @@ export default function Content({ children }: ContentProps) {
         })}
       </div>
       {/* 탭까지 만들어주면 좋음 */}
-      {children}
+      <Box
+        display={"flex"}
+        flexDirection={"column"}
+        width={"100%"}
+        height={"100%"}
+        overflow={"hidden"}
+        paddingLeft={1}
+        paddingRight={1}
+        paddingTop={1}
+      >
+        {children}
+      </Box>
     </>
   );
 }

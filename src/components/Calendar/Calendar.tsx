@@ -12,7 +12,7 @@ export default function Calendar({
   selectedDate,
   setSelectedDate,
 }: CalendarProps) {
-  // const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  // const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   return (
     <DatePicker
@@ -23,7 +23,11 @@ export default function Calendar({
       minDate={new Date("2000-01-01")} // minDate 이전 날짜 선택 불가
       maxDate={new Date()} // maxDate 이후 날짜 선택 불가
       selected={selectedDate}
-      onChange={(date) => setSelectedDate(date)}
+      onChange={(date) => {
+        if (date) {
+          setSelectedDate(date);
+        }
+      }}
       renderCustomHeader={({
         date,
         changeYear,
