@@ -4,6 +4,7 @@ import PathConstants from "./path";
 import Main from "../pages/main";
 import Test from "../pages/test";
 import Login from "../pages/Login";
+import NetworkSetup from "../pages/NetworkSetup";
 
 export const routes: RouteObject[] = [
   {
@@ -100,6 +101,10 @@ export const routes: RouteObject[] = [
           {
             path: PathConstants.System.Auth,
             element: <div>현장 구성원 권한 관리</div>,
+          },
+          {
+            path: PathConstants.System.NetworkSetup,
+            element: <NetworkSetup />,
           },
         ],
       },
