@@ -47,7 +47,7 @@ const PasswordInput = forwardRef<HTMLInputElement, InputProps>(
               onMouseUp={handleMouseUpPassword}
               edge="end"
             >
-              {showPassword ? <VisibilityOff /> : <Visibility />}
+              {showPassword ? <Visibility /> : <VisibilityOff />}
             </IconButton>
           </InputAdornment>
         }

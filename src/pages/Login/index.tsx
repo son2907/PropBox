@@ -47,6 +47,8 @@ export default function Login() {
       </Box>
 
       <BlackButton onClick={fu_Login}>로그인</BlackButton>
+
+      <Typography color="pageTab.tabIcon">문의 전화번호 : 1661-8050</Typography>
     </Box>
   );
 }
