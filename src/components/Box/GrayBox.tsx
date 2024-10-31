@@ -7,7 +7,9 @@ export default function GrayBox({ children, ...rest }: BoxProps) {
       display={"flex"}
       alignItems={"center"}
       bgcolor={"primary.A100"}
-      padding={1.2}
+      borderRadius={"5px"}
+      width={"100%"}
+      padding={1}
       paddingLeft={2}
     >
       {children}

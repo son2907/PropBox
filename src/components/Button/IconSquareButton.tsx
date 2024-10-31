@@ -23,6 +23,7 @@ export default function IconSquareButton({
         borderColor: "primary.main", // 테두리 색상 지정
         borderRadius: "8px", // 둥근 사각형 테두리
         backgroundColor: "primary.light",
+        height: "100%",
         "&:hover": {
           backgroundColor: "primary.light", // 배경색 유지
           borderColor: "primary.main", // 테두리 색상 유지

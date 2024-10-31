@@ -19,7 +19,7 @@ const Theader: React.FC<TableItemProps> = ({ children }) => {
 
 const Td: React.FC<TableItemProps> = ({ children, ...rest }) => {
   return (
-    <td className="py-3 px-3" {...rest}>
+    <td className="py-1 px-1" {...rest}>
       {children}
     </td>
   );
@@ -36,6 +36,7 @@ const Tr: React.FC<TableItemProps> = ({ children, ...rest }) => {
       style={{
         backgroundColor: click ? "#F1F1F1" : "white",
         border: click ? "2px solid #6AA5FE" : "none",
+        borderRadius: "8px",
       }}
       {...rest}
     >
@@ -53,14 +54,14 @@ const EmptyTable = () => {
     <table className="table-auto w-full border-collapse">
       <thead>
         <tr>
-          <th className="border-solid flex justify-center bg-gray-200 border border-gray-300 border-b-0 border-t-0 p-2 text-left py-3 px-3 last:border-0">
+          <th className="border-solid flex justify-center bg-gray-200 border border-gray-300 border-b-0 border-t-0 p-2 text-left py-2 px-2 last:border-0">
             조회 데이터가 존재하지 않습니다.
           </th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td className="border-solid flex justify-center border border-b-0 border-t-0 border-gray-300 p-2 text-left py-3 px-3 last:border-0">
+          <td className="border-solid flex justify-center border border-b-0 border-t-0 border-gray-300 p-2 text-left py-2 px-2 last:border-0">
             조회 데이터가 존재하지 않습니다.
           </td>
         </tr>

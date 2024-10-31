@@ -51,7 +51,7 @@ const _palette: PaletteOptions = {
     main: "#D9D9D9", // 중간 명도의 회색
     light: "#ffffff", // 흰색
     dark: "#2C2C2C", // 검은색
-    A100: "#EEF2F5", // 연한 회색
+    A100: "#F1F1F1", // 연한 회색
     "50": "#f0f0f0", // 아주 연한 회색
     "100": "#d9d9d9", // 더 밝은 회색
     "200": "#bfbfbf", // 밝은 회색

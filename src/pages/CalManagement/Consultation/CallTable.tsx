@@ -2,6 +2,8 @@ import SelectorTabs from "../../../components/Tab/SelectorTabs";
 import useTabs from "../../../hooks/useTabs";
 import BasicTable from "../../../components/Table/BasicTable";
 import { tableTestData } from "../../../utils/testData";
+import SearchResult from "../../../components/Table/SearchResult";
+import { Box } from "@mui/material";
 
 export default function CallTable() {
   const { value: callValue, handleChange: callChange } = useTabs(0);
@@ -9,19 +11,24 @@ export default function CallTable() {
 
   return (
     <>
-      <SelectorTabs value={callValue} handleChange={callChange}>
-        <SelectorTabs.Tab label="전화받기" disableRipple />
-        <SelectorTabs.Tab label="전화걸기" disableRipple />
-      </SelectorTabs>
+      <Box marginBottom={1}>
+        <SelectorTabs value={callValue} handleChange={callChange}>
+          <SelectorTabs.Tab label="전화받기" disableRipple />
+          <SelectorTabs.Tab label="전화걸기" disableRipple />
+        </SelectorTabs>
+      </Box>
+
       <SelectorTabs value={takeValue} handleChange={takeChange}>
         <SelectorTabs.Tab label="통화콜" disableRipple />
         <SelectorTabs.Tab label="부재콜" disableRipple />
       </SelectorTabs>
       <div
         style={{
-          height: "calc(100% - 97px)",
+          height: "calc(100% - 169px)",
           width: "100%",
           overflow: "auto",
+          marginBottom: "15px",
+          marginTop: "5px",
         }}
       >
         <BasicTable data={tableTestData}>
@@ -41,6 +48,7 @@ export default function CallTable() {
           </BasicTable.Tbody>
         </BasicTable>
       </div>
+      <SearchResult total={100} />
     </>
   );
 }
