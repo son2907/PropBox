@@ -26,7 +26,7 @@ export default function Content({ children }: ContentProps) {
   return (
     <>
       <div style={{ padding: "10px" }}>
-        <Typography variant="h3">문자관리</Typography>
+        <Typography variant="h3">전화 관리</Typography>
       </div>
       <div
         style={{
