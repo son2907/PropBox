@@ -13,9 +13,10 @@ export default function TabPanel(props: TabPanelProps) {
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
+      style={{ width: "100%", height: "100%" }}
       {...other}
     >
-      {value === index && <div>{children}</div>}
+      {value === index && children}
     </div>
   );
 }
