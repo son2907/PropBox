@@ -4,15 +4,18 @@ import LabelTypo from "../../../components/Typography/LabelTypo";
 import { BasicButton } from "../../../components/Button";
 import BasicInput from "../../../components/Input/BasicInput";
 import BasicTable from "../../../components/Table/BasicTable";
-import { tableTestData } from "../../../utils/testData";
+import { selectTestData, tableTestData } from "../../../utils/testData";
 import { IoSearchOutline } from "react-icons/io5";
 import IconSquareButton from "../../../components/Button/IconSquareButton";
 import Calendar from "../../../components/Calendar/Calendar";
 import { MdInfoOutline } from "react-icons/md";
 import { useState } from "react";
+import { Select } from "../../../components/Select";
+import useSelect from "../../../hooks/useSelect";
 
 export default function InfoGroup() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const { selectValue, handleChange } = useSelect();
 
   return (
     <>
@@ -100,6 +103,8 @@ export default function InfoGroup() {
               >
                 <IoSearchOutline size={"1em"} />
               </IconSquareButton>
+              <input type="checkbox" />
+              <Typography>부재콜</Typography>
             </Box>
             <Box
               display="flex"
@@ -137,7 +142,11 @@ export default function InfoGroup() {
               height={0}
             >
               <LabelTypo>관리지역</LabelTypo>
-              <BasicInput />
+              <Select
+                value={selectValue}
+                onChange={handleChange}
+                selectData={selectTestData}
+              />
             </Box>
           </Box>
 

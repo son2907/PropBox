@@ -14,6 +14,14 @@ interface SelectProps {
   sx?: any;
 }
 
+// 데이터 타입
+// const testData = [
+//   {
+//     value: 1,
+//     data: "표시될 이름",
+//   },
+// ];
+
 export default function PSelect({
   selectData,
   defaultValue,

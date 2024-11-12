@@ -48,7 +48,6 @@ export default function Content({ children }: ContentProps) {
       {/* 탭까지 만들어주면 좋음 */}
       <Box
         display={"flex"}
-        flexDirection={"column"}
         width={"100%"}
         height={"100%"}
         overflow={"hidden"}

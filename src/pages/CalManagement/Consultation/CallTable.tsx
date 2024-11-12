@@ -31,7 +31,7 @@ export default function CallTable() {
             height: "calc(100% - 169px)",
             width: "100%",
             overflow: "auto",
-            marginBottom: "15px",
+            marginBottom: "13px",
             marginTop: "5px",
           }}
         >
@@ -69,7 +69,7 @@ export default function CallTable() {
             height: "calc(100% - 169px)",
             width: "100%",
             overflow: "auto",
-            marginBottom: "15px",
+            marginBottom: "13px",
             marginTop: "5px",
           }}
         >

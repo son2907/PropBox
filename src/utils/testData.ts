@@ -540,3 +540,21 @@ export const tableTestData = [
     salary: "$85,000",
   },
 ];
+export const selectTestData = [
+  {
+    value: 1,
+    data: "장치하나",
+  },
+  {
+    value: 2,
+    data: "장치둘",
+  },
+  {
+    value: 3,
+    data: "장치셋",
+  },
+  {
+    value: 4,
+    data: "장치넷",
+  },
+];

@@ -38,7 +38,7 @@ const testData = [
 
 export default function CallConsultation() {
   return (
-    <Box display={"flex"} width={"100%"} height={"100%"}>
+    <>
       {/* 좌측 전화받기/전화걸기, 통화콜/부재콜 테이블 */}
       <Box width={"30%"} minWidth={"350px"} marginRight={1}>
         <CallTable />
@@ -52,6 +52,6 @@ export default function CallConsultation() {
       <Box width={"20%"} minWidth={"400px"} bgcolor={"white"} marginLeft={1}>
         <MemoGroup />
       </Box>
-    </Box>
+    </>
   );
 }
