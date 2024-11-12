@@ -5,22 +5,22 @@ import { tableTestData } from "../../../utils/testData";
 import SearchResult from "../../../components/Table/SearchResult";
 import { Box } from "@mui/material";
 import TabPanel from "../../../components/Tab/TabPanner";
+import { TabType } from "../../../types/menu";
 
-export default function CallTable() {
-  const { value: callValue, handleChange: callChange } = useTabs(0);
+export default function CallTable({ tabType, tabChange }: TabType) {
   const { value: takeValue, handleChange: takeChange } = useTabs(1);
   const { value: callOptionValue, handleChange: callOptionChange } = useTabs(0);
 
   return (
     <>
       <Box marginBottom={1}>
-        <SelectorTabs value={callValue} handleChange={callChange}>
+        <SelectorTabs value={tabType} handleChange={tabChange}>
           <SelectorTabs.Tab label="전화받기" disableRipple />
           <SelectorTabs.Tab label="전화걸기" disableRipple />
         </SelectorTabs>
       </Box>
       {/* 전화받기 탭 */}
-      <TabPanel value={callValue} index={0}>
+      <TabPanel value={tabType} index={0}>
         <SelectorTabs value={takeValue} handleChange={takeChange}>
           <SelectorTabs.Tab label="통화콜" disableRipple />
           <SelectorTabs.Tab label="부재콜" disableRipple />
@@ -56,7 +56,7 @@ export default function CallTable() {
       </TabPanel>
 
       {/* 전화 걸기 탭 */}
-      <TabPanel value={callValue} index={1}>
+      <TabPanel value={tabType} index={1}>
         <SelectorTabs value={callOptionValue} handleChange={callOptionChange}>
           <SelectorTabs.Tab label="대기" disableRipple />
           <SelectorTabs.Tab label="부재" disableRipple />

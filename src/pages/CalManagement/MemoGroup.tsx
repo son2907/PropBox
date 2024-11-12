@@ -47,7 +47,7 @@ export default function MemoGroup() {
             display={"flex"}
             flexDirection={"column"}
             width={"100%"}
-            height={"calc(100% - 410px)"}
+            height={"calc(100% - 411px)"}
             gap={1}
             overflow={"scroll"}
             alignItems={"center"}
@@ -76,7 +76,7 @@ export default function MemoGroup() {
           메모장
           <BasicButton>저장</BasicButton>
         </GrayBox>
-        <Box height={"calc(100% - 120px)"}>
+        <Box height={"calc(100% - 121px)"}>
           <BasicInput multiline />
         </Box>
       </TabPanel>

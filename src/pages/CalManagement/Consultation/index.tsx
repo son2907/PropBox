@@ -1,21 +1,8 @@
-import { Box, Typography } from "@mui/material";
-import GrayBox from "../../../components/Box/GrayBox";
+import { Box } from "@mui/material";
 import CallTable from "./CallTable";
-import Calendar from "../../../components/Calendar/Calendar";
-import { useState } from "react";
-import { MdInfoOutline } from "react-icons/md";
-import { BasicButton } from "../../../components/Button";
-import BasicInput from "../../../components/Input/BasicInput";
-import { IoSearchOutline } from "react-icons/io5";
-import IconSquareButton from "../../../components/Button/IconSquareButton";
-import useSelect from "../../../hooks/useSelect";
-import LabelTypo from "../../../components/Typography/LabelTypo";
-import BasicTable from "../../../components/Table/BasicTable";
-import { tableTestData } from "../../../utils/testData";
-import useTabs from "../../../hooks/useTabs";
-import SelectorTabs from "../../../components/Tab/SelectorTabs";
 import InfoGroup from "./InfoGroup";
 import MemoGroup from "../MemoGroup";
+import useTabs from "../../../hooks/useTabs";
 
 const testData = [
   {
@@ -37,16 +24,19 @@ const testData = [
 ];
 
 export default function CallConsultation() {
+  // 전화 받기, 전화 걸기
+  const { value: callValue, handleChange: callChange } = useTabs(0);
+
   return (
     <>
       {/* 좌측 전화받기/전화걸기, 통화콜/부재콜 테이블 */}
       <Box width={"30%"} minWidth={"350px"} marginRight={1}>
-        <CallTable />
+        <CallTable tabType={callValue} tabChange={callChange} />
       </Box>
 
       {/* 중간 상담 정보  */}
       <Box width={"50%"} minWidth={"750px"}>
-        <InfoGroup />
+        <InfoGroup tabType={callValue} tabChange={callChange} />
       </Box>
 
       <Box width={"20%"} minWidth={"400px"} bgcolor={"white"} marginLeft={1}>

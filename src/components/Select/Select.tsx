@@ -35,7 +35,6 @@ export default function PSelect({
       <InputLabel
         shrink={!!value}
         style={{ display: value ? "none" : "block" }}
-        id="demo-select-small-label"
       >
         {placeholder}
       </InputLabel>

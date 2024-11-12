@@ -12,8 +12,11 @@ import { MdInfoOutline } from "react-icons/md";
 import { useState } from "react";
 import { Select } from "../../../components/Select";
 import useSelect from "../../../hooks/useSelect";
+import { TabType } from "../../../types/menu";
+import { TbBookmark } from "react-icons/tb";
+import { IoCallOutline } from "react-icons/io5";
 
-export default function InfoGroup() {
+export default function InfoGroup({ tabType }: TabType) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const { selectValue, handleChange } = useSelect();
 
@@ -23,7 +26,7 @@ export default function InfoGroup() {
         display={"flex"}
         flexDirection={"column"}
         width={"100%"}
-        height={"230px"}
+        height={"290px"}
       >
         {/* 상단 회색박스 ********************************************** */}
         <GrayBox height={"50px"} width={"100%"}>
@@ -48,20 +51,15 @@ export default function InfoGroup() {
           </Box>
         </GrayBox>
         <Box
+          id="이거"
           display="flex"
           width={"100%"}
-          height={"calc(100% - 50px)"}
+          height={"100%"}
           padding={0.8}
           paddingLeft={2}
         >
           {/* 왼쪽 */}
-          <Box
-            display="flex"
-            flexDirection={"column"}
-            width={"80%"}
-            height={"100%"}
-            gap={0.3}
-          >
+          <Box display="flex" flexDirection={"column"} width={"80%"} gap={0.7}>
             <Box
               display="flex"
               alignItems="center" // 수직 중앙 정렬
@@ -70,16 +68,7 @@ export default function InfoGroup() {
             >
               <LabelTypo>상담전화</LabelTypo>
               <BasicInput />
-              <IconSquareButton
-                sx={{
-                  border: "1px solid #D9D9D9",
-                  borderRadius: "5px",
-                  padding: "4px",
-                  marginLeft: "5px",
-                  height: "25px",
-                  width: "25px",
-                }}
-              >
+              <IconSquareButton>
                 <IoSearchOutline size={"1em"} />
               </IconSquareButton>
             </Box>
@@ -91,20 +80,15 @@ export default function InfoGroup() {
             >
               <LabelTypo>이름</LabelTypo>
               <BasicInput />
-              <IconSquareButton
-                sx={{
-                  border: "1px solid #D9D9D9",
-                  borderRadius: "5px",
-                  padding: "4px",
-                  marginLeft: "5px",
-                  height: "25px",
-                  width: "25px",
-                }}
-              >
+              <IconSquareButton>
                 <IoSearchOutline size={"1em"} />
               </IconSquareButton>
-              <input type="checkbox" />
-              <Typography>부재콜</Typography>
+              {tabType ? (
+                <>
+                  <input type="checkbox" />
+                  <Typography>부재콜</Typography>
+                </>
+              ) : null}
             </Box>
             <Box
               display="flex"
@@ -122,9 +106,19 @@ export default function InfoGroup() {
               height={0}
             >
               <LabelTypo>휴대전화</LabelTypo>
-              <BasicInput />
+              <BasicInput sx={{ width: "160px" }} />
+              {tabType ? (
+                <IconSquareButton>
+                  <TbBookmark size={"1em"} />
+                </IconSquareButton>
+              ) : null}
               <LabelTypo marginLeft={2}>일반전화</LabelTypo>
-              <BasicInput />
+              <BasicInput sx={{ width: "160px" }} />
+              {tabType ? (
+                <IconSquareButton>
+                  <IoCallOutline size={"1em"} />
+                </IconSquareButton>
+              ) : null}
             </Box>
             <Box
               display="flex"
@@ -133,7 +127,7 @@ export default function InfoGroup() {
               height={0}
             >
               <LabelTypo>주소</LabelTypo>
-              <BasicInput />
+              <BasicInput sx={{ width: "500px" }} />
             </Box>
             <Box
               display="flex"
@@ -146,6 +140,7 @@ export default function InfoGroup() {
                 value={selectValue}
                 onChange={handleChange}
                 selectData={selectTestData}
+                sx={{ width: "204px" }}
               />
             </Box>
           </Box>
@@ -207,7 +202,9 @@ export default function InfoGroup() {
           </Box>
         </Box>
       </Box>
-      <Box display={"flex"} width={"100%"} height="calc(100% - 400px)">
+
+      {/* 상담항목 세부항목 */}
+      <Box display={"flex"} width={"100%"} height="calc(100% - 461px)">
         <GrayBox
           flexDirection={"column"}
           width={"50%"}

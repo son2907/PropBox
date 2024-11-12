@@ -29,3 +29,9 @@ export type MainMenuType = {
 
 // 여러 개의 대메뉴로 구성된 배열
 export type MenuListType = MainMenuType[];
+
+// 탭 선택에 따라 하위 컴포넌트 ui 변경시 사용되는 탭 hook 타입
+export type TabType = {
+  tabType: number;
+  tabChange: (event: React.SyntheticEvent, newValue: number) => void;
+};
