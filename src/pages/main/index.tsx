@@ -7,7 +7,7 @@ import { usePagination } from "../../hooks/usePagination";
 import TableSelect from "../../components/Select/TableSelect";
 import SearchResult from "../../components/Table/SearchResult";
 import SelectorTabs from "../../components/Tab/SelectorTabs";
-import TabPanel from "../../components/Tab/TabPanner";
+import TabPanel from "../../components/Tab/TabPanel";
 import BasicTable from "../../components/Table/BasicTable";
 import CheckboxTable from "../../components/Table/CheckboxTable";
 import ToggleButton from "../../components/Button/ToggleButton";
@@ -25,11 +25,12 @@ import CustomAlert from "../../components/Alert/CustomAlert";
 import useAlert from "../../hooks/useAlert";
 import BasicAlert from "../../components/Alert/BasicAlert";
 import Toast from "../../components/Toast/Toast";
-import { Box } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import useToast from "../../hooks/useToast";
 import Calendar from "../../components/Calendar/Calendar";
 import RangeCalendar from "../../components/Calendar/RangeCalendar";
 import { useMultiRowSelection } from "../../hooks/useMultiRowSelection";
+import useTabs from "../../hooks/useTabs";
 
 interface Data {
   id: string;
@@ -640,6 +641,8 @@ export default function Main() {
   const { openAlert, onOpenAlert, onCloseAlert } = useAlert();
 
   const { openToast, toastOpen, toastClose } = useToast();
+  // 탭 메뉴 데이터
+  const { value: tabValue, handleChange: tabChange } = useTabs(1);
   console.log(openToast);
 
   return (

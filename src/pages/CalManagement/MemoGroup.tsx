@@ -4,13 +4,17 @@ import { BasicButton } from "../../components/Button";
 import SelectorTabs from "../../components/Tab/SelectorTabs";
 import BasicInput from "../../components/Input/BasicInput";
 import useTabs from "../../hooks/useTabs";
-import TabPanel from "../../components/Tab/TabPanner";
+import TabPanel from "../../components/Tab/TabPanel";
 import BasicTable from "../../components/Table/BasicTable";
 import { tableTestData } from "../../utils/testData";
 import LabelTypo from "../../components/Typography/LabelTypo";
+import { useMultiRowSelection } from "../../hooks/useMultiRowSelection";
 
 export default function MemoGroup() {
   const { value, handleChange: tabChange } = useTabs(0);
+
+  // 테이블 선택 조건이 없으므로 다중선택 ui 적용
+  const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
 
   return (
     <>
@@ -19,35 +23,44 @@ export default function MemoGroup() {
         <SelectorTabs.Tab label="메모" disableRipple />
       </SelectorTabs>
       <TabPanel value={value} index={0}>
-        <div style={{ height: "300px", marginTop: "10px" }}>
-          <div style={{ height: "100%", overflow: "auto" }}>
-            <BasicTable data={tableTestData}>
-              <BasicTable.Theader>구분</BasicTable.Theader>
-              <BasicTable.Theader>일자</BasicTable.Theader>
-              <BasicTable.Theader>특기사항</BasicTable.Theader>
-              <BasicTable.Theader>상담내용</BasicTable.Theader>
-              <BasicTable.Tbody>
-                {tableTestData.map((item, index) => {
-                  return (
-                    <BasicTable.Tr key={index}>
-                      <BasicTable.Td>{item.name}</BasicTable.Td>
-                      <BasicTable.Td>{item.age}</BasicTable.Td>
-                      <BasicTable.Td>{item.job}</BasicTable.Td>
-                      <BasicTable.Td>{item.hireDate}</BasicTable.Td>
-                    </BasicTable.Tr>
-                  );
-                })}
-              </BasicTable.Tbody>
-            </BasicTable>
-          </div>
+        <div style={{ height: "400px", marginTop: "10px", overflow: "auto" }}>
+          <BasicTable data={tableTestData}>
+            <BasicTable.Theader>구분</BasicTable.Theader>
+            <BasicTable.Theader>일자</BasicTable.Theader>
+            <BasicTable.Theader>특기사항</BasicTable.Theader>
+            <BasicTable.Theader>상담내용</BasicTable.Theader>
+            <BasicTable.Tbody>
+              {tableTestData.map((item, index) => {
+                return (
+                  <BasicTable.Tr
+                    key={index}
+                    isClicked={selectedRows.has(item.id)}
+                    onClick={() => toggleRowsSelection(item.id)}
+                  >
+                    <BasicTable.Td>{item.name}</BasicTable.Td>
+                    <BasicTable.Td>{item.age}</BasicTable.Td>
+                    <BasicTable.Td>{item.job}</BasicTable.Td>
+                    <BasicTable.Td>{item.hireDate}</BasicTable.Td>
+                  </BasicTable.Tr>
+                );
+              })}
+            </BasicTable.Tbody>
+          </BasicTable>
         </div>
-        <div style={{ height: "100%" }}>
+        <div
+          style={{
+            display: "flex",
+            flexFlow: "column",
+            height: "100%",
+            overflow: "hidden",
+          }}
+        >
           <GrayBox marginBottom={1}>상담상세</GrayBox>
           <Box
             display={"flex"}
             flexDirection={"column"}
             width={"100%"}
-            height={"calc(100% - 411px)"}
+            height={"100%"}
             gap={1}
             overflow={"scroll"}
             alignItems={"center"}
@@ -76,7 +89,7 @@ export default function MemoGroup() {
           메모장
           <BasicButton>저장</BasicButton>
         </GrayBox>
-        <Box height={"calc(100% - 121px)"}>
+        <Box height={"100%"}>
           <BasicInput multiline />
         </Box>
       </TabPanel>

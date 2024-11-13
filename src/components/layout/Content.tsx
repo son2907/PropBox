@@ -54,6 +54,7 @@ export default function Content({ children }: ContentProps) {
         paddingLeft={1}
         paddingRight={1}
         paddingTop={1}
+        paddingBottom={1}
       >
         {children}
       </Box>

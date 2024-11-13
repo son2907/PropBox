@@ -57,7 +57,7 @@ export default function SelectorTabs({
   ...rest
 }: SelectorTabsProps) {
   return (
-    <Box position="relative" display="flex" width="100%">
+    <Box position="relative" display="flex" width="100%" marginBottom={1}>
       {/* display를 flex로 변경 */}
       <StyledTabs
         value={value}
