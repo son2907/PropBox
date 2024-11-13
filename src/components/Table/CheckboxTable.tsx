@@ -3,7 +3,7 @@ import React, { ReactNode, useState } from "react";
 interface TableProps {
   data: { id: string; [key: string]: any }[]; // Table data
   checkbox: boolean;
-  selectedRows: string[];
+  selectedRows: Set<string | number>;
   toggleRowSelection: (id: string) => void;
   children: ReactNode;
 }
@@ -84,12 +84,12 @@ const CheckboxTable: React.FC<TableProps> & {
   EmptyTable: typeof EmptyTable;
 } = ({ data, checkbox = true, selectedRows, toggleRowSelection, children }) => {
   // 전체 선택 상태 관리
-  const allSelected = selectedRows.length === data.length;
+  const allSelected = selectedRows.size === data.length;
 
   // 전체 선택/해제 핸들러
   const handleSelectAllChange = () => {
     data.forEach((row) => {
-      const isSelected = selectedRows.includes(row.id);
+      const isSelected = selectedRows.has(row.id);
       if (allSelected && isSelected) {
         toggleRowSelection(row.id); // 이미 선택된 행 해제
       } else if (!allSelected && !isSelected) {

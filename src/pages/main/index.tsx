@@ -1,6 +1,5 @@
 import Button, { BasicButton, GrayButton } from "../../components/Button";
 import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
-import { useCheckboxSelection } from "../../hooks/useCheckboxSelection";
 import RowDragTable from "../../components/Table/RowDragTable";
 import { useRef, useState } from "react";
 import { Pagination } from "../../components/Pagination";
@@ -30,6 +29,7 @@ import { Box } from "@mui/material";
 import useToast from "../../hooks/useToast";
 import Calendar from "../../components/Calendar/Calendar";
 import RangeCalendar from "../../components/Calendar/RangeCalendar";
+import { useMultiRowSelection } from "../../hooks/useMultiRowSelection";
 
 interface Data {
   id: string;
@@ -38,13 +38,17 @@ interface Data {
 
 export default function Main() {
   // 커스텀 훅 사용
-  const { selectedRows, toggleRowSelection } = useCheckboxSelection();
+  // const { selectedRows, toggleRowSelection } = useCheckboxSelection();
+  // 다중 행 선택
+  const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
+  // 다중 행 선택
   const {
     selectedRows: selectedRows2,
-    toggleRowSelection: toggleRowSelection2,
-  } = useCheckboxSelection();
+    toggleRowsSelection: toggleRowsSelection2,
+  } = useMultiRowSelection();
 
-  console.log(selectedRows2);
+  console.log("체크박스 테이블 다중 행 선택:", selectedRows2);
+  console.log("RowDragg 다중 행 선택:", selectedRows);
 
   const [data, setData] = useState<Data[]>([
     {
@@ -792,7 +796,7 @@ export default function Main() {
           data={data}
           checkbox={true}
           selectedRows={selectedRows2}
-          toggleRowSelection={toggleRowSelection2}
+          toggleRowSelection={toggleRowsSelection2}
         >
           <CheckboxTable.Theader>헤더하나</CheckboxTable.Theader>
           <CheckboxTable.Theader>헤더둘</CheckboxTable.Theader>
@@ -802,8 +806,8 @@ export default function Main() {
                 <CheckboxTable.Td>
                   <input
                     type="checkbox"
-                    checked={selectedRows2.includes(item.id)}
-                    onChange={() => toggleRowSelection2(item.id)}
+                    checked={selectedRows2.has(item.id)}
+                    onChange={() => toggleRowsSelection2(item.id)}
                   />
                 </CheckboxTable.Td>
                 <CheckboxTable.Td>
@@ -821,7 +825,7 @@ export default function Main() {
       <button onClick={getInputValues}>Get All Input Values</button>
 
       {/*============== BasicTable ==============*/}
-      <div>
+      {/* <div>
         <BasicTable data={data}>
           <BasicTable.Theader>세부항목</BasicTable.Theader>
           <BasicTable.Tbody>
@@ -834,10 +838,10 @@ export default function Main() {
             })}
           </BasicTable.Tbody>
         </BasicTable>
-      </div>
+      </div> */}
 
       {/* {/*============== BasicTable Lot of data ============== */}
-      <div
+      {/* <div
         style={{
           height: "100%",
           width: "100%",
@@ -874,7 +878,7 @@ export default function Main() {
             })}
           </BasicTable.Tbody>
         </BasicTable>
-      </div>
+      </div> */}
 
       {/*============== RowDragTable ==============*/}
 
@@ -887,7 +891,7 @@ export default function Main() {
         <RowDragTable
           checkbox={true}
           selectedRows={selectedRows}
-          toggleRowSelection={toggleRowSelection}
+          toggleRowsSelection={toggleRowsSelection}
           data={data}
           setData={setData} // 데이터를 업데이트할 함수를 전달
         >
@@ -916,8 +920,8 @@ export default function Main() {
                 <RowDragTable.Td>
                   <input
                     type="checkbox"
-                    checked={selectedRows.includes(item.id)}
-                    onChange={() => toggleRowSelection(item.id)}
+                    checked={selectedRows.has(item.id)}
+                    onChange={() => toggleRowsSelection(item.id)}
                   />
                 </RowDragTable.Td>
                 <RowDragTable.Td>{item.id}</RowDragTable.Td>

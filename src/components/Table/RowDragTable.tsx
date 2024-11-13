@@ -17,8 +17,8 @@ import { arrayMove } from "@dnd-kit/sortable";
 
 interface TableProps {
   checkbox?: boolean;
-  selectedRows: string[];
-  toggleRowSelection: (id: string) => void;
+  selectedRows: Set<string | number>;
+  toggleRowsSelection: (id: string) => void;
   data: { id: string; [key: string]: any }[]; // Table data
   setData: React.Dispatch<React.SetStateAction<any[]>>; // Function to update data
   children: ReactNode;
@@ -121,7 +121,7 @@ const RowDragTable: React.FC<TableProps> & {
 } = ({
   checkbox = false,
   selectedRows,
-  toggleRowSelection,
+  toggleRowsSelection,
   data,
   setData,
   children,
@@ -133,7 +133,7 @@ const RowDragTable: React.FC<TableProps> & {
   );
 
   // 전체 선택 상태 관리
-  const allSelected = selectedRows.length === data.length;
+  const allSelected = selectedRows.size === data.length;
 
   // onDragEnd 핸들러: 드래그 후 순서를 업데이트
   const handleDragEnd = (event: DragEndEvent) => {
@@ -154,11 +154,11 @@ const RowDragTable: React.FC<TableProps> & {
   // 전체 선택/해제 핸들러
   const handleSelectAllChange = () => {
     data.forEach((row) => {
-      const isSelected = selectedRows.includes(row.id);
+      const isSelected = selectedRows.has(row.id);
       if (allSelected && isSelected) {
-        toggleRowSelection(row.id); // 이미 선택된 행 해제
+        toggleRowsSelection(row.id); // 이미 선택된 행 해제
       } else if (!allSelected && !isSelected) {
-        toggleRowSelection(row.id); // 선택되지 않은 행 선택
+        toggleRowsSelection(row.id); // 선택되지 않은 행 선택
       }
     });
   };

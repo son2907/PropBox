@@ -6,10 +6,17 @@ import SearchResult from "../../../components/Table/SearchResult";
 import { Box } from "@mui/material";
 import TabPanel from "../../../components/Tab/TabPanner";
 import { TabType } from "../../../types/menu";
+import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
+import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
 
 export default function CallTable({ tabType, tabChange }: TabType) {
   const { value: takeValue, handleChange: takeChange } = useTabs(1);
   const { value: callOptionValue, handleChange: callOptionChange } = useTabs(0);
+
+  // 단일 선택
+  const { selectedRow, toggleRowSelection } = useSingleRowSelection();
+  // 다중 선택
+  const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
 
   return (
     <>
@@ -42,7 +49,11 @@ export default function CallTable({ tabType, tabChange }: TabType) {
             <BasicTable.Tbody>
               {tableTestData.map((item, index) => {
                 return (
-                  <BasicTable.Tr key={index}>
+                  <BasicTable.Tr
+                    key={index}
+                    isClicked={selectedRow === item.id}
+                    onClick={() => toggleRowSelection(item.id)}
+                  >
                     <BasicTable.Td>{item.name}</BasicTable.Td>
                     <BasicTable.Td>{item.age}</BasicTable.Td>
                     <BasicTable.Td>{item.job}</BasicTable.Td>
@@ -79,7 +90,11 @@ export default function CallTable({ tabType, tabChange }: TabType) {
             <BasicTable.Tbody>
               {tableTestData.map((item, index) => {
                 return (
-                  <BasicTable.Tr key={index}>
+                  <BasicTable.Tr
+                    key={index}
+                    isClicked={selectedRows.has(item.id)}
+                    onClick={() => toggleRowsSelection(item.id)}
+                  >
                     <BasicTable.Td>{item.name}</BasicTable.Td>
                     <BasicTable.Td>{item.age}</BasicTable.Td>
                   </BasicTable.Tr>

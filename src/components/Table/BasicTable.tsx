@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode } from "react";
 
 interface TableProps {
   data: { id: string; [key: string]: any }[]; // Table data
@@ -25,17 +25,35 @@ const Td: React.FC<TableItemProps> = ({ children, ...rest }) => {
   );
 };
 
-const Tr: React.FC<TableItemProps> = ({ children, ...rest }) => {
-  const [click, setClick] = useState(false);
+// const Tr: React.FC<TableItemProps> = ({ children, ...rest }) => {
+//   const [click, setClick] = useState(false);
 
+//   return (
+//     <tr
+//       onClick={() => {
+//         setClick(!click);
+//       }}
+//       style={{
+//         backgroundColor: click ? "#F1F1F1" : "white",
+//         border: click ? "2px solid #6AA5FE" : "none",
+//         borderRadius: "8px",
+//       }}
+//       {...rest}
+//     >
+//       {children}
+//     </tr>
+//   );
+// };
+
+const Tr: React.FC<
+  TableItemProps & { isClicked: boolean; onClick: () => void }
+> = ({ children, isClicked, onClick, ...rest }) => {
   return (
     <tr
-      onClick={() => {
-        setClick(!click);
-      }}
+      onClick={onClick}
       style={{
-        backgroundColor: click ? "#F1F1F1" : "white",
-        border: click ? "2px solid #6AA5FE" : "none",
+        backgroundColor: isClicked ? "#F1F1F1" : "white",
+        border: isClicked ? "2px solid #6AA5FE" : "none",
         borderRadius: "8px",
       }}
       {...rest}
