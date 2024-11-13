@@ -15,6 +15,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
         style={{
           width: "100%",
           maxWidth: "100%",
+          maxHeight: "100%",
           height: height ? height : "100%",
           resize: resize,
           borderWidth: 2,

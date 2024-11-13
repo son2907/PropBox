@@ -1,7 +1,7 @@
 import { Stack } from "@mui/material";
 import CallTable from "./CallTable";
 import InfoGroup from "./InfoGroup";
-import MemoGroup from "../MemoGroup";
+import MemoGroup from "./MemoGroup";
 import useTabs from "../../../hooks/useTabs";
 
 export default function CallConsultation() {

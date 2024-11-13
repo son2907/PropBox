@@ -1,14 +1,15 @@
-import { Box } from "@mui/material";
-import GrayBox from "../../components/Box/GrayBox";
-import { BasicButton } from "../../components/Button";
-import SelectorTabs from "../../components/Tab/SelectorTabs";
-import BasicInput from "../../components/Input/BasicInput";
-import useTabs from "../../hooks/useTabs";
-import TabPanel from "../../components/Tab/TabPanel";
-import BasicTable from "../../components/Table/BasicTable";
-import { tableTestData } from "../../utils/testData";
-import LabelTypo from "../../components/Typography/LabelTypo";
-import { useMultiRowSelection } from "../../hooks/useMultiRowSelection";
+import { Box, Stack } from "@mui/material";
+import GrayBox from "../../../components/Box/GrayBox";
+import { BasicButton } from "../../../components/Button";
+import SelectorTabs from "../../../components/Tab/SelectorTabs";
+import BasicInput from "../../../components/Input/BasicInput";
+import useTabs from "../../../hooks/useTabs";
+import TabPanel from "../../../components/Tab/TabPanel";
+import BasicTable from "../../../components/Table/BasicTable";
+import { tableTestData } from "../../../utils/testData";
+import LabelTypo from "../../../components/Typography/LabelTypo";
+import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
+import TextArea from "../../../components/TextArea/TextArea";
 
 export default function MemoGroup() {
   const { value, handleChange: tabChange } = useTabs(0);
@@ -23,7 +24,7 @@ export default function MemoGroup() {
         <SelectorTabs.Tab label="메모" disableRipple />
       </SelectorTabs>
       <TabPanel value={value} index={0}>
-        <div style={{ height: "400px", marginTop: "10px", overflow: "auto" }}>
+        <Box style={{ maxHeight: "350px", marginTop: 1, overflow: "auto" }}>
           <BasicTable data={tableTestData}>
             <BasicTable.Theader>구분</BasicTable.Theader>
             <BasicTable.Theader>일자</BasicTable.Theader>
@@ -46,25 +47,10 @@ export default function MemoGroup() {
               })}
             </BasicTable.Tbody>
           </BasicTable>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            flexFlow: "column",
-            height: "100%",
-            overflow: "hidden",
-          }}
-        >
+        </Box>
+        <Stack overflow={"hidden"}>
           <GrayBox marginBottom={1}>상담상세</GrayBox>
-          <Box
-            display={"flex"}
-            flexDirection={"column"}
-            width={"100%"}
-            height={"100%"}
-            gap={1}
-            overflow={"scroll"}
-            alignItems={"center"}
-          >
+          <Stack gap={1} overflow={"scroll"} alignItems={"center"}>
             {Array.from({ length: 40 }).map((item, index) => {
               return (
                 <Box
@@ -77,8 +63,8 @@ export default function MemoGroup() {
                 </Box>
               );
             })}
-          </Box>
-        </div>
+          </Stack>
+        </Stack>
       </TabPanel>
       <TabPanel value={value} index={1}>
         <GrayBox
@@ -89,9 +75,7 @@ export default function MemoGroup() {
           메모장
           <BasicButton>저장</BasicButton>
         </GrayBox>
-        <Box height={"100%"}>
-          <BasicInput multiline />
-        </Box>
+        <TextArea />
       </TabPanel>
     </>
   );

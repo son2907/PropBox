@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import GrayBox from "../../../components/Box/GrayBox";
 import LabelTypo from "../../../components/Typography/LabelTypo";
 import { BasicButton } from "../../../components/Button";
@@ -27,7 +27,7 @@ export default function InfoGroup({ tabType }: TabType) {
 
   return (
     <>
-      <Box display={"flex"} flexDirection={"column"} width={"100%"}>
+      <Stack marginBottom={1}>
         {/* 상단 회색박스 ********************************************** */}
         <GrayBox height={"50px"} width={"100%"}>
           <Box display="flex" alignItems="center">
@@ -162,16 +162,11 @@ export default function InfoGroup({ tabType }: TabType) {
             </GrayBox>
           </Box>
         </Box>
-      </Box>
+      </Stack>
 
       {/* 상담항목, 세부항목 회색 인풋 영역 */}
-      <div
-        style={{
-          display: "flex",
-          overflow: "hidden",
-          maxHeight: "680px",
-        }}
-      >
+      {/* 테이블을 감쌀 때 아래 Box 사용 */}
+      <Box display="flex" overflow="hidden" maxHeight="600px">
         {/* 상담항목 세부항목 */}
         <GrayBox
           flexDirection={"column"}
@@ -196,16 +191,14 @@ export default function InfoGroup({ tabType }: TabType) {
         <GrayBox flexDirection={"column"} width={"50%"} overflow="auto">
           <BasicTable data={tableTestData}>
             <BasicTable.Theader>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
               >
                 세부항목
                 <BasicButton>새로고침</BasicButton>
-              </div>
+              </Box>
             </BasicTable.Theader>
 
             <BasicTable.Tbody>
@@ -223,12 +216,12 @@ export default function InfoGroup({ tabType }: TabType) {
             </BasicTable.Tbody>
           </BasicTable>
         </GrayBox>
-      </div>
+      </Box>
       <GrayBox height={"40px"} marginTop={1} marginBlock={1}>
         특기사항
       </GrayBox>
       {/* <BasicInput sx={{ height: "60px" }} /> */}
-      <TextArea height="100px" />
+      <TextArea height="300px" />
       <GrayBox height={"40px"} marginTop={1} justifyContent={"flex-end"}>
         <BasicButton>저장</BasicButton>
       </GrayBox>
