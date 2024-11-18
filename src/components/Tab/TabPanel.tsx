@@ -1,3 +1,5 @@
+import { Box } from "@mui/material";
+
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -8,14 +10,21 @@ export default function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div
+    <Box
       role="tabpanel"
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
+      height={"100%"}
+      sx={{
+        flex: 1,
+        display: value === index ? "flex" : "none",
+        flexDirection: "column",
+        overflow: "hidden",
+      }}
       {...other}
     >
-      {value === index && <div>{children}</div>}
-    </div>
+      {value === index && children}
+    </Box>
   );
 }

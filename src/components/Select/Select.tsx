@@ -3,6 +3,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { selectType } from "../../types/Select";
+import { MdOutlineUnfoldMore } from "react-icons/md";
 
 interface SelectProps {
   selectData: { value: number; data: string }[];
@@ -13,6 +14,14 @@ interface SelectProps {
   sx?: any;
 }
 
+// 데이터 타입
+// const testData = [
+//   {
+//     value: 1,
+//     data: "표시될 이름",
+//   },
+// ];
+
 export default function PSelect({
   selectData,
   defaultValue,
@@ -22,11 +31,10 @@ export default function PSelect({
   ...rest
 }: SelectProps) {
   return (
-    <FormControl sx={{ m: 1 }} size="small">
+    <FormControl size="small">
       <InputLabel
         shrink={!!value}
         style={{ display: value ? "none" : "block" }}
-        id="demo-select-small-label"
       >
         {placeholder}
       </InputLabel>
@@ -36,6 +44,7 @@ export default function PSelect({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
+        IconComponent={MdOutlineUnfoldMore}
       >
         {selectData.map((item) => (
           <MenuItem key={item.value} value={item.value}>

@@ -1,4 +1,9 @@
 /* 기본 날짜 스타일 */
+.react-datepicker-wrapper {
+  width: 100%;
+  box-sizing: border-box; /* padding, border 포함 */
+}
+
 .react-datepicker__day {
   display: inline-flex;
   align-items: center;

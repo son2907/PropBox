@@ -30,7 +30,7 @@ export default function TableSelect({ total }: TableSelectProps) {
 
   return (
     <Box
-      style={{
+      sx={{
         display: "inline-flex",
         alignItems: "center",
         textAlign: "center",

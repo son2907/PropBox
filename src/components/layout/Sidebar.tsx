@@ -96,11 +96,15 @@ export default function Sidebar() {
 
   return (
     <SideMenu fold={fold}>
-      <LogoArea onClick={moveMain}>
+      <LogoArea>
         {fold ? (
           <></>
         ) : (
-          <img src={Logo} style={{ width: "130px", height: "fit-content" }} />
+          <img
+            onClick={moveMain}
+            src={Logo}
+            style={{ width: "130px", height: "fit-content" }}
+          />
         )}
         <img
           src={Menu}

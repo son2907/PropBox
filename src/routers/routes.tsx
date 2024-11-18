@@ -5,6 +5,11 @@ import Main from "../pages/main";
 import Test from "../pages/test";
 import Login from "../pages/Login";
 import NetworkSetup from "../pages/NetworkSetup";
+import CallConsultation from "../pages/CalManagement/Consultation";
+import SearchCustomer from "../pages/CalManagement/popup/SearchCustomer";
+import ConsultationStatus from "../pages/CalManagement/popup/ConsultationStatus";
+import SMSSending from "../pages/CalManagement/popup/SMSSending";
+import CallLog from "../pages/CalManagement/popup/CallLog";
 
 export const routes: RouteObject[] = [
   {
@@ -32,7 +37,7 @@ export const routes: RouteObject[] = [
         children: [
           {
             path: PathConstants.Call.Consultation,
-            element: <div>전화 상담</div>,
+            element: <CallConsultation />,
           },
           {
             path: PathConstants.Call.Analysis,
@@ -109,5 +114,22 @@ export const routes: RouteObject[] = [
         ],
       },
     ],
+  },
+  // 팝업 경로는 DefaultLayout을 적용하지 않음
+  {
+    path: PathConstants.Call.SearchCustomer,
+    element: <SearchCustomer />,
+  },
+  {
+    path: PathConstants.Call.ConsultationStatus,
+    element: <ConsultationStatus />,
+  },
+  {
+    path: PathConstants.Call.SmsSending,
+    element: <SMSSending />,
+  },
+  {
+    path: PathConstants.Call.CallLog,
+    element: <CallLog />,
   },
 ];

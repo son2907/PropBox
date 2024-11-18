@@ -23,7 +23,14 @@ const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
         width: "100%",
         "& .MuiOutlinedInput-root": {
           color: "gray", // 텍스트 색상 회색으로
-          borderRadius: "10px", // border radius 50%
+          orderRadius: "10px", // border radius 50%
+          backgroundColor: "white",
+        },
+        "& .MuiOutlinedInput-input": {
+          padding: 1, // 내부 패딩 제거
+        },
+        "& .MuiOutlinedInput-notchedOutline": {
+          borderColor: "rgba(0, 0, 0, 0.23) !important", // 항상 기본 border 색상 유지
         },
       }} // 필요에 따라 너비 조정
     />

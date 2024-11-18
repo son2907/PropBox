@@ -4,6 +4,10 @@ const PathConstants = {
   Test: "/test",
   Call: {
     Consultation: "/call/consultation",
+    SearchCustomer: "/call/consultation/customer-search",
+    ConsultationStatus: "/call/consultation/consultation-status",
+    CallLog: "/call/consultation/call-log",
+    SmsSending: "/call/consultation/sms-sending",
     Analysis: "/call/analysis",
     Management: "/call/management",
     Information: "/call/information",
