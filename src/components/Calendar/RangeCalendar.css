@@ -3,6 +3,9 @@
   width: 100%;
   box-sizing: border-box; /* padding, border 포함 */
 }
+.react-datepicker-popper {
+  z-index: 2;
+}
 
 .react-datepicker__day {
   display: inline-flex;
