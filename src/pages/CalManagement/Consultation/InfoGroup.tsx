@@ -39,7 +39,7 @@ export default function InfoGroup({ tabType }: TabType) {
 
   const smsPopupInfo = {
     url: PathConstants.Call.SmsSending,
-    windowFeatures: "width=1000,height=700,scrollbars=yes,resizable=yes",
+    windowFeatures: "width=1000,height=650,scrollbars=yes,resizable=yes",
     windowName: "sms 전송",
   };
 
@@ -49,10 +49,12 @@ export default function InfoGroup({ tabType }: TabType) {
         {/* 상단 회색박스 ********************************************** */}
         <GrayBox height={"50px"} width={"100%"}>
           <LabelTypo>상담일자</LabelTypo>
-          <Calendar
-            selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
-          />
+          <Box width={"250px"}>
+            <Calendar
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+            />
+          </Box>
           <Typography variant="bodySS" color="error.main" paddingLeft={2}>
             <MdInfoOutline />
             현재 날짜가 아닙니다.

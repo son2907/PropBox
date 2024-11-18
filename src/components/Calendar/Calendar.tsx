@@ -7,6 +7,7 @@ import CustomInput from "./CustomInput";
 interface CalendarProps {
   selectedDate: Date;
   setSelectedDate: (date: Date) => void;
+  width?: string;
 }
 export default function Calendar({
   selectedDate,

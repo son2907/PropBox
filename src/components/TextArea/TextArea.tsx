@@ -50,7 +50,13 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
     };
 
     return (
-      <div style={{ position: "relative", width: "100%" }}>
+      <div
+        style={{
+          position: "relative",
+          width: "100%",
+          height: height ? height : "100%",
+        }}
+      >
         <textarea
           ref={ref}
           value={text} // 관리된 텍스트 상태를 textarea에 연결

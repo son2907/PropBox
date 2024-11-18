@@ -9,7 +9,6 @@ const CenteredBox = ({ children, ...rest }: CenteredBoxProps) => {
   return (
     <Box
       display="flex"
-      height={"100%"}
       minHeight={0}
       alignItems="center" // 세로 기준 중앙 정렬
       {...rest}
