@@ -17,6 +17,8 @@ import { TbBookmark } from "react-icons/tb";
 import { IoCallOutline } from "react-icons/io5";
 import TextArea from "../../../components/TextArea/TextArea";
 import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
+import { openPopup } from "../../../utils/openPopup";
+import PathConstants from "../../../routers/path";
 
 export default function InfoGroup({ tabType }: TabType) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -25,22 +27,23 @@ export default function InfoGroup({ tabType }: TabType) {
   // 테이블 선택 조건이 없으므로 다중선택 ui 적용
   const { selectedRow, toggleRowSelection } = useSingleRowSelection();
 
+  const url = PathConstants.Call.SearchCustomer; // 팝업으로 열 페이지의 URL
+  const windowName = "고객 검색"; // 팝업 창 이름
+
   return (
     <>
       <Stack marginBottom={1}>
         {/* 상단 회색박스 ********************************************** */}
         <GrayBox height={"50px"} width={"100%"}>
-          <Box display="flex" alignItems="center">
-            <LabelTypo>상담일자</LabelTypo>
-            <Calendar
-              selectedDate={selectedDate}
-              setSelectedDate={setSelectedDate}
-            />
-            <Typography variant="bodySS" color="error.main" paddingLeft={2}>
-              <MdInfoOutline />
-              현재 날짜가 아닙니다.
-            </Typography>
-          </Box>
+          <LabelTypo>상담일자</LabelTypo>
+          <Calendar
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+          />
+          <Typography variant="bodySS" color="error.main" paddingLeft={2}>
+            <MdInfoOutline />
+            현재 날짜가 아닙니다.
+          </Typography>
 
           {/* 오른쪽 버튼 그룹 */}
           <Box display="flex" gap={1} marginLeft="auto">
@@ -60,14 +63,26 @@ export default function InfoGroup({ tabType }: TabType) {
           {/* 왼쪽 */}
           <Box display="flex" flexDirection={"column"} width={"80%"} gap={0.7}>
             <Box display="flex" alignItems="center">
-              <LabelTypo>상담전화</LabelTypo>
+              <LabelTypo>
+                <span className="text-red-500">*</span>
+                상담전화
+              </LabelTypo>
               <BasicInput />
-              <IconSquareButton>
+              <IconSquareButton
+                onClick={() => {
+                  openPopup({
+                    url,
+                    windowName,
+                  });
+                }}
+              >
                 <IoSearchOutline size={"1em"} />
               </IconSquareButton>
             </Box>
             <Box display="flex" alignItems="center">
-              <LabelTypo>이름</LabelTypo>
+              <LabelTypo>
+                <span className="text-red-500">*</span>이름
+              </LabelTypo>
               <BasicInput />
               <IconSquareButton>
                 <IoSearchOutline size={"1em"} />

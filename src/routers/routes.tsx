@@ -5,6 +5,7 @@ import Main from "../pages/main";
 import Test from "../pages/test";
 import Login from "../pages/Login";
 import CallConsultation from "../pages/CalManagement/Consultation";
+import SearchCustomer from "../pages/CalManagement/Consultation/SearchCustomer";
 
 export const routes: RouteObject[] = [
   {
@@ -105,5 +106,10 @@ export const routes: RouteObject[] = [
         ],
       },
     ],
+  },
+  // 팝업 경로는 DefaultLayout을 적용하지 않음
+  {
+    path: PathConstants.Call.SearchCustomer, // 팝업 경로
+    element: <SearchCustomer />, // 팝업 컴포넌트
   },
 ];

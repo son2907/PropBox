@@ -825,7 +825,14 @@ export default function Main() {
           </CheckboxTable.Tbody>
         </CheckboxTable>
       </div>
-      <button onClick={getInputValues}>Get All Input Values</button>
+      <button
+        onClick={() => {
+          const value = getInputValues();
+          console.log(value);
+        }}
+      >
+        Get All Input Values
+      </button>
 
       {/*============== BasicTable ==============*/}
       {/* <div>

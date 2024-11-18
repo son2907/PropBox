@@ -12,6 +12,13 @@ interface TableItemProps {
   children: ReactNode;
   [property: string]: any; // ...rest를 받기 위함
 }
+
+interface CheckboxTdProps {
+  selectedRows: Set<string | number>;
+  toggleRowsSelection: (id: string | number) => void;
+  item: { id: string | number }; // item 객체의 id 속성 타입
+}
+
 const Theader: React.FC<TableItemProps> = ({ children, ...rest }) => {
   return (
     <th
@@ -70,6 +77,22 @@ const EmptyTable = () => {
   );
 };
 
+const CheckboxTd = ({
+  selectedRows,
+  toggleRowsSelection,
+  item,
+}: CheckboxTdProps) => {
+  return (
+    <Td>
+      <input
+        type="checkbox"
+        checked={selectedRows.has(item.id)}
+        onChange={() => toggleRowsSelection(item.id)}
+      />
+    </Td>
+  );
+};
+
 const Checkbox: React.FC<{ checked: boolean; onChange: () => void }> =
   React.memo(({ checked, onChange }) => {
     return <input type="checkbox" checked={checked} onChange={onChange} />;
@@ -80,7 +103,7 @@ const CheckboxTable: React.FC<TableProps> & {
   Tr: typeof Tr;
   Td: typeof Td;
   Tbody: typeof Tbody;
-
+  CheckboxTd: typeof CheckboxTd;
   EmptyTable: typeof EmptyTable;
 } = ({ data, checkbox = true, selectedRows, toggleRowSelection, children }) => {
   // 전체 선택 상태 관리
@@ -143,6 +166,7 @@ CheckboxTable.EmptyTable = EmptyTable;
 CheckboxTable.Theader = Theader;
 CheckboxTable.Tr = Tr;
 CheckboxTable.Td = Td;
+CheckboxTable.CheckboxTd = CheckboxTd;
 CheckboxTable.Tbody = Tbody;
 
 export default CheckboxTable;
