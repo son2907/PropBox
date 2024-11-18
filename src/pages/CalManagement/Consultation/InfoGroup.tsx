@@ -27,9 +27,14 @@ export default function InfoGroup({ tabType }: TabType) {
   // 테이블 선택 조건이 없으므로 다중선택 ui 적용
   const { selectedRow, toggleRowSelection } = useSingleRowSelection();
 
-  const url = PathConstants.Call.SearchCustomer; // 팝업으로 열 페이지의 URL
-  const windowName = "고객 검색"; // 팝업 창 이름
-
+  const searchPopupInfo = {
+    url: PathConstants.Call.SearchCustomer,
+    windowName: "고객 검색",
+  };
+  const statusPopupInfo = {
+    url: PathConstants.Call.ConsultationStatus,
+    windowName: "상담 현황",
+  };
   return (
     <>
       <Stack marginBottom={1}>
@@ -47,7 +52,16 @@ export default function InfoGroup({ tabType }: TabType) {
 
           {/* 오른쪽 버튼 그룹 */}
           <Box display="flex" gap={1} marginLeft="auto">
-            <BasicButton>상담현황</BasicButton>
+            <BasicButton
+              onClick={() => {
+                openPopup({
+                  url: statusPopupInfo.url,
+                  windowName: statusPopupInfo.windowName,
+                });
+              }}
+            >
+              상담현황
+            </BasicButton>
             <BasicButton>추가</BasicButton>
             <BasicButton>삭제</BasicButton>
             <BasicButton>문자</BasicButton>
@@ -71,8 +85,8 @@ export default function InfoGroup({ tabType }: TabType) {
               <IconSquareButton
                 onClick={() => {
                   openPopup({
-                    url,
-                    windowName,
+                    url: searchPopupInfo.url,
+                    windowName: searchPopupInfo.windowName,
                   });
                 }}
               >
