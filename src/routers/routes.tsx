@@ -7,6 +7,7 @@ import Login from "../pages/Login";
 import CallConsultation from "../pages/CalManagement/Consultation";
 import SearchCustomer from "../pages/CalManagement/popup/SearchCustomer";
 import ConsultationStatus from "../pages/CalManagement/popup/ConsultationStatus";
+import SMSSending from "../pages/CalManagement/popup/SMSSending";
 
 export const routes: RouteObject[] = [
   {
@@ -116,5 +117,9 @@ export const routes: RouteObject[] = [
   {
     path: PathConstants.Call.ConsultationStatus,
     element: <ConsultationStatus />,
+  },
+  {
+    path: PathConstants.Call.SmsSending,
+    element: <SMSSending />,
   },
 ];

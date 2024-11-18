@@ -31,10 +31,18 @@ export default function InfoGroup({ tabType }: TabType) {
     url: PathConstants.Call.SearchCustomer,
     windowName: "고객 검색",
   };
+
   const statusPopupInfo = {
     url: PathConstants.Call.ConsultationStatus,
     windowName: "상담 현황",
   };
+
+  const smsPopupInfo = {
+    url: PathConstants.Call.SmsSending,
+    windowFeatures: "width=1000,height=700,scrollbars=yes,resizable=yes",
+    windowName: "sms 전송",
+  };
+
   return (
     <>
       <Stack marginBottom={1}>
@@ -64,7 +72,17 @@ export default function InfoGroup({ tabType }: TabType) {
             </BasicButton>
             <BasicButton>추가</BasicButton>
             <BasicButton>삭제</BasicButton>
-            <BasicButton>문자</BasicButton>
+            <BasicButton
+              onClick={() => {
+                openPopup({
+                  url: smsPopupInfo.url,
+                  windowFeatures: smsPopupInfo.windowFeatures,
+                  windowName: smsPopupInfo.windowName,
+                });
+              }}
+            >
+              문자
+            </BasicButton>
           </Box>
         </GrayBox>
         <Box

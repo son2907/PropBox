@@ -6,6 +6,7 @@ const PathConstants = {
     Consultation: "/call/consultation",
     SearchCustomer: "/call/consultation/customer-search",
     ConsultationStatus: "/call/consultation/consultation-status",
+    SmsSending: "/call/consultation/sms-sending",
     Analysis: "/call/analysis",
     Management: "/call/management",
     Information: "/call/information",

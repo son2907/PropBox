@@ -8,7 +8,7 @@ export default function SearchCustomer() {
   const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
 
   return (
-    <Box padding={2} bgcolor={"white"} height={"100%"}>
+    <Box padding={2} bgcolor={"white"} width={"100%"} height={"100%"}>
       <Box display={"flex"} alignItems="center" width="100%" paddingBottom={2}>
         <label className="whitespace-nowrap">
           <input type="radio" name="searchType" id="name" />
