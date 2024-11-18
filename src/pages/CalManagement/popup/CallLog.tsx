@@ -80,7 +80,7 @@ export default function CallLog() {
           </CheckboxTable>
         </Box>
         {/* 오른쪽 테이블 */}
-        <Box width={"50%"} height={"100%"} bgcolor={"yellow"} overflow={"auto"}>
+        <Box width={"50%"} height={"100%"} overflow={"auto"}>
           <GrayBox justifyContent={"flex-end"} marginBottom={1}>
             <BasicButton>엑셀저장</BasicButton>
           </GrayBox>
