@@ -56,6 +56,7 @@ export default function SelectorTabs({
   handleChange,
   ...rest
 }: SelectorTabsProps) {
+  const count = React.Children.count(children);
   return (
     <Box position="relative" display="flex" width="100%" marginBottom={1}>
       {/* display를 flex로 변경 */}
@@ -70,7 +71,11 @@ export default function SelectorTabs({
       </StyledTabs>
       <TabIndicator
         sx={{
-          width: `${100 / React.Children.count(children) - 2}%`, // 탭의 수에 따라 너비 조정
+          // 만일 탭이 4개 이상일 경우 React.Children.count(children)
+          width:
+            count > 3
+              ? `${100 / React.Children.count(children) - 0.8}%`
+              : `${100 / React.Children.count(children) - 2}%`,
           transform: `translateX(${value * 100}%)`,
         }}
       />

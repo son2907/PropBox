@@ -8,6 +8,8 @@ import TabPanel from "../../../components/Tab/TabPanel";
 import { TabType } from "../../../types/menu";
 import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
 import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
+import { openPopup } from "../../../utils/openPopup";
+import PathConstants from "../../../routers/path";
 
 export default function CallTable({ tabType, tabChange }: TabType) {
   //  통화콜, 부재콜
@@ -20,6 +22,12 @@ export default function CallTable({ tabType, tabChange }: TabType) {
   const { selectedRow, toggleRowSelection } = useSingleRowSelection();
   // 다중 선택
   const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
+
+  const callPopupInfo = {
+    url: PathConstants.Call.CallLog,
+    windowFeatures: "width=1000,height=650,scrollbars=yes,resizable=yes",
+    windowName: "전화걸기 처리내역",
+  };
 
   return (
     <>
@@ -79,7 +87,17 @@ export default function CallTable({ tabType, tabChange }: TabType) {
             <SelectorTabs.Tab label="대기" disableRipple />
             <SelectorTabs.Tab label="부재" disableRipple />
             <SelectorTabs.Tab label="통화콜" disableRipple />
-            <SelectorTabs.Tab label="기타" disableRipple />
+            <SelectorTabs.Tab
+              onClick={() => {
+                openPopup({
+                  url: callPopupInfo.url,
+                  windowName: callPopupInfo.windowName,
+                  windowFeatures: callPopupInfo.windowFeatures,
+                });
+              }}
+              label="기타"
+              disableRipple
+            />
           </SelectorTabs>
           {/*  탭에 따라 데이터가 바뀌도록 데이터 바인딩 해야함  */}
           <Box
