@@ -6,10 +6,10 @@ import Test from "../pages/test";
 import Login from "../pages/Login";
 import NetworkSetup from "../pages/NetworkSetup";
 import CallConsultation from "../pages/CalManagement/Consultation";
-import SearchCustomer from "../pages/CalManagement/popup/SearchCustomer";
-import ConsultationStatus from "../pages/CalManagement/popup/ConsultationStatus";
-import SMSSending from "../pages/CalManagement/popup/SMSSending";
-import CallLog from "../pages/CalManagement/popup/CallLog";
+import SearchCustomer from "../pages/CalManagement/Consultation/popup/SearchCustomer";
+import ConsultationStatus from "../pages/CalManagement/Consultation/popup/ConsultationStatus";
+import SMSSending from "../pages/CalManagement/Consultation/popup/SMSSending";
+import CallLog from "../pages/CalManagement/Consultation/popup/CallLog";
 
 export const routes: RouteObject[] = [
   {
