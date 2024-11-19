@@ -44,18 +44,18 @@ const TabIndicator = styled(Box)(({ theme }) => ({
   zIndex: 0,
 }));
 
-interface SelectorTabsProps {
+interface TabMenusProps {
   value: number;
   handleChange: (event: React.SyntheticEvent, newValue: number) => void; // 두 개의 인자를 받도록 수정
   children: ReactNode;
 }
 
-export default function SelectorTabs({
+export default function TabMenus({
   children,
   value,
   handleChange,
   ...rest
-}: SelectorTabsProps) {
+}: TabMenusProps) {
   const count = React.Children.count(children);
   return (
     <Box position="relative" display="flex" width="100%" marginBottom={1}>
@@ -66,14 +66,14 @@ export default function SelectorTabs({
         TabIndicatorProps={{ style: { display: "none" } }}
         {...rest} // 나머지 prop을 여기에 전달
       >
-        {/* children에서 SelectorTabs.Tab 타입만 필터링하여 렌더링 */}
-        {renderChild(children, SelectorTabs.Tab)}
+        {/* children에서 TabMenus.Tab 타입만 필터링하여 렌더링 */}
+        {renderChild(children, TabMenus.Tab)}
       </StyledTabs>
       <TabIndicator
         sx={{
           // 만일 탭이 4개 이상일 경우 React.Children.count(children)
           width:
-            count > 3
+            count > 2
               ? `${100 / React.Children.count(children) - 0.8}%`
               : `${100 / React.Children.count(children) - 2}%`,
           transform: `translateX(${value * 100}%)`,
@@ -83,4 +83,4 @@ export default function SelectorTabs({
   );
 }
 
-SelectorTabs.Tab = CustomTab;
+TabMenus.Tab = CustomTab;

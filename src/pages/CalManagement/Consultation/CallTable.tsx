@@ -1,4 +1,3 @@
-import SelectorTabs from "../../../components/Tab/SelectorTabs";
 import useTabs from "../../../hooks/useTabs";
 import BasicTable from "../../../components/Table/BasicTable";
 import { tableTestData } from "../../../utils/testData";
@@ -10,6 +9,7 @@ import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
 import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
 import { openPopup } from "../../../utils/openPopup";
 import PathConstants from "../../../routers/path";
+import TabMenus from "../../../components/Tab/TabMenus";
 
 export default function CallTable({ tabType, tabChange }: TabType) {
   //  통화콜, 부재콜
@@ -31,10 +31,10 @@ export default function CallTable({ tabType, tabChange }: TabType) {
 
   return (
     <>
-      <SelectorTabs value={tabType} handleChange={tabChange}>
-        <SelectorTabs.Tab label="전화받기" disableRipple />
-        <SelectorTabs.Tab label="전화걸기" disableRipple />
-      </SelectorTabs>
+      <TabMenus value={tabType} handleChange={tabChange}>
+        <TabMenus.Tab label="전화받기" disableRipple />
+        <TabMenus.Tab label="전화걸기" disableRipple />
+      </TabMenus>
       {/* 전화받기 탭 */}
       <div
         style={{
@@ -43,10 +43,10 @@ export default function CallTable({ tabType, tabChange }: TabType) {
         }}
       >
         <TabPanel value={tabType} index={0}>
-          <SelectorTabs value={takeValue} handleChange={takeChange}>
-            <SelectorTabs.Tab label="통화콜" disableRipple />
-            <SelectorTabs.Tab label="부재콜" disableRipple />
-          </SelectorTabs>
+          <TabMenus value={takeValue} handleChange={takeChange}>
+            <TabMenus.Tab label="통화콜" disableRipple />
+            <TabMenus.Tab label="부재콜" disableRipple />
+          </TabMenus>
           {/*  통화콜, 부재콜 탭에 따라 데이터가 바뀌도록 데이터 바인딩 해야함  */}
           <Box
             sx={{
@@ -83,11 +83,11 @@ export default function CallTable({ tabType, tabChange }: TabType) {
 
         {/* 전화 걸기 탭 */}
         <TabPanel value={tabType} index={1}>
-          <SelectorTabs value={callOptionValue} handleChange={callOptionChange}>
-            <SelectorTabs.Tab label="대기" disableRipple />
-            <SelectorTabs.Tab label="부재" disableRipple />
-            <SelectorTabs.Tab label="통화콜" disableRipple />
-            <SelectorTabs.Tab
+          <TabMenus value={callOptionValue} handleChange={callOptionChange}>
+            <TabMenus.Tab label="대기" disableRipple />
+            <TabMenus.Tab label="부재" disableRipple />
+            <TabMenus.Tab label="통화콜" disableRipple />
+            <TabMenus.Tab
               onClick={() => {
                 openPopup({
                   url: callPopupInfo.url,
@@ -98,7 +98,7 @@ export default function CallTable({ tabType, tabChange }: TabType) {
               label="기타"
               disableRipple
             />
-          </SelectorTabs>
+          </TabMenus>
           {/*  탭에 따라 데이터가 바뀌도록 데이터 바인딩 해야함  */}
           <Box
             sx={{
