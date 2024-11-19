@@ -1,8 +1,8 @@
 import { Box, Typography } from "@mui/material";
-import CheckboxTable from "../../../components/Table/CheckboxTable";
-import { tableTestData } from "../../../utils/testData";
-import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
-import SearchInput from "../../../components/Input/SearchInput";
+import CheckboxTable from "../../../../components/Table/CheckboxTable";
+import { tableTestData } from "../../../../utils/testData";
+import { useMultiRowSelection } from "../../../../hooks/useMultiRowSelection";
+import SearchInput from "../../../../components/Input/SearchInput";
 
 export default function SearchCustomer() {
   const { selectedRows, toggleRowsSelection } = useMultiRowSelection();

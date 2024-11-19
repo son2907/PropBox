@@ -270,7 +270,7 @@ export default function InfoGroup({ tabType }: TabType) {
         특기사항
       </GrayBox>
       {/* <BasicInput sx={{ height: "60px" }} /> */}
-      <TextArea height="300px" />
+      <TextArea height="140px" />
       <GrayBox height={"40px"} marginTop={1} justifyContent={"flex-end"}>
         <BasicButton>저장</BasicButton>
       </GrayBox>

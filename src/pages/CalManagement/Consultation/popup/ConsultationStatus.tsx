@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
-import BasicTable from "../../../components/Table/BasicTable";
-import { tableTestData } from "../../../utils/testData";
-import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
+import BasicTable from "../../../../components/Table/BasicTable";
+import { tableTestData } from "../../../../utils/testData";
+import { useSingleRowSelection } from "../../../../hooks/useSingleRowSelection";
 
 export default function ConsultationStatus() {
   // 단일 선택

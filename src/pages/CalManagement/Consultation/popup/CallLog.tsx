@@ -1,12 +1,12 @@
 import { Box, Stack, Typography } from "@mui/material";
-import GrayBox from "../../../components/Box/GrayBox";
-import CenteredBox from "../../../components/Box/CenteredBox";
+import GrayBox from "../../../../components/Box/GrayBox";
+import CenteredBox from "../../../../components/Box/CenteredBox";
 import { useState } from "react";
-import Calendar from "../../../components/Calendar/Calendar";
-import { BasicButton } from "../../../components/Button";
-import CheckboxTable from "../../../components/Table/CheckboxTable";
-import { tableTestData } from "../../../utils/testData";
-import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
+import Calendar from "../../../../components/Calendar/Calendar";
+import { BasicButton } from "../../../../components/Button";
+import CheckboxTable from "../../../../components/Table/CheckboxTable";
+import { tableTestData } from "../../../../utils/testData";
+import { useMultiRowSelection } from "../../../../hooks/useMultiRowSelection";
 
 export default function CallLog() {
   const [startDate, setStartDate] = useState<Date>(new Date());

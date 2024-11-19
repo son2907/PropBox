@@ -1,18 +1,18 @@
 import { Box, Stack, Typography } from "@mui/material";
-import { BasicButton, IconButton } from "../../../components/Button";
-import GrayBox from "../../../components/Box/GrayBox";
-import DeleteBtnInput from "../../../components/Input/DeleteBtnInput";
+import { BasicButton, IconButton } from "../../../../components/Button";
+import GrayBox from "../../../../components/Box/GrayBox";
+import DeleteBtnInput from "../../../../components/Input/DeleteBtnInput";
 import { useRef, useState } from "react";
-import BasicInput from "../../../components/Input/BasicInput";
-import TextArea from "../../../components/TextArea/TextArea";
-import { Select } from "../../../components/Select";
-import { selectTestData, tableTestData } from "../../../utils/testData";
-import useSelect from "../../../hooks/useSelect";
-import CenteredBox from "../../../components/Box/CenteredBox";
+import BasicInput from "../../../../components/Input/BasicInput";
+import TextArea from "../../../../components/TextArea/TextArea";
+import { Select } from "../../../../components/Select";
+import { selectTestData, tableTestData } from "../../../../utils/testData";
+import useSelect from "../../../../hooks/useSelect";
+import CenteredBox from "../../../../components/Box/CenteredBox";
 import { IoSettingsOutline } from "react-icons/io5";
-import Calendar from "../../../components/Calendar/Calendar";
-import CheckboxTable from "../../../components/Table/CheckboxTable";
-import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
+import Calendar from "../../../../components/Calendar/Calendar";
+import CheckboxTable from "../../../../components/Table/CheckboxTable";
+import { useMultiRowSelection } from "../../../../hooks/useMultiRowSelection";
 
 export default function SMSSending() {
   const inputRef = useRef<HTMLInputElement>(null);
