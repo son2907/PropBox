@@ -12,11 +12,11 @@ export default function SearchCustomer() {
       <Box display={"flex"} alignItems="center" width="100%" paddingBottom={2}>
         <label className="whitespace-nowrap">
           <input type="radio" name="searchType" id="name" />
-          <Typography display="inline">고객이름으로 검색</Typography>
+          <Typography>고객이름으로 검색</Typography>
         </label>
         <label className="whitespace-nowrap">
           <input type="radio" name="searchType" id="phone" />
-          <Typography display="inline">전화번호로 검색</Typography>
+          <Typography>전화번호로 검색</Typography>
         </label>
         <SearchInput
           sx={{ marginLeft: "auto", width: "50%" }}

@@ -10,6 +10,7 @@ import SearchCustomer from "../pages/CalManagement/Consultation/popup/SearchCust
 import ConsultationStatus from "../pages/CalManagement/Consultation/popup/ConsultationStatus";
 import SMSSending from "../pages/CalManagement/Consultation/popup/SMSSending";
 import CallLog from "../pages/CalManagement/Consultation/popup/CallLog";
+import Analysis from "../pages/CalManagement/Analysis";
 
 export const routes: RouteObject[] = [
   {
@@ -41,7 +42,7 @@ export const routes: RouteObject[] = [
           },
           {
             path: PathConstants.Call.Analysis,
-            element: <div>상담 분석</div>,
+            element: <Analysis />,
           },
           {
             path: PathConstants.Call.Management,

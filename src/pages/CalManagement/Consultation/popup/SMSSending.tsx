@@ -38,15 +38,15 @@ export default function SMSSending() {
             <Box display={"flex"} alignItems="center">
               <label className="whitespace-nowrap">
                 <input type="radio" name="searchType" id="type" />
-                <Typography display="inline">SMS</Typography>
+                <Typography>SMS</Typography>
               </label>
               <label className="whitespace-nowrap">
                 <input type="radio" name="searchType" id="type" />
-                <Typography display="inline">LMS</Typography>
+                <Typography>LMS</Typography>
               </label>
               <label className="whitespace-nowrap">
                 <input type="radio" name="searchType" id="type" />
-                <Typography display="inline">MMS</Typography>
+                <Typography>MMS</Typography>
               </label>
               <BasicButton sx={{ marginLeft: "auto" }}>이미지 선택</BasicButton>
             </Box>
@@ -58,23 +58,23 @@ export default function SMSSending() {
             <TextArea height="150px" resize="none" maxBytes={80} />
 
             <CenteredBox gap={1}>
-              <Typography display="inline" marginRight={2}>
+              <Typography display="inline" marginRight={2} noWrap>
                 발신번호
               </Typography>
               <Select
                 value={selectValue}
                 selectData={selectTestData}
                 onChange={handleChange}
-                sx={{ width: "280px" }}
+                sx={{ width: "250px" }}
               />
               <IconButton>
                 <IoSettingsOutline />
               </IconButton>
             </CenteredBox>
             <CenteredBox justifyContent={"space-between"}>
-              <Typography display="inline">전송 대상 : 1명</Typography>
-              <Typography display="inline"> 수신 거부 대상 1명</Typography>
-              <Typography display="inline"> 확정 대상: 1명</Typography>
+              <Typography>전송 대상 : 1명</Typography>
+              <Typography> 수신 거부 대상 1명</Typography>
+              <Typography> 확정 대상: 1명</Typography>
               <BasicButton>미리보기</BasicButton>
             </CenteredBox>
             <CenteredBox gap={1}>
@@ -120,7 +120,7 @@ export default function SMSSending() {
             <CenteredBox gap={1}>
               <label className="whitespace-nowrap">
                 <input type="checkbox" name="searchType" id="type" />
-                <Typography display="inline">광고문자</Typography>
+                <Typography>광고문자</Typography>
               </label>
               <BasicInput sx={{ width: "100%" }} />
               <BasicButton>번호 삽입</BasicButton>

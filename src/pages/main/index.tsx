@@ -6,7 +6,7 @@ import { Pagination } from "../../components/Pagination";
 import { usePagination } from "../../hooks/usePagination";
 import TableSelect from "../../components/Select/TableSelect";
 import SearchResult from "../../components/Table/SearchResult";
-import SelectorTabs from "../../components/Tab/SelectorTabs";
+import TabMenus from "../../components/Tab/TabMenus";
 import TabPanel from "../../components/Tab/TabPanel";
 import BasicTable from "../../components/Table/BasicTable";
 import CheckboxTable from "../../components/Table/CheckboxTable";
@@ -663,11 +663,11 @@ export default function Main() {
         <CheckboxList data={checkboxListData} refArray={inputRefs2.current} />
         <button onClick={getInputValues2}>버튼</button>
 
-        <SelectorTabs value={value} handleChange={handleChange}>
-          <SelectorTabs.Tab label="전송하나" disableRipple />
-          <SelectorTabs.Tab label="전송둘" disableRipple />
-          <SelectorTabs.Tab label="전송셋" disableRipple />
-        </SelectorTabs>
+        <TabMenus value={value} handleChange={handleChange}>
+          <TabMenus.Tab label="전송하나" disableRipple />
+          <TabMenus.Tab label="전송둘" disableRipple />
+          <TabMenus.Tab label="전송셋" disableRipple />
+        </TabMenus>
 
         <TabPanel value={value} index={0}>
           전송하나

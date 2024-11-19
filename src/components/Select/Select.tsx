@@ -31,7 +31,7 @@ export default function PSelect({
   ...rest
 }: SelectProps) {
   return (
-    <FormControl size="small">
+    <FormControl size="small" fullWidth>
       <InputLabel
         shrink={!!value}
         style={{ display: value ? "none" : "block" }}

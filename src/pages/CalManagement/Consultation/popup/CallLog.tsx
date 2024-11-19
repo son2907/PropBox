@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import GrayBox from "../../../../components/Box/GrayBox";
 import CenteredBox from "../../../../components/Box/CenteredBox";
 import { useState } from "react";
@@ -7,6 +7,7 @@ import { BasicButton } from "../../../../components/Button";
 import CheckboxTable from "../../../../components/Table/CheckboxTable";
 import { tableTestData } from "../../../../utils/testData";
 import { useMultiRowSelection } from "../../../../hooks/useMultiRowSelection";
+import TableBox from "../../../../components/Box/TableBox";
 
 export default function CallLog() {
   const [startDate, setStartDate] = useState<Date>(new Date());
@@ -40,15 +41,10 @@ export default function CallLog() {
           <BasicButton>부재콜자료 엑셀저장</BasicButton>
         </CenteredBox>
       </GrayBox>
-      <Box
-        display={"flex"}
-        width={"100%"}
-        height={"100%"}
-        overflow={"hidden"}
-        gap={1}
-      >
-        {/* 왼쪽 테이블 */}
-        <Box width={"50%"} height={"100%"} overflow={"auto"}>
+
+      <TableBox>
+        <TableBox.Inner width="50%">
+          {/* 왼쪽 테이블 */}
           <GrayBox justifyContent={"flex-end"} marginBottom={1}>
             <BasicButton>엑셀저장</BasicButton>
           </GrayBox>
@@ -78,9 +74,10 @@ export default function CallLog() {
               ))}
             </CheckboxTable.Tbody>
           </CheckboxTable>
-        </Box>
+        </TableBox.Inner>
+
         {/* 오른쪽 테이블 */}
-        <Box width={"50%"} height={"100%"} overflow={"auto"}>
+        <TableBox.Inner width="50%">
           <GrayBox justifyContent={"flex-end"} marginBottom={1}>
             <BasicButton>엑셀저장</BasicButton>
           </GrayBox>
@@ -108,8 +105,8 @@ export default function CallLog() {
               ))}
             </CheckboxTable.Tbody>
           </CheckboxTable>
-        </Box>
-      </Box>
+        </TableBox.Inner>
+      </TableBox>
     </Stack>
   );
 }
