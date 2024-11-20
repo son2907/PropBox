@@ -26,8 +26,8 @@ interface Row {
 interface TableProps {
   initialData: Row[];
   checkbox?: boolean; // 체크박스 플래그
-  selectedRows: string[];
-  toggleRowSelection: (id: string) => void;
+  selectedRows: Set<string | number>; // Set으로 변경
+  toggleRowSelection: (id: string | number) => void; // id 타입 수정
 }
 
 const DraggableTable: React.FC<TableProps> = ({
@@ -47,7 +47,7 @@ const DraggableTable: React.FC<TableProps> = ({
   });
 
   // 전체 선택 상태 관리
-  const allSelected = selectedRows.length === rows.length;
+  const allSelected = selectedRows.size === rows.length;
 
   const handleSelectAllChange = () => {
     if (allSelected) {
@@ -56,7 +56,7 @@ const DraggableTable: React.FC<TableProps> = ({
     } else {
       // 체크되지 않은 행 모두 선택
       rows.forEach((row) => {
-        if (!selectedRows.includes(row.id)) {
+        if (!selectedRows.has(row.id)) {
           toggleRowSelection(row.id); // 선택되지 않은 행 선택
         }
       });
@@ -96,7 +96,7 @@ const DraggableTable: React.FC<TableProps> = ({
           <td>
             <input
               type="checkbox"
-              checked={selectedRows.includes(row.id)}
+              checked={selectedRows.has(row.id)} // Set에서 항목 확인
               onChange={handleCheckboxChange}
             />
           </td>
@@ -205,12 +205,3 @@ const DraggableTable: React.FC<TableProps> = ({
 };
 
 export default DraggableTable;
-
-{
-  /* <DraggableTable
-        initialData={initialData}
-        checkbox={true}
-        selectedRows={selectedRows}
-        toggleRowSelection={toggleRowSelection}
-      /> */
-}

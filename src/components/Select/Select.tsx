@@ -31,14 +31,12 @@ export default function PSelect({
   ...rest
 }: SelectProps) {
   return (
-    <FormControl size="small" fullWidth>
-      <InputLabel
-        shrink={!!value}
-        style={{ display: value ? "none" : "block" }}
-      >
+    <FormControl size="small" fullWidth sx={{ ...(rest.sx || {}) }}>
+      <InputLabel shrink={false} style={{ display: value ? "none" : "block" }}>
         {placeholder}
       </InputLabel>
       <Select
+        className="bg-white"
         {...rest}
         defaultValue={defaultValue}
         value={value}
