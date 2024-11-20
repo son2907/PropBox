@@ -37,6 +37,7 @@ const _palette: PaletteOptions = {
     secondary: "#6a7382",
     light: "#ebebeb",
     tertiary: "#b0b8c6",
+    mainBlue: "#6AA5FE", // 메인이 되는 파란색
     borderPrimary: "#E6E9EE",
     coolGray400: "#8a92a8",
     coolGray600: "#575f75",

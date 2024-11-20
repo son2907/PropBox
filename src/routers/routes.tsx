@@ -11,6 +11,9 @@ import ConsultationStatus from "../pages/CalManagement/Consultation/popup/Consul
 import SMSSending from "../pages/CalManagement/Consultation/popup/SMSSending";
 import CallLog from "../pages/CalManagement/Consultation/popup/CallLog";
 import Analysis from "../pages/CalManagement/Analysis";
+import DataManage from "../pages/CalManagement/DataManage";
+import UploadConsultation from "../pages/CalManagement/DataManage/popup/UploadConsultation";
+import CreateConsultation from "../pages/CalManagement/DataManage/popup/CreateConsultation";
 
 export const routes: RouteObject[] = [
   {
@@ -46,7 +49,7 @@ export const routes: RouteObject[] = [
           },
           {
             path: PathConstants.Call.Management,
-            element: <div>데이터 관리</div>,
+            element: <DataManage />,
           },
           {
             path: PathConstants.Call.Information,
@@ -132,5 +135,13 @@ export const routes: RouteObject[] = [
   {
     path: PathConstants.Call.CallLog,
     element: <CallLog />,
+  },
+  {
+    path: PathConstants.Call.UploadConsultation,
+    element: <UploadConsultation />,
+  },
+  {
+    path: PathConstants.Call.CreateConsultation,
+    element: <CreateConsultation />,
   },
 ];

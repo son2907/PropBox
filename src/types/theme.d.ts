@@ -37,6 +37,7 @@ declare module "@mui/material/styles" {
       secondary: string;
       light: string;
       tertiary: string;
+      mainBlue: string;
       borderPrimary: string;
       error: string;
       coolGray400: string;
@@ -81,6 +82,7 @@ declare module "@mui/material/styles" {
       secondary: string;
       light: string;
       tertiary: string;
+      mainBlue: string;
       borderPrimary: string;
       error: string;
       coolGray400: string;

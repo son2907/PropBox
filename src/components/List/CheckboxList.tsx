@@ -1,36 +1,54 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Divider } from "@mui/material";
 import { forwardRef } from "react";
 
 interface ItemProps {
   label: string;
+  isFirst: boolean;
+  isLast: boolean;
 }
 
 interface CheckboxListProps {
   data: { id: string | number; label: string }[];
-  refArray: (HTMLInputElement | null)[]; // refArray 타입
+  refArray: (HTMLInputElement | null)[];
+  dividerIds?: (string | number)[]; // Divider를 추가할 id 배열
 }
 
 const ListItem = forwardRef<HTMLInputElement, ItemProps>(
-  ({ label, ...rest }, ref) => {
-    // 체크박스의 상태에 따라 배경색 변경
+  ({ label, isFirst, isLast, ...rest }, ref) => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      // 체크박스의 상위 요소 Box에 접근
-      const box = e.target.closest(".checkbox-box") as HTMLElement; // 타입 단언
+      const box = e.target.closest(".checkbox-box") as HTMLElement;
       if (box) {
-        box.style.backgroundColor = e.target.checked
-          ? "#CBE0FF"
-          : "transparent";
-        box.style.borderBottom = e.target.checked
-          ? "1px solid gray"
-          : "transparent";
+        const isChecked = e.target.checked;
+
+        // 첫 항목일 때
+        if (isFirst) {
+          box.style.borderBottom = isChecked ? "1px solid gray" : "none";
+          box.style.borderTop = "none";
+        }
+        // 마지막 항목일 때
+        else if (isLast) {
+          box.style.borderTop = isChecked ? "1px solid gray" : "none";
+          box.style.borderBottom = "none";
+        }
+        // 중간 항목일 때
+        else {
+          box.style.borderTop = isChecked ? "1px solid gray" : "none";
+          box.style.borderBottom = isChecked ? "1px solid gray" : "none";
+        }
+
+        box.style.backgroundColor = isChecked ? "#CBE0FF" : "transparent";
       }
     };
 
     return (
       <Box
         display="flex"
-        className="checkbox-box" // className 추가
-        sx={{ padding: "7px", transition: "background-color 0.2s" }}
+        className="checkbox-box"
+        sx={{
+          padding: "7px",
+          backgroundColor: "transparent",
+          transition: "background-color 0.2s, border 0.2s",
+        }}
       >
         <input {...rest} type="checkbox" ref={ref} onChange={handleChange} />
         <Typography>{label}</Typography>
@@ -39,7 +57,11 @@ const ListItem = forwardRef<HTMLInputElement, ItemProps>(
   }
 );
 
-export default function CheckboxList({ data, refArray }: CheckboxListProps) {
+export default function CheckboxList({
+  data,
+  refArray,
+  dividerIds = [],
+}: CheckboxListProps) {
   return (
     <Box
       sx={{
@@ -48,15 +70,24 @@ export default function CheckboxList({ data, refArray }: CheckboxListProps) {
         overflow: "hidden",
       }}
     >
-      {data.map((item, index) => {
-        return (
+      {data.map((item, index) => (
+        <Box key={item.id}>
           <ListItem
-            ref={(el) => (refArray[index] = el)} // forwardRef로 전달
-            key={index}
+            ref={(el) => (refArray[index] = el)}
             label={item.label}
+            isFirst={index === 0}
+            isLast={index === data.length - 1}
           />
-        );
-      })}
+          {/* dividerIds 배열에 포함된 id의 아래에만 Divider 삽입 */}
+          {dividerIds.includes(item.id) && index < data.length - 1 && (
+            <Divider
+              sx={{
+                margin: "4px 0",
+              }}
+            />
+          )}
+        </Box>
+      ))}
     </Box>
   );
 }

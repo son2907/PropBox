@@ -12,13 +12,12 @@ export default function Analysis() {
   const { value, handleChange: tabChange } = useTabs(0);
   return (
     <>
-      <Stack width={"400px"} height={"100%"}>
+      <Stack minWidth={"400px"} height={"100%"}>
         <TabMenus value={value} handleChange={tabChange}>
           <TabMenus.Tab label="업무일지" />
           <TabMenus.Tab label="상담분석" />
           <TabMenus.Tab label="그래프" />
         </TabMenus>
-        {/* 탭에 따라 컴포넌트 체인지 */}
         {/* 탭에 따라 컴포넌트 체인지 */}
         {value === 0 ? (
           <WorkLogSearch />
