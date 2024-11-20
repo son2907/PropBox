@@ -25,7 +25,7 @@ export default function DataManage() {
 
       <Stack
         width={"calc(100% - 400px)"}
-        minWidth={"700px"}
+        minWidth={"960px"}
         bgcolor={"white"}
         height={"100%"}
         marginLeft={1}

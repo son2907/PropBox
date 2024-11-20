@@ -14,6 +14,7 @@ import Analysis from "../pages/CalManagement/Analysis";
 import DataManage from "../pages/CalManagement/DataManage";
 import UploadConsultation from "../pages/CalManagement/DataManage/popup/UploadConsultation";
 import CreateConsultation from "../pages/CalManagement/DataManage/popup/CreateConsultation";
+import TopicRegistration from "../pages/CalManagement/DataManage/popup/TopicRegistration";
 
 export const routes: RouteObject[] = [
   {
@@ -143,5 +144,9 @@ export const routes: RouteObject[] = [
   {
     path: PathConstants.Call.CreateConsultation,
     element: <CreateConsultation />,
+  },
+  {
+    path: PathConstants.Call.TopicRegistration,
+    element: <TopicRegistration />,
   },
 ];

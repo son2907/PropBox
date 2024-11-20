@@ -14,6 +14,8 @@ import MultiSelect from "../../../../components/Select/MultiSelect";
 import { useMultiSelect } from "../../../../hooks/useMultiSselect";
 import { useState } from "react";
 import RowDragTable from "../../../../components/Table/RowDragTable";
+import { openPopup } from "../../../../utils/openPopup";
+import PathConstants from "../../../../routers/path";
 interface Data {
   id: string;
   [key: string]: any;
@@ -31,6 +33,11 @@ export default function CreateConsultation() {
   const { selectedRows: s_3, toggleRowsSelection: t_3 } =
     useMultiRowSelection();
 
+  const topicPopupInfo = {
+    url: PathConstants.Call.TopicRegistration,
+    windowName: "상담 주제 등록",
+  };
+
   return (
     <Stack width={"100%"} height={"100%"} bgcolor={"white"} gap={1}>
       <GrayBox gap={1}>
@@ -42,8 +49,15 @@ export default function CreateConsultation() {
           placeholder="1차 아웃바운드"
           sx={{ width: "200px" }}
         />
-        <IconSquareButton sx={{ color: "root.mainBlue" }}>
-          <IoMdAddCircleOutline />
+        <IconSquareButton
+          onClick={() => {
+            openPopup({
+              url: topicPopupInfo.url,
+              windowName: topicPopupInfo.windowName,
+            });
+          }}
+        >
+          <IoMdAddCircleOutline color="#6AA5FE" />
         </IconSquareButton>
 
         <Typography marginLeft={"auto"}>상담사</Typography>

@@ -11,6 +11,7 @@ const PathConstants = {
     Analysis: "/call/analysis",
     UploadConsultation: "/call/analysis/upload-consultation",
     CreateConsultation: "/call/analysis/create-consultation",
+    TopicRegistration: "/call/analysis/topic-registration",
     Management: "/call/management",
     Information: "/call/information",
   },
