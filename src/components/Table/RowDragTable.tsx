@@ -91,9 +91,12 @@ const SortableRow = ({
   );
 };
 
-const Td: React.FC<{ children: ReactNode }> = ({ children }) => {
+const Td: React.FC<{ children: ReactNode }> = ({ children, ...rest }) => {
   return (
-    <td className="border-solid border border-b-0 border-t-0 border-gray-300 p-2 text-left last:border-0 whitespace-nowrap">
+    <td
+      className="border-solid border border-b-0 border-t-0 border-gray-300 p-2 text-left last:border-0 whitespace-nowrap"
+      {...rest}
+    >
       {children}
     </td>
   );
