@@ -29,18 +29,17 @@ export default function UploadConsultation() {
       </GrayBox>
       <TableBox gap={1}>
         <TableBox.Inner width="40%">
-          <RowDragTable
-            data={data}
-            setData={setData}
-            checkbox={false}
-            selectedRows={selectedRows}
-            toggleRowsSelection={toggleRowsSelection}
-          >
+          <RowDragTable data={data} setData={setData} checkbox={false}>
             <RowDragTable.Theader>엑셀 항목</RowDragTable.Theader>
             <RowDragTable.Theader>Position</RowDragTable.Theader>
             <RowDragTable.Tbody>
               {data.map((item) => (
-                <RowDragTable.Tr key={item.id} id={item.id}>
+                <RowDragTable.Tr
+                  isClicked={selectedRows.has(item.id)}
+                  onClick={() => toggleRowsSelection(item.id)}
+                  key={item.id}
+                  id={item.id}
+                >
                   <RowDragTable.Td>엑셀 항목</RowDragTable.Td>
                   <RowDragTable.Td>Text</RowDragTable.Td>
                 </RowDragTable.Tr>

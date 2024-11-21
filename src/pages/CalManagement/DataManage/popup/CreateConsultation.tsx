@@ -160,13 +160,7 @@ export default function CreateConsultation() {
 
       <TableBox marginBottom={1} gap={2}>
         <TableBox.Inner width={"50%"}>
-          <RowDragTable
-            data={data}
-            checkbox={false}
-            selectedRows={s_2}
-            toggleRowsSelection={t_2}
-            setData={setData}
-          >
+          <RowDragTable data={data} checkbox={false} setData={setData}>
             <RowDragTable.Theader>이름</RowDragTable.Theader>
             <RowDragTable.Theader>휴대전화</RowDragTable.Theader>
             <RowDragTable.Theader>일반전화</RowDragTable.Theader>
@@ -175,8 +169,13 @@ export default function CreateConsultation() {
             <RowDragTable.Theader>고객정보</RowDragTable.Theader>
 
             <RowDragTable.Tbody>
-              {tableTestData.map((item) => (
-                <RowDragTable.Tr key={item.id} id={item.id}>
+              {data.map((item) => (
+                <RowDragTable.Tr
+                  isClicked={s_2.has(item.id)}
+                  onClick={() => t_2(item.id)}
+                  key={item.id}
+                  id={item.id}
+                >
                   <RowDragTable.Td>{item.name}</RowDragTable.Td>
                   <RowDragTable.Td>{item.name}</RowDragTable.Td>
                   <RowDragTable.Td>{item.name}</RowDragTable.Td>

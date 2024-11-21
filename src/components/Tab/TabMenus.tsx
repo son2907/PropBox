@@ -44,11 +44,11 @@ const TabIndicator = styled(Box)(({ theme }) => ({
   zIndex: 0,
 }));
 
-interface TabMenusProps {
+export type TabMenusProps = {
   value: number;
   handleChange: (event: React.SyntheticEvent, newValue: number) => void; // 두 개의 인자를 받도록 수정
   children: ReactNode;
-}
+};
 
 export default function TabMenus({
   children,
