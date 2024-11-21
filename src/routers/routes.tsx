@@ -9,6 +9,7 @@ import SearchCustomer from "../pages/CalManagement/popup/SearchCustomer";
 import ConsultationStatus from "../pages/CalManagement/popup/ConsultationStatus";
 import SMSSending from "../pages/CalManagement/popup/SMSSending";
 import CallLog from "../pages/CalManagement/popup/CallLog";
+import SolutionManagement from "../pages/SysManagement/Solution";
 
 export const routes: RouteObject[] = [
   {
@@ -84,7 +85,8 @@ export const routes: RouteObject[] = [
         children: [
           {
             path: PathConstants.System.Solution,
-            element: <div>솔루션 및 메뉴 관리</div>,
+            //element: <div>솔루션 및 메뉴 관리</div>,
+            element: <SolutionManagement/>
           },
           {
             path: PathConstants.System.User,
