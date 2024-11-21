@@ -255,7 +255,7 @@ export default function InfoGroup({ tabType }: TabType) {
                 return (
                   <BasicTable.Tr
                     key={index}
-                    isClicked={selectedRow === item.id}
+                    isClicked={selectedRow.has(item.id)}
                     onClick={() => toggleRowSelection(item.id)}
                   >
                     <BasicTable.Td>데이터만</BasicTable.Td>

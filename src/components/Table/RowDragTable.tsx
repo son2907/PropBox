@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode } from "react";
 import {
   DndContext,
   closestCenter,
@@ -17,11 +17,17 @@ import { arrayMove } from "@dnd-kit/sortable";
 
 interface TableProps {
   checkbox?: boolean;
-  selectedRows: Set<string | number>;
-  toggleRowsSelection: (id: string) => void;
-  data: { id: string; [key: string]: any }[]; // Table data
-  setData: React.Dispatch<React.SetStateAction<any[]>>; // Function to update data
+  selectedRows?: Set<string | number>;
+  toggleRowsSelection?: (id: string) => void;
+  data: { id: string; [key: string]: any }[];
+  setData: React.Dispatch<React.SetStateAction<any[]>>;
   children: ReactNode;
+}
+
+interface CheckboxTdProps {
+  selectedRows: Set<string | number>;
+  toggleRowsSelection: (id: string | number) => void;
+  item: { id: string | number }; // item 객체의 id 속성 타입
 }
 
 const Theader: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -32,45 +38,51 @@ const Theader: React.FC<{ children: ReactNode }> = ({ children }) => {
   );
 };
 
-// const SortableRow = ({ id, children }: { id: string; children: ReactNode }) => {
-//   const { attributes, listeners, setNodeRef, transform, transition } =
-//     useSortable({ id });
+const CheckboxTd = ({
+  selectedRows,
+  toggleRowsSelection,
+  item,
+}: CheckboxTdProps) => {
+  return (
+    <td>
+      <input
+        type="checkbox"
+        checked={selectedRows.has(item.id)}
+        onChange={() => toggleRowsSelection(item.id)}
+      />
+    </td>
+  );
+};
 
-//   const style = {
-//     transform: CSS.Transform.toString(transform),
-//     transition,
-//   };
-
-//   return (
-//     <tr ref={setNodeRef} style={style} {...attributes} {...listeners}>
-//       <td style={{ cursor: "grab" }}>=</td>
-//       {children}
-//     </tr>
-//   );
-// };
-
-// ----------- = 부분만 드래그 할 수 있게 하는 코드 -----------
-const SortableRow = ({ id, children }: { id: string; children: ReactNode }) => {
-  const [selected, setSelected] = useState(false);
+const SortableRow = ({
+  id,
+  children,
+  isClicked,
+  onClick,
+  ...rest
+}: {
+  id: string;
+  children: ReactNode;
+  isClicked: boolean;
+  onClick: () => void;
+}) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    backgroundColor: selected ? "#F4F6FA" : "white", // 선택된 상태에 따른 배경색 설정
+    backgroundColor: isClicked ? "#F1F1F1" : "white",
   };
 
   return (
     <tr
-      onClick={() => {
-        setSelected(!selected);
-      }}
+      onClick={onClick}
       ref={setNodeRef}
       style={style}
       {...attributes}
+      {...rest}
     >
-      {/* 이 <td>만 드래그 가능하게 listeners를 적용 */}
       <td style={{ cursor: "grab" }} {...listeners}>
         =
       </td>
@@ -118,6 +130,7 @@ const RowDragTable: React.FC<TableProps> & {
   Td: typeof Td;
   Tbody: typeof Tbody;
   EmptyTable: typeof EmptyTable;
+  CheckboxTd: typeof CheckboxTd;
 } = ({
   checkbox = false,
   selectedRows,
@@ -132,33 +145,32 @@ const RowDragTable: React.FC<TableProps> & {
     })
   );
 
-  // 전체 선택 상태 관리
-  const allSelected = selectedRows.size === data.length;
+  const allSelected = checkbox
+    ? selectedRows && selectedRows.size === data.length
+    : false;
 
-  // onDragEnd 핸들러: 드래그 후 순서를 업데이트
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    // 드래그한 요소와 놓은 위치가 다를 경우에만 처리
     if (active.id !== over?.id) {
       setData((prevData) => {
         const oldIndex = prevData.findIndex((item) => item.id === active.id);
         const newIndex = prevData.findIndex((item) => item.id === over?.id);
 
-        // arrayMove를 사용하여 순서 변경
         return arrayMove(prevData, oldIndex, newIndex);
       });
     }
   };
 
-  // 전체 선택/해제 핸들러
   const handleSelectAllChange = () => {
+    if (!checkbox || !selectedRows || !toggleRowsSelection) return;
+
     data.forEach((row) => {
       const isSelected = selectedRows.has(row.id);
       if (allSelected && isSelected) {
-        toggleRowsSelection(row.id); // 이미 선택된 행 해제
+        toggleRowsSelection(row.id);
       } else if (!allSelected && !isSelected) {
-        toggleRowsSelection(row.id); // 선택되지 않은 행 선택
+        toggleRowsSelection(row.id);
       }
     });
   };
@@ -166,7 +178,7 @@ const RowDragTable: React.FC<TableProps> & {
   return (
     <>
       {data.length === 0 ? (
-        <EmptyTable /> // data가 없을 경우 EmptyTable 렌더링
+        <EmptyTable />
       ) : (
         <DndContext
           sensors={sensors}
@@ -191,23 +203,23 @@ const RowDragTable: React.FC<TableProps> & {
                     (child as React.ReactElement<any>).type ===
                     RowDragTable.Theader
                   ) {
-                    return child; // Theader 컴포넌트를 렌더링
+                    return child;
                   }
-                  return null; // 헤더가 아닌 경우 무시
+                  return null;
                 })}
               </tr>
             </thead>
             <SortableContext
-              items={data.map((item) => item.id)} // 드래그 가능한 항목 목록
+              items={data.map((item) => item.id)}
               strategy={verticalListSortingStrategy}
             >
               {React.Children.map(children, (child) => {
                 if (
                   (child as React.ReactElement<any>).type === RowDragTable.Tbody
                 ) {
-                  return child; // Tbody를 그대로 렌더링
+                  return child;
                 }
-                return null; // Tbody가 아닌 경우 무시
+                return null;
               })}
             </SortableContext>
           </table>
@@ -222,5 +234,6 @@ RowDragTable.Theader = Theader;
 RowDragTable.Tr = SortableRow;
 RowDragTable.Td = Td;
 RowDragTable.Tbody = Tbody;
+RowDragTable.CheckboxTd = CheckboxTd;
 
 export default RowDragTable;

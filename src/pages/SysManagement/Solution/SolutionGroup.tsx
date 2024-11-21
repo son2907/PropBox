@@ -579,7 +579,6 @@ export default function SolutionGroup() {
 
   return (
     <>
-
       <TabPanel value={value} index={0}>
         <div
           style={{
@@ -589,8 +588,6 @@ export default function SolutionGroup() {
         >
           <RowDragTable
             checkbox={false}
-            selectedRows={selectedRows}
-            toggleRowsSelection={toggleRowsSelection}
             data={data}
             setData={setData} // 데이터를 업데이트할 함수를 전달
           >
@@ -598,15 +595,17 @@ export default function SolutionGroup() {
             <RowDragTable.Theader>솔루션이름</RowDragTable.Theader>
             <RowDragTable.Theader>라이선스방식</RowDragTable.Theader>
 
-
             <RowDragTable.Tbody>
               {data.map((item) => (
-                <RowDragTable.Tr key={item.id} id={item.id}>
+                <RowDragTable.Tr
+                  isClicked={selectedRows.has(item.id)}
+                  onClick={() => toggleRowsSelection(item.id)}
+                  key={item.id}
+                  id={item.id}
+                >
                   <RowDragTable.Td>{item.id}</RowDragTable.Td>
                   <RowDragTable.Td>{item.name}</RowDragTable.Td>
                   <RowDragTable.Td>{item.age}</RowDragTable.Td>
-
-
                 </RowDragTable.Tr>
               ))}
             </RowDragTable.Tbody>
@@ -619,11 +618,15 @@ export default function SolutionGroup() {
         > */}
         <Stack overflow={"hidden"}>
           <GrayBox marginBottom={1}>솔루션 상세정보</GrayBox>
-          <Stack gap={1} alignItems={"left"} minHeight={'50%'} style={{
-            overflowY: "scroll", // 세로 스크롤 활성화
-            overflowX: "hidden", // 가로 스크롤 비활성화
-          }}>
-
+          <Stack
+            gap={1}
+            alignItems={"left"}
+            minHeight={"50%"}
+            style={{
+              overflowY: "scroll", // 세로 스크롤 활성화
+              overflowX: "hidden", // 가로 스크롤 비활성화
+            }}
+          >
             <Box
               display="flex"
               flexDirection="column" // 세로 방향 설정
@@ -632,7 +635,7 @@ export default function SolutionGroup() {
               <Typography color="primary.dark" marginBottom={1}>
                 솔루션ID
               </Typography>
-              <BasicInput sx={{ height: "35px", width: '60%' }} />
+              <BasicInput sx={{ height: "35px", width: "60%" }} />
             </Box>
             <Box
               display="flex"
@@ -642,7 +645,7 @@ export default function SolutionGroup() {
               <Typography color="primary.dark" marginBottom={1}>
                 솔루션이름
               </Typography>
-              <BasicInput sx={{ height: "35px", width: '60%' }} />
+              <BasicInput sx={{ height: "35px", width: "60%" }} />
             </Box>
             <Box
               display="flex"
@@ -658,7 +661,6 @@ export default function SolutionGroup() {
                 selectData={selectTestData}
                 sx={{ width: "204px" }}
               />
-
             </Box>
             <Box
               display="flex"
@@ -669,8 +671,6 @@ export default function SolutionGroup() {
                 사용여부
               </Typography>
               <ToggleButton checked={toggle} onChange={setToggle} label="" />
-
-
             </Box>
             <Box
               display="flex"
@@ -680,8 +680,7 @@ export default function SolutionGroup() {
               <Typography color="primary.dark" marginBottom={1}>
                 비허가 URL
               </Typography>
-              <BasicInput sx={{ height: "35px", width: '100%' }} />
-
+              <BasicInput sx={{ height: "35px", width: "100%" }} />
             </Box>
             <Box
               display="flex"
@@ -691,8 +690,7 @@ export default function SolutionGroup() {
               <Typography color="primary.dark" marginBottom={1}>
                 비고
               </Typography>
-              <BasicInput sx={{ height: "35px", width: '100%' }} />
-
+              <BasicInput sx={{ height: "35px", width: "100%" }} />
             </Box>
           </Stack>
           <GrayBox height={"40px"} marginTop={1} justifyContent={"flex-end"}>
@@ -702,7 +700,6 @@ export default function SolutionGroup() {
           </GrayBox>
         </Stack>
         {/* </div> */}
-
       </TabPanel>
     </>
   );

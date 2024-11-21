@@ -2,10 +2,21 @@ import { useState } from "react";
 
 // 테이블, 단일 행 클릭 관리
 export function useSingleRowSelection() {
-  const [selectedRow, setSelectedRow] = useState<string | number | null>(null);
+  const [selectedRow, setSelectedRows] = useState<Set<string | number>>(
+    new Set()
+  );
 
   const toggleRowSelection = (id: string | number) => {
-    setSelectedRow((prevSelected) => (prevSelected === id ? null : id));
+    setSelectedRows((prevSelected) => {
+      const newSelected = new Set<string | number>();
+      if (prevSelected.has(id)) {
+        // 선택된 ID가 이미 있으면 선택 해제 (빈 Set으로)
+        return newSelected;
+      }
+      // 새 ID로 교체하여 단일 선택 유지
+      newSelected.add(id);
+      return newSelected;
+    });
   };
 
   return { selectedRow, toggleRowSelection };
@@ -13,8 +24,8 @@ export function useSingleRowSelection() {
 
 // 아래와 같이 사용
 
-//  <BasicTable.Tr
+// <BasicTable.Tr
 //   key={index}
-//   isClicked={selectedRow === item.id}
-//   onClick={() => toggleRowSelection(item.id)}
+//   isClicked={selectedRow.has(item.id)} // Set에서 선택 여부 확인
+//   onClick={() => toggleRowSelection(item.id)} // 행 클릭 시 선택 토글
 // >

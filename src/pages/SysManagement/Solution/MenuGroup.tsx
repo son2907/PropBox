@@ -16,7 +16,6 @@ import { selectTestData } from "../../../utils/testData";
 import { Select } from "../../../components/Select";
 import useToggleButtton from "../../../hooks/useToggleButton";
 
-
 interface Data {
   id: string;
   [key: string]: any;
@@ -579,7 +578,6 @@ export default function MenuGroup() {
 
   return (
     <>
-
       <TabPanel value={value} index={0}>
         <div
           style={{
@@ -589,8 +587,6 @@ export default function MenuGroup() {
         >
           <RowDragTable
             checkbox={false}
-            selectedRows={selectedRows}
-            toggleRowsSelection={toggleRowsSelection}
             data={data}
             setData={setData} // 데이터를 업데이트할 함수를 전달
           >
@@ -601,20 +597,25 @@ export default function MenuGroup() {
 
             <RowDragTable.Tbody>
               {data.map((item) => (
-                <RowDragTable.Tr key={item.id} id={item.id}>
+                <RowDragTable.Tr
+                  key={item.id}
+                  id={item.id}
+                  isClicked={selectedRows.has(item.id)}
+                  onClick={() => toggleRowsSelection(item.id)}
+                >
                   <RowDragTable.Td>{item.id}</RowDragTable.Td>
                   <RowDragTable.Td>{item.name}</RowDragTable.Td>
-                  <RowDragTable.Td>{
-                    <Select
-                      value={selectValue}
-                      onChange={handleChange}
-                      selectData={selectTestData}
-                      sx={{ width: "204px" }}
-                    />
-                  }</RowDragTable.Td>
+                  <RowDragTable.Td>
+                    {
+                      <Select
+                        value={selectValue}
+                        onChange={handleChange}
+                        selectData={selectTestData}
+                        sx={{ width: "204px" }}
+                      />
+                    }
+                  </RowDragTable.Td>
                   <RowDragTable.Td>{item.age}</RowDragTable.Td>
-
-
                 </RowDragTable.Tr>
               ))}
             </RowDragTable.Tbody>
@@ -622,11 +623,15 @@ export default function MenuGroup() {
         </div>
         <Stack overflow={"hidden"}>
           <GrayBox marginBottom={1}>메뉴 상세정보</GrayBox>
-          <Stack gap={1} alignItems={"left"} minHeight={'50%'} style={{
-            overflowY: "scroll", // 세로 스크롤 활성화
-            overflowX: "hidden", // 가로 스크롤 비활성화
-          }}>
-
+          <Stack
+            gap={1}
+            alignItems={"left"}
+            minHeight={"50%"}
+            style={{
+              overflowY: "scroll", // 세로 스크롤 활성화
+              overflowX: "hidden", // 가로 스크롤 비활성화
+            }}
+          >
             <Box
               display="flex"
               flexDirection="column" // 세로 방향 설정
@@ -635,7 +640,7 @@ export default function MenuGroup() {
               <Typography color="primary.dark" marginBottom={1}>
                 메뉴 ID
               </Typography>
-              <BasicInput sx={{ height: "35px", width: '60%' }} />
+              <BasicInput sx={{ height: "35px", width: "60%" }} />
             </Box>
             <Box
               display="flex"
@@ -645,7 +650,7 @@ export default function MenuGroup() {
               <Typography color="primary.dark" marginBottom={1}>
                 메뉴 이름
               </Typography>
-              <BasicInput sx={{ height: "35px", width: '60%' }} />
+              <BasicInput sx={{ height: "35px", width: "60%" }} />
             </Box>
             <Box
               display="flex"
@@ -670,8 +675,7 @@ export default function MenuGroup() {
               <Typography color="primary.dark" marginBottom={1}>
                 URL
               </Typography>
-              <BasicInput sx={{ height: "35px", width: '100%' }} />
-
+              <BasicInput sx={{ height: "35px", width: "100%" }} />
             </Box>
             <Box
               display="flex"
@@ -681,8 +685,7 @@ export default function MenuGroup() {
               <Typography color="primary.dark" marginBottom={1}>
                 아이콘
               </Typography>
-              <BasicInput sx={{ height: "35px", width: '60%' }} />
-
+              <BasicInput sx={{ height: "35px", width: "60%" }} />
             </Box>
             <Box
               display="flex"
@@ -693,8 +696,6 @@ export default function MenuGroup() {
                 사용여부
               </Typography>
               <ToggleButton checked={toggle} onChange={setToggle} label="" />
-
-
             </Box>
 
             <Box
@@ -705,10 +706,8 @@ export default function MenuGroup() {
               <Typography color="primary.dark" marginBottom={1}>
                 비고
               </Typography>
-              <BasicInput sx={{ height: "35px", width: '100%' }} />
-
+              <BasicInput sx={{ height: "35px", width: "100%" }} />
             </Box>
-
           </Stack>
           <GrayBox height={"40px"} marginTop={1} justifyContent={"flex-end"}>
             <BasicButton>추가</BasicButton>

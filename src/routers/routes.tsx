@@ -16,6 +16,7 @@ import UploadConsultation from "../pages/CalManagement/DataManage/popup/UploadCo
 import CreateConsultation from "../pages/CalManagement/DataManage/popup/CreateConsultation";
 import TopicRegistration from "../pages/CalManagement/DataManage/popup/TopicRegistration";
 import SolutionManagement from "../pages/SysManagement/Solution";
+import BasicInfo from "../pages/CalManagement/BasicInfo";
 
 export const routes: RouteObject[] = [
   {
@@ -55,7 +56,7 @@ export const routes: RouteObject[] = [
           },
           {
             path: PathConstants.Call.Information,
-            element: <div>기본 정보</div>,
+            element: <BasicInfo />,
           },
         ],
       },
@@ -92,7 +93,7 @@ export const routes: RouteObject[] = [
           {
             path: PathConstants.System.Solution,
             //element: <div>솔루션 및 메뉴 관리</div>,
-            element: <SolutionManagement/>
+            element: <SolutionManagement />,
           },
           {
             path: PathConstants.System.User,

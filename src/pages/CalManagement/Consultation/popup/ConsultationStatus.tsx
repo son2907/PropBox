@@ -21,7 +21,7 @@ export default function ConsultationStatus() {
               return (
                 <BasicTable.Tr
                   key={index}
-                  isClicked={selectedRow === item.id}
+                  isClicked={selectedRow.has(item.id)}
                   onClick={() => toggleRowSelection(item.id)}
                 >
                   <BasicTable.Td>{item.name}</BasicTable.Td>

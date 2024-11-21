@@ -34,9 +34,9 @@ const _palette: PaletteOptions = {
 
   // 주요 색상변수
   root: {
-    secondary: "#6a7382",
-    light: "#ebebeb",
-    tertiary: "#b0b8c6",
+    secondary: "#6a7382", // 어두운 회색
+    light: "#ebebeb", // 밝은 회색
+    lightBlue: "#CBE0FF", // 밝은 메인 파랑
     mainBlue: "#6AA5FE", // 메인이 되는 파란색
     borderPrimary: "#E6E9EE",
     coolGray400: "#8a92a8",
