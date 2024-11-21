@@ -9,15 +9,10 @@ import { BasicButton } from "../../../components/Button";
 import TableBox from "../../../components/Box/TableBox";
 import BasicInput from "../../../components/Input/BasicInput";
 import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
-import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
 
 export default function RegionRegistration() {
   const [data, setData] = useState<tableDataType[]>(tableTestData);
   const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택
-  const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
-
-  console.log("업데이트 된 데이터:", data);
-  // console.log(selectedRow);
 
   return (
     <>
@@ -26,18 +21,16 @@ export default function RegionRegistration() {
           <TableBox.Inner>
             <TableBox>
               <TableBox.Inner>
-                <RowDragTable data={data} checkbox={false} setData={setData}>
-                  <RowDragTable.Theader>아이디</RowDragTable.Theader>
+                <RowDragTable data={data} setData={setData} checkbox={false}>
                   <RowDragTable.Theader>관리지역</RowDragTable.Theader>
                   <RowDragTable.Tbody>
-                    {tableTestData.map((item) => (
+                    {data.map((item) => (
                       <RowDragTable.Tr
                         key={item.id}
                         id={item.id}
-                        // isClicked={selectedRow.has(item.id)}
-                        // onClick={() => toggleRowSelection(item.id)}
+                        isClicked={selectedRow.has(item.id)}
+                        onClick={() => toggleRowSelection(item.id)}
                       >
-                        <RowDragTable.Td>{item.id}</RowDragTable.Td>
                         <RowDragTable.Td>{item.name}</RowDragTable.Td>
                       </RowDragTable.Tr>
                     ))}

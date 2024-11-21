@@ -169,7 +169,7 @@ export default function CreateConsultation() {
             <RowDragTable.Theader>고객정보</RowDragTable.Theader>
 
             <RowDragTable.Tbody>
-              {tableTestData.map((item) => (
+              {data.map((item) => (
                 <RowDragTable.Tr
                   isClicked={s_2.has(item.id)}
                   onClick={() => t_2(item.id)}

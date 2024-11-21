@@ -12,6 +12,8 @@ import { BasicButton } from "../../../components/Button";
 
 export default function ConfigSetting() {
   const [data, setData] = useState<tableDataType[]>(tableTestData);
+  const [data2, setData2] = useState<tableDataType[]>(tableTestData);
+
   const { selectedRows: s_1, toggleRowsSelection: t_1 } =
     useMultiRowSelection();
   const { selectedRows: s_2, toggleRowsSelection: t_2 } =
@@ -34,7 +36,7 @@ export default function ConfigSetting() {
               <RowDragTable.Theader>삭제</RowDragTable.Theader>
 
               <RowDragTable.Tbody>
-                {tableTestData.map((item) => (
+                {data.map((item) => (
                   <RowDragTable.Tr
                     isClicked={s_1.has(item.id)}
                     onClick={() => t_1(item.id)}
@@ -69,13 +71,13 @@ export default function ConfigSetting() {
         </GrayBox>
         <TableBox>
           <TableBox.Inner>
-            <RowDragTable data={data} checkbox={false} setData={setData}>
+            <RowDragTable data={data2} checkbox={false} setData={setData2}>
               <RowDragTable.Theader>상담항목</RowDragTable.Theader>
               <RowDragTable.Theader>사용</RowDragTable.Theader>
               <RowDragTable.Theader>삭제</RowDragTable.Theader>
 
               <RowDragTable.Tbody>
-                {tableTestData.map((item) => (
+                {data2.map((item) => (
                   <RowDragTable.Tr
                     key={item.id}
                     id={item.id}
