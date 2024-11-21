@@ -15,6 +15,7 @@ import DataManage from "../pages/CalManagement/DataManage";
 import UploadConsultation from "../pages/CalManagement/DataManage/popup/UploadConsultation";
 import CreateConsultation from "../pages/CalManagement/DataManage/popup/CreateConsultation";
 import TopicRegistration from "../pages/CalManagement/DataManage/popup/TopicRegistration";
+import SolutionManagement from "../pages/SysManagement/Solution";
 
 export const routes: RouteObject[] = [
   {
@@ -90,7 +91,8 @@ export const routes: RouteObject[] = [
         children: [
           {
             path: PathConstants.System.Solution,
-            element: <div>솔루션 및 메뉴 관리</div>,
+            //element: <div>솔루션 및 메뉴 관리</div>,
+            element: <SolutionManagement/>
           },
           {
             path: PathConstants.System.User,
