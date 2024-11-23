@@ -5,6 +5,7 @@ interface TableProps {
   checkbox: boolean;
   selectedRows: Set<string | number>;
   toggleRowSelection: (id: string) => void;
+  checkHeadNum?: number;
   children: ReactNode;
 }
 
@@ -105,7 +106,14 @@ const CheckboxTable: React.FC<TableProps> & {
   Tbody: typeof Tbody;
   CheckboxTd: typeof CheckboxTd;
   EmptyTable: typeof EmptyTable;
-} = ({ data, checkbox = true, selectedRows, toggleRowSelection, children }) => {
+} = ({
+  data,
+  checkbox = true,
+  selectedRows,
+  toggleRowSelection,
+  checkHeadNum = 0,
+  children,
+}) => {
   // 전체 선택 상태 관리
   const allSelected = selectedRows.size === data.length;
 
@@ -129,22 +137,29 @@ const CheckboxTable: React.FC<TableProps> & {
         <table className="table-auto w-full border-gray-300 border-collapse">
           <thead>
             <tr>
-              {checkbox && (
-                <Theader>
-                  <Checkbox
-                    checked={allSelected}
-                    onChange={handleSelectAllChange}
-                  />
-                </Theader>
-              )}
-              {React.Children.map(children, (child) => {
+              {React.Children.toArray(children).map((child, index) => {
                 if (
                   (child as React.ReactElement<any>).type ===
                   CheckboxTable.Theader
                 ) {
-                  return child; // Theader 컴포넌트를 렌더링
+                  // checkHeadNum 위치에만 체크박스 추가
+                  if (checkbox && index === checkHeadNum) {
+                    return (
+                      <>
+                        <Theader key="checkbox-header">
+                          <Checkbox
+                            checked={allSelected}
+                            onChange={handleSelectAllChange}
+                          />
+                        </Theader>
+                        {child} {/* 기존 헤더 항목도 그대로 반환 */}
+                      </>
+                    );
+                  }
+                  // checkHeadNum이 아닌 경우, 기존의 Theader 반환
+                  return child;
                 }
-                return null; // 헤더가 아닌 경우 무시
+                return null; // Theader가 아닌 경우 무시
               })}
             </tr>
           </thead>
