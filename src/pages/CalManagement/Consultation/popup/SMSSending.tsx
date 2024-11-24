@@ -20,6 +20,7 @@ export default function SMSSending() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
+  console.log(selectedRows);
 
   return (
     <Box padding={2} bgcolor={"white"} height={"100%"} width={"100%"}>
@@ -148,9 +149,8 @@ export default function SMSSending() {
           <Box height={"35%"} width={"100%"} overflow={"auto"}>
             <CheckboxTable
               data={tableTestData}
-              checkbox={false}
               selectedRows={selectedRows}
-              toggleRowSelection={toggleRowsSelection}
+              toggleRowsSelection={toggleRowsSelection}
             >
               <CheckboxTable.Theader>메시지</CheckboxTable.Theader>
               <CheckboxTable.Theader> </CheckboxTable.Theader>
@@ -176,9 +176,8 @@ export default function SMSSending() {
           <Box height={"30%"} width={"100%"} overflow={"auto"}>
             <CheckboxTable
               data={tableTestData}
-              checkbox={false}
               selectedRows={selectedRows}
-              toggleRowSelection={toggleRowsSelection}
+              toggleRowsSelection={toggleRowsSelection}
             >
               <CheckboxTable.Theader>매크로</CheckboxTable.Theader>
               <CheckboxTable.Theader>실제 변환 예제</CheckboxTable.Theader>

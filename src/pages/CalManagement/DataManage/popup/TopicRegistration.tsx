@@ -29,10 +29,10 @@ export default function TopicRegistration() {
         <TableBox.Inner>
           <CheckboxTable
             data={tableTestData}
-            checkbox={true}
             selectedRows={selectedRows}
-            toggleRowSelection={toggleRowsSelection}
+            toggleRowsSelection={toggleRowsSelection}
           >
+            <CheckboxTable.CheckboxTh />
             <CheckboxTable.Theader>No</CheckboxTable.Theader>
             <CheckboxTable.Theader>주제명</CheckboxTable.Theader>
 

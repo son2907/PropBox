@@ -4,10 +4,8 @@ import useTableContext from "../../hooks/useTableContext";
 
 interface TableProps {
   data: { id: string; [key: string]: any }[]; // Table data
-  checkbox: boolean;
   selectedRows: Set<string>;
-  toggleRowSelection: (id: string) => void;
-  checkHeadNum?: number;
+  toggleRowsSelection: (id: string) => void;
   children: ReactNode;
 }
 
@@ -28,6 +26,31 @@ const Theader: React.FC<TableItemProps> = ({ children, ...rest }) => {
     >
       {children}
     </th>
+  );
+};
+
+const CheckboxTh = () => {
+  const { data, selectedRows, toggleRowsSelection } = useTableContext();
+
+  // 전체 선택 상태 관리
+  const allSelected = selectedRows.size === data.length;
+
+  // 전체 선택/해제 핸들러
+  const handleSelectAllChange = () => {
+    data.forEach((row: any) => {
+      const isSelected = selectedRows.has(row.id);
+      if (allSelected && isSelected) {
+        toggleRowsSelection(row.id); // 이미 선택된 행 해제
+      } else if (!allSelected && !isSelected) {
+        toggleRowsSelection(row.id); // 선택되지 않은 행 선택
+      }
+    });
+  };
+
+  return (
+    <Theader key="checkbox-header">
+      <Checkbox checked={allSelected} onChange={handleSelectAllChange} />
+    </Theader>
   );
 };
 
@@ -79,14 +102,14 @@ const EmptyTable = () => {
 };
 
 const CheckboxTd = ({ item }: CheckboxTdProps) => {
-  const { selectedRows, toggleRowSelection } = useTableContext();
+  const { selectedRows, toggleRowsSelection } = useTableContext();
 
   return (
     <Td>
       <input
         type="checkbox"
         checked={selectedRows.has(item.id)}
-        onChange={() => toggleRowSelection(item.id)}
+        onChange={() => toggleRowsSelection(item.id)}
       />
     </Td>
   );
@@ -99,69 +122,36 @@ const Checkbox: React.FC<{ checked: boolean; onChange: () => void }> =
 
 const CheckboxTable: React.FC<TableProps> & {
   Theader: typeof Theader;
+  CheckboxTh: typeof CheckboxTh;
   Tr: typeof Tr;
   Td: typeof Td;
   Tbody: typeof Tbody;
   CheckboxTd: typeof CheckboxTd;
   EmptyTable: typeof EmptyTable;
-} = ({
-  data,
-  checkbox = true,
-  selectedRows,
-  toggleRowSelection,
-  checkHeadNum = 0,
-  children,
-}) => {
-  // 전체 선택 상태 관리
-  const allSelected = selectedRows.size === data.length;
-
-  // 전체 선택/해제 핸들러
-  const handleSelectAllChange = () => {
-    data.forEach((row) => {
-      const isSelected = selectedRows.has(row.id);
-      if (allSelected && isSelected) {
-        toggleRowSelection(row.id); // 이미 선택된 행 해제
-      } else if (!allSelected && !isSelected) {
-        toggleRowSelection(row.id); // 선택되지 않은 행 선택
-      }
-    });
-  };
-
+} = ({ data, selectedRows, toggleRowsSelection, children }) => {
   return (
     <>
       {data.length === 0 ? (
         <EmptyTable /> // data가 없을 경우 EmptyTable 렌더링
       ) : (
         <TableProvider
+          data={data}
           selectedRows={selectedRows}
-          toggleRowSelection={toggleRowSelection}
+          toggleRowsSelection={toggleRowsSelection}
         >
           <table className="table-auto w-full border-gray-300 border-collapse">
             <thead>
               <tr>
-                {React.Children.toArray(children).map((child, index) => {
+                {React.Children.map(children, (child) => {
                   if (
                     (child as React.ReactElement<any>).type ===
-                    CheckboxTable.Theader
+                      CheckboxTable.Theader ||
+                    (child as React.ReactElement<any>).type ===
+                      CheckboxTable.CheckboxTh
                   ) {
-                    // checkHeadNum 위치에만 체크박스 추가
-                    if (checkbox && index === checkHeadNum) {
-                      return (
-                        <React.Fragment key="checkbox-header-group">
-                          <Theader key="checkbox-header">
-                            <Checkbox
-                              checked={allSelected}
-                              onChange={handleSelectAllChange}
-                            />
-                          </Theader>
-                          {child}
-                        </React.Fragment>
-                      );
-                    }
-                    // checkHeadNum이 아닌 경우, 기존의 Theader 반환
                     return child;
                   }
-                  return null; // Theader가 아닌 경우 무시
+                  return null;
                 })}
               </tr>
             </thead>
@@ -182,6 +172,7 @@ const CheckboxTable: React.FC<TableProps> & {
 
 CheckboxTable.EmptyTable = EmptyTable;
 CheckboxTable.Theader = Theader;
+CheckboxTable.CheckboxTh = CheckboxTh;
 CheckboxTable.Tr = Tr;
 CheckboxTable.Td = Td;
 CheckboxTable.CheckboxTd = CheckboxTd;

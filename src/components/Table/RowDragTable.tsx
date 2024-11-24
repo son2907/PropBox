@@ -14,10 +14,12 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { arrayMove } from "@dnd-kit/sortable";
+import useTableContext from "../../hooks/useTableContext";
+import TableProvider from "./context/TableProvider";
 
 interface TableProps {
   checkbox?: boolean;
-  selectedRows?: Set<string | number>;
+  selectedRows?: Set<string>;
   toggleRowsSelection?: (id: string) => void;
   data: { id: string; [key: string]: any }[];
   setData: React.Dispatch<React.SetStateAction<any[]>>;
@@ -25,9 +27,7 @@ interface TableProps {
 }
 
 interface CheckboxTdProps {
-  selectedRows: Set<string | number>;
-  toggleRowsSelection: (id: string | number) => void;
-  item: { id: string | number }; // item 객체의 id 속성 타입
+  item: { id: string }; // item 객체의 id 속성 타입
 }
 
 const Theader: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -38,33 +38,62 @@ const Theader: React.FC<{ children: ReactNode }> = ({ children }) => {
   );
 };
 
-const CheckboxTd = ({
-  selectedRows,
-  toggleRowsSelection,
-  item,
-}: CheckboxTdProps) => {
+const CheckboxTd = ({ item }: CheckboxTdProps) => {
+  const { selectedRows, toggleRowsSelection } = useTableContext();
+
   return (
-    <td>
+    <Td>
       <input
         type="checkbox"
         checked={selectedRows.has(item.id)}
         onChange={() => toggleRowsSelection(item.id)}
       />
-    </td>
+    </Td>
+  );
+};
+
+const CheckboxTh = () => {
+  const { checkbox, data, selectedRows, toggleRowsSelection } =
+    useTableContext();
+
+  const allSelected = checkbox
+    ? selectedRows && selectedRows.size === data.length
+    : false;
+
+  const handleSelectAllChange = () => {
+    if (!checkbox || !selectedRows || !toggleRowsSelection) return;
+
+    data.forEach((row: any) => {
+      const isSelected = selectedRows.has(row.id);
+      if (allSelected && isSelected) {
+        toggleRowsSelection(row.id);
+      } else if (!allSelected && !isSelected) {
+        toggleRowsSelection(row.id);
+      }
+    });
+  };
+
+  return (
+    <Theader key="checkbox-header">
+      <Checkbox
+        checked={allSelected ?? false}
+        onChange={handleSelectAllChange}
+      />
+    </Theader>
   );
 };
 
 const SortableRow = ({
   id,
   children,
-  isClicked,
-  onClick,
+  isClicked, // 체크박스 없이 행클릭 할 경우
+  onClick, // 체크박스 없이 행클릭 할 경우
   ...rest
 }: {
   id: string;
   children: ReactNode;
-  isClicked: boolean;
-  onClick: () => void;
+  isClicked?: boolean;
+  onClick?: () => void;
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
@@ -127,8 +156,14 @@ const EmptyTable = () => {
   );
 };
 
+const Checkbox: React.FC<{ checked: boolean; onChange: () => void }> =
+  React.memo(({ checked, onChange }) => {
+    return <input type="checkbox" checked={checked} onChange={onChange} />;
+  });
+
 const RowDragTable: React.FC<TableProps> & {
   Theader: typeof Theader;
+  CheckboxTh: typeof CheckboxTh;
   Tr: typeof SortableRow;
   Td: typeof Td;
   Tbody: typeof Tbody;
@@ -148,10 +183,6 @@ const RowDragTable: React.FC<TableProps> & {
     })
   );
 
-  const allSelected = checkbox
-    ? selectedRows && selectedRows.size === data.length
-    : false;
-
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
@@ -165,17 +196,19 @@ const RowDragTable: React.FC<TableProps> & {
     }
   };
 
-  const handleSelectAllChange = () => {
-    if (!checkbox || !selectedRows || !toggleRowsSelection) return;
-
-    data.forEach((row) => {
-      const isSelected = selectedRows.has(row.id);
-      if (allSelected && isSelected) {
-        toggleRowsSelection(row.id);
-      } else if (!allSelected && !isSelected) {
-        toggleRowsSelection(row.id);
-      }
-    });
+  const TableWrapper: React.FC<{ children: ReactNode }> = ({ children }) => {
+    return checkbox && selectedRows && toggleRowsSelection ? (
+      <TableProvider
+        selectedRows={selectedRows}
+        toggleRowsSelection={toggleRowsSelection}
+        checkbox={checkbox} // 체크박스 체크 여부
+        data={data} // 테이블 데이터
+      >
+        {children}
+      </TableProvider>
+    ) : (
+      <>{children}</>
+    );
   };
 
   return (
@@ -183,50 +216,46 @@ const RowDragTable: React.FC<TableProps> & {
       {data.length === 0 ? (
         <EmptyTable />
       ) : (
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
-          <table className="table-auto w-full border-gray-300 border-collapse">
-            <thead>
-              <tr>
-                <Theader> </Theader>
-                {checkbox && (
-                  <Theader>
-                    <input
-                      type="checkbox"
-                      checked={allSelected}
-                      onChange={handleSelectAllChange}
-                    />
-                  </Theader>
-                )}
+        <TableWrapper>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <table className="table-auto w-full border-gray-300 border-collapse">
+              <thead>
+                <tr>
+                  <Theader> </Theader>
+                  {React.Children.map(children, (child) => {
+                    if (
+                      (child as React.ReactElement<any>).type ===
+                        RowDragTable.Theader ||
+                      (child as React.ReactElement<any>).type ===
+                        RowDragTable.CheckboxTh
+                    ) {
+                      return child;
+                    }
+                    return null;
+                  })}
+                </tr>
+              </thead>
+              <SortableContext
+                items={data.map((item) => item.id)}
+                strategy={verticalListSortingStrategy}
+              >
                 {React.Children.map(children, (child) => {
                   if (
                     (child as React.ReactElement<any>).type ===
-                    RowDragTable.Theader
+                    RowDragTable.Tbody
                   ) {
                     return child;
                   }
                   return null;
                 })}
-              </tr>
-            </thead>
-            <SortableContext
-              items={data.map((item) => item.id)}
-              strategy={verticalListSortingStrategy}
-            >
-              {React.Children.map(children, (child) => {
-                if (
-                  (child as React.ReactElement<any>).type === RowDragTable.Tbody
-                ) {
-                  return child;
-                }
-                return null;
-              })}
-            </SortableContext>
-          </table>
-        </DndContext>
+              </SortableContext>
+            </table>
+          </DndContext>
+        </TableWrapper>
       )}
     </>
   );
@@ -234,6 +263,7 @@ const RowDragTable: React.FC<TableProps> & {
 
 RowDragTable.EmptyTable = EmptyTable;
 RowDragTable.Theader = Theader;
+RowDragTable.CheckboxTh = CheckboxTh;
 RowDragTable.Tr = SortableRow;
 RowDragTable.Td = Td;
 RowDragTable.Tbody = Tbody;

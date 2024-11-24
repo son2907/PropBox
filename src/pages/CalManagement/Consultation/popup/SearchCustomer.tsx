@@ -6,6 +6,7 @@ import SearchInput from "../../../../components/Input/SearchInput";
 
 export default function SearchCustomer() {
   const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
+  console.log(selectedRows);
 
   return (
     <Box padding={2} bgcolor={"white"} width={"100%"} height={"100%"}>
@@ -32,10 +33,10 @@ export default function SearchCustomer() {
         >
           <CheckboxTable
             data={tableTestData}
-            checkbox={true}
             selectedRows={selectedRows}
-            toggleRowSelection={toggleRowsSelection}
+            toggleRowsSelection={toggleRowsSelection}
           >
+            <CheckboxTable.CheckboxTh />
             <CheckboxTable.Theader>이름</CheckboxTable.Theader>
             <CheckboxTable.Theader>휴대전화</CheckboxTable.Theader>
             <CheckboxTable.Theader>집전화</CheckboxTable.Theader>

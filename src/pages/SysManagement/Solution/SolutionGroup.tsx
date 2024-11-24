@@ -25,9 +25,6 @@ interface Data {
 export default function SolutionGroup() {
   const { value, handleChange: tabChange } = useTabs(0);
 
-  // 테이블 선택 조건이 없으므로 다중선택 ui 적용
-  const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
-
   const [data, setData] = useState<Data[]>([
     {
       id: "1",
@@ -597,12 +594,7 @@ export default function SolutionGroup() {
 
             <RowDragTable.Tbody>
               {data.map((item) => (
-                <RowDragTable.Tr
-                  isClicked={selectedRows.has(item.id)}
-                  onClick={() => toggleRowsSelection(item.id)}
-                  key={item.id}
-                  id={item.id}
-                >
+                <RowDragTable.Tr key={item.id} id={item.id}>
                   <RowDragTable.Td>{item.id}</RowDragTable.Td>
                   <RowDragTable.Td>{item.name}</RowDragTable.Td>
                   <RowDragTable.Td>{item.age}</RowDragTable.Td>

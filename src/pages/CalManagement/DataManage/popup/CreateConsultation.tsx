@@ -28,8 +28,6 @@ export default function CreateConsultation() {
 
   const { selectedRows: s_1, toggleRowsSelection: t_1 } =
     useMultiRowSelection();
-  const { selectedRows: s_2, toggleRowsSelection: t_2 } =
-    useMultiRowSelection();
   const { selectedRows: s_3, toggleRowsSelection: t_3 } =
     useMultiRowSelection();
 
@@ -76,10 +74,10 @@ export default function CreateConsultation() {
         <TableBox.Inner>
           <CheckboxTable
             data={tableTestData}
-            checkbox={true}
             selectedRows={s_1}
-            toggleRowSelection={t_1}
+            toggleRowsSelection={t_1}
           >
+            <CheckboxTable.CheckboxTh />
             <CheckboxTable.Theader>이름</CheckboxTable.Theader>
             <CheckboxTable.Theader>휴대전화</CheckboxTable.Theader>
             <CheckboxTable.Theader>일반전화</CheckboxTable.Theader>
@@ -166,12 +164,7 @@ export default function CreateConsultation() {
 
             <RowDragTable.Tbody>
               {data.map((item) => (
-                <RowDragTable.Tr
-                  isClicked={s_2.has(item.id)}
-                  onClick={() => t_2(item.id)}
-                  key={item.id}
-                  id={item.id}
-                >
+                <RowDragTable.Tr key={item.id} id={item.id}>
                   <RowDragTable.Td>{item.name}</RowDragTable.Td>
                   <RowDragTable.Td>{item.name}</RowDragTable.Td>
                   <RowDragTable.Td>{item.name}</RowDragTable.Td>
@@ -187,10 +180,10 @@ export default function CreateConsultation() {
         <TableBox.Inner width={"50%"}>
           <CheckboxTable
             data={tableTestData}
-            checkbox={true}
             selectedRows={s_3}
-            toggleRowSelection={t_3}
+            toggleRowsSelection={t_3}
           >
+            <CheckboxTable.CheckboxTh />
             <CheckboxTable.Theader>이름</CheckboxTable.Theader>
             <CheckboxTable.Theader>휴대전화</CheckboxTable.Theader>
             <CheckboxTable.Theader>일반전화</CheckboxTable.Theader>

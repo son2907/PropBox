@@ -15,7 +15,6 @@ interface Data {
 
 export default function UploadConsultation() {
   const [data, setData] = useState<Data[]>(tableTestData);
-  const { selectedRows, toggleRowsSelection } = useMultiRowSelection(); // RowDraggable
   const { selectedRows: s_2, toggleRowsSelection: t_2 } =
     useMultiRowSelection(); // CheckboxTable
 
@@ -34,12 +33,7 @@ export default function UploadConsultation() {
             <RowDragTable.Theader>Position</RowDragTable.Theader>
             <RowDragTable.Tbody>
               {data.map((item) => (
-                <RowDragTable.Tr
-                  isClicked={selectedRows.has(item.id)}
-                  onClick={() => toggleRowsSelection(item.id)}
-                  key={item.id}
-                  id={item.id}
-                >
+                <RowDragTable.Tr key={item.id} id={item.id}>
                   <RowDragTable.Td>엑셀 항목</RowDragTable.Td>
                   <RowDragTable.Td>Text</RowDragTable.Td>
                 </RowDragTable.Tr>
@@ -49,11 +43,11 @@ export default function UploadConsultation() {
         </TableBox.Inner>
         <TableBox.Inner width="60%">
           <CheckboxTable
-            checkbox={true}
             data={tableTestData}
             selectedRows={s_2}
-            toggleRowSelection={t_2}
+            toggleRowsSelection={t_2}
           >
+            <CheckboxTable.CheckboxTh />
             <CheckboxTable.Theader>1번 항목</CheckboxTable.Theader>
             <CheckboxTable.Theader>2번 항목</CheckboxTable.Theader>
             <CheckboxTable.Theader>3번 항목</CheckboxTable.Theader>

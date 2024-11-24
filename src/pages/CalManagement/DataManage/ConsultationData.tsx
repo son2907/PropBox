@@ -57,9 +57,8 @@ export default function ConsultationData() {
         <TableBox.Inner>
           <CheckboxTable
             data={tableTestData}
-            checkbox={false}
             selectedRows={selectedRows}
-            toggleRowSelection={toggleRowsSelection}
+            toggleRowsSelection={toggleRowsSelection}
           >
             {/* 체크한 데이터에 따라 표시 */}
             <CheckboxTable.Theader>고객이름</CheckboxTable.Theader>

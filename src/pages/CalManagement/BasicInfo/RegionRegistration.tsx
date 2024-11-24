@@ -9,10 +9,12 @@ import { BasicButton } from "../../../components/Button";
 import TableBox from "../../../components/Box/TableBox";
 import BasicInput from "../../../components/Input/BasicInput";
 import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
+import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
 
 export default function RegionRegistration() {
   const [data, setData] = useState<tableDataType[]>(tableTestData);
   const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택
+  const { selectedRows, toggleRowsSelection } = useMultiRowSelection(); // 체크박스
 
   return (
     <>
@@ -21,7 +23,14 @@ export default function RegionRegistration() {
           <TableBox.Inner>
             <TableBox>
               <TableBox.Inner>
-                <RowDragTable data={data} setData={setData} checkbox={false}>
+                <RowDragTable
+                  data={data}
+                  setData={setData}
+                  checkbox={true}
+                  selectedRows={selectedRows}
+                  toggleRowsSelection={toggleRowsSelection}
+                >
+                  <RowDragTable.CheckboxTh />
                   <RowDragTable.Theader>관리지역</RowDragTable.Theader>
                   <RowDragTable.Tbody>
                     {data.map((item) => (
@@ -31,6 +40,7 @@ export default function RegionRegistration() {
                         isClicked={selectedRow.has(item.id)}
                         onClick={() => toggleRowSelection(item.id)}
                       >
+                        <RowDragTable.CheckboxTd item={item} />
                         <RowDragTable.Td>{item.name}</RowDragTable.Td>
                       </RowDragTable.Tr>
                     ))}

@@ -5,7 +5,6 @@ import TableBox from "../../../components/Box/TableBox";
 import RowDragTable from "../../../components/Table/RowDragTable";
 import { tableTestData } from "../../../utils/testData";
 import { useState } from "react";
-import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
 import { tableDataType } from "../../../types";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { BasicButton } from "../../../components/Button";
@@ -13,11 +12,6 @@ import { BasicButton } from "../../../components/Button";
 export default function ConfigSetting() {
   const [data, setData] = useState<tableDataType[]>(tableTestData);
   const [data2, setData2] = useState<tableDataType[]>(tableTestData);
-
-  const { selectedRows: s_1, toggleRowsSelection: t_1 } =
-    useMultiRowSelection();
-  const { selectedRows: s_2, toggleRowsSelection: t_2 } =
-    useMultiRowSelection();
 
   return (
     <>
@@ -37,12 +31,7 @@ export default function ConfigSetting() {
 
               <RowDragTable.Tbody>
                 {data.map((item) => (
-                  <RowDragTable.Tr
-                    isClicked={s_1.has(item.id)}
-                    onClick={() => t_1(item.id)}
-                    key={item.id}
-                    id={item.id}
-                  >
+                  <RowDragTable.Tr key={item.id} id={item.id}>
                     <RowDragTable.Td>{item.name}</RowDragTable.Td>
                     <RowDragTable.Td>{item.name}</RowDragTable.Td>
                     <RowDragTable.Td>
@@ -78,12 +67,7 @@ export default function ConfigSetting() {
 
               <RowDragTable.Tbody>
                 {data2.map((item) => (
-                  <RowDragTable.Tr
-                    key={item.id}
-                    id={item.id}
-                    isClicked={s_2.has(item.id)}
-                    onClick={() => t_2(item.id)}
-                  >
+                  <RowDragTable.Tr key={item.id} id={item.id}>
                     <RowDragTable.Td>{item.name}</RowDragTable.Td>
                     <RowDragTable.Td>{item.name}</RowDragTable.Td>
                     <RowDragTable.Td>

@@ -50,9 +50,8 @@ export default function CallLog() {
           </GrayBox>
           <CheckboxTable
             data={tableTestData}
-            checkbox={false}
             selectedRows={selectedRows}
-            toggleRowSelection={toggleRowsSelection}
+            toggleRowsSelection={toggleRowsSelection}
           >
             <CheckboxTable.Theader>No</CheckboxTable.Theader>
             <CheckboxTable.Theader>이름</CheckboxTable.Theader>
@@ -83,9 +82,8 @@ export default function CallLog() {
           </GrayBox>
           <CheckboxTable
             data={tableTestData}
-            checkbox={false}
             selectedRows={selectedRows2}
-            toggleRowSelection={toggleRowsSelection2}
+            toggleRowsSelection={toggleRowsSelection2}
           >
             <CheckboxTable.Theader>상담일자</CheckboxTable.Theader>
             <CheckboxTable.Theader>걸기</CheckboxTable.Theader>

@@ -24,9 +24,6 @@ interface Data {
 export default function MenuGroup() {
   const { value, handleChange: tabChange } = useTabs(0);
 
-  // 테이블 선택 조건이 없으므로 다중선택 ui 적용
-  const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
-
   const [data, setData] = useState<Data[]>([
     {
       id: "1",
@@ -569,7 +566,6 @@ export default function MenuGroup() {
       salary: "$85,000",
     },
   ]); // 드래그 후 데이터를 업데이트할 상태
-
   const { selectValue, handleChange } = useSelect();
 
   const { toggle, onChange: setToggle } = useToggleButtton({
@@ -597,12 +593,7 @@ export default function MenuGroup() {
 
             <RowDragTable.Tbody>
               {data.map((item) => (
-                <RowDragTable.Tr
-                  key={item.id}
-                  id={item.id}
-                  isClicked={selectedRows.has(item.id)}
-                  onClick={() => toggleRowsSelection(item.id)}
-                >
+                <RowDragTable.Tr key={item.id} id={item.id}>
                   <RowDragTable.Td>{item.id}</RowDragTable.Td>
                   <RowDragTable.Td>{item.name}</RowDragTable.Td>
                   <RowDragTable.Td>
