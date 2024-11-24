@@ -65,6 +65,7 @@ const Tr: React.FC<TableItemProps> = React.memo(({ children, ...rest }) => {
     <tr
       onClick={() => {
         setClick(!click);
+        rest?.onClick?.();
       }}
       style={{
         backgroundColor: click ? "#F1F1F1" : "white",
