@@ -64,11 +64,7 @@ export default function UploadConsultation() {
             <CheckboxTable.Tbody>
               {tableTestData.map((item) => (
                 <CheckboxTable.Tr key={item.id} id={item.id}>
-                  <CheckboxTable.CheckboxTd
-                    selectedRows={s_2}
-                    toggleRowsSelection={t_2}
-                    item={item}
-                  />
+                  <CheckboxTable.CheckboxTd item={item} />
                   <CheckboxTable.Td>데이터</CheckboxTable.Td>
                   <CheckboxTable.Td>데이터</CheckboxTable.Td>
                   <CheckboxTable.Td>데이터</CheckboxTable.Td>

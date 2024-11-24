@@ -91,11 +91,7 @@ export default function CreateConsultation() {
               {tableTestData.map((item) => (
                 <CheckboxTable.Tr key={item.id} id={item.id}>
                   <CheckboxTable.Td>
-                    <CheckboxTable.CheckboxTd
-                      selectedRows={s_1}
-                      toggleRowsSelection={t_1}
-                      item={item}
-                    />
+                    <CheckboxTable.CheckboxTd item={item} />
                   </CheckboxTable.Td>
                   <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
                   <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
@@ -205,11 +201,7 @@ export default function CreateConsultation() {
             <CheckboxTable.Tbody>
               {tableTestData.map((item) => (
                 <CheckboxTable.Tr key={item.id} id={item.id}>
-                  <CheckboxTable.CheckboxTd
-                    selectedRows={s_3}
-                    toggleRowsSelection={t_3}
-                    item={item}
-                  />
+                  <CheckboxTable.CheckboxTd item={item} />
                   <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
                   <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
                   <CheckboxTable.Td>{item.name}</CheckboxTable.Td>

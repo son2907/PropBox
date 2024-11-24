@@ -1,9 +1,11 @@
 import React, { ReactNode, useState } from "react";
+import TableProvider from "./context/TableProvider";
+import useTableContext from "../../hooks/useTableContext";
 
 interface TableProps {
   data: { id: string; [key: string]: any }[]; // Table data
   checkbox: boolean;
-  selectedRows: Set<string | number>;
+  selectedRows: Set<string>;
   toggleRowSelection: (id: string) => void;
   checkHeadNum?: number;
   children: ReactNode;
@@ -15,9 +17,7 @@ interface TableItemProps {
 }
 
 interface CheckboxTdProps {
-  selectedRows: Set<string | number>;
-  toggleRowsSelection: (id: string | number) => void;
-  item: { id: string | number }; // item 객체의 id 속성 타입
+  item: { id: string }; // item 객체의 id 속성 타입
 }
 
 const Theader: React.FC<TableItemProps> = ({ children, ...rest }) => {
@@ -78,17 +78,15 @@ const EmptyTable = () => {
   );
 };
 
-const CheckboxTd = ({
-  selectedRows,
-  toggleRowsSelection,
-  item,
-}: CheckboxTdProps) => {
+const CheckboxTd = ({ item }: CheckboxTdProps) => {
+  const { selectedRows, toggleRowSelection } = useTableContext();
+
   return (
     <Td>
       <input
         type="checkbox"
         checked={selectedRows.has(item.id)}
-        onChange={() => toggleRowsSelection(item.id)}
+        onChange={() => toggleRowSelection(item.id)}
       />
     </Td>
   );
@@ -134,44 +132,49 @@ const CheckboxTable: React.FC<TableProps> & {
       {data.length === 0 ? (
         <EmptyTable /> // data가 없을 경우 EmptyTable 렌더링
       ) : (
-        <table className="table-auto w-full border-gray-300 border-collapse">
-          <thead>
-            <tr>
-              {React.Children.toArray(children).map((child, index) => {
-                if (
-                  (child as React.ReactElement<any>).type ===
-                  CheckboxTable.Theader
-                ) {
-                  // checkHeadNum 위치에만 체크박스 추가
-                  if (checkbox && index === checkHeadNum) {
-                    return (
-                      <>
-                        <Theader key="checkbox-header">
-                          <Checkbox
-                            checked={allSelected}
-                            onChange={handleSelectAllChange}
-                          />
-                        </Theader>
-                        {child} {/* 기존 헤더 항목도 그대로 반환 */}
-                      </>
-                    );
+        <TableProvider
+          selectedRows={selectedRows}
+          toggleRowSelection={toggleRowSelection}
+        >
+          <table className="table-auto w-full border-gray-300 border-collapse">
+            <thead>
+              <tr>
+                {React.Children.toArray(children).map((child, index) => {
+                  if (
+                    (child as React.ReactElement<any>).type ===
+                    CheckboxTable.Theader
+                  ) {
+                    // checkHeadNum 위치에만 체크박스 추가
+                    if (checkbox && index === checkHeadNum) {
+                      return (
+                        <React.Fragment key="checkbox-header-group">
+                          <Theader key="checkbox-header">
+                            <Checkbox
+                              checked={allSelected}
+                              onChange={handleSelectAllChange}
+                            />
+                          </Theader>
+                          {child}
+                        </React.Fragment>
+                      );
+                    }
+                    // checkHeadNum이 아닌 경우, 기존의 Theader 반환
+                    return child;
                   }
-                  // checkHeadNum이 아닌 경우, 기존의 Theader 반환
-                  return child;
-                }
-                return null; // Theader가 아닌 경우 무시
-              })}
-            </tr>
-          </thead>
-          {React.Children.map(children, (child) => {
-            if (
-              (child as React.ReactElement<any>).type === CheckboxTable.Tbody
-            ) {
-              return child; // Tbody를 그대로 렌더링
-            }
-            return null; // Tbody가 아닌 경우 무시
-          })}
-        </table>
+                  return null; // Theader가 아닌 경우 무시
+                })}
+              </tr>
+            </thead>
+            {React.Children.map(children, (child) => {
+              if (
+                (child as React.ReactElement<any>).type === CheckboxTable.Tbody
+              ) {
+                return child; // Tbody를 그대로 렌더링
+              }
+              return null; // Tbody가 아닌 경우 무시
+            })}
+          </table>
+        </TableProvider>
       )}
     </>
   );

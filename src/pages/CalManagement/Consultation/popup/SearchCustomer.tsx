@@ -42,11 +42,7 @@ export default function SearchCustomer() {
             <CheckboxTable.Tbody>
               {tableTestData.map((item) => (
                 <CheckboxTable.Tr key={item.id} id={item.id}>
-                  <CheckboxTable.CheckboxTd
-                    selectedRows={selectedRows}
-                    toggleRowsSelection={toggleRowsSelection}
-                    item={item}
-                  />
+                  <CheckboxTable.CheckboxTd item={item} />
                   <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
                   <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
                   <CheckboxTable.Td>{item.name}</CheckboxTable.Td>

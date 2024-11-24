@@ -2,13 +2,11 @@ import { useState } from "react";
 
 // 테이블, 단일 행 클릭 관리
 export function useSingleRowSelection() {
-  const [selectedRow, setSelectedRows] = useState<Set<string | number>>(
-    new Set()
-  );
+  const [selectedRow, setSelectedRows] = useState<Set<string>>(new Set());
 
-  const toggleRowSelection = (id: string | number) => {
+  const toggleRowSelection = (id: string) => {
     setSelectedRows((prevSelected) => {
-      const newSelected = new Set<string | number>();
+      const newSelected = new Set<string>();
       if (prevSelected.has(id)) {
         // 선택된 ID가 이미 있으면 선택 해제 (빈 Set으로)
         return newSelected;
