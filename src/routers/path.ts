@@ -18,11 +18,13 @@ const PathConstants = {
   Message: {
     Auto: "/message/auto",
     Bulk: "/message/bulk",
-    Declaration: "/message/declartion",
+    Declaration: "/message/declaration",
     Reject: "/message/reject",
     Result: "/message/result",
     PhoneNumber: "/message/auto/input-phoneNumber",
     Preview: "/message/auto/preview",
+    Sapm: "/message/auto/spam",
+    GroupCell: "/message/auto/group-cell",
   },
   Customer: {
     Registration: "/customer/registration",
