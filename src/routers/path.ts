@@ -26,6 +26,7 @@ const PathConstants = {
     Sapm: "/message/declaration/spam",
     GroupCell: "/message/declaration/group-cell",
     RegistrationExel: "/message/reject/exel",
+    SMSDetail: "/message/result/detail-content",
   },
   Customer: {
     Registration: "/customer/registration",
