@@ -1,37 +1,30 @@
 import { Box, Stack, Typography } from "@mui/material";
-import CustomerInfo from "./CustomerInfo";
 import GroupInfo from "./GroupInfo";
-import useTabs from "../../../hooks/useTabs";
 import GrayBox from "../../../components/Box/GrayBox";
 import SearchInput from "../../../components/Input/SearchInput";
 import { BasicButton } from "../../../components/Button";
 import LabelTypo from "../../../components/Typography/LabelTypo";
 import BasicInput from "../../../components/Input/BasicInput";
-import BasicTable from "../../../components/Table/BasicTable";
-import { tableTestData } from "../../../utils/testData";
-import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
 import { Select } from "../../../components/Select";
 import { selectTestData } from "../../../utils/testData";
 import useSelect from "../../../hooks/useSelect";
+import CustomerInfo from "./CustomerInfo";
+import { useState } from "react";
 
 export default function Registration() {
-  // 그룹 테이블, 고객 정보 테이블, 고객 상세정보 input
-  const { value: callValue, handleChange: callChange } = useTabs(0);
-
-  // 테이블 선택 조건이 없으므로 다중선택 ui 적용
-  const { selectedRow, toggleRowSelection } = useSingleRowSelection();
-
   const { selectValue, handleChange } = useSelect();
+
+  const [selectedAge, setSelectedAge] = useState<number | null>(null);
 
   return (
     <>
-      <Stack width={"70%"} height={"100%"} gap={1} marginRight={1}>
+      <Stack width={"70%"} height={"100%"} gap={1} marginBottom={1}>
         <GrayBox gap={2} justifyContent="space-between">
           <Stack direction="row" gap={1}>
             <SearchInput />
             <BasicButton sx={{ color: "root.mainBlue", border: 1 }}>SMS 전송</BasicButton>
           </Stack>
-          <Stack direction="row" gap={1}>
+          <Stack direction="row" gap={1} >
             <BasicButton>그룹관리</BasicButton>
             <BasicButton>엑셀등록</BasicButton>
           </Stack>
@@ -40,15 +33,17 @@ export default function Registration() {
           </Stack>
         </GrayBox>
         <Stack width={"100%"} direction="row" spacing={1}>
-          <Stack bgcolor={"white"} marginLeft={1} width={"100%"} height={"100%"}>
-            <GroupInfo />
+          <Stack bgcolor={"white"} marginLeft={1} width={"100%"}>
+            {/* GroupInfo에서 선택된 age를 받아옴 */}
+            <GroupInfo onSelect={(age) => setSelectedAge(age)}/>
           </Stack>
           <Stack width={"100%"} bgcolor={"white"} marginLeft={1}>
-            <GroupInfo />
+            {/* 선택된 age를 CustomerInfo에 전달 */}
+            <CustomerInfo selectedAge={selectedAge} />
           </Stack>
         </Stack>
       </Stack>
-      <Stack width={"30%"} >
+      <Stack width={"30%"} marginLeft={1}>
         {/* 상담항목 */}
         <GrayBox>
           <Typography fontSize={"20px"} fontWeight="bold">고객 정보</Typography>
