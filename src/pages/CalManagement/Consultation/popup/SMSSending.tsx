@@ -133,7 +133,7 @@ export default function SMSSending() {
           height={"100%"}
           marginLeft={1}
           borderLeft={1}
-          borderColor="primary.main"
+          borderColor="root.borderPrimary"
           padding={1.5}
         >
           <GrayBox height="40px">

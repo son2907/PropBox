@@ -29,6 +29,7 @@ const menuList: MenuListType = [
       { label: "대량문자", url: "/message/bulk" },
       { label: "방통위신고", url: "/message/declartion" },
       { label: "수신거부", url: "/message/reject" },
+      { label: "결과보기", url: "/message/result" },
     ],
   },
   {

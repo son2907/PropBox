@@ -38,7 +38,7 @@ const _palette: PaletteOptions = {
     light: "#ebebeb", // 밝은 회색
     lightBlue: "#CBE0FF", // 밝은 메인 파랑
     mainBlue: "#6AA5FE", // 메인이 되는 파란색
-    borderPrimary: "#E6E9EE",
+    borderPrimary: "#D9D9D9", // 밝은 회색 테두리
     coolGray400: "#8a92a8",
     coolGray600: "#575f75",
     coolGray800: "#2c2f3a",
@@ -49,12 +49,12 @@ const _palette: PaletteOptions = {
     error: "#f4475f",
   },
   primary: {
-    main: "#D9D9D9", // 중간 명도의 회색
+    main: "#6AA5FE", // 메인이 되는 파란색
     light: "#ffffff", // 흰색
     dark: "#2C2C2C", // 검은색
     A100: "#F1F1F1", // 연한 회색
     "50": "#f0f0f0", // 아주 연한 회색
-    "100": "#d9d9d9", // 더 밝은 회색
+    "100": "#D9D9D9", // 더 밝은 회색
     "200": "#bfbfbf", // 밝은 회색
     "300": "#a6a6a6", // 중간보다 약간 밝은 회색
     "400": "#8c8c8c", // 중간 회색
