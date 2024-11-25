@@ -27,7 +27,7 @@ const menuList: MenuListType = [
     subMenu: [
       { label: "자동문자", url: "/message/auto" },
       { label: "대량문자", url: "/message/bulk" },
-      { label: "방통위신고", url: "/message/declartion" },
+      { label: "방통위신고", url: "/message/declaration" },
       { label: "수신거부", url: "/message/reject" },
       { label: "결과보기", url: "/message/result" },
     ],

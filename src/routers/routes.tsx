@@ -20,10 +20,12 @@ import BasicInfo from "../pages/CalManagement/BasicInfo";
 import AutoMessage from "../pages/Message/Auto";
 import PhoneNumber from "../pages/Message/Auto/popup/PhoneNumber";
 import BulkMessage from "../pages/Message/Bulk";
-import DeclartionMessage from "../pages/Message/Declartion";
 import RejectMessage from "../pages/Message/Reject";
 import ResultMessage from "../pages/Message/Result";
 import Preview from "../pages/Message/Bulk/popup/Preview";
+import DeclarationMessage from "../pages/Message/Declaration";
+import Spam from "../pages/Message/Declaration/popup/Spam";
+import GroupCell from "../pages/Message/Declaration/popup/GroupCell";
 
 export const routes: RouteObject[] = [
   {
@@ -79,7 +81,7 @@ export const routes: RouteObject[] = [
           },
           {
             path: PathConstants.Message.Declaration,
-            element: <DeclartionMessage />,
+            element: <DeclarationMessage />,
           },
           {
             path: PathConstants.Message.Reject,
@@ -170,5 +172,13 @@ export const routes: RouteObject[] = [
   {
     path: PathConstants.Message.Preview,
     element: <Preview />,
+  },
+  {
+    path: PathConstants.Message.Sapm,
+    element: <Spam />,
+  },
+  {
+    path: PathConstants.Message.GroupCell,
+    element: <GroupCell />,
   },
 ];
