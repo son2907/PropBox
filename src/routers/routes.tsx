@@ -17,6 +17,7 @@ import CreateConsultation from "../pages/CalManagement/DataManage/popup/CreateCo
 import TopicRegistration from "../pages/CalManagement/DataManage/popup/TopicRegistration";
 import SolutionManagement from "../pages/SysManagement/Solution";
 import BasicInfo from "../pages/CalManagement/BasicInfo";
+import Registration from "../pages/CustomerManagement/Registration";
 
 export const routes: RouteObject[] = [
   {
@@ -84,7 +85,7 @@ export const routes: RouteObject[] = [
         children: [
           {
             path: PathConstants.Customer.Registration,
-            element: <div>고객 등록</div>,
+            element: <Registration/>,
           },
         ],
       },
