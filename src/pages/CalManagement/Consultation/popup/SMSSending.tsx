@@ -1,4 +1,11 @@
-import { Box, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { BasicButton, IconButton } from "../../../../components/Button";
 import GrayBox from "../../../../components/Box/GrayBox";
 import DeleteBtnInput from "../../../../components/Input/DeleteBtnInput";
@@ -13,6 +20,7 @@ import { IoSettingsOutline } from "react-icons/io5";
 import Calendar from "../../../../components/Calendar/Calendar";
 import CheckboxTable from "../../../../components/Table/CheckboxTable";
 import { useMultiRowSelection } from "../../../../hooks/useMultiRowSelection";
+import { useRadioGroup } from "../../../../hooks/useRadioGroup";
 
 export default function SMSSending() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -21,6 +29,12 @@ export default function SMSSending() {
 
   const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
   console.log(selectedRows);
+
+  const { selectedValue: radioValue, handleRadioChange: setRadioValue } =
+    useRadioGroup(""); // 초기값은 빈 문자열
+
+  const { selectedValue: radioValue2, handleRadioChange: setRadioValue2 } =
+    useRadioGroup(""); // 초기값은 빈 문자열
 
   return (
     <Box padding={2} bgcolor={"white"} height={"100%"} width={"100%"}>
@@ -37,18 +51,24 @@ export default function SMSSending() {
         >
           <Stack overflow={"hidden"} marginTop={1} gap={1}>
             <Box display={"flex"} alignItems="center">
-              <label className="whitespace-nowrap">
-                <input type="radio" name="searchType" id="type" />
-                <Typography>SMS</Typography>
-              </label>
-              <label className="whitespace-nowrap">
-                <input type="radio" name="searchType" id="type" />
-                <Typography>LMS</Typography>
-              </label>
-              <label className="whitespace-nowrap">
-                <input type="radio" name="searchType" id="type" />
-                <Typography>MMS</Typography>
-              </label>
+              <RadioGroup value={radioValue} onChange={setRadioValue} row>
+                <FormControlLabel
+                  value="sms"
+                  control={<Radio size="small" />}
+                  label="SMS"
+                />
+                <FormControlLabel
+                  value="lms"
+                  control={<Radio size="small" />}
+                  label="LMS"
+                />
+                <FormControlLabel
+                  value="mms"
+                  control={<Radio size="small" />}
+                  label="MMS"
+                />
+              </RadioGroup>
+
               <BasicButton sx={{ marginLeft: "auto" }}>이미지 선택</BasicButton>
             </Box>
 
@@ -95,27 +115,35 @@ export default function SMSSending() {
               <Typography noWrap display="inline">
                 인터발
               </Typography>
-              <Stack width={"50%"} marginLeft={10}>
-                <label className="whitespace-nowrap">
-                  <input type="radio" name="searchType" id="need" />
-                  <Typography display="inline" marginRight={1}>
-                    소요
-                  </Typography>
-                  <BasicInput sx={{ width: "100px" }} />
-                  <Typography display="inline" marginLeft={1}>
-                    분
-                  </Typography>
-                </label>
-                <label className="whitespace-nowrap">
-                  <input type="radio" name="searchType" id="term" />
-                  <Typography display="inline" marginRight={1}>
-                    간격
-                  </Typography>
-                  <BasicInput sx={{ width: "100px" }} />
-                  <Typography display="inline" marginLeft={1}>
-                    초
-                  </Typography>
-                </label>
+              <Stack width={"50%"} marginLeft={10} gap={1}>
+                <RadioGroup
+                  value={radioValue2}
+                  onChange={setRadioValue2}
+                  sx={{ gap: 1 }}
+                >
+                  <CenteredBox>
+                    <FormControlLabel
+                      value="duration"
+                      control={<Radio size="small" />}
+                      label="소요"
+                    />
+                    <BasicInput sx={{ width: "100px" }} />
+                    <Typography display="inline" marginLeft={1}>
+                      분
+                    </Typography>
+                  </CenteredBox>
+                  <CenteredBox>
+                    <FormControlLabel
+                      value="interval"
+                      control={<Radio size="small" />}
+                      label="간격"
+                    />
+                    <BasicInput sx={{ width: "100px" }} />
+                    <Typography display="inline" marginLeft={1}>
+                      초
+                    </Typography>
+                  </CenteredBox>
+                </RadioGroup>
               </Stack>
             </CenteredBox>
             <CenteredBox gap={1}>

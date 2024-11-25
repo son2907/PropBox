@@ -1,4 +1,10 @@
-import { Stack, Typography } from "@mui/material";
+import {
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  Stack,
+  Typography,
+} from "@mui/material";
 import GrayBox from "../../../components/Box/GrayBox";
 import {
   BasicButton,
@@ -22,6 +28,7 @@ import BasicInput from "../../../components/Input/BasicInput";
 import useToggleButtton from "../../../hooks/useToggleButton";
 import { openPopup } from "../../../utils/openPopup";
 import PathConstants from "../../../routers/path";
+import { useRadioGroup } from "../../../hooks/useRadioGroup";
 
 export default function AutoMessage() {
   // 이 ref를 통해 textArea에 입력된 값에 접근할 수 있음
@@ -71,6 +78,13 @@ export default function AutoMessage() {
   const { toggle: none, onChange: noneToggle } = useToggleButtton({
     defaultValue: true,
   });
+
+  const { selectedValue: radioValue, handleRadioChange: setRadioValue } =
+    useRadioGroup(""); // 초기값은 빈 문자열
+  const { selectedValue: radioValue2, handleRadioChange: setRadioValue2 } =
+    useRadioGroup(""); // 초기값은 빈 문자열
+  const { selectedValue: radioValue3, handleRadioChange: setRadioValue3 } =
+    useRadioGroup(""); // 초기값은 빈 문자열
 
   const smsPopuppInfo = {
     url: PathConstants.Message.PhoneNumber,
@@ -268,14 +282,18 @@ export default function AutoMessage() {
             </CenteredBox>
             <TextArea resize="none" height="200px" />
             <CenteredBox>
-              <label className="whitespace-nowrap">
-                <input type="radio" name="receive" id="receive-customer" />
-                <Typography>SMS</Typography>
-              </label>
-              <label className="whitespace-nowrap">
-                <input type="radio" name="receive" id="receive-customer" />
-                <Typography>LMS</Typography>
-              </label>
+              <RadioGroup value={radioValue} onChange={setRadioValue} row>
+                <FormControlLabel
+                  value="sms"
+                  control={<Radio size="small" />}
+                  label="SMS"
+                />
+                <FormControlLabel
+                  value="lms"
+                  control={<Radio size="small" />}
+                  label="LMS"
+                />
+              </RadioGroup>
             </CenteredBox>
 
             {/* 수신 거부 고객 */}
@@ -304,14 +322,18 @@ export default function AutoMessage() {
             </CenteredBox>
             <TextArea resize="none" height="200px" />
             <CenteredBox>
-              <label className="whitespace-nowrap">
-                <input type="radio" name="out" id="out-customer" />
-                <Typography>SMS</Typography>
-              </label>
-              <label className="whitespace-nowrap">
-                <input type="radio" name="out" id="out-customer" />
-                <Typography>LMS</Typography>
-              </label>
+              <RadioGroup value={radioValue2} onChange={setRadioValue2} row>
+                <FormControlLabel
+                  value="sms"
+                  control={<Radio size="small" />}
+                  label="SMS"
+                />
+                <FormControlLabel
+                  value="lms"
+                  control={<Radio size="small" />}
+                  label="LMS"
+                />
+              </RadioGroup>
             </CenteredBox>
 
             {/* 미응답 고객 */}
@@ -340,14 +362,18 @@ export default function AutoMessage() {
             </CenteredBox>
             <TextArea resize="none" height="200px" />
             <CenteredBox>
-              <label className="whitespace-nowrap">
-                <input type="radio" name="none" id="none-customer" />
-                <Typography>SMS</Typography>
-              </label>
-              <label className="whitespace-nowrap">
-                <input type="radio" name="none" id="none-customer" />
-                <Typography>LMS</Typography>
-              </label>
+              <RadioGroup value={radioValue3} onChange={setRadioValue3} row>
+                <FormControlLabel
+                  value="sms"
+                  control={<Radio size="small" />}
+                  label="SMS"
+                />
+                <FormControlLabel
+                  value="lms"
+                  control={<Radio size="small" />}
+                  label="LMS"
+                />
+              </RadioGroup>
             </CenteredBox>
           </Stack>
         </TableBox>

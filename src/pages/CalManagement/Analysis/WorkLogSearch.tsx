@@ -1,4 +1,11 @@
-import { SelectChangeEvent, Stack, Typography } from "@mui/material";
+import {
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  SelectChangeEvent,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { Select } from "../../../components/Select";
 import useSelect from "../../../hooks/useSelect";
 import { selectTestData } from "../../../utils/testData";
@@ -9,6 +16,7 @@ import { ReactNode, useState } from "react";
 import TextArea from "../../../components/TextArea/TextArea";
 import { BasicButton } from "../../../components/Button";
 import Calendar from "../../../components/Calendar/Calendar";
+import { useRadioGroup } from "../../../hooks/useRadioGroup";
 
 export default function WorkLogSearch() {
   const { selectValue: s_0, handleChange: o_0 } = useSelect();
@@ -82,6 +90,9 @@ export default function WorkLogSearch() {
   ];
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
+  const { selectedValue: radioValue, handleRadioChange: setRadioValue } =
+    useRadioGroup(""); // 초기값은 빈 문자열
+
   return (
     <Stack width={"100%"} gap={2}>
       <CenteredBox gap={1}>
@@ -103,14 +114,18 @@ export default function WorkLogSearch() {
       </CenteredBox>
       <CenteredBox gap={1}>
         <Typography>산정 기준</Typography>
-        <label className="whitespace-nowrap">
-          <input type="radio" name="searchType" id="type" />
-          <Typography>건수별</Typography>
-        </label>
-        <label className="whitespace-nowrap">
-          <input type="radio" name="searchType" id="type" />
-          <Typography>고객별</Typography>
-        </label>
+        <RadioGroup value={radioValue} onChange={setRadioValue} row>
+          <FormControlLabel
+            value="count"
+            control={<Radio size="small" />}
+            label="건수별"
+          />
+          <FormControlLabel
+            value="customer"
+            control={<Radio size="small" />}
+            label="고객별"
+          />
+        </RadioGroup>
       </CenteredBox>
       {/* 통계1 */}
       <Statistics

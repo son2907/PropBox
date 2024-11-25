@@ -1,24 +1,32 @@
-import { Box, Typography } from "@mui/material";
+import { Box, FormControlLabel, Radio, RadioGroup } from "@mui/material";
 import CheckboxTable from "../../../../components/Table/CheckboxTable";
 import { tableTestData } from "../../../../utils/testData";
 import { useMultiRowSelection } from "../../../../hooks/useMultiRowSelection";
 import SearchInput from "../../../../components/Input/SearchInput";
+import { useRadioGroup } from "../../../../hooks/useRadioGroup";
 
 export default function SearchCustomer() {
   const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
   console.log(selectedRows);
+  const { selectedValue: radioValue, handleRadioChange: setRadioValue } =
+    useRadioGroup(""); // 초기값은 빈 문자열
 
   return (
     <Box padding={2} bgcolor={"white"} width={"100%"} height={"100%"}>
       <Box display={"flex"} alignItems="center" width="100%" paddingBottom={2}>
-        <label className="whitespace-nowrap">
-          <input type="radio" name="searchType" id="name" />
-          <Typography>고객이름으로 검색</Typography>
-        </label>
-        <label className="whitespace-nowrap">
-          <input type="radio" name="searchType" id="phone" />
-          <Typography>전화번호로 검색</Typography>
-        </label>
+        <RadioGroup value={radioValue} onChange={setRadioValue} row>
+          <FormControlLabel
+            value="sms"
+            control={<Radio size="small" />}
+            label="고객이름으로 검색"
+          />
+          <FormControlLabel
+            value="lms"
+            control={<Radio size="small" />}
+            label="전화번호로 검색"
+          />
+        </RadioGroup>
+
         <SearchInput
           sx={{ marginLeft: "auto", width: "50%" }}
           placeholder="검색 내용을 입력하세요."

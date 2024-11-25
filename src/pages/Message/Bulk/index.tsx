@@ -75,7 +75,7 @@ export default function BulkMessage() {
 
   return (
     <Stack width={"100%"} height={"100%"} gap={1}>
-      <GrayBox gap={1} marginBottom={3}>
+      <GrayBox gap={1} marginBottom={2}>
         <Typography color="error.main">
           SMS(단문) 발송 시 URL 주소가 포함될 경우 SKT는 통신사 정책에 의해
           문자가 스팸처리 됩니다.(KT, LG는 무관함)
@@ -92,6 +92,9 @@ export default function BulkMessage() {
           실험발송
         </BasicButton>
         <BasicButton>문자발송</BasicButton>
+        <IconSquareButton color="primary">
+          <HiRefresh />
+        </IconSquareButton>
       </GrayBox>
 
       <TableBox gap={2}>

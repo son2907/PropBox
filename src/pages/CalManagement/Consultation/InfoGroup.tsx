@@ -39,7 +39,7 @@ export default function InfoGroup({ tabType }: TabType) {
 
   const smsPopupInfo = {
     url: PathConstants.Call.SmsSending,
-    windowFeatures: "width=1000,height=650,scrollbars=yes,resizable=yes",
+    windowFeatures: "width=1000,height=700,scrollbars=yes,resizable=yes",
     windowName: "sms 전송",
   };
 

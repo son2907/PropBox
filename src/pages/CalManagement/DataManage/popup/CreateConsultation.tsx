@@ -1,4 +1,10 @@
-import { Stack, Typography } from "@mui/material";
+import {
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  Stack,
+  Typography,
+} from "@mui/material";
 import GrayBox from "../../../../components/Box/GrayBox";
 import { Select } from "../../../../components/Select";
 import { selectTestData, tableTestData } from "../../../../utils/testData";
@@ -16,6 +22,7 @@ import { useState } from "react";
 import RowDragTable from "../../../../components/Table/RowDragTable";
 import { openPopup } from "../../../../utils/openPopup";
 import PathConstants from "../../../../routers/path";
+import { useRadioGroup } from "../../../../hooks/useRadioGroup";
 interface Data {
   id: string;
   [key: string]: any;
@@ -35,6 +42,11 @@ export default function CreateConsultation() {
     url: PathConstants.Call.TopicRegistration,
     windowName: "상담 주제 등록",
   };
+  const { selectedValue: radioValue, handleRadioChange: setRadioValue } =
+    useRadioGroup(""); // 초기값은 빈 문자열
+
+  const { selectedValue: radioValue2, handleRadioChange: setRadioValue2 } =
+    useRadioGroup(""); // 초기값은 빈 문자열
 
   return (
     <Stack width={"100%"} height={"100%"} bgcolor={"white"} gap={1}>
@@ -113,14 +125,20 @@ export default function CreateConsultation() {
 
           <CenteredBox gap={1}>
             <Typography width={"145px"}>통화, 부재중</Typography>
-            <label className="whitespace-nowrap">
-              <input type="radio" name="duplication" id="duplication-removal" />
-              <Typography>중복제거</Typography>
-            </label>
-            <label className="whitespace-nowrap">
-              <input type="radio" name="duplication" id="duplication-select" />
-              <Typography>중복자료 선택</Typography>
-            </label>
+
+            <RadioGroup value={radioValue} onChange={setRadioValue} row>
+              <FormControlLabel
+                value="removalDuplication"
+                control={<Radio size="small" />}
+                label="중복제거"
+              />
+              <FormControlLabel
+                value="selectDuplication"
+                control={<Radio size="small" />}
+                label="중복자료 선택"
+              />
+            </RadioGroup>
+
             <CenteredBox>
               <Stack>
                 <Typography>
@@ -136,14 +154,19 @@ export default function CreateConsultation() {
           </CenteredBox>
           <CenteredBox gap={1}>
             <Typography width={"145px"}>인적사항 수정</Typography>
-            <label className="whitespace-nowrap">
-              <input type="radio" name="set" id="duplication-none" />
-              <Typography>동작안함</Typography>
-            </label>
-            <label className="whitespace-nowrap">
-              <input type="radio" name="set" id="duplication-update" />
-              <Typography>중복자료 업데이트</Typography>
-            </label>
+
+            <RadioGroup value={radioValue2} onChange={setRadioValue2} row>
+              <FormControlLabel
+                value="stop"
+                control={<Radio size="small" />}
+                label="동작안함"
+              />
+              <FormControlLabel
+                value="update"
+                control={<Radio size="small" />}
+                label="중복자료 업데이트"
+              />
+            </RadioGroup>
           </CenteredBox>
         </Stack>
       </GrayBox>
