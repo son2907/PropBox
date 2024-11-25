@@ -17,6 +17,8 @@ import CreateConsultation from "../pages/CalManagement/DataManage/popup/CreateCo
 import TopicRegistration from "../pages/CalManagement/DataManage/popup/TopicRegistration";
 import SolutionManagement from "../pages/SysManagement/Solution";
 import BasicInfo from "../pages/CalManagement/BasicInfo";
+import AutoMessage from "../pages/Message/Auto";
+import PhoneNumber from "../pages/Message/Auto/popup/PhoneNumber";
 
 export const routes: RouteObject[] = [
   {
@@ -64,7 +66,7 @@ export const routes: RouteObject[] = [
         children: [
           {
             path: PathConstants.Message.Auto,
-            element: <div>자동 문자</div>,
+            element: <AutoMessage />,
           },
           {
             path: PathConstants.Message.Bulk,
@@ -151,5 +153,9 @@ export const routes: RouteObject[] = [
   {
     path: PathConstants.Call.TopicRegistration,
     element: <TopicRegistration />,
+  },
+  {
+    path: PathConstants.Message.PhoneNumber,
+    element: <PhoneNumber />,
   },
 ];
