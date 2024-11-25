@@ -20,13 +20,13 @@ export default function IconSquareButton({
         display: "flex",
         border: "1px solid", // 테두리 추가
         margin: "0px 5px 0px 5px",
-        borderColor: "primary.main", // 테두리 색상 지정
+        borderColor: "root.borderPrimary", // 테두리 색상 지정
         borderRadius: "8px", // 둥근 사각형 테두리
         backgroundColor: "primary.light",
         height: "100%",
         "&:hover": {
           backgroundColor: "primary.light", // 배경색 유지
-          borderColor: "primary.main", // 테두리 색상 유지
+          borderColor: "root.borderPrimary", // 테두리 색상 유지
         },
         ...(rest.sx || {}),
       }}

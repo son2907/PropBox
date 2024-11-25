@@ -17,6 +17,13 @@ import CreateConsultation from "../pages/CalManagement/DataManage/popup/CreateCo
 import TopicRegistration from "../pages/CalManagement/DataManage/popup/TopicRegistration";
 import SolutionManagement from "../pages/SysManagement/Solution";
 import BasicInfo from "../pages/CalManagement/BasicInfo";
+import AutoMessage from "../pages/Message/Auto";
+import PhoneNumber from "../pages/Message/Auto/popup/PhoneNumber";
+import BulkMessage from "../pages/Message/Bulk";
+import DeclartionMessage from "../pages/Message/Declartion";
+import RejectMessage from "../pages/Message/Reject";
+import ResultMessage from "../pages/Message/Result";
+import Preview from "../pages/Message/Bulk/popup/Preview";
 
 export const routes: RouteObject[] = [
   {
@@ -64,19 +71,23 @@ export const routes: RouteObject[] = [
         children: [
           {
             path: PathConstants.Message.Auto,
-            element: <div>자동 문자</div>,
+            element: <AutoMessage />,
           },
           {
             path: PathConstants.Message.Bulk,
-            element: <div>대량 문자</div>,
+            element: <BulkMessage />,
           },
           {
             path: PathConstants.Message.Declaration,
-            element: <div>방통위 신고</div>,
+            element: <DeclartionMessage />,
           },
           {
             path: PathConstants.Message.Reject,
-            element: <div>수신 거부</div>,
+            element: <RejectMessage />,
+          },
+          {
+            path: PathConstants.Message.Result,
+            element: <ResultMessage />,
           },
         ],
       },
@@ -151,5 +162,13 @@ export const routes: RouteObject[] = [
   {
     path: PathConstants.Call.TopicRegistration,
     element: <TopicRegistration />,
+  },
+  {
+    path: PathConstants.Message.PhoneNumber,
+    element: <PhoneNumber />,
+  },
+  {
+    path: PathConstants.Message.Preview,
+    element: <Preview />,
   },
 ];

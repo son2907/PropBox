@@ -22,7 +22,7 @@ const Theader: React.FC<TableItemProps> = ({ children, ...rest }) => {
   return (
     <th
       {...rest}
-      className="border-solid bg-gray-200 border border-gray-300 border-b-0 border-t-0 last:border-0 text-left whitespace-nowrap"
+      className="border-solid bg-gray-200 py-3 border border-gray-300 border-b-0 border-t-0 last:border-0 text-left whitespace-nowrap"
     >
       {children}
     </th>

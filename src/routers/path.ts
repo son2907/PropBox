@@ -20,6 +20,9 @@ const PathConstants = {
     Bulk: "/message/bulk",
     Declaration: "/message/declartion",
     Reject: "/message/reject",
+    Result: "/message/result",
+    PhoneNumber: "/message/auto/input-phoneNumber",
+    Preview: "/message/auto/preview",
   },
   Customer: {
     Registration: "/customer/registration",
