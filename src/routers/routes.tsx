@@ -26,6 +26,7 @@ import Preview from "../pages/Message/Bulk/popup/Preview";
 import DeclarationMessage from "../pages/Message/Declaration";
 import Spam from "../pages/Message/Declaration/popup/Spam";
 import GroupCell from "../pages/Message/Declaration/popup/GroupCell";
+import RegistrationExel from "../pages/Message/Reject/popup/RegistrationExel";
 
 export const routes: RouteObject[] = [
   {
@@ -180,5 +181,9 @@ export const routes: RouteObject[] = [
   {
     path: PathConstants.Message.GroupCell,
     element: <GroupCell />,
+  },
+  {
+    path: PathConstants.Message.RegistrationExel,
+    element: <RegistrationExel />,
   },
 ];

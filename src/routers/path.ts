@@ -23,8 +23,9 @@ const PathConstants = {
     Result: "/message/result",
     PhoneNumber: "/message/auto/input-phoneNumber",
     Preview: "/message/auto/preview",
-    Sapm: "/message/auto/spam",
-    GroupCell: "/message/auto/group-cell",
+    Sapm: "/message/declaration/spam",
+    GroupCell: "/message/declaration/group-cell",
+    RegistrationExel: "/message/reject/exel",
   },
   Customer: {
     Registration: "/customer/registration",
