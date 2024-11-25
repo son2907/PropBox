@@ -1,7 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
 import GrayBox from "../../../components/Box/GrayBox";
 import { BasicButton, ToggleButton } from "../../../components/Button";
-import SelectorTabs from "../../../components/Tab/SelectorTabs";
 import BasicInput from "../../../components/Input/BasicInput";
 import useTabs from "../../../hooks/useTabs";
 import TabPanel from "../../../components/Tab/TabPanel";
