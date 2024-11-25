@@ -1,4 +1,4 @@
-import { Box, Pagination, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import GrayBox from "../../../components/Box/GrayBox";
 import { BasicButton, ToggleButton } from "../../../components/Button";
 import BasicInput from "../../../components/Input/BasicInput";
@@ -11,29 +11,18 @@ import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
 import RowDragTable from "../../../components/Table/RowDragTable";
 import TextArea from "../../../components/TextArea/TextArea";
 import { useRef, useState } from "react";
-import { Select } from "../../../components/Select";
-import { selectTestData } from "../../../utils/testData";
 import useSelect from "../../../hooks/useSelect";
+import { selectTestData } from "../../../utils/testData";
+import { Select } from "../../../components/Select";
 import useToggleButtton from "../../../hooks/useToggleButton";
-import TableBox from "../../../components/Box/TableBox";
-import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
-import CheckboxTable from "../../../components/Table/CheckboxTable";
-import { usePagination } from "../../../hooks/usePagination";
-import TableSelect from "../../../components/Select/TableSelect";
 
 interface Data {
   id: string;
   [key: string]: any;
 }
 
-export default function GroupInfo() {
+export default function CustomerInfo() {
   const { value, handleChange: tabChange } = useTabs(0);
-
-  const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함 
-
-  // usePagination에
-  const { currentPage, onChangePage } = usePagination();
-
 
   const [data, setData] = useState<Data[]>([
     {
@@ -577,7 +566,6 @@ export default function GroupInfo() {
       salary: "$85,000",
     },
   ]); // 드래그 후 데이터를 업데이트할 상태
-
   const { selectValue, handleChange } = useSelect();
 
   const { toggle, onChange: setToggle } = useToggleButtton({
@@ -589,40 +577,135 @@ export default function GroupInfo() {
       <TabPanel value={value} index={0}>
         <div
           style={{
-            height: "height:calc(100% -300px)",
-            overflowY: "scroll", // 세로 스크롤 활성화
-            overflowX: "hidden", // 가로 스크롤 비활성화
+            height: "80%",
+            overflow: "scroll",
           }}
         >
-          <TableBox>
-            <TableBox.Inner>
-              <BasicTable data={tableTestData}>
-                <BasicTable.Theader>구분</BasicTable.Theader>
-                <BasicTable.Theader>그룹명칭</BasicTable.Theader>
-                <BasicTable.Theader>등록건수</BasicTable.Theader>
-                <BasicTable.Tbody>
-                  {tableTestData.map((item, index) => {
-                    return (
-                      <BasicTable.Tr
-                        key={index}
-                        isClicked={selectedRow.has(item.id)}
-                        onClick={() => toggleRowSelection(item.id)}
-                      >
-                        <BasicTable.Td>{item.phone}</BasicTable.Td>
-                        <BasicTable.Td>{item.name}</BasicTable.Td>
-                        <BasicTable.Td>{item.age}</BasicTable.Td>
-                      </BasicTable.Tr>
-                    );
-                  })}
-                </BasicTable.Tbody>
-              </BasicTable>
-            </TableBox.Inner>
-          </TableBox>
-          <Stack direction="row" gap={1} >
-            <Pagination count={25} page={currentPage} onChange={onChangePage} />
-            <TableSelect total={100} />
-          </Stack>
+          <RowDragTable
+            checkbox={false}
+            data={data}
+            setData={setData} // 데이터를 업데이트할 함수를 전달
+          >
+            <RowDragTable.Theader>메뉴ID</RowDragTable.Theader>
+            <RowDragTable.Theader>메뉴이름</RowDragTable.Theader>
+            <RowDragTable.Theader>라이선스체크</RowDragTable.Theader>
+            <RowDragTable.Theader>사용여부</RowDragTable.Theader>
+
+            <RowDragTable.Tbody>
+              {data.map((item) => (
+                <RowDragTable.Tr key={item.id} id={item.id}>
+                  <RowDragTable.Td>{item.id}</RowDragTable.Td>
+                  <RowDragTable.Td>{item.name}</RowDragTable.Td>
+                  <RowDragTable.Td>
+                    {
+                      <Select
+                        value={selectValue}
+                        onChange={handleChange}
+                        selectData={selectTestData}
+                        sx={{ width: "204px" }}
+                      />
+                    }
+                  </RowDragTable.Td>
+                  <RowDragTable.Td>{item.age}</RowDragTable.Td>
+                </RowDragTable.Tr>
+              ))}
+            </RowDragTable.Tbody>
+          </RowDragTable>
         </div>
+        <Stack overflow={"hidden"}>
+          <GrayBox marginBottom={1}>메뉴 상세정보</GrayBox>
+          <Stack
+            gap={1}
+            alignItems={"left"}
+            minHeight={"50%"}
+            style={{
+              overflowY: "scroll", // 세로 스크롤 활성화
+              overflowX: "hidden", // 가로 스크롤 비활성화
+            }}
+          >
+            <Box
+              display="flex"
+              flexDirection="column" // 세로 방향 설정
+              alignItems="start" // 왼쪽 정렬
+            >
+              <Typography color="primary.dark" marginBottom={1}>
+                메뉴 ID
+              </Typography>
+              <BasicInput sx={{ height: "35px", width: "60%" }} />
+            </Box>
+            <Box
+              display="flex"
+              flexDirection="column" // 세로 방향 설정
+              alignItems="start" // 왼쪽 정렬
+            >
+              <Typography color="primary.dark" marginBottom={1}>
+                메뉴 이름
+              </Typography>
+              <BasicInput sx={{ height: "35px", width: "60%" }} />
+            </Box>
+            <Box
+              display="flex"
+              flexDirection="column" // 세로 방향 설정
+              alignItems="start" // 왼쪽 정렬
+            >
+              <Typography color="primary.dark" marginBottom={1}>
+                라이선스 체크
+              </Typography>
+              <Select
+                value={selectValue}
+                onChange={handleChange}
+                selectData={selectTestData}
+                sx={{ width: "204px" }}
+              />
+            </Box>
+            <Box
+              display="flex"
+              flexDirection="column" // 세로 방향 설정
+              alignItems="start" // 왼쪽 정렬
+            >
+              <Typography color="primary.dark" marginBottom={1}>
+                URL
+              </Typography>
+              <BasicInput sx={{ height: "35px", width: "100%" }} />
+            </Box>
+            <Box
+              display="flex"
+              flexDirection="column" // 세로 방향 설정
+              alignItems="start" // 왼쪽 정렬
+            >
+              <Typography color="primary.dark" marginBottom={1}>
+                아이콘
+              </Typography>
+              <BasicInput sx={{ height: "35px", width: "60%" }} />
+            </Box>
+            <Box
+              display="flex"
+              flexDirection="column" // 세로 방향 설정
+              alignItems="start" // 왼쪽 정렬
+            >
+              <Typography color="primary.dark" marginBottom={1}>
+                사용여부
+              </Typography>
+              <ToggleButton checked={toggle} onChange={setToggle} label="" />
+            </Box>
+
+            <Box
+              display="flex"
+              flexDirection="column" // 세로 방향 설정
+              alignItems="start" // 왼쪽 정렬
+            >
+              <Typography color="primary.dark" marginBottom={1}>
+                비고
+              </Typography>
+              <BasicInput sx={{ height: "35px", width: "100%" }} />
+            </Box>
+          </Stack>
+          <GrayBox height={"40px"} marginTop={1} justifyContent={"flex-end"}>
+            <BasicButton>추가</BasicButton>
+            <BasicButton>저장</BasicButton>
+            <BasicButton>삭제</BasicButton>
+          </GrayBox>
+        </Stack>
       </TabPanel>
     </>
   );

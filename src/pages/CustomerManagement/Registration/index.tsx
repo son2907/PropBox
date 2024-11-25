@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
-import CustomerInfo from "./GroupManagement";
-import GroupInfo from "./CustomerInfo";
+import CustomerInfo from "./CustomerInfo";
+import GroupInfo from "./GroupInfo";
 import useTabs from "../../../hooks/useTabs";
 import GrayBox from "../../../components/Box/GrayBox";
 import SearchInput from "../../../components/Input/SearchInput";
@@ -40,11 +40,11 @@ export default function Registration() {
           </Stack>
         </GrayBox>
         <Stack width={"100%"} direction="row" spacing={1}>
-          <Stack bgcolor={"white"} marginLeft={1} width={"100%"} height={""}>
+          <Stack bgcolor={"white"} marginLeft={1} width={"100%"} height={"100%"}>
             <GroupInfo />
           </Stack>
           <Stack width={"100%"} bgcolor={"white"} marginLeft={1}>
-            <CustomerInfo />
+            <GroupInfo />
           </Stack>
         </Stack>
       </Stack>
