@@ -15,45 +15,33 @@ export default function CustomAlert({
     <Box
       sx={{
         position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.2)", // 20% opacity의 검은색 배경
-        zIndex: 1200, // CustomAlert의 zIndex보다 낮은 값
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)", // 중앙 정렬
+        padding: "10px",
+        width: "400px",
+        textAlign: "center",
+        backgroundColor: "primary.light",
+        zIndex: 1300, // MUI의 기본 모달 z-index
       }}
     >
-      <Box
-        sx={{
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)", // 중앙 정렬
-          padding: "10px",
-          width: "400px",
-          textAlign: "center",
-          backgroundColor: "primary.light",
-          zIndex: 1300, // MUI의 기본 모달 z-index
-        }}
-      >
-        <Box sx={{ position: "relative" }}>
-          <IconButton
-            sx={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              backgroundColor: "#E5E5E5",
-            }} // 오른쪽 위에 위치
-            onClick={onClose} // 닫기 버튼 클릭 시 onClose 호출
-          >
-            <CloseIcon />
-          </IconButton>
-          <Stack>
-            {renderChild(children, CustomAlert.Title)}
-            {renderChild(children, CustomAlert.Content)}
-            {renderChild(children, CustomAlert.ButtonZone)}
-          </Stack>
-        </Box>
+      <Box sx={{ position: "relative" }}>
+        <IconButton
+          sx={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            backgroundColor: "#E5E5E5",
+          }} // 오른쪽 위에 위치
+          onClick={onClose} // 닫기 버튼 클릭 시 onClose 호출
+        >
+          <CloseIcon />
+        </IconButton>
+        <Stack>
+          {renderChild(children, CustomAlert.Title)}
+          {renderChild(children, CustomAlert.Content)}
+          {renderChild(children, CustomAlert.ButtonZone)}
+        </Stack>
       </Box>
     </Box>
   );

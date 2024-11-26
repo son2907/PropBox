@@ -11,9 +11,9 @@ export default function useModal() {
 
   const openModal = <P extends ModalPropsType>(
     Component: ComponentType<P>,
-    props?: P
+    props?: P & { stack?: boolean }
   ) => {
-    open(Component, props ? props : {});
+    open(Component, { ...props, stack: props?.stack ?? true });
   };
 
   const closeModal = (key: string) => {

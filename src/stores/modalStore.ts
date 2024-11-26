@@ -34,14 +34,23 @@ export const useModalStore = create<ModalStoreType>((set, get) => ({
     const key = props.key || Date.now().toString(); // key가 없으면 현재 시간을 문자열로 사용
     props.modalId = key; // 모달 ID를 props에 저장
 
+    // stack: false인 경우
+    if (props.stack === false) {
+      if (modals.length > 0) {
+        console.error(
+          "새로운 모달을 열 수 없습니다. 기존 모달이 닫혀야 합니다."
+        );
+        return;
+      }
+      set({ modals: [{ Component, props, key }] }); // 기존 모달을 덮어씀
+      return;
+    }
+    // stack: true 경우
     if (!modal) {
-      // 동일한 key를 가진 모달이 없을 때만 새로운 모달 추가
       set({ modals: [...modals, { Component, props, key }] });
-      // 새로운 모달을 기존 모달 리스트에 추가
     }
   },
   close: (key: string) => {
-    console.log("실행됨");
     const { modals } = get(); // 현재 열려 있는 모달 리스트 가져오기
     set({ modals: modals.filter((m) => m.key !== key) });
     // 주어진 key와 일치하지 않는 모달들만 남김 (특정 모달 닫기)

@@ -13,7 +13,6 @@ export default function Button(theme: Theme) {
   const containedButton: (p: ColorType) => CSSObject = (p) => ({
     backgroundColor: p.main,
     color: p.text,
-    ":hover": { backgroundColor: p.hover }, // 마우스를 올렸을 때 배경 색상
     "& .MuiTouchRipple-child": { backgroundColor: p.ripple }, // Ripple 효과의 색상
   });
 
@@ -23,7 +22,7 @@ export default function Button(theme: Theme) {
     border: `1px solid ${p.main}`, // 테두리 색상
     backgroundColor: theme.palette.common.white, // 배경색은 흰색으로 고정
     color: p.text, // 텍스트 색상은 text 색상
-    ":hover": { backgroundColor: p.hover }, // 마우스를 올렸을 때 배경색
+    ":hover": { backgroundColor: theme.palette.primary[50] }, // 마우스를 올렸을 때 배경색
     "& .MuiTouchRipple-child": { backgroundColor: p.ripple }, // Ripple 효과의 색상
   });
 

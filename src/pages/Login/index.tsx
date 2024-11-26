@@ -14,7 +14,7 @@ export default function Login() {
     console.log(idRef.current?.value, passwordRef.current?.value);
   };
   return (
-    <Stack width={"300px"} gap={1} justifyContent={"center"}>
+    <Stack width={"300px"} gap={1.5} justifyContent={"center"}>
       <Box>
         <img src={Logo} alt="logo" width={"100%"} />
       </Box>
