@@ -1,8 +1,8 @@
 import React, { ReactNode } from "react";
-import ReactDOM from "react-dom";
 import { renderChild } from "../../utils/renderChild";
-import { Box, Typography, IconButton } from "@mui/material";
+import { Box, Typography, IconButton, Stack } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close"; // Close 아이콘
+import { PropsType } from "../../types";
 
 export default function CustomAlert({
   children,
@@ -11,7 +11,7 @@ export default function CustomAlert({
   children: ReactNode;
   onClose: () => void;
 }) {
-  return ReactDOM.createPortal(
+  return (
     <Box
       sx={{
         position: "fixed",
@@ -48,41 +48,44 @@ export default function CustomAlert({
           >
             <CloseIcon />
           </IconButton>
-          {renderChild(children, CustomAlert.Title)}
-          {renderChild(children, CustomAlert.Content)}
-          {renderChild(children, CustomAlert.ButtonZone)}
+          <Stack>
+            {renderChild(children, CustomAlert.Title)}
+            {renderChild(children, CustomAlert.Content)}
+            {renderChild(children, CustomAlert.ButtonZone)}
+          </Stack>
         </Box>
       </Box>
-    </Box>,
-    document.getElementById("alert")!
+    </Box>
   );
 }
 
-const Title = ({ children }: { children: ReactNode }) => {
+const Title = ({ children, ...rest }: PropsType) => {
   return (
-    <Typography variant="h4" padding={1} paddingTop={3}>
+    <Typography variant="h4" padding={1} paddingTop={3} {...rest}>
       {children}
     </Typography>
   );
 };
 
-const Content = ({ children }: { children: ReactNode }) => {
+const Content = ({ children, ...rest }: PropsType) => {
   return (
-    <Typography variant="bodySS" color="gray">
+    <Typography variant="bodySS" color="gray" {...rest}>
       {children}
     </Typography>
   );
 };
 
-const ButtonZone = ({ children }: { children: ReactNode }) => {
+const ButtonZone = ({ children, ...rest }: PropsType) => {
   return (
     <Box
       sx={{
         display: "flex",
         justifyContent: "center",
         padding: "10px",
+        marginTop: 2,
         gap: "10px",
       }}
+      {...rest}
     >
       {children}
     </Box>

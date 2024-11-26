@@ -2,11 +2,13 @@ import "./App.css";
 import ThemeProvider from "./theme";
 import { RouterProvider } from "react-router-dom";
 import router from "./routers";
+import ModalContainer from "./components/ModalContainer";
 
 function App() {
   return (
     <ThemeProvider>
       <RouterProvider router={router} />
+      <ModalContainer />
     </ThemeProvider>
   );
 }

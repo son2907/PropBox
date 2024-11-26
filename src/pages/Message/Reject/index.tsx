@@ -25,6 +25,7 @@ export default function RejectMessage() {
     windowName: "수신거부 엑셀등록",
     windowFeatures: "width=1000,height=500,scrollbars=yes,resizable=yes",
   };
+
   return (
     <Stack width={"100%"} height={"100%"} gap={2}>
       <GrayBox gap={1}>
