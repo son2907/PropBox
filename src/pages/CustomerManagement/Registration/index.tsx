@@ -10,11 +10,27 @@ import { selectTestData } from "../../../utils/testData";
 import useSelect from "../../../hooks/useSelect";
 import CustomerInfo from "./CustomerInfo";
 import { useState } from "react";
+import PathConstants from "../../../routers/path";
+import { openPopup } from "../../../utils/openPopup";
 
 export default function Registration() {
   const { selectValue, handleChange } = useSelect();
 
   const [selectedAge, setSelectedAge] = useState<number | null>(null);
+
+  //엑셀업로드 팝업 오픈
+  const uploadRegistration = {
+    url: PathConstants.Customer.RegistrationUpload,
+    windowName: "고객엑셀등록",
+    windowFeatures: "width=1200,height=500,scrollbars=yes,resizable=yes",
+  };
+
+  //고객 그룹관리 팝업 오픈
+  const GroupManagement = {
+    url: PathConstants.Customer.CustomerGroupManagement,
+    windowName: "고객그룹관리",
+    windowFeatures: "width=1066,height=1000,scrollbars=yes,resizable=yes",
+  };
 
   return (
     <>
@@ -25,8 +41,24 @@ export default function Registration() {
             <BasicButton sx={{ color: "root.mainBlue", border: 1 }}>SMS 전송</BasicButton>
           </Stack>
           <Stack direction="row" gap={1} >
-            <BasicButton>그룹관리</BasicButton>
-            <BasicButton>엑셀등록</BasicButton>
+            <BasicButton
+              onClick={() => {
+                openPopup({
+                  url: GroupManagement.url,
+                  windowName: GroupManagement.windowName,
+                  windowFeatures: GroupManagement.windowFeatures,
+                });
+              }}
+            >그룹관리</BasicButton>
+            <BasicButton
+              onClick={() => {
+                openPopup({
+                  url: uploadRegistration.url,
+                  windowName: uploadRegistration.windowName,
+                  windowFeatures: uploadRegistration.windowFeatures,
+                });
+              }}
+            >엑셀등록</BasicButton>
           </Stack>
           <Stack direction="row" gap={1}>
             <BasicButton>엑셀저장</BasicButton>
@@ -35,7 +67,7 @@ export default function Registration() {
         <Stack width={"100%"} direction="row" spacing={1}>
           <Stack bgcolor={"white"} marginLeft={1} width={"100%"}>
             {/* GroupInfo에서 선택된 age를 받아옴 */}
-            <GroupInfo onSelect={(age) => setSelectedAge(age)}/>
+            <GroupInfo onSelect={(age) => setSelectedAge(age)} />
           </Stack>
           <Stack width={"100%"} bgcolor={"white"} marginLeft={1}>
             {/* 선택된 age를 CustomerInfo에 전달 */}

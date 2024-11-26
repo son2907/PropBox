@@ -23,6 +23,8 @@ const PathConstants = {
   },
   Customer: {
     Registration: "/customer/registration",
+    RegistrationUpload : "/customer/registration/registration-upload",
+    CustomerGroupManagement : "/customer/registration/customergroup-management",
   },
   System: {
     Solution: "/system/solution",

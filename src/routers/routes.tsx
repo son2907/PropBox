@@ -18,6 +18,8 @@ import TopicRegistration from "../pages/CalManagement/DataManage/popup/TopicRegi
 import SolutionManagement from "../pages/SysManagement/Solution";
 import BasicInfo from "../pages/CalManagement/BasicInfo";
 import Registration from "../pages/CustomerManagement/Registration";
+import UploadRegistration from "../pages/CustomerManagement/Registration/popup/UploadRegistration";
+import GroupManagement from "../pages/CustomerManagement/Registration/popup/GroupManagement";
 
 export const routes: RouteObject[] = [
   {
@@ -152,5 +154,13 @@ export const routes: RouteObject[] = [
   {
     path: PathConstants.Call.TopicRegistration,
     element: <TopicRegistration />,
+  },
+  {
+    path: PathConstants.Customer.RegistrationUpload,
+    element: <UploadRegistration />,
+  },
+  {
+    path: PathConstants.Customer.CustomerGroupManagement,
+    element: <GroupManagement />,
   },
 ];
