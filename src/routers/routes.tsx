@@ -28,6 +28,9 @@ import Spam from "../pages/Message/Declaration/popup/Spam";
 import GroupCell from "../pages/Message/Declaration/popup/GroupCell";
 import RegistrationExel from "../pages/Message/Reject/popup/RegistrationExel";
 import SMSDetail from "../pages/Message/Result/popup/SMSDetail";
+import Registration from "../pages/CustomerManagement/Registration";
+import UploadRegistration from "../pages/CustomerManagement/Registration/popup/UploadRegistration";
+import GroupManagement from "../pages/CustomerManagement/Registration/popup/GroupManagement";
 
 export const routes: RouteObject[] = [
   {
@@ -99,7 +102,7 @@ export const routes: RouteObject[] = [
         children: [
           {
             path: PathConstants.Customer.Registration,
-            element: <div>고객 등록</div>,
+            element: <Registration/>,
           },
         ],
       },
@@ -168,6 +171,7 @@ export const routes: RouteObject[] = [
     element: <TopicRegistration />,
   },
   {
+<<<<<<< HEAD
     path: PathConstants.Message.PhoneNumber,
     element: <PhoneNumber />,
   },
@@ -190,5 +194,13 @@ export const routes: RouteObject[] = [
   {
     path: PathConstants.Message.SMSDetail,
     element: <SMSDetail />,
+=======
+    path: PathConstants.Customer.RegistrationUpload,
+    element: <UploadRegistration />,
+  },
+  {
+    path: PathConstants.Customer.CustomerGroupManagement,
+    element: <GroupManagement />,
+>>>>>>> feature/pages/Registration
   },
 ];
