@@ -49,6 +49,10 @@ const menuList: MenuListType = [
       { label: "현장 구성원 권한 관리", url: "/system/auth" },
 
       { label: "통신환경설정", url: "/system/networksetup" },
+      { label: "인증번호관리", url: "/system/authCode" },
+      { label: "수신번호관리", url: "/system/receivingNumber" },
+      { label: "전화기관리", url: "/system/phone" },
+
     ],
   },
 ];

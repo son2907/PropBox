@@ -31,6 +31,7 @@ import SMSDetail from "../pages/Message/Result/popup/SMSDetail";
 import Registration from "../pages/CustomerManagement/Registration";
 import UploadRegistration from "../pages/CustomerManagement/Registration/popup/UploadRegistration";
 import GroupManagement from "../pages/CustomerManagement/Registration/popup/GroupManagement";
+import UserManagement from "../pages/SysManagement/User";
 
 export const routes: RouteObject[] = [
   {
@@ -115,7 +116,7 @@ export const routes: RouteObject[] = [
           },
           {
             path: PathConstants.System.User,
-            element: <div>사용자 관리</div>,
+            element: <UserManagement/>,
           },
           {
             path: PathConstants.System.Member,
@@ -136,6 +137,18 @@ export const routes: RouteObject[] = [
           {
             path: PathConstants.System.NetworkSetup,
             element: <NetworkSetup />,
+          },
+          {
+            path: PathConstants.System.Auth,
+            element: <div>인증번호관리</div>,
+          },
+          {
+            path: PathConstants.System.Auth,
+            element: <div>수신번호관리</div>,
+          },
+          {
+            path: PathConstants.System.Auth,
+            element: <div>전화기관리</div>,
           },
         ],
       },
