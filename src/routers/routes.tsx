@@ -171,7 +171,6 @@ export const routes: RouteObject[] = [
     element: <TopicRegistration />,
   },
   {
-<<<<<<< HEAD
     path: PathConstants.Message.PhoneNumber,
     element: <PhoneNumber />,
   },
@@ -194,13 +193,13 @@ export const routes: RouteObject[] = [
   {
     path: PathConstants.Message.SMSDetail,
     element: <SMSDetail />,
-=======
+  },
+  {
     path: PathConstants.Customer.RegistrationUpload,
     element: <UploadRegistration />,
   },
   {
     path: PathConstants.Customer.CustomerGroupManagement,
     element: <GroupManagement />,
->>>>>>> feature/pages/Registration
   },
 ];
