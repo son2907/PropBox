@@ -586,10 +586,10 @@ export default function MenuGroup() {
             data={data}
             setData={setData} // 데이터를 업데이트할 함수를 전달
           >
-            <RowDragTable.Theader>메뉴ID</RowDragTable.Theader>
-            <RowDragTable.Theader>메뉴이름</RowDragTable.Theader>
-            <RowDragTable.Theader>라이선스체크</RowDragTable.Theader>
-            <RowDragTable.Theader>사용여부</RowDragTable.Theader>
+            <RowDragTable.Th>메뉴ID</RowDragTable.Th>
+            <RowDragTable.Th>메뉴이름</RowDragTable.Th>
+            <RowDragTable.Th>라이선스체크</RowDragTable.Th>
+            <RowDragTable.Th>사용여부</RowDragTable.Th>
 
             <RowDragTable.Tbody>
               {data.map((item) => (

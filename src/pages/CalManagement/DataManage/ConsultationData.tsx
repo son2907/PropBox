@@ -61,7 +61,11 @@ export default function ConsultationData() {
             toggleRowsSelection={toggleRowsSelection}
           >
             {/* 체크한 데이터에 따라 표시 */}
-            <CheckboxTable.Theader>고객이름</CheckboxTable.Theader>
+            <CheckboxTable.Thead>
+              <CheckboxTable.Tr>
+                <CheckboxTable.Th>고객이름</CheckboxTable.Th>
+              </CheckboxTable.Tr>
+            </CheckboxTable.Thead>
             <CheckboxTable.Tbody>
               {tableTestData.map((item) => (
                 <CheckboxTable.Tr key={item.id} id={item.id}>

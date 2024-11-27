@@ -45,9 +45,9 @@ export default function RejectMessage() {
         <Stack width="100%" minWidth={"900px"} height={"100%"}>
           <TableBox.Inner>
             <BasicTable data={tableTestData}>
-              <BasicTable.Theader>전송일시</BasicTable.Theader>
-              <BasicTable.Theader>구분</BasicTable.Theader>
-              <BasicTable.Theader>메시지</BasicTable.Theader>
+              <BasicTable.Th>전송일시</BasicTable.Th>
+              <BasicTable.Th>구분</BasicTable.Th>
+              <BasicTable.Th>메시지</BasicTable.Th>
 
               <BasicTable.Tbody>
                 {tableTestData.map((item, index) => {

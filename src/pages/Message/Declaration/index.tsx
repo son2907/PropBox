@@ -78,10 +78,15 @@ export default function DeclarationMessage() {
               selectedRows={ts_1}
               toggleRowsSelection={tt_1}
             >
-              <CheckboxTable.CheckboxTh />
-              <CheckboxTable.Theader>그룹</CheckboxTable.Theader>
-              <CheckboxTable.Theader>신고전화번호</CheckboxTable.Theader>
-              <CheckboxTable.Theader>휴대전화</CheckboxTable.Theader>
+              <CheckboxTable.Thead>
+                <CheckboxTable.Tr>
+                  <CheckboxTable.CheckboxTh />
+                  <CheckboxTable.Th>그룹</CheckboxTable.Th>
+                  <CheckboxTable.Th>신고전화번호</CheckboxTable.Th>
+                  <CheckboxTable.Th>휴대전화</CheckboxTable.Th>
+                </CheckboxTable.Tr>
+              </CheckboxTable.Thead>
+
               <CheckboxTable.Tbody>
                 {tableTestData.map((item) => (
                   <CheckboxTable.Tr key={item.id} id={item.id}>
@@ -103,9 +108,9 @@ export default function DeclarationMessage() {
         <Stack width={"50%"} height={"100%"}>
           <TableBox.Inner>
             <BasicTable data={tableTestData}>
-              <BasicTable.Theader>전송일시</BasicTable.Theader>
-              <BasicTable.Theader>구분</BasicTable.Theader>
-              <BasicTable.Theader>메시지</BasicTable.Theader>
+              <BasicTable.Th>전송일시</BasicTable.Th>
+              <BasicTable.Th>구분</BasicTable.Th>
+              <BasicTable.Th>메시지</BasicTable.Th>
 
               <BasicTable.Tbody>
                 {tableTestData.map((item, index) => {

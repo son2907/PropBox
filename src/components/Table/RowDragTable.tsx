@@ -30,7 +30,7 @@ interface CheckboxTdProps {
   item: { id: string }; // item 객체의 id 속성 타입
 }
 
-const Theader: React.FC<{ children: ReactNode }> = ({ children }) => {
+const Th: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <th className="border-solid bg-gray-200 border border-gray-300 border-b-0 border-t-0 p-2 text-left last:border-0 whitespace-nowrap">
       {children}
@@ -74,12 +74,12 @@ const CheckboxTh = () => {
   };
 
   return (
-    <Theader key="checkbox-header">
+    <Th key="checkbox-header">
       <Checkbox
         checked={allSelected ?? false}
         onChange={handleSelectAllChange}
       />
-    </Theader>
+    </Th>
   );
 };
 
@@ -162,7 +162,7 @@ const Checkbox: React.FC<{ checked: boolean; onChange: () => void }> =
   });
 
 const RowDragTable: React.FC<TableProps> & {
-  Theader: typeof Theader;
+  Th: typeof Th;
   CheckboxTh: typeof CheckboxTh;
   Tr: typeof SortableRow;
   Td: typeof Td;
@@ -225,11 +225,11 @@ const RowDragTable: React.FC<TableProps> & {
             <table className="table-auto w-full border-gray-300 border-collapse">
               <thead>
                 <tr>
-                  <Theader> </Theader>
+                  <Th> </Th>
                   {React.Children.map(children, (child) => {
                     if (
                       (child as React.ReactElement<any>).type ===
-                        RowDragTable.Theader ||
+                        RowDragTable.Th ||
                       (child as React.ReactElement<any>).type ===
                         RowDragTable.CheckboxTh
                     ) {
@@ -262,7 +262,7 @@ const RowDragTable: React.FC<TableProps> & {
 };
 
 RowDragTable.EmptyTable = EmptyTable;
-RowDragTable.Theader = Theader;
+RowDragTable.Th = Th;
 RowDragTable.CheckboxTh = CheckboxTh;
 RowDragTable.Tr = SortableRow;
 RowDragTable.Td = Td;

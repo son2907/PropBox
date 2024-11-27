@@ -196,18 +196,18 @@ export default function BulkMessage() {
             <TableBox>
               <TableBox.Inner>
                 <MultipleCheckboxTable data={tableTestData}>
-                  <MultipleCheckboxTable.Theader>
+                  <MultipleCheckboxTable.Th>
                     전체
-                  </MultipleCheckboxTable.Theader>
-                  <MultipleCheckboxTable.Theader>
+                  </MultipleCheckboxTable.Th>
+                  <MultipleCheckboxTable.Th>
                     그룹명
-                  </MultipleCheckboxTable.Theader>
-                  <MultipleCheckboxTable.Theader>
+                  </MultipleCheckboxTable.Th>
+                  <MultipleCheckboxTable.Th>
                     인원수
-                  </MultipleCheckboxTable.Theader>
-                  <MultipleCheckboxTable.Theader>
+                  </MultipleCheckboxTable.Th>
+                  <MultipleCheckboxTable.Th>
                     제외
-                  </MultipleCheckboxTable.Theader>
+                  </MultipleCheckboxTable.Th>
 
                   <MultipleCheckboxTable.Tbody>
                     {tableTestData.map((item) => {
@@ -270,8 +270,8 @@ export default function BulkMessage() {
               <TableBox>
                 <TableBox.Inner>
                   <BasicTable data={tableTestData}>
-                    <BasicTable.Theader>휴대전화</BasicTable.Theader>
-                    <BasicTable.Theader>고객정보</BasicTable.Theader>
+                    <BasicTable.Th>휴대전화</BasicTable.Th>
+                    <BasicTable.Th>고객정보</BasicTable.Th>
 
                     <BasicTable.Tbody>
                       {tableTestData.map((item, index) => {
@@ -311,10 +311,10 @@ export default function BulkMessage() {
           <TableBox>
             <TableBox.Inner>
               <BasicTable data={tableTestData}>
-                <BasicTable.Theader> </BasicTable.Theader>
-                <BasicTable.Theader> </BasicTable.Theader>
-                <BasicTable.Theader>메시지</BasicTable.Theader>
-                <BasicTable.Theader>삭제</BasicTable.Theader>
+                <BasicTable.Th> </BasicTable.Th>
+                <BasicTable.Th> </BasicTable.Th>
+                <BasicTable.Th>메시지</BasicTable.Th>
+                <BasicTable.Th>삭제</BasicTable.Th>
 
                 <BasicTable.Tbody>
                   {tableTestData.map((item, index) => {

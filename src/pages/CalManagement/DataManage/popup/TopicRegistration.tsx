@@ -32,9 +32,13 @@ export default function TopicRegistration() {
             selectedRows={selectedRows}
             toggleRowsSelection={toggleRowsSelection}
           >
-            <CheckboxTable.CheckboxTh />
-            <CheckboxTable.Theader>No</CheckboxTable.Theader>
-            <CheckboxTable.Theader>주제명</CheckboxTable.Theader>
+            <CheckboxTable.Thead>
+              <CheckboxTable.Tr>
+                <CheckboxTable.CheckboxTh />
+                <CheckboxTable.Th>No</CheckboxTable.Th>
+                <CheckboxTable.Th>주제명</CheckboxTable.Th>
+              </CheckboxTable.Tr>
+            </CheckboxTable.Thead>
 
             <CheckboxTable.Tbody>
               {tableTestData.map((item) => (

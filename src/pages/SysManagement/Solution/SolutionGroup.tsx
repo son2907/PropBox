@@ -587,9 +587,9 @@ export default function SolutionGroup() {
             data={data}
             setData={setData} // 데이터를 업데이트할 함수를 전달
           >
-            <RowDragTable.Theader>솔루션ID</RowDragTable.Theader>
-            <RowDragTable.Theader>솔루션이름</RowDragTable.Theader>
-            <RowDragTable.Theader>라이선스방식</RowDragTable.Theader>
+            <RowDragTable.Th>솔루션ID</RowDragTable.Th>
+            <RowDragTable.Th>솔루션이름</RowDragTable.Th>
+            <RowDragTable.Th>라이선스방식</RowDragTable.Th>
 
             <RowDragTable.Tbody>
               {data.map((item) => (

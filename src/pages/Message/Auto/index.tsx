@@ -215,9 +215,9 @@ export default function AutoMessage() {
             <TableBox height="80%">
               <TableBox.Inner>
                 <BasicTable data={tableTestData}>
-                  <BasicTable.Theader>이름</BasicTable.Theader>
-                  <BasicTable.Theader>상담전화</BasicTable.Theader>
-                  <BasicTable.Theader>상담일시</BasicTable.Theader>
+                  <BasicTable.Th>이름</BasicTable.Th>
+                  <BasicTable.Th>상담전화</BasicTable.Th>
+                  <BasicTable.Th>상담일시</BasicTable.Th>
                   <BasicTable.Tbody>
                     {tableTestData.map((item, index) => {
                       return (

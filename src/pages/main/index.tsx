@@ -801,8 +801,12 @@ export default function Main() {
           selectedRows={selectedRows2}
           toggleRowSelection={toggleRowsSelection2}
         >
-          <CheckboxTable.Theader>헤더하나</CheckboxTable.Theader>
-          <CheckboxTable.Theader>헤더둘</CheckboxTable.Theader>
+          <CheckboxTable.Thead>
+            <CheckboxTable.Tr>
+              <CheckboxTable.Th>헤더하나</CheckboxTable.Th>
+              <CheckboxTable.Th>헤더둘</CheckboxTable.Th>
+            </CheckboxTable.Tr>
+          </CheckboxTable.Thead>
           <CheckboxTable.Tbody>
             {data.map((item, index) => (
               <CheckboxTable.Tr key={item.id} id={item.id}>
@@ -837,7 +841,7 @@ export default function Main() {
       {/*============== BasicTable ==============*/}
       {/* <div>
         <BasicTable data={data}>
-          <BasicTable.Theader>세부항목</BasicTable.Theader>
+          <BasicTable.Th>세부항목</BasicTable.Th>
           <BasicTable.Tbody>
             {[1, 2, 3, 4, 5].map((item, index) => {
               return (
@@ -859,16 +863,16 @@ export default function Main() {
         }}
       >
         <BasicTable data={data}>
-          <BasicTable.Theader>고객정보</BasicTable.Theader>
-          <BasicTable.Theader>고객정보</BasicTable.Theader>
-          <BasicTable.Theader>고객정보</BasicTable.Theader>
-          <BasicTable.Theader>고객정보</BasicTable.Theader>
-          <BasicTable.Theader>고객정보</BasicTable.Theader>
-          <BasicTable.Theader>고객정보</BasicTable.Theader>
-          <BasicTable.Theader>고객정보</BasicTable.Theader>
-          <BasicTable.Theader>고객정보</BasicTable.Theader>
-          <BasicTable.Theader>고객정보</BasicTable.Theader>
-          <BasicTable.Theader>고객정보</BasicTable.Theader>
+          <BasicTable.Th>고객정보</BasicTable.Th>
+          <BasicTable.Th>고객정보</BasicTable.Th>
+          <BasicTable.Th>고객정보</BasicTable.Th>
+          <BasicTable.Th>고객정보</BasicTable.Th>
+          <BasicTable.Th>고객정보</BasicTable.Th>
+          <BasicTable.Th>고객정보</BasicTable.Th>
+          <BasicTable.Th>고객정보</BasicTable.Th>
+          <BasicTable.Th>고객정보</BasicTable.Th>
+          <BasicTable.Th>고객정보</BasicTable.Th>
+          <BasicTable.Th>고객정보</BasicTable.Th>
           <BasicTable.Tbody>
             {data.map((item, index) => {
               return (
@@ -905,25 +909,25 @@ export default function Main() {
           data={data}
           setData={setData} // 데이터를 업데이트할 함수를 전달
         >
-          <RowDragTable.Theader>아이디</RowDragTable.Theader>
-          <RowDragTable.Theader>이름</RowDragTable.Theader>
-          <RowDragTable.Theader>값</RowDragTable.Theader>
-          <RowDragTable.Theader>값</RowDragTable.Theader>
-          <RowDragTable.Theader>값</RowDragTable.Theader>
-          <RowDragTable.Theader>값</RowDragTable.Theader>
-          <RowDragTable.Theader>값</RowDragTable.Theader>
-          <RowDragTable.Theader>값</RowDragTable.Theader>
-          <RowDragTable.Theader>값</RowDragTable.Theader>
-          <RowDragTable.Theader>값</RowDragTable.Theader>
-          <RowDragTable.Theader>값</RowDragTable.Theader>
-          <RowDragTable.Theader>값</RowDragTable.Theader>
-          <RowDragTable.Theader>값</RowDragTable.Theader>
-          <RowDragTable.Theader>값</RowDragTable.Theader>
-          <RowDragTable.Theader>값</RowDragTable.Theader>
-          <RowDragTable.Theader>값</RowDragTable.Theader>
-          <RowDragTable.Theader>값</RowDragTable.Theader>
-          <RowDragTable.Theader>값</RowDragTable.Theader>
-          <RowDragTable.Theader>삭제</RowDragTable.Theader>
+          <RowDragTable.Th>아이디</RowDragTable.Th>
+          <RowDragTable.Th>이름</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>삭제</RowDragTable.Th>
           <RowDragTable.Tbody>
             {data.map((item) => (
               <RowDragTable.Tr key={item.id} id={item.id}>

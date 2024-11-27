@@ -239,7 +239,7 @@ export default function InfoGroup({ tabType }: TabType) {
         </GrayBox>
         <GrayBox flexDirection={"column"} width={"50%"} overflow="auto">
           <BasicTable data={tableTestData}>
-            <BasicTable.Theader>
+            <BasicTable.Th>
               <Box
                 display="flex"
                 justifyContent="space-between"
@@ -248,7 +248,7 @@ export default function InfoGroup({ tabType }: TabType) {
                 세부항목
                 <BasicButton>새로고침</BasicButton>
               </Box>
-            </BasicTable.Theader>
+            </BasicTable.Th>
 
             <BasicTable.Tbody>
               {tableTestData.map((item, index) => {

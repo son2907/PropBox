@@ -23,8 +23,8 @@ export default function GroupCell() {
       <TableBox padding={1}>
         <TableBox.Inner>
           <BasicTable data={tableTestData}>
-            <BasicTable.Theader>방통위 그룹</BasicTable.Theader>
-            <BasicTable.Theader>삭제</BasicTable.Theader>
+            <BasicTable.Th>방통위 그룹</BasicTable.Th>
+            <BasicTable.Th>삭제</BasicTable.Th>
 
             <BasicTable.Tbody>
               {tableTestData.map((item, index) => {

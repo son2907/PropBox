@@ -29,8 +29,8 @@ export default function UploadConsultation() {
       <TableBox gap={1}>
         <TableBox.Inner width="40%">
           <RowDragTable data={data} setData={setData} checkbox={false}>
-            <RowDragTable.Theader>엑셀 항목</RowDragTable.Theader>
-            <RowDragTable.Theader>Position</RowDragTable.Theader>
+            <RowDragTable.Th>엑셀 항목</RowDragTable.Th>
+            <RowDragTable.Th>Position</RowDragTable.Th>
             <RowDragTable.Tbody>
               {data.map((item) => (
                 <RowDragTable.Tr key={item.id} id={item.id}>
@@ -47,13 +47,17 @@ export default function UploadConsultation() {
             selectedRows={s_2}
             toggleRowsSelection={t_2}
           >
-            <CheckboxTable.CheckboxTh />
-            <CheckboxTable.Theader>1번 항목</CheckboxTable.Theader>
-            <CheckboxTable.Theader>2번 항목</CheckboxTable.Theader>
-            <CheckboxTable.Theader>3번 항목</CheckboxTable.Theader>
-            <CheckboxTable.Theader>4번 항목</CheckboxTable.Theader>
-            <CheckboxTable.Theader>5번 항목</CheckboxTable.Theader>
-            <CheckboxTable.Theader>6번 항목</CheckboxTable.Theader>
+            <CheckboxTable.Thead>
+              <CheckboxTable.Tr>
+                <CheckboxTable.CheckboxTh />
+                <CheckboxTable.Th>1번 항목</CheckboxTable.Th>
+                <CheckboxTable.Th>2번 항목</CheckboxTable.Th>
+                <CheckboxTable.Th>3번 항목</CheckboxTable.Th>
+                <CheckboxTable.Th>4번 항목</CheckboxTable.Th>
+                <CheckboxTable.Th>5번 항목</CheckboxTable.Th>
+                <CheckboxTable.Th>6번 항목</CheckboxTable.Th>
+              </CheckboxTable.Tr>
+            </CheckboxTable.Thead>
 
             <CheckboxTable.Tbody>
               {tableTestData.map((item) => (

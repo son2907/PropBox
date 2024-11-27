@@ -89,13 +89,17 @@ export default function CreateConsultation() {
             selectedRows={s_1}
             toggleRowsSelection={t_1}
           >
-            <CheckboxTable.CheckboxTh />
-            <CheckboxTable.Theader>이름</CheckboxTable.Theader>
-            <CheckboxTable.Theader>휴대전화</CheckboxTable.Theader>
-            <CheckboxTable.Theader>일반전화</CheckboxTable.Theader>
-            <CheckboxTable.Theader>주소</CheckboxTable.Theader>
-            <CheckboxTable.Theader>번지</CheckboxTable.Theader>
-            <CheckboxTable.Theader>고객정보</CheckboxTable.Theader>
+            <CheckboxTable.Thead>
+              <CheckboxTable.Tr>
+                <CheckboxTable.CheckboxTh />
+                <CheckboxTable.Th>이름</CheckboxTable.Th>
+                <CheckboxTable.Th>휴대전화</CheckboxTable.Th>
+                <CheckboxTable.Th>일반전화</CheckboxTable.Th>
+                <CheckboxTable.Th>주소</CheckboxTable.Th>
+                <CheckboxTable.Th>번지</CheckboxTable.Th>
+                <CheckboxTable.Th>고객정보</CheckboxTable.Th>
+              </CheckboxTable.Tr>
+            </CheckboxTable.Thead>
 
             <CheckboxTable.Tbody>
               {tableTestData.map((item) => (
@@ -178,12 +182,12 @@ export default function CreateConsultation() {
       <TableBox marginBottom={1} gap={2}>
         <TableBox.Inner width={"50%"}>
           <RowDragTable data={data} checkbox={false} setData={setData}>
-            <RowDragTable.Theader>이름</RowDragTable.Theader>
-            <RowDragTable.Theader>휴대전화</RowDragTable.Theader>
-            <RowDragTable.Theader>일반전화</RowDragTable.Theader>
-            <RowDragTable.Theader>주소</RowDragTable.Theader>
-            <RowDragTable.Theader>번지</RowDragTable.Theader>
-            <RowDragTable.Theader>고객정보</RowDragTable.Theader>
+            <RowDragTable.Th>이름</RowDragTable.Th>
+            <RowDragTable.Th>휴대전화</RowDragTable.Th>
+            <RowDragTable.Th>일반전화</RowDragTable.Th>
+            <RowDragTable.Th>주소</RowDragTable.Th>
+            <RowDragTable.Th>번지</RowDragTable.Th>
+            <RowDragTable.Th>고객정보</RowDragTable.Th>
 
             <RowDragTable.Tbody>
               {data.map((item) => (
@@ -206,13 +210,17 @@ export default function CreateConsultation() {
             selectedRows={s_3}
             toggleRowsSelection={t_3}
           >
-            <CheckboxTable.CheckboxTh />
-            <CheckboxTable.Theader>이름</CheckboxTable.Theader>
-            <CheckboxTable.Theader>휴대전화</CheckboxTable.Theader>
-            <CheckboxTable.Theader>일반전화</CheckboxTable.Theader>
-            <CheckboxTable.Theader>주소</CheckboxTable.Theader>
-            <CheckboxTable.Theader>번지</CheckboxTable.Theader>
-            <CheckboxTable.Theader>고객정보</CheckboxTable.Theader>
+            <CheckboxTable.Thead>
+              <CheckboxTable.Tr>
+                <CheckboxTable.CheckboxTh />
+                <CheckboxTable.Th>이름</CheckboxTable.Th>
+                <CheckboxTable.Th>휴대전화</CheckboxTable.Th>
+                <CheckboxTable.Th>일반전화</CheckboxTable.Th>
+                <CheckboxTable.Th>주소</CheckboxTable.Th>
+                <CheckboxTable.Th>번지</CheckboxTable.Th>
+                <CheckboxTable.Th>고객정보</CheckboxTable.Th>
+              </CheckboxTable.Tr>
+            </CheckboxTable.Thead>
 
             <CheckboxTable.Tbody>
               {tableTestData.map((item) => (

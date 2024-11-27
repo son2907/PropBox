@@ -62,8 +62,8 @@ export default function GroupManagement() {
             }}
           >
             <BasicTable data={tableTestData}>
-              <BasicTable.Theader>그룹명</BasicTable.Theader>
-              <BasicTable.Theader>삭제</BasicTable.Theader>
+              <BasicTable.Th>그룹명</BasicTable.Th>
+              <BasicTable.Th>삭제</BasicTable.Th>
               <BasicTable.Tbody>
                 {tableTestData.map((item, index) => {
                   return (
