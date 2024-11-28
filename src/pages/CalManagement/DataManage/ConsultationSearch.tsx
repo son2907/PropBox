@@ -14,8 +14,7 @@ export default function ConsultationSearch() {
   const [endDate, setEndDate] = useState<Date>(new Date());
   const { selectValue: s_0, handleChange: o_0 } = useSelect();
 
-  const { inputRefs: checkListRef, getInputValues: getCheckedData } =
-    useMultiInputValue();
+  const { inputRefs: checkListRef, getInputValues } = useMultiInputValue();
 
   const checkList = [
     { id: "date", label: "상담일시" },
@@ -38,6 +37,16 @@ export default function ConsultationSearch() {
     { id: "responsiveness", label: "호응도" },
     { id: "subscriptionRank", label: "청약순위" },
   ];
+
+  // 외부에서 체크 여부를 확인하는 함수
+  const getCheckedData = () => {
+    return checkListRef.current
+      .filter((input) => input !== null) // null 값 제외
+      .map((input) => ({
+        value: input!.value,
+        checked: input!.checked, // 체크 여부 확인
+      }));
+  };
 
   return (
     <Stack width={"100%"} gap={2}>
@@ -63,7 +72,14 @@ export default function ConsultationSearch() {
         />
       </Stack>
       <CenteredBox justifyContent={"center"}>
-        <BasicButton sx={{ width: "250px" }}>조회</BasicButton>
+        <BasicButton
+          sx={{ width: "250px" }}
+          onClick={() => {
+            console.log(getCheckedData());
+          }}
+        >
+          조회
+        </BasicButton>
       </CenteredBox>
     </Stack>
   );
