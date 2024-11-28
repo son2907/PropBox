@@ -8,7 +8,6 @@ type AuthStoreType = {
   uuid?: string; // 사용자 고유 ID
   userNo?: string; // 사용자 번호
   loginId?: string; // 로그인 ID
-  pwdNo?: string; // 비밀번호 키
   userNm?: string; // 사용자 이름
   attlistUserNm?: string; // 상세 사용자 이름
   attlistMbtlNo?: string | null; // 상세 사용자 연락처
@@ -18,7 +17,7 @@ type AuthStoreType = {
   loginIdPrefix?: string | null; // 로그인 ID 접두사
   accessToken?: string; // 액세스 토큰
   refreshToken?: string; // 리프레시 토큰
-  remember?: boolean; // 로그인 기역 여부
+  remember?: boolean; // 로그인 기억 여부
 
   // 상태 변경 함수들
   setSaveLogin: (loginId: string, remember: boolean) => void; //자동 로그인
@@ -47,7 +46,6 @@ export const store = createWithEqualityFn<AuthStoreType>(
           uuid: undefined,
           userNo: undefined,
           loginId: undefined,
-          pwdNo: undefined,
           userNm: undefined,
           attlistUserNm: undefined,
           attlistMbtlNo: null,

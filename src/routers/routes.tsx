@@ -28,10 +28,15 @@ import Spam from "../pages/Message/Declaration/popup/Spam";
 import GroupCell from "../pages/Message/Declaration/popup/GroupCell";
 import RegistrationExel from "../pages/Message/Reject/popup/RegistrationExel";
 import SMSDetail from "../pages/Message/Result/popup/SMSDetail";
+import AuthGuard from "./guard/AuthGuard";
 
 export const routes: RouteObject[] = [
   {
-    element: <DefaultLayout />,
+    element: (
+      <AuthGuard>
+        <DefaultLayout />
+      </AuthGuard>
+    ),
     // 에러 엘리먼트 추가 필요
     children: [
       { path: PathConstants.Home, element: <Main /> },

@@ -27,10 +27,21 @@ export function useAxiosInterceptor() {
   // 요청 인터셉터: 모든 Axios 요청에 공통적으로 적용
   const requestInterceptor = useCallback(
     (config: InternalAxiosRequestConfig) => {
-      if (accessToken && config.headers) {
-        config.headers.Authorization = `${accessToken}`;
+      console.log("요청 인터셉터:", config);
+
+      // 2. 인터넷 연결이 없는 경우 (네트워크 오류)
+      if (!navigator.onLine) {
+        console.error("Network error: No internet connection.");
+        return Promise.reject(new Error("No internet connection."));
       }
-      return config; // 수정된 요청 설정 반환
+
+      if (accessToken && config.headers) {
+        config.data = config.data || {}; // 기존 Body 유지
+        config.data.accessToken = accessToken; // Body에 accessToken 추가
+      }
+
+      // 모든 처리가 완료되었으므로 요청을 계속 진행
+      return config;
     },
     [accessToken] // accessToken이 변경될 때마다 업데이트
   );
@@ -38,18 +49,8 @@ export function useAxiosInterceptor() {
   // 응답 에러 처리 인터셉터: 모든 Axios 요청 에러에 공통적으로 적용
   const responseErrorInterceptor = useCallback(
     (error: AxiosError<any>) => {
-      const originalRequest = error.config;
-
-      if (error.response && error.response.status === 401) {
-        // 액세스 토큰 만료 및 401 응답 확인
-        // refresh 토큰을 이용해 엑세스 토큰 재발급
-        // 실패할 시 인증상태를 초기화하여 로그아웃시키고 로그인 페이지로 리다이레긑 함
-      }
       // 특정 상태 코드(403, IS_FORBIDDEN) 처리
-      else if (
-        error.response?.status === 403 &&
-        error.response?.data.code === "IS_FORBIDDEN"
-      ) {
+      if (error.response?.status === 403) {
         // openModal(BasicAlert, {
         //   key: "ERROR_403", // 모달 식별 키
         //   message: error.response?.data.message, // 서버로부터 받은 메시지
@@ -74,6 +75,7 @@ export function useAxiosInterceptor() {
     // 응답 성공 및 에러 인터셉터 등록
     instance.interceptors.response.use(
       function (response) {
+        console.log("응답:", response);
         return response; // 응답 데이터 그대로 반환
       },
       responseErrorInterceptor // 응답 에러 처리
@@ -86,21 +88,6 @@ export function useAxiosInterceptor() {
     instance.interceptors.response.clear(); // 기존 응답 인터셉터 초기화
     register(); // 새로운 인터셉터 등록
   }, [accessToken]); // accessToken이 변경될 때마다 실행
-}
-
-// 중첩된 객체를 점(dot) 형식으로 직렬화하는 함수
-export function paramsDotSerializer(params: Record<string, any>) {
-  return Object.keys(params)
-    .map((key) => {
-      if (typeof params[key] === "object") {
-        // 객체 타입인 경우 key.subKey=value 형식으로 변환
-        return Object.keys(params[key])
-          .map((subKey) => `${key}.${subKey}=${params[key][subKey]}`)
-          .join("&");
-      }
-      return `${key}=${params[key]}`; // 일반 키-값 쌍
-    })
-    .join("&"); // &로 연결
 }
 
 // 배열 파라미터를 repeat 형식으로 직렬화하는 함수
