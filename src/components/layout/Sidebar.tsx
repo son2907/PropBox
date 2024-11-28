@@ -46,7 +46,7 @@ const menuList: MenuListType = [
       { label: "구성원 관리", url: "/system/member" },
       { label: "현장 관리", url: "/system/local" },
       { label: "현장 별 구성원 관리", url: "/system/localmember" },
-      { label: "현장 구성원 권한 관리", url: "/system/auth" },
+      { label: "현장 별 구성원 권한 관리", url: "/system/auth" },
 
       { label: "통신환경설정", url: "/system/networksetup" },
       { label: "인증번호관리", url: "/system/authCode" },

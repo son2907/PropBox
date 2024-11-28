@@ -33,6 +33,10 @@ import UploadRegistration from "../pages/CustomerManagement/Registration/popup/U
 import GroupManagement from "../pages/CustomerManagement/Registration/popup/GroupManagement";
 import UserManagement from "../pages/SysManagement/User";
 import UserUpload from "../pages/SysManagement/User/popup/UploadUser";
+import AuthManagement from "../pages/SysManagement/AuthManagement";
+import MemberMenuPermission from "../pages/SysManagement/AuthManagement/popup/MemberMenuPermission";
+import MenuPermissionCopy from "../pages/SysManagement/AuthManagement/popup/MenuPermissionCopy";
+import PermissionRevoke from "../pages/SysManagement/AuthManagement/popup/PermissionRevoke";
 
 export const routes: RouteObject[] = [
   {
@@ -129,11 +133,11 @@ export const routes: RouteObject[] = [
           },
           {
             path: PathConstants.System.LocalMember,
-            element: <div>현장 별 구성원 관리</div>,
+            element: <div>현장 구성원 관리</div>,
           },
           {
             path: PathConstants.System.Auth,
-            element: <div>현장 구성원 권한 관리</div>,
+            element: <AuthManagement/>,
           },
           {
             path: PathConstants.System.NetworkSetup,
@@ -219,5 +223,17 @@ export const routes: RouteObject[] = [
   {
     path: PathConstants.System.UserUpload,
     element: <UserUpload />,
+  },
+  {
+    path: PathConstants.System.MemberMenuPermission,
+    element: <MemberMenuPermission/>,
+  },
+  {
+    path: PathConstants.System.MenuPermissionCopy,
+    element: <MenuPermissionCopy/>,
+  },
+  {
+    path: PathConstants.System.PermissionRevoke,
+    element: <PermissionRevoke/>,
   },
 ];
