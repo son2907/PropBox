@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Logo from "../../assets/svg/logo.svg";
 import BasicInput from "../../components/Input/BasicInput";
 import PasswordInput from "../../components/Input/PasswordInput";
@@ -11,8 +11,7 @@ import {
 } from "@mui/material";
 import BlackButton from "../../components/Button/BlackButton";
 import CenteredBox from "../../components/Box/CenteredBox";
-import { Controller, useForm } from "react-hook-form";
-import getResolverBySchemaName from "../../utils/adminResolver";
+import { useForm } from "react-hook-form";
 import { useAuthStore } from "../../stores/authStore";
 import { useQueryClient } from "@tanstack/react-query";
 import api from "../../api";
@@ -25,7 +24,7 @@ export default function Login() {
   const [rememberId, setRembmber] = useState<boolean>(false);
 
   const {
-    control,
+    register,
     handleSubmit,
     setValue,
     formState: { isValid, errors },
@@ -36,11 +35,9 @@ export default function Login() {
       loginId: "",
       pwdNo: "",
     },
-    // resolver: getResolverBySchemaName("loginForm"),
   });
 
   const navigate = useNavigate();
-
   const queryClient = useQueryClient(); // queryClient 생성
   const { mutate: userLogin } = api.AdminAccount.useUserLogin(); // login 훅 불러옴
 
@@ -53,7 +50,7 @@ export default function Login() {
     "accessToken",
   ]);
 
-  const onSubmit = handleSubmit((data) => {
+  const onSubmit = (data: LoginRequestModel) => {
     clear(); // 일단, 기존에 존재하는 store를 비운다.
     console.log("onSubmit : ", data);
     queryClient.resetQueries(); // 모든 쿼리를 리셋한다.
@@ -65,19 +62,13 @@ export default function Login() {
     userLogin(data, {
       onSuccess: (data) => {
         console.log("성공:", data);
-        // todo
-        // const loginId = data.loginId; 아무튼 이렇게 담아줘야 함
-
-        // 만일 remeber이 true라면, 로컬스토리지에 remember를 저장한다.
-        // setSaveLogin(loginId, rememberId);
-
         navigate(PathConstants.Home);
       },
       onError: (e: unknown) => {
         console.log("에러", e);
       },
     });
-  });
+  };
 
   useEffect(() => {
     // remember이 true이면, 로컬 스토리지에서 get한 loginId를 불러온다.
@@ -87,91 +78,46 @@ export default function Login() {
   }, []);
 
   return (
-    <form onSubmit={onSubmit}>
-      <Stack width={"300px"} gap={1.5} justifyContent={"center"}>
-        <Box>
-          <img src={Logo} alt="logo" width={"100%"} />
-        </Box>
-        <CenteredBox gap={1}>
-          <Typography color="primary.dark" width={"64px"}>
-            아이디
-          </Typography>
-          <Controller
-            name="loginId"
-            control={control}
-            defaultValue={""}
-            render={({ field }) => (
-              <>
-                <BasicInput
-                  value={field.value}
-                  onChange={field.onChange}
-                  placeholder="아이디를 입력하세요"
-                  fullWidth
-                />
-                {/* {errors && (
-                  <>
-                    <br />
-                    <Typography marginTop={1} color="error.main">
-                      {errors.root?.message}
-                    </Typography>
-                  </>
-                )} */}
-              </>
-            )}
-          />
-        </CenteredBox>
-        <CenteredBox gap={1}>
-          <Typography color="primary.dark">비밀번호</Typography>
-          {/* <PasswordInput ref={passwordRef} /> */}
-          <Controller
-            name="pwdNo"
-            control={control}
-            defaultValue={""}
-            render={({ field }) => (
-              <>
-                <PasswordInput
-                  value={field.value}
-                  onChange={field.onChange}
-                  placeholder="비밀번호를 입력하세요"
-                  fullWidth
-                />
-                {/* {errors && (
-                  <>
-                    <br />
-                    <Typography marginTop={1} color="error.main">
-                      {errors.root?.message}
-                    </Typography>
-                  </>
-                )} */}
-              </>
-            )}
-          />
-        </CenteredBox>
-        {/* api 완성 후 수정 */}
-        <Typography marginTop={1} color="error.main">
-          사용자 정보가 잘못되었습니다.
+    <Stack width={"300px"} gap={1.5} justifyContent={"center"}>
+      <Box>
+        <img src={Logo} alt="logo" width={"100%"} />
+      </Box>
+      <CenteredBox gap={1}>
+        <Typography color="primary.dark" width={"64px"}>
+          아이디
         </Typography>
+        <BasicInput
+          {...register("loginId")}
+          placeholder="아이디를 입력하세요"
+          fullWidth
+        />
+      </CenteredBox>
+      <CenteredBox gap={1}>
+        <Typography color="primary.dark">비밀번호</Typography>
+        <PasswordInput
+          {...register("pwdNo")}
+          placeholder="비밀번호를 입력하세요"
+          fullWidth
+        />
+      </CenteredBox>
+      {/* api 완성 후 수정 */}
+      <Typography marginTop={1} color="error.main">
+        사용자 정보가 잘못되었습니다.
+      </Typography>
 
-        <Box style={{ display: "flex" }}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={rememberId}
-                onChange={() => {
-                  setRembmber(!rememberId);
-                }}
-              />
-            }
-            label="아이디 기억하기"
-          />
-        </Box>
-
-        <BlackButton type="submit">로그인</BlackButton>
-
-        <Typography color="pageTab.tabIcon">
-          문의 전화번호 : 1661-8050
-        </Typography>
-      </Stack>
-    </form>
+      <Box style={{ display: "flex" }}>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={rememberId}
+              onChange={() => setRembmber(!rememberId)}
+            />
+          }
+          label="아이디 기억하기"
+        />
+      </Box>
+      <BlackButton onClick={handleSubmit(onSubmit)}>로그인</BlackButton>
+      <Typography color="pageTab.tabIcon">문의 전화번호 : 1661-8050</Typography>
+    </Stack>
   );
 }
