@@ -24,7 +24,7 @@ type AuthStoreType = {
   setSaveLogin: (loginId: string, remember: boolean) => void; //자동 로그인
   setAuthData: (data: Partial<AuthStoreType>) => void; // JSON 데이터로 상태 설정
   setAuthToken: (accessToken: string, refreshToken: string) => void;
-  clearAuth: () => void; // 상태 초기화
+  clear: () => void; // 상태 초기화
 };
 
 // persist 미들웨어 타입 정의
@@ -42,7 +42,7 @@ export const store = createWithEqualityFn<AuthStoreType>(
       setAuthToken: (accessToken, refreshToken) =>
         set({ accessToken, refreshToken }),
       setSaveLogin: (loginId, remember) => set({ loginId, remember }),
-      clearAuth: () =>
+      clear: () =>
         set(() => ({
           uuid: undefined,
           userNo: undefined,
