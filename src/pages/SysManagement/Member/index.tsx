@@ -13,7 +13,19 @@ import useToggleButtton from "../../../hooks/useToggleButton";
 
 export default function MemberManagement() {
 
-  const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함 
+  //useMultiRowSelection 분리해서 각 테이블에 독립적으로 selectedRow와 toggleRowSelection을 전달하여 동작이 분리되도록 설정.
+  // 사용자 리스트 - 선택 상태 관리
+  const {
+    selectedRow: userSelectedRow,
+    toggleRowSelection: toggleUserRowSelection,
+  } = useSingleRowSelection();
+
+  // 구성원 리스트 - 선택 상태 관리
+  const {
+    selectedRow: memberSelectedRow,
+    toggleRowSelection: toggleMemberRowSelection,
+  } = useSingleRowSelection();
+
 
   const { toggle, onChange: setToggle } = useToggleButtton({
     defaultValue: true,
@@ -23,7 +35,7 @@ export default function MemberManagement() {
     <>
       <Stack width={"100%"}>
         <GrayBox width={"100%"} height={"4%"}>
-          <SearchInput placeholder="사용자명 검색"></SearchInput>
+          <SearchInput placeholder="사용자이름 검색"></SearchInput>
         </GrayBox>
         <Stack direction={"row"} height={"96%"}>
           <Stack width={"50%"} minWidth={"800px"} bgcolor={"white"} overflow={"auto"} marginBottom={1}>
@@ -39,8 +51,8 @@ export default function MemberManagement() {
                       return (
                         <BasicTable.Tr
                           key={index}
-                          isClicked={selectedRow.has(item.id)}
-                          onClick={() => toggleRowSelection(item.id)}
+                          isClicked={userSelectedRow.has(item.id)}
+                          onClick={() => toggleUserRowSelection(item.id)}
                         >
                           <BasicTable.Td>{item.phone}</BasicTable.Td>
                           <BasicTable.Td>{item.name}</BasicTable.Td>
@@ -66,8 +78,8 @@ export default function MemberManagement() {
                       return (
                         <BasicTable.Tr
                           key={index}
-                          isClicked={selectedRow.has(item.id)}
-                          onClick={() => toggleRowSelection(item.id)}
+                          isClicked={memberSelectedRow.has(item.id)}
+                          onClick={() => toggleMemberRowSelection(item.id)}
                         >
                           <BasicTable.Td>{item.phone}</BasicTable.Td>
                           <BasicTable.Td>{item.age}</BasicTable.Td>

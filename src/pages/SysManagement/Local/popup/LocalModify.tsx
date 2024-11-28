@@ -23,14 +23,13 @@ import { RiDeleteBinLine } from "react-icons/ri";
 import LabelTypo from "../../../../components/Typography/LabelTypo";
 import Calendar from "../../../../components/Calendar/Calendar";
 import useToggleButtton from "../../../../hooks/useToggleButton";
-import PasswordInput from "../../../../components/Input/PasswordInput";
 
 interface Data {
   id: string;
   [key: string]: any;
 }
 
-export default function UserUpload() {
+export default function LocalRegistration() {
   const { selectValue: s_0, handleChange: o_0 } = useSelect();
 
   const { selectedValues, handleSelectChange } = useMultiSelect<number>();
@@ -41,9 +40,9 @@ export default function UserUpload() {
   const { selectedRows: s_3, toggleRowsSelection: t_3 } =
     useMultiRowSelection();
 
-  const topicPopupInfo = {
-    url: PathConstants.Call.TopicRegistration,
-    windowName: "사용자 등록 및 수정",
+  const localRegistration = {
+    url: PathConstants.System.LocalRegistration,
+    windowName: "현장 등록 및 수정",
   };
 
   const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함 
@@ -61,44 +60,34 @@ export default function UserUpload() {
     <Stack width={"100%"} height={"100%"} bgcolor={"white"} alignItems={"center"} justifyContent={"space-between"} alignContent={"center"}>
       <Stack width={"80%"}>
         <Stack direction={"row"} gap={1} marginTop={1} alignItems={"center"} justifyContent={"space-between"} >
-          <Typography>사용자아이디</Typography>
-          <BasicInput sx={{ width: "80%" }}></BasicInput>
-        </Stack>
-        <Stack direction={"row"} gap={1} marginTop={1} alignItems={"center"} justifyContent={"space-between"} >
-          <Typography>패스워드</Typography>
-          <PasswordInput sx={{ width: "80%" }}></PasswordInput>
-        </Stack>
-        <Stack direction={"row"} gap={1} marginTop={1} alignItems={"center"} justifyContent={"space-between"} >
-          <Typography>패스워드확인</Typography>
-          <PasswordInput sx={{ width: "80%" }}></PasswordInput>
-        </Stack>
-        <Stack direction={"row"} gap={1} marginTop={1} alignItems={"center"} justifyContent={"space-between"}>
-          <Typography>사용자이름</Typography>
+          <Typography>현장아이디</Typography>
           <BasicInput sx={{ width: "80%" }}></BasicInput>
         </Stack>
         <Stack direction={"row"} gap={1} marginTop={1} alignItems={"center"} justifyContent={"space-between"}>
-          <Typography>휴대전화</Typography>
+          <Typography>현장이름</Typography>
           <BasicInput sx={{ width: "80%" }}></BasicInput>
         </Stack>
         <Stack direction={"row"} gap={1} marginTop={1} alignItems={"center"} justifyContent={"space-between"}>
-          <Typography>구성원 PREFIX</Typography>
-          <BasicInput sx={{ width: "80%" }}></BasicInput>
+          <Typography>사용시기</Typography>
+          <Box width={"80%"}><Calendar selectedDate={startDate} setSelectedDate={setStartDate} /></Box>
+        </Stack>
+        <Stack direction={"row"} gap={1} marginTop={1} alignItems={"center"} justifyContent={"space-between"}>
+          <Typography>사용종료</Typography>
+          <Box width={"80%"}><Calendar selectedDate={endDate} setSelectedDate={setEndDate}/></Box>
         </Stack>
         <Stack direction={"row"} gap={5} marginTop={1} alignItems={"center"}>
           <Typography>사용여부</Typography>
           <ToggleButton checked={toggle} onChange={setToggle} label="" />
         </Stack>
         <Stack direction={"row"} gap={1} marginTop={1} alignItems={"center"} justifyContent={"space-between"}>
-          <Typography>회사명</Typography>
-          <BasicInput sx={{ width: "80%" }}></BasicInput>
-        </Stack>
-        <Stack direction={"row"} gap={1} marginTop={1} alignItems={"center"} justifyContent={"space-between"}>
-          <Typography>주소</Typography>
-          <BasicInput sx={{ width: "80%" }}></BasicInput>
-        </Stack>
-        <Stack direction={"row"} gap={1} marginTop={1} alignItems={"center"} justifyContent={"space-between"}>
-          <Typography>사업자번호</Typography>
-          <BasicInput sx={{ width: "80%" }}></BasicInput>
+          <Typography>구분</Typography>
+          <Box width={"80%"}>
+          <Select
+                value={selectValue}
+                onChange={handleChange}
+                selectData={selectTestData}
+              />
+          </Box>
         </Stack>
         <Stack direction={"row"} gap={1} marginTop={1} alignItems={"center"} justifyContent={"space-between"}>
           <Typography>비고</Typography>
