@@ -109,15 +109,15 @@ export default function ResultMessage() {
         <Stack width={"60%"} height={"100%"}>
           <TableBox.Inner>
             <BasicTable data={tableTestData}>
-              <BasicTable.Theader>전송그룹</BasicTable.Theader>
-              <BasicTable.Theader>전송건수</BasicTable.Theader>
-              <BasicTable.Theader>대기(예약)</BasicTable.Theader>
-              <BasicTable.Theader>성공</BasicTable.Theader>
-              <BasicTable.Theader>실패</BasicTable.Theader>
-              <BasicTable.Theader>SMS</BasicTable.Theader>
-              <BasicTable.Theader>LMS</BasicTable.Theader>
-              <BasicTable.Theader>전송메시지</BasicTable.Theader>
-              <BasicTable.Theader>예약취소</BasicTable.Theader>
+              <BasicTable.Th>전송그룹</BasicTable.Th>
+              <BasicTable.Th>전송건수</BasicTable.Th>
+              <BasicTable.Th>대기(예약)</BasicTable.Th>
+              <BasicTable.Th>성공</BasicTable.Th>
+              <BasicTable.Th>실패</BasicTable.Th>
+              <BasicTable.Th>SMS</BasicTable.Th>
+              <BasicTable.Th>LMS</BasicTable.Th>
+              <BasicTable.Th>전송메시지</BasicTable.Th>
+              <BasicTable.Th>예약취소</BasicTable.Th>
 
               <BasicTable.Tbody>
                 {tableTestData.map((item, index) => {
@@ -155,9 +155,9 @@ export default function ResultMessage() {
         <Stack width={"40%"} height={"100%"}>
           <TableBox.Inner>
             <BasicTable data={tableTestData}>
-              <BasicTable.Theader>전송시간</BasicTable.Theader>
-              <BasicTable.Theader>전송결과</BasicTable.Theader>
-              <BasicTable.Theader>전송번호</BasicTable.Theader>
+              <BasicTable.Th>전송시간</BasicTable.Th>
+              <BasicTable.Th>전송결과</BasicTable.Th>
+              <BasicTable.Th>전송번호</BasicTable.Th>
 
               <BasicTable.Tbody>
                 {tableTestData.map((item, index) => {

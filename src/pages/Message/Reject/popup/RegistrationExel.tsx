@@ -37,8 +37,8 @@ export default function RegistrationExel() {
             data={data}
             setData={setData} // 데이터를 업데이트할 함수를 전달
           >
-            <RowDragTable.Theader>엑셀항목</RowDragTable.Theader>
-            <RowDragTable.Theader>칼럼위치</RowDragTable.Theader>
+            <RowDragTable.Th>엑셀항목</RowDragTable.Th>
+            <RowDragTable.Th>칼럼위치</RowDragTable.Th>
 
             <RowDragTable.Tbody>
               {data.map((item) => (
@@ -57,10 +57,14 @@ export default function RegistrationExel() {
               selectedRows={selectedRows}
               toggleRowsSelection={toggleRowsSelection}
             >
-              <CheckboxTable.CheckboxTh />
-              <CheckboxTable.Theader>이름</CheckboxTable.Theader>
-              <CheckboxTable.Theader>휴대전화</CheckboxTable.Theader>
-              <CheckboxTable.Theader>집전화</CheckboxTable.Theader>
+              <CheckboxTable.Thead>
+                <CheckboxTable.Tr>
+                  <CheckboxTable.CheckboxTh />
+                  <CheckboxTable.Th>이름</CheckboxTable.Th>
+                  <CheckboxTable.Th>휴대전화</CheckboxTable.Th>
+                  <CheckboxTable.Th>집전화</CheckboxTable.Th>
+                </CheckboxTable.Tr>
+              </CheckboxTable.Thead>
               <CheckboxTable.Tbody>
                 {tableTestData.map((item) => (
                   <CheckboxTable.Tr key={item.id} id={item.id}>

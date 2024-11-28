@@ -33,9 +33,9 @@ export default function Spam() {
       <TableBox gap={1}>
         <TableBox.Inner width={"40%"} minWidth={"100px"}>
           <BasicTable data={tableTestData}>
-            <BasicTable.Theader>전송일시</BasicTable.Theader>
-            <BasicTable.Theader>구분</BasicTable.Theader>
-            <BasicTable.Theader>메시지</BasicTable.Theader>
+            <BasicTable.Th>전송일시</BasicTable.Th>
+            <BasicTable.Th>구분</BasicTable.Th>
+            <BasicTable.Th>메시지</BasicTable.Th>
 
             <BasicTable.Tbody>
               {tableTestData.map((item, index) => {
@@ -61,10 +61,14 @@ export default function Spam() {
               selectedRows={ts_1}
               toggleRowsSelection={tt_1}
             >
-              <CheckboxTable.CheckboxTh />
-              <CheckboxTable.Theader>이름</CheckboxTable.Theader>
-              <CheckboxTable.Theader>휴대전화</CheckboxTable.Theader>
-              <CheckboxTable.Theader>집전화</CheckboxTable.Theader>
+              <CheckboxTable.Thead>
+                <CheckboxTable.Tr>
+                  <CheckboxTable.CheckboxTh />
+                  <CheckboxTable.Th>이름</CheckboxTable.Th>
+                  <CheckboxTable.Th>휴대전화</CheckboxTable.Th>
+                  <CheckboxTable.Th>집전화</CheckboxTable.Th>
+                </CheckboxTable.Tr>
+              </CheckboxTable.Thead>
               <CheckboxTable.Tbody>
                 {tableTestData.map((item) => (
                   <CheckboxTable.Tr key={item.id} id={item.id}>

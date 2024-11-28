@@ -44,10 +44,14 @@ export default function SearchCustomer() {
             selectedRows={selectedRows}
             toggleRowsSelection={toggleRowsSelection}
           >
-            <CheckboxTable.CheckboxTh />
-            <CheckboxTable.Theader>이름</CheckboxTable.Theader>
-            <CheckboxTable.Theader>휴대전화</CheckboxTable.Theader>
-            <CheckboxTable.Theader>집전화</CheckboxTable.Theader>
+            <CheckboxTable.Thead>
+              <CheckboxTable.Tr>
+                <CheckboxTable.CheckboxTh />
+                <CheckboxTable.Th>이름</CheckboxTable.Th>
+                <CheckboxTable.Th>휴대전화</CheckboxTable.Th>
+                <CheckboxTable.Th>집전화</CheckboxTable.Th>
+              </CheckboxTable.Tr>
+            </CheckboxTable.Thead>
             <CheckboxTable.Tbody>
               {tableTestData.map((item) => (
                 <CheckboxTable.Tr key={item.id} id={item.id}>

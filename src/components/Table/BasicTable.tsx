@@ -9,7 +9,7 @@ interface TableItemProps {
   children: ReactNode;
   [property: string]: any; // ...rest를 받기 위함
 }
-const Theader: React.FC<TableItemProps> = ({ children }) => {
+const Th: React.FC<TableItemProps> = ({ children }) => {
   return (
     <th className="border-solid bg-gray-200 border border-gray-300 border-b-0 border-t-0 last:border-0 text-left py-3 px-3 whitespace-nowrap">
       {children}
@@ -69,7 +69,7 @@ const EmptyTable = () => {
 };
 
 const BasicTable: React.FC<TableProps> & {
-  Theader: typeof Theader;
+  Th: typeof Th;
   Tr: typeof Tr;
   Td: typeof Td;
   Tbody: typeof Tbody;
@@ -85,9 +85,9 @@ const BasicTable: React.FC<TableProps> & {
             <tr>
               {React.Children.map(children, (child) => {
                 if (
-                  (child as React.ReactElement<any>).type === BasicTable.Theader
+                  (child as React.ReactElement<any>).type === BasicTable.Th
                 ) {
-                  return child; // Theader 컴포넌트를 렌더링
+                  return child; // Th 컴포넌트를 렌더링
                 }
                 return null; // 헤더가 아닌 경우 무시
               })}
@@ -106,7 +106,7 @@ const BasicTable: React.FC<TableProps> & {
 };
 
 BasicTable.EmptyTable = EmptyTable;
-BasicTable.Theader = Theader;
+BasicTable.Th = Th;
 BasicTable.Tr = Tr;
 BasicTable.Td = Td;
 BasicTable.Tbody = Tbody;

@@ -31,7 +31,7 @@ export default function RegionRegistration() {
                   toggleRowsSelection={toggleRowsSelection}
                 >
                   <RowDragTable.CheckboxTh />
-                  <RowDragTable.Theader>관리지역</RowDragTable.Theader>
+                  <RowDragTable.Th>관리지역</RowDragTable.Th>
                   <RowDragTable.Tbody>
                     {data.map((item) => (
                       <RowDragTable.Tr

@@ -786,6 +786,49 @@ export default function Main() {
           </BasicAlert>
         )} */}
       </div>
+
+      {/*  ============== CheckboxTable ============== */}
+      <div
+        style={{
+          height: "100%",
+          width: "100%",
+          overflow: "auto",
+        }}
+      >
+        <CheckboxTable
+          data={data}
+          checkbox={true}
+          selectedRows={selectedRows2}
+          toggleRowSelection={toggleRowsSelection2}
+        >
+          <CheckboxTable.Thead>
+            <CheckboxTable.Tr>
+              <CheckboxTable.Th>헤더하나</CheckboxTable.Th>
+              <CheckboxTable.Th>헤더둘</CheckboxTable.Th>
+            </CheckboxTable.Tr>
+          </CheckboxTable.Thead>
+          <CheckboxTable.Tbody>
+            {data.map((item, index) => (
+              <CheckboxTable.Tr key={item.id} id={item.id}>
+                <CheckboxTable.Td>
+                  <input
+                    type="checkbox"
+                    checked={selectedRows2.has(item.id)}
+                    onChange={() => toggleRowsSelection2(item.id)}
+                  />
+                </CheckboxTable.Td>
+                <CheckboxTable.Td>
+                  <input
+                    defaultValue={item.id}
+                    ref={(el) => (inputRefs.current[index] = el)} // ref 배열에 각 input 연결
+                  />
+                </CheckboxTable.Td>
+                <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
+              </CheckboxTable.Tr>
+            ))}
+          </CheckboxTable.Tbody>
+        </CheckboxTable>
+      </div>
       <button
         onClick={() => {
           const value = getInputValues();
@@ -798,7 +841,7 @@ export default function Main() {
       {/*============== BasicTable ==============*/}
       {/* <div>
         <BasicTable data={data}>
-          <BasicTable.Theader>세부항목</BasicTable.Theader>
+          <BasicTable.Th>세부항목</BasicTable.Th>
           <BasicTable.Tbody>
             {[1, 2, 3, 4, 5].map((item, index) => {
               return (
@@ -820,16 +863,16 @@ export default function Main() {
         }}
       >
         <BasicTable data={data}>
-          <BasicTable.Theader>고객정보</BasicTable.Theader>
-          <BasicTable.Theader>고객정보</BasicTable.Theader>
-          <BasicTable.Theader>고객정보</BasicTable.Theader>
-          <BasicTable.Theader>고객정보</BasicTable.Theader>
-          <BasicTable.Theader>고객정보</BasicTable.Theader>
-          <BasicTable.Theader>고객정보</BasicTable.Theader>
-          <BasicTable.Theader>고객정보</BasicTable.Theader>
-          <BasicTable.Theader>고객정보</BasicTable.Theader>
-          <BasicTable.Theader>고객정보</BasicTable.Theader>
-          <BasicTable.Theader>고객정보</BasicTable.Theader>
+          <BasicTable.Th>고객정보</BasicTable.Th>
+          <BasicTable.Th>고객정보</BasicTable.Th>
+          <BasicTable.Th>고객정보</BasicTable.Th>
+          <BasicTable.Th>고객정보</BasicTable.Th>
+          <BasicTable.Th>고객정보</BasicTable.Th>
+          <BasicTable.Th>고객정보</BasicTable.Th>
+          <BasicTable.Th>고객정보</BasicTable.Th>
+          <BasicTable.Th>고객정보</BasicTable.Th>
+          <BasicTable.Th>고객정보</BasicTable.Th>
+          <BasicTable.Th>고객정보</BasicTable.Th>
           <BasicTable.Tbody>
             {data.map((item, index) => {
               return (
@@ -851,6 +894,82 @@ export default function Main() {
         </BasicTable>
       </div> */}
 
+      {/*============== RowDragTable ==============*/}
+
+      <div
+        style={{
+          height: "100%",
+          overflow: "scroll",
+        }}
+      >
+        <RowDragTable
+          checkbox={true}
+          selectedRows={selectedRows}
+          toggleRowsSelection={toggleRowsSelection}
+          data={data}
+          setData={setData} // 데이터를 업데이트할 함수를 전달
+        >
+          <RowDragTable.Th>아이디</RowDragTable.Th>
+          <RowDragTable.Th>이름</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>값</RowDragTable.Th>
+          <RowDragTable.Th>삭제</RowDragTable.Th>
+          <RowDragTable.Tbody>
+            {data.map((item) => (
+              <RowDragTable.Tr key={item.id} id={item.id}>
+                <RowDragTable.Td>
+                  <input
+                    type="checkbox"
+                    checked={selectedRows.has(item.id)}
+                    onChange={() => toggleRowsSelection(item.id)}
+                  />
+                </RowDragTable.Td>
+                <RowDragTable.Td>{item.id}</RowDragTable.Td>
+                <RowDragTable.Td>{item.name}</RowDragTable.Td>
+                <RowDragTable.Td>{item.age}</RowDragTable.Td>
+                <RowDragTable.Td>{item.job}</RowDragTable.Td>
+                <RowDragTable.Td>{item.adress}</RowDragTable.Td>
+                <RowDragTable.Td>{item.email}</RowDragTable.Td>
+                <RowDragTable.Td>{item.phone}</RowDragTable.Td>
+                <RowDragTable.Td>{item.department}</RowDragTable.Td>
+                <RowDragTable.Td>{item.hireDate}</RowDragTable.Td>
+                <RowDragTable.Td>{item.salary}</RowDragTable.Td>
+                <RowDragTable.Td>{item.phone}</RowDragTable.Td>
+                <RowDragTable.Td>{item.department}</RowDragTable.Td>
+                <RowDragTable.Td>{item.hireDate}</RowDragTable.Td>
+                <RowDragTable.Td>{item.salary}</RowDragTable.Td>
+                <RowDragTable.Td>{item.phone}</RowDragTable.Td>
+                <RowDragTable.Td>{item.department}</RowDragTable.Td>
+                <RowDragTable.Td>{item.hireDate}</RowDragTable.Td>
+                <RowDragTable.Td>{item.salary}</RowDragTable.Td>
+                <RowDragTable.Td>
+                  <button
+                    onClick={() => {
+                      alert(item.id);
+                    }}
+                  >
+                    버튼
+                  </button>
+                </RowDragTable.Td>
+              </RowDragTable.Tr>
+            ))}
+          </RowDragTable.Tbody>
+        </RowDragTable>
+      </div>
       <div>
         <SearchResult total={100} />
         <Pagination count={25} page={currentPage} onChange={onChangePage} />

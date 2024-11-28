@@ -26,10 +26,10 @@ export default function MemoGroup() {
       <TabPanel value={value} index={0}>
         <Box style={{ maxHeight: "350px", marginTop: 1, overflow: "auto" }}>
           <BasicTable data={tableTestData}>
-            <BasicTable.Theader>구분</BasicTable.Theader>
-            <BasicTable.Theader>일자</BasicTable.Theader>
-            <BasicTable.Theader>특기사항</BasicTable.Theader>
-            <BasicTable.Theader>상담내용</BasicTable.Theader>
+            <BasicTable.Th>구분</BasicTable.Th>
+            <BasicTable.Th>일자</BasicTable.Th>
+            <BasicTable.Th>특기사항</BasicTable.Th>
+            <BasicTable.Th>상담내용</BasicTable.Th>
             <BasicTable.Tbody>
               {tableTestData.map((item, index) => {
                 return (

@@ -18,7 +18,7 @@ interface CheckboxTdProps {
   item: { id: string }; // item 객체의 id 속성 타입
 }
 
-const Theader: React.FC<TableItemProps> = ({ children, ...rest }) => {
+const Th: React.FC<TableItemProps> = ({ children, ...rest }) => {
   return (
     <th
       {...rest}
@@ -48,14 +48,18 @@ const CheckboxTh = () => {
   };
 
   return (
-    <Theader key="checkbox-header">
+    <Th key="checkbox-header">
       <Checkbox checked={allSelected} onChange={handleSelectAllChange} />
-    </Theader>
+    </Th>
   );
 };
 
 const Td: React.FC<TableItemProps> = ({ children, ...rest }) => {
-  return <td className="py-1 px-1" {...rest}>{children}</td>;
+  return (
+    <td className="py-1 px-1" {...rest}>
+      {children}
+    </td>
+  );
 };
 
 const Tr: React.FC<TableItemProps> = React.memo(({ children, ...rest }) => {
@@ -81,6 +85,9 @@ const Tbody: React.FC<TableItemProps> = ({ children, ...rest }) => {
   return <tbody {...rest}>{children}</tbody>;
 };
 
+const Thead: React.FC<TableItemProps> = ({ children, ...rest }) => {
+  return <thead {...rest}>{children}</thead>;
+};
 const EmptyTable = () => {
   return (
     <table className="table-auto w-full border-collapse">
@@ -122,7 +129,8 @@ const Checkbox: React.FC<{ checked: boolean; onChange: () => void }> =
   });
 
 const CheckboxTable: React.FC<TableProps> & {
-  Theader: typeof Theader;
+  Thead: typeof Thead;
+  Th: typeof Th;
   CheckboxTh: typeof CheckboxTh;
   Tr: typeof Tr;
   Td: typeof Td;
@@ -141,21 +149,14 @@ const CheckboxTable: React.FC<TableProps> & {
           toggleRowsSelection={toggleRowsSelection}
         >
           <table className="table-auto w-full border-gray-300 border-collapse">
-            <thead>
-              <tr>
-                {React.Children.map(children, (child) => {
-                  if (
-                    (child as React.ReactElement<any>).type ===
-                      CheckboxTable.Theader ||
-                    (child as React.ReactElement<any>).type ===
-                      CheckboxTable.CheckboxTh
-                  ) {
-                    return child;
-                  }
-                  return null;
-                })}
-              </tr>
-            </thead>
+            {React.Children.map(children, (child) => {
+              if (
+                (child as React.ReactElement<any>).type === CheckboxTable.Thead
+              ) {
+                return child; // Thead 그대로 렌더링
+              }
+              return null; // Thead 아닌 경우 무시
+            })}
             {React.Children.map(children, (child) => {
               if (
                 (child as React.ReactElement<any>).type === CheckboxTable.Tbody
@@ -172,11 +173,14 @@ const CheckboxTable: React.FC<TableProps> & {
 };
 
 CheckboxTable.EmptyTable = EmptyTable;
-CheckboxTable.Theader = Theader;
+CheckboxTable.Thead = Thead;
+CheckboxTable.Th = Th;
 CheckboxTable.CheckboxTh = CheckboxTh;
 CheckboxTable.Tr = Tr;
 CheckboxTable.Td = Td;
 CheckboxTable.CheckboxTd = CheckboxTd;
 CheckboxTable.Tbody = Tbody;
+
+Thead.displayName = "CheckboxTable.Thead";
 
 export default CheckboxTable;
