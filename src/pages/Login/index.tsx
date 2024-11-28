@@ -57,8 +57,7 @@ export default function Login() {
     if (rememberId) {
       setSaveLogin(getValues("loginId"), true);
     }
-
-    instance.post("/api/login", data);
+    // instance.post("/api/login", data);
     userLogin(data, {
       onSuccess: (data) => {
         console.log("성공:", data);
