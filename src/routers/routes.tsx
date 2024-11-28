@@ -37,6 +37,7 @@ import AuthManagement from "../pages/SysManagement/AuthManagement";
 import MemberMenuPermission from "../pages/SysManagement/AuthManagement/popup/MemberMenuPermission";
 import MenuPermissionCopy from "../pages/SysManagement/AuthManagement/popup/MenuPermissionCopy";
 import PermissionRevoke from "../pages/SysManagement/AuthManagement/popup/PermissionRevoke";
+import MemberManagement from "../pages/SysManagement/Member";
 
 export const routes: RouteObject[] = [
   {
@@ -125,7 +126,7 @@ export const routes: RouteObject[] = [
           },
           {
             path: PathConstants.System.Member,
-            element: <div>구성원 관리</div>,
+            element: <MemberManagement/>,
           },
           {
             path: PathConstants.System.Local,
