@@ -38,6 +38,8 @@ import MemberMenuPermission from "../pages/SysManagement/AuthManagement/popup/Me
 import MenuPermissionCopy from "../pages/SysManagement/AuthManagement/popup/MenuPermissionCopy";
 import PermissionRevoke from "../pages/SysManagement/AuthManagement/popup/PermissionRevoke";
 import MemberManagement from "../pages/SysManagement/Member";
+import LocalManagement from "../pages/SysManagement/Local";
+import LocalRegistration from "../pages/SysManagement/Local/popup/LocalRegistration";
 
 export const routes: RouteObject[] = [
   {
@@ -130,7 +132,7 @@ export const routes: RouteObject[] = [
           },
           {
             path: PathConstants.System.Local,
-            element: <div>현장 관리</div>,
+            element: <LocalManagement/>,
           },
           {
             path: PathConstants.System.LocalMember,
@@ -145,15 +147,15 @@ export const routes: RouteObject[] = [
             element: <NetworkSetup />,
           },
           {
-            path: PathConstants.System.Auth,
+            path: PathConstants.System.AuthCode,
             element: <div>인증번호관리</div>,
           },
           {
-            path: PathConstants.System.Auth,
+            path: PathConstants.System.ReceivingNumber,
             element: <div>수신번호관리</div>,
           },
           {
-            path: PathConstants.System.Auth,
+            path: PathConstants.System.Phone,
             element: <div>전화기관리</div>,
           },
         ],
@@ -236,5 +238,9 @@ export const routes: RouteObject[] = [
   {
     path: PathConstants.System.PermissionRevoke,
     element: <PermissionRevoke/>,
+  },
+  {
+    path: PathConstants.System.LocalRegistration,
+    element: <LocalRegistration/>,
   },
 ];

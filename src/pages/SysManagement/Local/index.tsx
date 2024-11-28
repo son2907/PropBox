@@ -21,111 +21,150 @@ import { RiDeleteBinLine } from "react-icons/ri";
 import CheckboxTable from "../../../components/Table/CheckboxTable";
 import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
 import { BiChevronLeft } from "react-icons/bi"
+import Calendar from "../../../components/Calendar/Calendar";
 
-export default function Registration() {
+export default function LocalManagement() {
   const { selectValue, handleChange } = useSelect();
 
   const [selectedAge, setSelectedAge] = useState<number | null>(null);
 
   //useMultiRowSelection 분리해서 각 테이블에 독립적으로 selectedRows와 toggleRowsSelection을 전달하여 동작이 분리되도록 설정.
-  // 사용자 허가 솔루션 - 선택 상태 관리
+  // 사용자 리스트 - 선택 상태 관리
   const {
-    selectedRows: authorizedSelectedRows,
-    toggleRowsSelection: toggleAuthorizedRowsSelection,
+    selectedRow: userSelectedRow,
+    toggleRowSelection: toggleUserRowSelection,
+  } = useSingleRowSelection();
+
+  // 현장 리스트 - 선택 상태 관리
+  const {
+    selectedRow: localSelectedRow,
+    toggleRowSelection: toggleLocalRowSelection,
+  } = useSingleRowSelection();
+
+  // 현장 허가 솔루션 - 선택 상태 관리
+  const {
+    selectedRows: localUseSelectedRows,
+    toggleRowsSelection: toggleLocalUseRowsSelection,
   } = useMultiRowSelection();
 
-  // 사용자 미허가 솔루션 - 선택 상태 관리
+  // 현장 미허가 솔루션 - 선택 상태 관리
   const {
-    selectedRows: unauthorizedSelectedRows,
-    toggleRowsSelection: toggleUnauthorizedRowsSelection,
+    selectedRows: localUnuseSelectedRows,
+    toggleRowsSelection: toggleLocalUnuseRowsSelection,
   } = useMultiRowSelection();
-
-  const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함 
 
   // usePagination에
   const { currentPage, onChangePage } = usePagination();
 
-  //사용자 추가 팝업
-  const uploadUser = {
-    url: PathConstants.System.UserUpload,
-    windowName: "사용자 등록 및 수정",
+  //현장 추가 팝업
+  const localRegistration = {
+    url: PathConstants.System.LocalRegistration,
+    windowName: "현장 등록 및 수정",
     windowFeatures: "width=500,height=500,scrollbars=yes,resizable=yes",
   };
+
+  const [startDate, setStartDate] = useState<Date>(new Date());
+  const [endDate, setEndDate] = useState<Date>(new Date());
 
   return (
     <>
       {/* 사용자 리스트 테이블 - 상단 테이블 */}
       <Stack width={"100%"} height={"100%"} gap={1} marginBottom={1}>
         <GrayBox gap={2} justifyContent="space-between">
-          <Stack direction="row" gap={1}>
+          <Stack direction="row" gap={1} width={"80%"}>
             <SearchInput placeholder="사용자이름 검색" />
+            <SearchInput placeholder="현장 검색" />
+            <Select
+              value={selectValue}
+              onChange={handleChange}
+              selectData={selectTestData}
+              sx={{ width: "204px" }}
+              placeholder="종료 구분 선택"
+            />
+            <Box width={"200px"}><Calendar selectedDate={endDate} setSelectedDate={setEndDate} /></Box>
+            <Box width={"200px"}><Calendar selectedDate={startDate} setSelectedDate={setStartDate} /></Box>
           </Stack>
           <Stack direction="row" gap={1}>
             <BasicButton
               onClick={() => {
                 openPopup({
-                  url: uploadUser.url,
-                  windowName: uploadUser.windowName,
-                  windowFeatures: uploadUser.windowFeatures,
+                  url: localRegistration.url,
+                  windowName: localRegistration.windowName,
+                  windowFeatures: localRegistration.windowFeatures,
                 });
               }}
-            >사용자추가</BasicButton>
+            >추가</BasicButton>
           </Stack>
         </GrayBox>
         <Stack width={"100%"} spacing={1} height={"100%"}>
-          {/* 사용자 정보 리스트 */}
-          <Stack bgcolor={"white"} marginLeft={1} width={"100%"} height={"50%"}>
-            <TableBox>
-              <TableBox.Inner>
-                <BasicTable data={tableTestData}>
-                  <BasicTable.Th>사용자ID</BasicTable.Th>
-                  <BasicTable.Th>사용자이름</BasicTable.Th>
-                  <BasicTable.Th>휴대전화</BasicTable.Th>
-                  <BasicTable.Th>PREFIX</BasicTable.Th>
-                  <BasicTable.Th>회사이름</BasicTable.Th>
-                  <BasicTable.Th>사업자번호</BasicTable.Th>
-                  <BasicTable.Th>사용여부</BasicTable.Th>
-                  <BasicTable.Th>삭제</BasicTable.Th>
-                  <BasicTable.Th>수정</BasicTable.Th>
-                  <BasicTable.Tbody>
-                    {tableTestData.map((item, index) => {
-                      return (
-                        <BasicTable.Tr
-                          key={index}
-                          isClicked={selectedRow.has(item.id)}
-                          onClick={() => toggleRowSelection(item.id)}
-                        >
-                          <BasicTable.Td>{item.phone}</BasicTable.Td>
-                          <BasicTable.Td>{item.name}</BasicTable.Td>
-                          <BasicTable.Td>{item.age}</BasicTable.Td>
-                          <BasicTable.Td>{item.job}</BasicTable.Td>
-                          <BasicTable.Td>{item.job}</BasicTable.Td>
-                          <BasicTable.Td>{item.job}</BasicTable.Td>
-                          <BasicTable.Td>{item.job}</BasicTable.Td>
-                          <BasicTable.Td>
-                            <IconButton>
-                              <RiDeleteBinLine color="#f4475f" />
-                            </IconButton>
-                          </BasicTable.Td>
-                          <BasicTable.Td>
-                            <BasicButton
-                              onClick={() => {
-                                openPopup({
-                                  url: uploadUser.url,
-                                  windowName: uploadUser.windowName,
-                                  windowFeatures: uploadUser.windowFeatures,
-                                });
-                              }}
-                            >수정</BasicButton>
-                          </BasicTable.Td>
-                        </BasicTable.Tr>
-                      );
-                    })}
-                  </BasicTable.Tbody>
-                </BasicTable>
-              </TableBox.Inner>
-            </TableBox>
+          <Stack direction={"row"} height={"50%"}>
+            {/* 사용자 정보 리스트 */}
+            <Stack bgcolor={"white"} marginLeft={1} width={"30%"} >
+              <TableBox>
+                <TableBox.Inner>
+                  <BasicTable data={tableTestData}>
+                    <BasicTable.Th>사용자ID</BasicTable.Th>
+                    <BasicTable.Th>사용자이름</BasicTable.Th>
+                    <BasicTable.Tbody>
+                      {tableTestData.map((item, index) => {
+                        return (
+                          <BasicTable.Tr
+                            key={index}
+                            isClicked={userSelectedRow.has(item.id)}
+                            onClick={() => toggleUserRowSelection(item.id)}
+                          >
+                            <BasicTable.Td>{item.phone}</BasicTable.Td>
+                            <BasicTable.Td>{item.name}</BasicTable.Td>
+                          </BasicTable.Tr>
+                        );
+                      })}
+                    </BasicTable.Tbody>
+                  </BasicTable>
+                </TableBox.Inner>
+              </TableBox>
+            </Stack>
+            <Stack bgcolor={"white"} marginLeft={1} width={"70%"} >
+              <TableBox>
+                <TableBox.Inner>
+                  <BasicTable data={tableTestData}>
+                    <BasicTable.Th>현장번호</BasicTable.Th>
+                    <BasicTable.Th>현장이름</BasicTable.Th>
+                    <BasicTable.Th>사용기간</BasicTable.Th>
+                    <BasicTable.Th>구분</BasicTable.Th>
+                    <BasicTable.Th>수정</BasicTable.Th>
+                    <BasicTable.Tbody>
+                      {tableTestData.map((item, index) => {
+                        return (
+                          <BasicTable.Tr
+                            key={index}
+                            isClicked={localSelectedRow.has(item.id)}
+                            onClick={() => toggleLocalRowSelection(item.id)}
+                          >
+                            <BasicTable.Td>{item.phone}</BasicTable.Td>
+                            <BasicTable.Td>{item.name}</BasicTable.Td>
+                            <BasicTable.Td>{item.hireDate}</BasicTable.Td>
+                            <BasicTable.Td>{item.age}</BasicTable.Td>
+                            <BasicTable.Td>
+                              <BasicButton
+                                onClick={() => {
+                                  openPopup({
+                                    url: localRegistration.url,
+                                    windowName: localRegistration.windowName,
+                                    windowFeatures: localRegistration.windowFeatures,
+                                  });
+                                }}
+                              >수정</BasicButton>
+                            </BasicTable.Td>
+                          </BasicTable.Tr>
+                        );
+                      })}
+                    </BasicTable.Tbody>
+                  </BasicTable>
+                </TableBox.Inner>
+              </TableBox>
+            </Stack>
           </Stack>
+
           <Stack
             gap={1}
             width={"100%"}
@@ -147,14 +186,14 @@ export default function Registration() {
                   <TableBox.Inner>
                     <CheckboxTable
                       data={tableTestData}
-                      selectedRows={authorizedSelectedRows}
-                      toggleRowsSelection={toggleAuthorizedRowsSelection}
+                      selectedRows={localUseSelectedRows}
+                      toggleRowsSelection={toggleLocalUseRowsSelection}
                     >
                       <CheckboxTable.Thead>
                         <CheckboxTable.Tr>
                           <CheckboxTable.CheckboxTh />
-                          <CheckboxTable.Th>솔루션ID</CheckboxTable.Th>
-                          <CheckboxTable.Th>솔루션명</CheckboxTable.Th>
+                          <CheckboxTable.Th>ID</CheckboxTable.Th>
+                          <CheckboxTable.Th>솔루션이름</CheckboxTable.Th>
                           <CheckboxTable.Th>구분</CheckboxTable.Th>
                           <CheckboxTable.Th colSpan={3}>
                             라이선스
@@ -213,8 +252,8 @@ export default function Registration() {
                   <TableBox.Inner>
                     <CheckboxTable
                       data={tableTestData}
-                      selectedRows={unauthorizedSelectedRows}
-                      toggleRowsSelection={toggleUnauthorizedRowsSelection}
+                      selectedRows={localUnuseSelectedRows}
+                      toggleRowsSelection={toggleLocalUnuseRowsSelection}
                     >
                       <CheckboxTable.Thead>
                         <CheckboxTable.Tr>

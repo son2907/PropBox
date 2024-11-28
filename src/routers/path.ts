@@ -45,6 +45,10 @@ const PathConstants = {
     MemberMenuPermission : "/system/auth/memberMenuPermission",
     MenuPermissionCopy : "/system/auth/menuPermissionCopy",
     PermissionRevoke : "/system/auth/permissionRevoke",
+    ReceivingNumber : "/system/receivingNumber",
+    AuthCode : "/system/authCode",
+    Phone : "/system/phone",
+    LocalRegistration : "/system/local/localRegistration",
   },
 };
 
