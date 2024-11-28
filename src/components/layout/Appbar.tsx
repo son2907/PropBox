@@ -3,6 +3,7 @@ import { appBarHeight } from "../../config";
 import AppbarButton from "../appbar/AppbarButton";
 import { useState } from "react";
 import { Select } from "../Select";
+import useSelect from "../../hooks/useSelect";
 
 // AppBarArea 컴포넌트: 앱바 영역
 const AppBarArea = styled(Box)(({ theme }) => ({
@@ -38,6 +39,7 @@ const testData = [
 // 실시간으로 상태를 받아서 보여주어야 함
 export default function Appbar() {
   const [state, setState] = useState<boolean>(true);
+  const { selectValue, handleChange } = useSelect();
   const text = "010-1111-1111";
   return (
     <AppBarArea>
@@ -48,6 +50,8 @@ export default function Appbar() {
         }}
       >
         <Select
+          value={selectValue}
+          onChange={handleChange}
           selectData={testData}
           placeholder={"현장 선택"}
           sx={{ width: "160px" }}
