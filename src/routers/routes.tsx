@@ -32,6 +32,7 @@ import Registration from "../pages/CustomerManagement/Registration";
 import UploadRegistration from "../pages/CustomerManagement/Registration/popup/UploadRegistration";
 import GroupManagement from "../pages/CustomerManagement/Registration/popup/GroupManagement";
 import UserManagement from "../pages/SysManagement/User";
+import UserUpload from "../pages/SysManagement/User/popup/UploadUser";
 
 export const routes: RouteObject[] = [
   {
@@ -214,5 +215,9 @@ export const routes: RouteObject[] = [
   {
     path: PathConstants.Customer.CustomerGroupManagement,
     element: <GroupManagement />,
+  },
+  {
+    path: PathConstants.System.UserUpload,
+    element: <UserUpload />,
   },
 ];

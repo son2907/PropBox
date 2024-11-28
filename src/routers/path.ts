@@ -41,6 +41,7 @@ const PathConstants = {
     LocalMember: "/system/localmember",
     Auth: "/system/auth",
     NetworkSetup: "/system/networksetup",
+    UserUpload : "/system/user/uploadUser",
   },
 };
 

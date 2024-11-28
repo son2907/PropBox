@@ -27,25 +27,29 @@ export default function Registration() {
 
   const [selectedAge, setSelectedAge] = useState<number | null>(null);
 
-  const { selectedRows, toggleRowsSelection } = useMultiRowSelection(); // 체크박스는 보통 여러개가 가능하므로 useMultiRowSelection 권장
+  //useMultiRowSelection 분리해서 각 테이블에 독립적으로 selectedRows와 toggleRowsSelection을 전달하여 동작이 분리되도록 설정.
+  // 사용자 허가 솔루션 - 선택 상태 관리
+  const {
+    selectedRows: authorizedSelectedRows,
+    toggleRowsSelection: toggleAuthorizedRowsSelection,
+  } = useMultiRowSelection();
+
+  // 사용자 미허가 솔루션 - 선택 상태 관리
+  const {
+    selectedRows: unauthorizedSelectedRows,
+    toggleRowsSelection: toggleUnauthorizedRowsSelection,
+  } = useMultiRowSelection();
 
   const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함 
 
   // usePagination에
   const { currentPage, onChangePage } = usePagination();
 
-  //엑셀업로드 팝업 오픈
-  const uploadRegistration = {
-    url: PathConstants.Customer.RegistrationUpload,
+  //사용자 추가 팝업
+  const uploadUser = {
+    url: PathConstants.System.UserUpload,
     windowName: "고객엑셀등록",
-    windowFeatures: "width=1200,height=500,scrollbars=yes,resizable=yes",
-  };
-
-  //고객 그룹관리 팝업 오픈
-  const GroupManagement = {
-    url: PathConstants.Customer.CustomerGroupManagement,
-    windowName: "고객그룹관리",
-    windowFeatures: "width=1066,height=1000,scrollbars=yes,resizable=yes",
+    windowFeatures: "width=500,height=500,scrollbars=yes,resizable=yes",
   };
 
   return (
@@ -57,7 +61,15 @@ export default function Registration() {
             <SearchInput placeholder="사용자이름 검색" />
           </Stack>
           <Stack direction="row" gap={1}>
-            <BasicButton>사용자추가</BasicButton>
+            <BasicButton
+              onClick={() => {
+                openPopup({
+                  url: uploadUser.url,
+                  windowName: uploadUser.windowName,
+                  windowFeatures: uploadUser.windowFeatures,
+                });
+              }}
+            >사용자추가</BasicButton>
           </Stack>
         </GrayBox>
         <Stack width={"100%"} spacing={1} height={"100%"}>
@@ -96,7 +108,15 @@ export default function Registration() {
                             </IconButton>
                           </BasicTable.Td>
                           <BasicTable.Td>
-                            <BasicButton>수정</BasicButton>
+                            <BasicButton
+                              onClick={() => {
+                                openPopup({
+                                  url: uploadUser.url,
+                                  windowName: uploadUser.windowName,
+                                  windowFeatures: uploadUser.windowFeatures,
+                                });
+                              }}
+                            >수정</BasicButton>
                           </BasicTable.Td>
                         </BasicTable.Tr>
                       );
@@ -127,8 +147,8 @@ export default function Registration() {
                   <TableBox.Inner>
                     <CheckboxTable
                       data={tableTestData}
-                      selectedRows={selectedRows}
-                      toggleRowsSelection={toggleRowsSelection}
+                      selectedRows={authorizedSelectedRows}
+                      toggleRowsSelection={toggleAuthorizedRowsSelection}
                     >
                       <CheckboxTable.Thead>
                         <CheckboxTable.Tr>
@@ -193,8 +213,8 @@ export default function Registration() {
                   <TableBox.Inner>
                     <CheckboxTable
                       data={tableTestData}
-                      selectedRows={selectedRows}
-                      toggleRowsSelection={toggleRowsSelection}
+                      selectedRows={unauthorizedSelectedRows}
+                      toggleRowsSelection={toggleUnauthorizedRowsSelection}
                     >
                       <CheckboxTable.Thead>
                         <CheckboxTable.Tr>
