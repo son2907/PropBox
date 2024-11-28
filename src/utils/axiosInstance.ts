@@ -22,16 +22,13 @@ const instance: AxiosInstance = axios.create({
 // 애플리케이션의 최상위 컴포넌트(App.tsx)에서 반드시 호출해야 하는 함수입니다.
 export function useAxiosInterceptor() {
   const { accessToken, clear } = useAuthStore(["accessToken", "clear"]);
-  // 인증 토큰(accessToken)과 인증 상태를 초기화하는 메서드(clear)를 가져옵니다.
   const { openModal } = useModal();
-  // 모달을 열 수 있는 메서드(openModal)를 가져옵니다.
 
   // 요청 인터셉터: 모든 Axios 요청에 공통적으로 적용
   const requestInterceptor = useCallback(
     (config: InternalAxiosRequestConfig) => {
       if (accessToken && config.headers) {
-        // accessToken이 존재하면 Authorization 헤더에 Bearer 토큰을 추가
-        config.headers.Authorization = `Bearer ${accessToken}`;
+        config.headers.Authorization = `${accessToken}`;
       }
       return config; // 수정된 요청 설정 반환
     },
@@ -41,8 +38,15 @@ export function useAxiosInterceptor() {
   // 응답 에러 처리 인터셉터: 모든 Axios 요청 에러에 공통적으로 적용
   const responseErrorInterceptor = useCallback(
     (error: AxiosError<any>) => {
+      const originalRequest = error.config;
+
+      if (error.response && error.response.status === 401) {
+        // 액세스 토큰 만료 및 401 응답 확인
+        // refresh 토큰을 이용해 엑세스 토큰 재발급
+        // 실패할 시 인증상태를 초기화하여 로그아웃시키고 로그인 페이지로 리다이레긑 함
+      }
       // 특정 상태 코드(403, IS_FORBIDDEN) 처리
-      if (
+      else if (
         error.response?.status === 403 &&
         error.response?.data.code === "IS_FORBIDDEN"
       ) {
