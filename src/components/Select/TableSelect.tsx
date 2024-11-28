@@ -1,5 +1,6 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Select } from ".";
+import useSelect from "../../hooks/useSelect";
 
 interface TableSelectProps {
   total: number;
@@ -25,16 +26,24 @@ export default function TableSelect({ total }: TableSelectProps) {
     },
   ];
 
+  const { selectValue, handleChange } = useSelect("10");
+
   return (
     <Box
-      style={{
+      sx={{
         display: "inline-flex",
         alignItems: "center",
         textAlign: "center",
+        gap: 1,
       }}
     >
-      보여줄 항목 수 <Select defaultValue={10} selectData={selectData}></Select>{" "}
-      전체:{total}
+      <Typography>보여줄 항목 수</Typography>
+      <Select
+        value={selectValue}
+        onChange={handleChange}
+        selectData={selectData}
+      ></Select>
+      <Typography>전체:{total}</Typography>
     </Box>
   );
 }

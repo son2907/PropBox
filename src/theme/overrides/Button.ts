@@ -71,7 +71,7 @@ export default function Button(theme: Theme) {
           props: { variant: "outlined", color: "primary" },
           style: {
             ...outlinedButton({
-              main: theme.palette.primary.main, // 테두리 색상
+              main: theme.palette.root.borderPrimary, // 테두리 색상
               text: theme.palette.primary.dark, // 텍스트 색상
               hover: theme.palette.primary.light, // 호버 시 색상
               ripple: theme.palette.primary[700], // Ripple 효과 색상

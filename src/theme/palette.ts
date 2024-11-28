@@ -18,6 +18,14 @@ const _palette: PaletteOptions = {
     appbarItemTextColor: "#ffffff",
     appbarBorderColor: "#e5e7eb",
   },
+
+  // 페이지 탭 컬러
+  pageTab: {
+    tabBg: "#F7F9FA",
+    selectedTabBg: "#FFFFFF",
+    tabIcon: "#6AA5FE",
+  },
+
   modal: {
     modalBg: "#37404a",
     modalBorderColor: "#dee2e6",
@@ -26,10 +34,11 @@ const _palette: PaletteOptions = {
 
   // 주요 색상변수
   root: {
-    secondary: "#6a7382",
-    light: "#ebebeb",
-    tertiary: "#b0b8c6",
-    borderPrimary: "#E6E9EE",
+    secondary: "#6a7382", // 어두운 회색
+    light: "#ebebeb", // 밝은 회색
+    lightBlue: "#CBE0FF", // 밝은 메인 파랑
+    mainBlue: "#6AA5FE", // 메인이 되는 파란색
+    borderPrimary: "#D9D9D9", // 밝은 회색 테두리
     coolGray400: "#8a92a8",
     coolGray600: "#575f75",
     coolGray800: "#2c2f3a",
@@ -40,12 +49,12 @@ const _palette: PaletteOptions = {
     error: "#f4475f",
   },
   primary: {
-    main: "#D9D9D9", // 중간 명도의 회색
+    main: "#6AA5FE", // 메인이 되는 파란색
     light: "#ffffff", // 흰색
-    dark: "#000000", // 어두운 회색
-    A100: "#f1f1f1", // 연한 회색
+    dark: "#2C2C2C", // 검은색
+    A100: "#F1F1F1", // 연한 회색
     "50": "#f0f0f0", // 아주 연한 회색
-    "100": "#d9d9d9", // 더 밝은 회색
+    "100": "#D9D9D9", // 더 밝은 회색
     "200": "#bfbfbf", // 밝은 회색
     "300": "#a6a6a6", // 중간보다 약간 밝은 회색
     "400": "#8c8c8c", // 중간 회색
@@ -104,7 +113,7 @@ const _palette: PaletteOptions = {
     contrastText: "#ffffff",
   },
   warning: {
-    main: "#f9ba0d",
+    main: "#f9ba0d", // 메인 붉은 컬러
     light: "#f8e318",
     dark: "#f57600",
     "50": "#fffce5",
@@ -120,7 +129,7 @@ const _palette: PaletteOptions = {
     contrastText: "#ffffff",
   },
   error: {
-    main: "#f4475f",
+    main: "#EC221F",
     light: "#fd5e74",
     dark: "#f51837",
     A100: "#ffe4e8",

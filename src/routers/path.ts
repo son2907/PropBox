@@ -4,18 +4,34 @@ const PathConstants = {
   Test: "/test",
   Call: {
     Consultation: "/call/consultation",
+    SearchCustomer: "/call/consultation/customer-search",
+    ConsultationStatus: "/call/consultation/consultation-status",
+    CallLog: "/call/consultation/call-log",
+    SmsSending: "/call/consultation/sms-sending",
     Analysis: "/call/analysis",
+    UploadConsultation: "/call/analysis/upload-consultation",
+    CreateConsultation: "/call/analysis/create-consultation",
+    TopicRegistration: "/call/analysis/topic-registration",
     Management: "/call/management",
     Information: "/call/information",
   },
   Message: {
     Auto: "/message/auto",
     Bulk: "/message/bulk",
-    Declaration: "/message/declartion", // 오타 수정: declartion -> declaration
+    Declaration: "/message/declaration",
     Reject: "/message/reject",
+    Result: "/message/result",
+    PhoneNumber: "/message/auto/input-phoneNumber",
+    Preview: "/message/auto/preview",
+    Sapm: "/message/declaration/spam",
+    GroupCell: "/message/declaration/group-cell",
+    RegistrationExel: "/message/reject/exel",
+    SMSDetail: "/message/result/detail-content",
   },
   Customer: {
     Registration: "/customer/registration",
+    RegistrationUpload : "/customer/registration/registration-upload",
+    CustomerGroupManagement : "/customer/registration/customergroup-management",
   },
   System: {
     Solution: "/system/solution",
@@ -24,6 +40,7 @@ const PathConstants = {
     Local: "/system/local",
     LocalMember: "/system/localmember",
     Auth: "/system/auth",
+    NetworkSetup: "/system/networksetup",
   },
 };
 

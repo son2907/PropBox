@@ -1,20 +1,36 @@
 import Button, { BasicButton, GrayButton } from "../../components/Button";
 import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
-import { useCheckboxSelection } from "../../hooks/useCheckboxSelection";
 import RowDragTable from "../../components/Table/RowDragTable";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Pagination } from "../../components/Pagination";
 import { usePagination } from "../../hooks/usePagination";
 import TableSelect from "../../components/Select/TableSelect";
 import SearchResult from "../../components/Table/SearchResult";
-import SelectorTabs from "../../components/Tab/SelectorTabs";
-import TabPanel from "../../components/Tab/TabPanner";
+import TabMenus from "../../components/Tab/TabMenus";
+import TabPanel from "../../components/Tab/TabPanel";
 import BasicTable from "../../components/Table/BasicTable";
 import CheckboxTable from "../../components/Table/CheckboxTable";
 import ToggleButton from "../../components/Button/ToggleButton";
 import useToggleButtton from "../../hooks/useToggleButton";
 import CheckboxList from "../../components/List/CheckboxList";
 import useMultiInputValue from "../../hooks/useMultiInputValue";
+import BasicInput from "../../components/Input/BasicInput";
+import SearchInput from "../../components/Input/SearchInput";
+import DeleteBtnInput from "../../components/Input/DeleteBtnInput";
+import PasswordInput from "../../components/Input/PasswordInput";
+import TextArea from "../../components/TextArea/TextArea";
+import TransferList from "../../components/List/TransferList";
+import { useTransferList } from "../../hooks/useTransferList";
+import CustomAlert from "../../components/Alert/CustomAlert";
+import useAlert from "../../hooks/useAlert";
+import BasicAlert from "../../components/Alert/BasicAlert";
+import Toast from "../../components/Toast/Toast";
+import { Box, Stack } from "@mui/material";
+import useToast from "../../hooks/useToast";
+import Calendar from "../../components/Calendar/Calendar";
+import RangeCalendar from "../../components/Calendar/RangeCalendar";
+import { useMultiRowSelection } from "../../hooks/useMultiRowSelection";
+import useTabs from "../../hooks/useTabs";
 
 interface Data {
   id: string;
@@ -23,13 +39,17 @@ interface Data {
 
 export default function Main() {
   // 커스텀 훅 사용
-  const { selectedRows, toggleRowSelection } = useCheckboxSelection();
+  // const { selectedRows, toggleRowSelection } = useCheckboxSelection();
+  // 다중 행 선택
+  const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
+  // 다중 행 선택
   const {
     selectedRows: selectedRows2,
-    toggleRowSelection: toggleRowSelection2,
-  } = useCheckboxSelection();
+    toggleRowsSelection: toggleRowsSelection2,
+  } = useMultiRowSelection();
 
-  console.log(selectedRows2);
+  console.log("체크박스 테이블 다중 행 선택:", selectedRows2);
+  console.log("RowDragg 다중 행 선택:", selectedRows);
 
   const [data, setData] = useState<Data[]>([
     {
@@ -577,6 +597,23 @@ export default function Main() {
   const { toggle, onChange: setToggle } = useToggleButtton({
     defaultValue: true,
   });
+  const initialLeft = [
+    { id: 1, label: "Item 1" },
+    { id: 2, label: "Item 2" },
+    { id: 3, label: "Item 3" },
+    { id: 4, label: "Item 4" },
+  ];
+
+  const initialRight = [
+    { id: 5, label: "Item 5" },
+    { id: 6, label: "Item 6" },
+  ];
+
+  const { left, right, ...other } = useTransferList(initialLeft, initialRight);
+
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [startDate, setStartDate] = useState<Date>(new Date());
+  const [endDate, setEndDate] = useState<Date>(new Date());
 
   const { inputRefs, getInputValues } = useMultiInputValue();
   const { inputRefs: inputRefs2, getInputValues: getInputValues2 } =
@@ -598,6 +635,16 @@ export default function Main() {
   // usePagination에
   const { currentPage, onChangePage } = usePagination();
 
+  const inputValue = useRef<HTMLInputElement | null>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null); // ref 생성
+
+  const { openAlert, onOpenAlert, onCloseAlert } = useAlert();
+
+  const { openToast, toastOpen, toastClose } = useToast();
+  // 탭 메뉴 데이터
+  const { value: tabValue, handleChange: tabChange } = useTabs(1);
+  console.log(openToast);
+
   return (
     <>
       <div
@@ -605,15 +652,22 @@ export default function Main() {
           display: "flex",
         }}
       >
+        {/* <button
+          onClick={() => {
+            alert("엥");
+          }}
+        >
+          테스트
+        </button>
         <ToggleButton checked={toggle} onChange={setToggle} label="라벨" />
         <CheckboxList data={checkboxListData} refArray={inputRefs2.current} />
         <button onClick={getInputValues2}>버튼</button>
 
-        <SelectorTabs value={value} handleChange={handleChange}>
-          <SelectorTabs.Tab label="전송하나" disableRipple />
-          <SelectorTabs.Tab label="전송둘" disableRipple />
-          <SelectorTabs.Tab label="전송셋" disableRipple />
-        </SelectorTabs>
+        <TabMenus value={value} handleChange={handleChange}>
+          <TabMenus.Tab label="전송하나" disableRipple />
+          <TabMenus.Tab label="전송둘" disableRipple />
+          <TabMenus.Tab label="전송셋" disableRipple />
+        </TabMenus>
 
         <TabPanel value={value} index={0}>
           전송하나
@@ -630,7 +684,110 @@ export default function Main() {
         <Button>
           <AccessAlarmIcon /> 아이콘 버튼
         </Button>
+      </div> */}
+        {/* <div>
+        <BasicInput placeholder="플레이스홀더" />
+        <button
+          onClick={() => {
+            console.log("값:", inputValue.current?.value);
+          }}
+        >
+          인풋 값 가져옴
+        </button>
+        <SearchInput placeholder="검색" />
+        <DeleteBtnInput />
+        <PasswordInput ref={inputValue} />
+        <div style={{ width: "100%", height: "50px" }}>
+          <TextArea
+            placeholder="내용을 입력하세요"
+            resize={"none"}
+            ref={textAreaRef}
+          />
+        </div>
+        <button
+          onClick={() => {
+            console.log(textAreaRef.current?.value);
+          }}
+        >
+          텍스트 에이리어 값 가져옴
+        </button>
+      </div> */}
+        {/* <div>
+        <TransferList
+          leftTitle="왼쪽타이틀"
+          rightTitle="오른쪽타이틀"
+          left={left}
+          right={right}
+          {...other}
+        />
+      </div> */}
+        {/* <div>
+        <Toast
+          open={openToast}
+          vertical={"bottom"}
+          horizontal={"right"}
+          toastClose={toastClose}
+          duration={3000}
+        >
+          <Toast.Row>
+            <Toast.InfoHeader>헤더</Toast.InfoHeader>
+            <Toast.InfoContent>내용</Toast.InfoContent>
+          </Toast.Row>
+          <Toast.Row>
+            <Toast.InfoHeader>헤더</Toast.InfoHeader>
+            <Toast.InfoContent>
+              길게길게길게길게길게길게길게길게 길게 길게길게 길게 길게 길게 길게
+              길게 길게 길게 길게 길게 길게 길게 길게 길게길게 길게 길게 길게
+              길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게
+              길게 길게 길게 길게 길게 길게 길게길게 길게 길게 길게길게 길게
+              길게
+            </Toast.InfoContent>
+          </Toast.Row>
+        </Toast>
+        <button
+          onClick={() => {
+            toastOpen();
+          }}
+        >
+          토스트 메세지 띄우기
+        </button>
+
+        <button onClick={onOpenAlert}>얼럿 띄우기</button>
+        {openAlert && (
+          <CustomAlert onClose={onCloseAlert}>
+            <CustomAlert.Title>전화상담</CustomAlert.Title>
+            <CustomAlert.Content>
+              상담사가 포함되지 않았습니다. <br /> 로그인된 아이디로
+              저장하시겠습니까?
+            </CustomAlert.Content>
+            <CustomAlert.ButtonZone>
+              <BasicButton>예</BasicButton>
+              <GrayButton onClick={onCloseAlert}>닫기</GrayButton>
+            </CustomAlert.ButtonZone>
+          </CustomAlert>
+        )}
+        <Calendar
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+        />
+        <RangeCalendar
+          startDate={startDate}
+          setStartDate={setStartDate}
+          endDate={endDate}
+          setEndDate={setEndDate}
+        /> */}
+        {/* {openAlert && (
+          <BasicAlert>
+            <BasicAlert.Content>선택된 항목이 없습니다.</BasicAlert.Content>
+            <BasicAlert.ButtonZone>
+              <BasicButton>확인</BasicButton>
+              <GrayButton onClick={onCloseAlert}>취소</GrayButton>
+            </BasicAlert.ButtonZone>
+          </BasicAlert>
+        )} */}
       </div>
+
+      {/*  ============== CheckboxTable ============== */}
       <div
         style={{
           height: "100%",
@@ -642,7 +799,7 @@ export default function Main() {
           data={data}
           checkbox={true}
           selectedRows={selectedRows2}
-          toggleRowSelection={toggleRowSelection2}
+          toggleRowSelection={toggleRowsSelection2}
         >
           <CheckboxTable.Theader>헤더하나</CheckboxTable.Theader>
           <CheckboxTable.Theader>헤더둘</CheckboxTable.Theader>
@@ -652,8 +809,8 @@ export default function Main() {
                 <CheckboxTable.Td>
                   <input
                     type="checkbox"
-                    checked={selectedRows2.includes(item.id)}
-                    onChange={() => toggleRowSelection2(item.id)}
+                    checked={selectedRows2.has(item.id)}
+                    onChange={() => toggleRowsSelection2(item.id)}
                   />
                 </CheckboxTable.Td>
                 <CheckboxTable.Td>
@@ -668,10 +825,17 @@ export default function Main() {
           </CheckboxTable.Tbody>
         </CheckboxTable>
       </div>
-      <button onClick={getInputValues}>Get All Input Values</button>
+      <button
+        onClick={() => {
+          const value = getInputValues();
+          console.log(value);
+        }}
+      >
+        Get All Input Values
+      </button>
 
-      <div>
-        {" "}
+      {/*============== BasicTable ==============*/}
+      {/* <div>
         <BasicTable data={data}>
           <BasicTable.Theader>세부항목</BasicTable.Theader>
           <BasicTable.Tbody>
@@ -684,8 +848,10 @@ export default function Main() {
             })}
           </BasicTable.Tbody>
         </BasicTable>
-      </div>
-      <div
+      </div> */}
+
+      {/* {/*============== BasicTable Lot of data ============== */}
+      {/* <div
         style={{
           height: "100%",
           width: "100%",
@@ -722,7 +888,10 @@ export default function Main() {
             })}
           </BasicTable.Tbody>
         </BasicTable>
-      </div>
+      </div> */}
+
+      {/*============== RowDragTable ==============*/}
+
       <div
         style={{
           height: "100%",
@@ -732,7 +901,7 @@ export default function Main() {
         <RowDragTable
           checkbox={true}
           selectedRows={selectedRows}
-          toggleRowSelection={toggleRowSelection}
+          toggleRowsSelection={toggleRowsSelection}
           data={data}
           setData={setData} // 데이터를 업데이트할 함수를 전달
         >
@@ -761,8 +930,8 @@ export default function Main() {
                 <RowDragTable.Td>
                   <input
                     type="checkbox"
-                    checked={selectedRows.includes(item.id)}
-                    onChange={() => toggleRowSelection(item.id)}
+                    checked={selectedRows.has(item.id)}
+                    onChange={() => toggleRowsSelection(item.id)}
                   />
                 </RowDragTable.Td>
                 <RowDragTable.Td>{item.id}</RowDragTable.Td>

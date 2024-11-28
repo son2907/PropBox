@@ -22,6 +22,12 @@ declare module "@mui/material/styles" {
       appbarItemTextColor: string;
       appbarBorderColor: string;
     };
+    // 페이지 탭 컬러
+    pageTab: {
+      tabBg: string;
+      selectedTabBg: string;
+      tabIcon: string;
+    };
     modal: {
       modalBg: string;
       modalBorderColor: string;
@@ -30,7 +36,8 @@ declare module "@mui/material/styles" {
     root: {
       secondary: string;
       light: string;
-      tertiary: string;
+      lightBlue: string;
+      mainBlue: string;
       borderPrimary: string;
       error: string;
       coolGray400: string;
@@ -60,6 +67,12 @@ declare module "@mui/material/styles" {
       appbarItemTextColor: string;
       appbarBorderColor: string;
     };
+    // 페이지 탭 컬러
+    pageTab: {
+      tabBg: string;
+      selectedTabBg: string;
+      tabIcon: string;
+    };
     modal: {
       modalBg: string;
       modalBorderColor: string;
@@ -68,7 +81,8 @@ declare module "@mui/material/styles" {
     root: {
       secondary: string;
       light: string;
-      tertiary: string;
+      lightBlue: string;
+      mainBlue: string;
       borderPrimary: string;
       error: string;
       coolGray400: string;
