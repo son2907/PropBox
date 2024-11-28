@@ -9,3 +9,5 @@ export type tableDataType = {
   id: string;
   [key: string]: any;
 };
+
+export type Nullable<T> = T | null;

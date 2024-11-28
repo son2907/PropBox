@@ -3,18 +3,19 @@ import { forwardRef } from "react";
 
 interface ItemProps {
   label: string;
+  value: string;
   isFirst: boolean;
   isLast: boolean;
 }
 
 interface CheckboxListProps {
-  data: { id: string | number; label: string }[];
+  data: { id: string; label: string }[];
   refArray: (HTMLInputElement | null)[];
   dividerIds?: (string | number)[]; // Divider를 추가할 id 배열
 }
 
 const ListItem = forwardRef<HTMLInputElement, ItemProps>(
-  ({ label, isFirst, isLast, ...rest }, ref) => {
+  ({ label, isFirst, isLast, value, ...rest }, ref) => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const box = e.target.closest(".checkbox-box") as HTMLElement;
       if (box) {
@@ -50,7 +51,13 @@ const ListItem = forwardRef<HTMLInputElement, ItemProps>(
           transition: "background-color 0.2s, border 0.2s",
         }}
       >
-        <input {...rest} type="checkbox" ref={ref} onChange={handleChange} />
+        <input
+          {...rest}
+          type="checkbox"
+          ref={ref}
+          onChange={handleChange}
+          value={value}
+        />
         <Typography>{label}</Typography>
       </Box>
     );
@@ -74,6 +81,7 @@ export default function CheckboxList({
         <Box key={item.id}>
           <ListItem
             ref={(el) => (refArray[index] = el)}
+            value={item.id}
             label={item.label}
             isFirst={index === 0}
             isLast={index === data.length - 1}

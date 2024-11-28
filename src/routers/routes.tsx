@@ -38,10 +38,15 @@ import MemberMenuPermission from "../pages/SysManagement/AuthManagement/popup/Me
 import MenuPermissionCopy from "../pages/SysManagement/AuthManagement/popup/MenuPermissionCopy";
 import PermissionRevoke from "../pages/SysManagement/AuthManagement/popup/PermissionRevoke";
 import MemberManagement from "../pages/SysManagement/Member";
+import AuthGuard from "./guard/AuthGuard";
 
 export const routes: RouteObject[] = [
   {
-    element: <DefaultLayout />,
+    element: (
+      // <AuthGuard>
+      <DefaultLayout />
+      // </AuthGuard>
+    ),
     // 에러 엘리먼트 추가 필요
     children: [
       { path: PathConstants.Home, element: <Main /> },
@@ -109,7 +114,7 @@ export const routes: RouteObject[] = [
         children: [
           {
             path: PathConstants.Customer.Registration,
-            element: <Registration/>,
+            element: <Registration />,
           },
         ],
       },
@@ -122,11 +127,11 @@ export const routes: RouteObject[] = [
           },
           {
             path: PathConstants.System.User,
-            element: <UserManagement/>,
+            element: <UserManagement />,
           },
           {
             path: PathConstants.System.Member,
-            element: <MemberManagement/>,
+            element: <MemberManagement />,
           },
           {
             path: PathConstants.System.Local,
@@ -138,7 +143,7 @@ export const routes: RouteObject[] = [
           },
           {
             path: PathConstants.System.Auth,
-            element: <AuthManagement/>,
+            element: <AuthManagement />,
           },
           {
             path: PathConstants.System.NetworkSetup,
@@ -227,14 +232,14 @@ export const routes: RouteObject[] = [
   },
   {
     path: PathConstants.System.MemberMenuPermission,
-    element: <MemberMenuPermission/>,
+    element: <MemberMenuPermission />,
   },
   {
     path: PathConstants.System.MenuPermissionCopy,
-    element: <MenuPermissionCopy/>,
+    element: <MenuPermissionCopy />,
   },
   {
     path: PathConstants.System.PermissionRevoke,
-    element: <PermissionRevoke/>,
+    element: <PermissionRevoke />,
   },
 ];
