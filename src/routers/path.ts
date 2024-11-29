@@ -49,6 +49,8 @@ const PathConstants = {
     AuthCode : "/system/authCode",
     Phone : "/system/phone",
     LocalRegistration : "/system/local/localRegistration",
+    PhoneAdd : "/system/phone/phoneAdd",
+    DeviceType : "/system/phone/deviceType",
   },
 };
 
