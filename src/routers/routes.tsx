@@ -44,6 +44,7 @@ import AuthGuard from "./guard/AuthGuard";
 import PhoneManagement from "../pages/SysManagement/Phone";
 import PhoneAdd from "../pages/SysManagement/Phone/popup/PhoneAdd";
 import DeviceType from "../pages/SysManagement/Phone/popup/DeviceType";
+import LocalmemberManagement from "../pages/SysManagement/Localmember";
 
 export const routes: RouteObject[] = [
   {
@@ -144,7 +145,7 @@ export const routes: RouteObject[] = [
           },
           {
             path: PathConstants.System.LocalMember,
-            element: <div>현장 구성원 관리</div>,
+            element: <LocalmemberManagement/>,
           },
           {
             path: PathConstants.System.Auth,
