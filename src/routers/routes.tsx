@@ -46,6 +46,7 @@ import PhoneAdd from "../pages/SysManagement/Phone/popup/PhoneAdd";
 import DeviceType from "../pages/SysManagement/Phone/popup/DeviceType";
 import LocalmemberManagement from "../pages/SysManagement/Localmember";
 import AuthCode from "../pages/SysManagement/AuthCode";
+import ReceivingNumber from "../pages/SysManagement/ReceivingNumber";
 
 export const routes: RouteObject[] = [
   {
@@ -162,7 +163,7 @@ export const routes: RouteObject[] = [
           },
           {
             path: PathConstants.System.ReceivingNumber,
-            element: <div>수신번호관리</div>,
+            element: <ReceivingNumber/>,
           },
           {
             path: PathConstants.System.Phone,
