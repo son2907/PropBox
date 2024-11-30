@@ -45,6 +45,7 @@ import PhoneManagement from "../pages/SysManagement/Phone";
 import PhoneAdd from "../pages/SysManagement/Phone/popup/PhoneAdd";
 import DeviceType from "../pages/SysManagement/Phone/popup/DeviceType";
 import LocalmemberManagement from "../pages/SysManagement/Localmember";
+import AuthCode from "../pages/SysManagement/AuthCode";
 
 export const routes: RouteObject[] = [
   {
@@ -157,7 +158,7 @@ export const routes: RouteObject[] = [
           },
           {
             path: PathConstants.System.AuthCode,
-            element: <div>인증번호관리</div>,
+            element: <AuthCode/>,
           },
           {
             path: PathConstants.System.ReceivingNumber,
