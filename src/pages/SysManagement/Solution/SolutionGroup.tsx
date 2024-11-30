@@ -15,6 +15,8 @@ import { Select } from "../../../components/Select";
 import { selectTestData } from "../../../utils/testData";
 import useSelect from "../../../hooks/useSelect";
 import useToggleButtton from "../../../hooks/useToggleButton";
+import PathConstants from "../../../routers/path";
+import { openPopup } from "../../../utils/openPopup";
 
 interface Data {
   id: string;
@@ -573,6 +575,20 @@ export default function SolutionGroup() {
     defaultValue: true,
   });
 
+  //전화기 추가 팝업
+  const OpenPopup = {
+    url: PathConstants.Notice.NoticeList,
+    windowName: "공지사항 목록",
+    windowFeatures: "width=500,height=500,scrollbars=yes,resizable=yes",
+  };
+
+  //전화기 추가 팝업
+  const OpenPopupfaq = {
+    url: PathConstants.FAQ.FAQList,
+    windowName: "FAQ 목록",
+    windowFeatures: "width=500,height=500,scrollbars=yes,resizable=yes",
+  };
+
   return (
     <>
       <TabPanel value={value} index={0}>
@@ -685,8 +701,24 @@ export default function SolutionGroup() {
             </Box>
           </Stack>
           <GrayBox height={"40px"} marginTop={1} justifyContent={"flex-end"}>
-            <BasicButton>추가</BasicButton>
-            <BasicButton>저장</BasicButton>
+            <BasicButton
+              onClick={() => {
+                openPopup({
+                  url: OpenPopup.url,
+                  windowName: OpenPopup.windowName,
+                  windowFeatures: OpenPopup.windowFeatures,
+                });
+              }}
+            >추가</BasicButton>
+            <BasicButton
+              onClick={() => {
+                openPopup({
+                  url: OpenPopupfaq.url,
+                  windowName: OpenPopupfaq.windowName,
+                  windowFeatures: OpenPopupfaq.windowFeatures,
+                });
+              }}
+            >저장</BasicButton>
             <BasicButton>삭제</BasicButton>
           </GrayBox>
         </Stack>

@@ -4,7 +4,7 @@ import PathConstants from "./path";
 import Main from "../pages/main";
 import Test from "../pages/test";
 import Login from "../pages/Login";
-import NetworkSetup from "../pages/NetworkSetup";
+import NetworkSetup from "../pages/SysManagement/Phone";
 import CallConsultation from "../pages/CalManagement/Consultation";
 import SearchCustomer from "../pages/CalManagement/Consultation/popup/SearchCustomer";
 import ConsultationStatus from "../pages/CalManagement/Consultation/popup/ConsultationStatus";
@@ -44,6 +44,14 @@ import AuthGuard from "./guard/AuthGuard";
 import PhoneManagement from "../pages/SysManagement/Phone";
 import PhoneAdd from "../pages/SysManagement/Phone/popup/PhoneAdd";
 import DeviceType from "../pages/SysManagement/Phone/popup/DeviceType";
+import NoticeList from "../pages/Notice";
+import NoticeAdd from "../pages/Notice/NoticeAdd";
+import NoticeDetail from "../pages/Notice/NoticeDetail";
+import NoticeModify from "../pages/Notice/NoticeModify";
+import FAQList from "../pages/FAQ";
+import FAQAdd from "../pages/FAQ/FAQAdd";
+import FAQDetail from "../pages/FAQ/FAQDetail";
+import FAQModify from "../pages/FAQ/FAQModify";
 
 export const routes: RouteObject[] = [
   {
@@ -164,7 +172,7 @@ export const routes: RouteObject[] = [
           },
           {
             path: PathConstants.System.Phone,
-            element: <PhoneManagement/>,
+            element: <div>전화기관리</div>,
           },
         ],
       },
@@ -258,5 +266,37 @@ export const routes: RouteObject[] = [
   {
     path: PathConstants.System.DeviceType,
     element: <DeviceType/>,
+  },
+  {
+    path: PathConstants.Notice.NoticeList,
+    element: <NoticeList/>,
+  },
+  {
+    path: PathConstants.Notice.NoticeAdd,
+    element: <NoticeAdd/>,
+  },
+  {
+    path: PathConstants.Notice.NoticeDetail,
+    element: <NoticeDetail/>,
+  },
+  {
+    path: PathConstants.Notice.NoticeModify,
+    element: <NoticeModify/>,
+  },
+  {
+    path: PathConstants.FAQ.FAQList,
+    element: <FAQList/>,
+  },
+  {
+    path: PathConstants.FAQ.FAQAdd,
+    element: <FAQAdd/>,
+  },
+  {
+    path: PathConstants.FAQ.FAQDetail,
+    element: <FAQDetail/>,
+  },
+  {
+    path: PathConstants.FAQ.FAQModify,
+    element: <FAQModify/>,
   },
 ];

@@ -22,7 +22,7 @@ const testData = [
   },
 ];
 
-export default function NetworkSetup() {
+export default function NetworkSetupPopup() {
   const { selectValue, handleChange } = useSelect();
 
   return (
