@@ -1,3 +1,4 @@
+import { ApiResponseType } from "./apiResponse";
 //로그인 요청 모델
 export type LoginRequestModel = {
   // 아이디
@@ -7,11 +8,9 @@ export type LoginRequestModel = {
 };
 
 // 로그인 응답 모델
-export type LoginResponseModel = {
-  code?: number;
-  result?: string;
-  message?: string;
-  totalCnt?: number | null;
+
+export interface LoginResponseModel extends ApiResponseType {
+  totalCnt: null;
   contents: {
     uuid: string;
     userNo: string;
@@ -24,8 +23,4 @@ export type LoginResponseModel = {
     userConstntSeCd: string;
     loginIdPrefix: string | null;
   };
-  params?: any;
-  errorCode?: any;
-  accessToken?: string;
-  refreshToken?: string;
-};
+}

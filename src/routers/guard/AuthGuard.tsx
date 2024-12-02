@@ -18,7 +18,7 @@ export default function AuthGuard({ children }: PropsWithChildren) {
     }
     // accessToken이 이미 있으면서 로그인 페이지로 진입하려고 하는 경우
     if (
-      accessToken != undefined &&
+      accessToken != null &&
       window.location.pathname === PathConstants.Login
     ) {
       alert("이미 로그인 된 상태입니다");

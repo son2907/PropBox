@@ -15,8 +15,8 @@ type AuthStoreType = {
   constntUserNo?: string; // 사용자 고유 식별 번호
   userConstntSeCd?: string; // 사용자 코드
   loginIdPrefix?: string | null; // 로그인 ID 접두사
-  accessToken?: string; // 액세스 토큰
-  refreshToken?: string; // 리프레시 토큰
+  accessToken?: string | null; // 액세스 토큰
+  refreshToken?: string | null; // 리프레시 토큰
   remember?: boolean; // 로그인 기억 여부
 
   // 상태 변경 함수들
@@ -45,7 +45,6 @@ export const store = createWithEqualityFn<AuthStoreType>(
         set(() => ({
           uuid: undefined,
           userNo: undefined,
-          loginId: undefined,
           userNm: undefined,
           attlistUserNm: undefined,
           attlistMbtlNo: null,
@@ -53,8 +52,8 @@ export const store = createWithEqualityFn<AuthStoreType>(
           constntUserNo: undefined,
           userConstntSeCd: undefined,
           loginIdPrefix: null,
-          accessToken: undefined,
-          refreshToken: undefined,
+          accessToken: null,
+          refreshToken: null,
         })),
     }),
     {
