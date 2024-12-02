@@ -45,9 +45,9 @@ import AuthGuard from "./guard/AuthGuard";
 export const routes: RouteObject[] = [
   {
     element: (
-      // <AuthGuard>
-      <DefaultLayout />
-      // </AuthGuard>
+      <AuthGuard>
+        <DefaultLayout />
+      </AuthGuard>
     ),
     // 에러 엘리먼트 추가 필요
     children: [
@@ -137,7 +137,7 @@ export const routes: RouteObject[] = [
           },
           {
             path: PathConstants.System.Local,
-            element: <LocalManagement/>,
+            element: <LocalManagement />,
           },
           {
             path: PathConstants.System.LocalMember,
@@ -246,6 +246,6 @@ export const routes: RouteObject[] = [
   },
   {
     path: PathConstants.System.LocalRegistration,
-    element: <LocalRegistration/>,
+    element: <LocalRegistration />,
   },
 ];

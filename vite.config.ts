@@ -8,7 +8,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://211.228.124.210:9060/", // 실제 API 서버 URL
+        target: "http://211.228.124.210:9060", // 실제 API 서버 URL
         changeOrigin: true, // 다른 도메인으로 요청을 보내기 위한 설정
         secure: false, // HTTPS가 아닌 경우
       },

@@ -7,7 +7,7 @@ import { AxiosResponse } from "axios";
 const API = {
   // 로그인
   login: async (data: LoginRequestModel) =>
-    await instance.post<LoginResponseModel>("/login", data),
+    await instance.post<LoginResponseModel>("/api/login", data),
 };
 
 // useUserLogin 훅

@@ -15,8 +15,10 @@ const instance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL, // 환경 변수에서 API 기본 URL을 설정
   headers: {
     "Content-Type": "application/json", // 요청 헤더에 JSON 형식 설정
+    // "X-Requested-With": "XMLHttpRequest",
   },
-  paramsSerializer: paramsRepeatSerializer, // 쿼리 파라미터 직렬화 방식 설정 (배열 형태 반복 방식)
+  // paramsSerializer: paramsRepeatSerializer, // 쿼리 파라미터 직렬화 방식 설정 (배열 형태 반복 방식)
+  withCredentials: true, // CORS 요청에서 인증 정보(쿠키, HTTP 인증 등)를 포함
 });
 
 // 애플리케이션의 최상위 컴포넌트(App.tsx)에서 반드시 호출해야 하는 함수입니다.

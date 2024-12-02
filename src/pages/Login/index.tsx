@@ -73,6 +73,7 @@ export default function Login() {
     // remember이 true이면, 로컬 스토리지에서 get한 loginId를 불러온다.
     if (remember) {
       setValue("loginId", loginId ?? "");
+      setRembmber(remember);
     }
   }, []);
 
