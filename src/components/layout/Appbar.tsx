@@ -4,8 +4,7 @@ import AppbarButton from "../appbar/AppbarButton";
 import { useState } from "react";
 import { Select } from "../Select";
 import useSelect from "../../hooks/useSelect";
-import { useAuthStore } from "../../stores/authStore";
-import { useNavigate } from "react-router-dom";
+import UserInfo from "./UserInfo";
 
 // AppBarArea 컴포넌트: 앱바 영역
 const AppBarArea = styled(Box)(({ theme }) => ({
@@ -44,12 +43,6 @@ export default function Appbar() {
   const [state, setState] = useState<boolean>(true);
   const { selectValue, handleChange } = useSelect();
   const text = "010-1111-1111";
-  const clear = useAuthStore(["clear"]);
-  const navigate = useNavigate();
-  const textBtn = () => {
-    clear.clear();
-    navigate("/login");
-  };
 
   return (
     <AppBarArea>
@@ -61,7 +54,7 @@ export default function Appbar() {
         sx={{ width: "160px" }}
       />
       <AppbarButton state={state} text={text} />
-      <button onClick={textBtn}>로그아웃</button>
+      <UserInfo />
     </AppBarArea>
   );
 }
