@@ -23,6 +23,7 @@ export type SubMenuType = {
 };
 
 export type MainMenuType = {
+  icon?: ReactNode;
   label: string;
   auth: boolean;
   subMenu: SubMenuType[]; // 소메뉴 리스트

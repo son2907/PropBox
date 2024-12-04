@@ -3,7 +3,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "../components/layout/Sidebar";
 import Appbar from "../components/layout/Appbar";
 import Content from "../components/layout/Content";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import PathConstants from "../routers/path";
 
 // PageContainer 컴포넌트: 페이지 전체를 감싸는 컨테이너
@@ -51,7 +51,7 @@ export default function DefaultLayout() {
     </Box>
   ) : (
     <PageContainer>
-      <Sidebar />
+      <MemoizedSidebar />
       <PageArea>
         <Appbar />
         <Content>
@@ -61,3 +61,5 @@ export default function DefaultLayout() {
     </PageContainer>
   );
 }
+
+const MemoizedSidebar = memo(Sidebar);

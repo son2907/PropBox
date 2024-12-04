@@ -14,17 +14,18 @@ const KEY = {
 };
 
 export const useMenuList = () => {
-  console.log("useMenuList씀");
-  const { accessToken } = useAuthStore(["accessToken"]); // accessToken을 저장소에서 가져옵니다.
+  const { accessToken } = useAuthStore(["accessToken"]);
   return useQuery({
     queryKey: KEY.getMenuList(),
     queryFn: async () => {
       if (!accessToken) {
-        console.log("엑세스 토큰 없음");
         throw new Error("Access token is required");
       }
       return await API.getMenuList();
     },
     enabled: !!accessToken,
+    staleTime: Infinity, // 데이터를 캐싱하여 재호출 방지
+    gcTime: Infinity, // 캐시를 오래 유지
+    refetchOnMount: false,
   });
 };

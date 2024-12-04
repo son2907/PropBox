@@ -38,6 +38,7 @@ const SolutionIcon = styled(ListItemIcon, {
   color: auth ? "#22A7F5" : theme.palette.root.coolGray400,
   paddingLeft: 1,
   minWidth: 40,
+  fontSize: "20px",
 }));
 
 export default function Solution({

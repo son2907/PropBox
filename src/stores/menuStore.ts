@@ -1,39 +1,50 @@
-import { ComponentType } from "react";
 import { create } from "zustand";
-
-type MenuStoreType = {
-  menus: MenuItemType[];
-
-  addMenu: (name: string, url: string, icon: ComponentType) => void; // url을 받아서 해당 아이템을 리스트에 추가함
-  openMenu: (url: string) => void; // 클릭한 메뉴 값 반환
-  closeMenu: (url: string) => void; //  url을 받아서 해당 아이템을 리스트에서 지움
-  clear: () => void; // 모든 메뉴를 리스트에서 지움
-};
+import { MenuListType } from "../types/menu";
 
 type MenuItemType = {
-  icon: ComponentType;
-  name: string;
+  label: string;
   url: string;
 };
 
-export const useMenu = create<MenuStoreType>((set, get) => ({
-  // 초기 상태 : 메뉴 리스트는 빈 배열
+type MenuStoreType = {
+  allMenus: MenuListType;
+  menus: MenuItemType[];
+  setAllMenuData: (data: MenuListType) => void;
+  addMenu: (label: string, url: string) => void; // 메뉴 추가 함수
+  openMenu: (url: string) => MenuItemType | null; // 메뉴 열기 함수
+  closeMenu: (url: string) => void; // 메뉴 닫기 함수
+  clear: () => void; // 메뉴 목록 비우기 함수
+};
+
+// 메뉴 상태 관리 스토어
+export const useMenuStore = create<MenuStoreType>((set, get) => ({
+  allMenus: [],
   menus: [],
-  // 메뉴 추가, name, url, icon을 받아와 메뉴 리스트에 추가함
-  addMenu: (name, url, icon) =>
-    set((state) => ({
-      menus: [...state.menus, { name, url, icon }],
-    })),
-  // 메뉴 열기, 받은 url과 일치하는 아이템을 반환
+  setAllMenuData: (data) => set(() => ({ allMenus: data })),
+  addMenu: (label, url) =>
+    set((state) => {
+      // 동일한 URL을 가진 항목이 있는지 확인
+      if (state.menus.some((menu) => menu.url === url)) {
+        return state; // 기존 상태를 반환하여 아무 것도 변경하지 않음
+      }
+
+      // 메뉴가 10개를 넘지 않도록 처리
+      const updatedMenus = [...state.menus, { label, url }];
+      if (updatedMenus.length > 10) {
+        updatedMenus.shift(); // 첫 번째 메뉴를 제거
+      }
+
+      return {
+        menus: updatedMenus,
+      };
+    }),
   openMenu: (url) => {
     const menu = get().menus.find((menu) => menu.url === url);
     return menu ? menu : null;
   },
-  // 메뉴 닫기, 받은 url과 일치하는 아이템을 삭제
   closeMenu: (url) =>
     set((state) => ({
       menus: state.menus.filter((menu) => menu.url !== url),
     })),
-  // 메뉴 목록 비움
-  clear: () => set({ menus: [] }),
+  clear: () => set({ menus: [], allMenus: [] }),
 }));
