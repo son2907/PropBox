@@ -5,7 +5,7 @@ import { IconButton } from "../Button";
 import { IoCloseOutline } from "react-icons/io5";
 
 interface PageTabProps {
-  icon: ReactNode;
+  icon?: ReactNode;
   tabName: string;
   url: string;
   onDelete: (url: string) => void;

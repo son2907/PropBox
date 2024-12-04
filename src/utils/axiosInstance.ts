@@ -1,99 +1,79 @@
 import axios, {
-  AxiosError, // Axios 요청 에러 타입
-  AxiosInstance, // Axios 인스턴스 타입
-  InternalAxiosRequestConfig, // Axios 내부 요청 설정 타입
+  AxiosError,
+  AxiosInstance,
+  InternalAxiosRequestConfig,
 } from "axios";
-import qs from "qs"; // 쿼리 스트링을 생성하는 유틸리티 라이브러리
-import { useCallback, useEffect } from "react"; // React에서 제공하는 훅
-import PathConstants from "../routers/path";
-import BasicAlert from "../components/Alert/BasicAlert";
+import qs from "qs";
+import { useCallback, useEffect } from "react";
 import { useAuthStore } from "../stores/authStore";
-import useModal from "../hooks/useModal";
 
-// Axios 인스턴스를 생성합니다.
 const instance: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL, // 환경 변수에서 API 기본 URL을 설정
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
-    "Content-Type": "application/json", // 요청 헤더에 JSON 형식 설정
+    "Content-Type": "application/json",
   },
-  paramsSerializer: paramsRepeatSerializer, // 쿼리 파라미터 직렬화 방식 설정 (배열 형태 반복 방식)
+  paramsSerializer: paramsRepeatSerializer,
+  withCredentials: true,
 });
 
-// 애플리케이션의 최상위 컴포넌트(App.tsx)에서 반드시 호출해야 하는 함수입니다.
+// App.tsx 에서 반드시 호출해야 함
 export function useAxiosInterceptor() {
-  const { accessToken, clear } = useAuthStore(["accessToken", "clear"]);
-  const { openModal } = useModal();
+  const { accessToken } = useAuthStore(["accessToken", "clear"]);
 
-  // 요청 인터셉터: 모든 Axios 요청에 공통적으로 적용
+  // 요청 인터셉터
   const requestInterceptor = useCallback(
     (config: InternalAxiosRequestConfig) => {
-      console.log("요청 인터셉터:", config);
-
-      // 2. 인터넷 연결이 없는 경우 (네트워크 오류)
-      if (!navigator.onLine) {
-        console.error("Network error: No internet connection.");
-        return Promise.reject(new Error("No internet connection."));
-      }
-
       if (accessToken && config.headers) {
-        config.data = config.data || {}; // 기존 Body 유지
-        config.data.accessToken = accessToken; // Body에 accessToken 추가
+        config.headers.accessToken = accessToken;
       }
-
-      // 모든 처리가 완료되었으므로 요청을 계속 진행
+      console.log("헤더:", config.headers?.accessToken);
       return config;
     },
-    [accessToken] // accessToken이 변경될 때마다 업데이트
+    [accessToken]
   );
 
-  // 응답 에러 처리 인터셉터: 모든 Axios 요청 에러에 공통적으로 적용
+  // 응답 에러 인터셉터
   const responseErrorInterceptor = useCallback(
     (error: AxiosError<any>) => {
-      // 특정 상태 코드(403, IS_FORBIDDEN) 처리
-      if (error.response?.status === 403) {
-        // openModal(BasicAlert, {
-        //   key: "ERROR_403", // 모달 식별 키
-        //   message: error.response?.data.message, // 서버로부터 받은 메시지
-        //   onSubmit: () => {
-        //     clear(); // 인증 상태 초기화
-        //     window.location.href = PathConstants.Login; // 로그인 페이지로 리다이렉트
-        //   },
-        // });
-      }
-      return Promise.reject(error); // 에러를 호출자에게 전달
+      console.log("에러 인터셉터 - 에러:", error);
+      return Promise.reject(error);
     },
-    [accessToken] // accessToken이 변경될 때마다 업데이트
+    [accessToken]
   );
 
-  // 인터셉터 등록 함수
+  // 인터셉터 등록
   const register = useCallback(() => {
-    // 요청 인터셉터 등록
     instance.interceptors.request.use(requestInterceptor, function (error) {
-      return Promise.reject(error); // 요청 에러 처리
+      return Promise.reject(error);
     });
 
-    // 응답 성공 및 에러 인터셉터 등록
-    instance.interceptors.response.use(
-      function (response) {
-        console.log("응답:", response);
-        return response; // 응답 데이터 그대로 반환
-      },
-      responseErrorInterceptor // 응답 에러 처리
-    );
-  }, [accessToken]); // accessToken이 변경될 때마다 업데이트
+    instance.interceptors.response.use(function (response) {
+      return response;
+    }, responseErrorInterceptor);
+  }, [accessToken]);
 
-  // 컴포넌트 마운트/업데이트 시 실행
   useEffect(() => {
-    instance.interceptors.request.clear(); // 기존 요청 인터셉터 초기화
-    instance.interceptors.response.clear(); // 기존 응답 인터셉터 초기화
-    register(); // 새로운 인터셉터 등록
-  }, [accessToken]); // accessToken이 변경될 때마다 실행
+    instance.interceptors.request.clear();
+    instance.interceptors.response.clear();
+    register();
+  }, [accessToken]);
 }
 
-// 배열 파라미터를 repeat 형식으로 직렬화하는 함수
+export function paramsDotSerializer(params: Record<string, any>) {
+  return Object.keys(params)
+    .map((key) => {
+      if (typeof params[key] === "object") {
+        return Object.keys(params[key])
+          .map((subKey) => `${key}.${subKey}=${params[key][subKey]}`)
+          .join("&");
+      }
+      return `${key}=${params[key]}`;
+    })
+    .join("&");
+}
+
 export function paramsRepeatSerializer(params: Record<string, any>) {
   return qs.stringify(params, { arrayFormat: "repeat" });
-  // qs 라이브러리를 사용해 배열 직렬화 방식 지정 (예: `key=value&key=value`)
 }
 
-export default instance; // Axios 인스턴스를 기본 내보내기로 제공
+export default instance;

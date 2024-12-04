@@ -15,13 +15,13 @@ import { useForm } from "react-hook-form";
 import { useAuthStore } from "../../stores/authStore";
 import { useQueryClient } from "@tanstack/react-query";
 import api from "../../api";
-import instance from "../../utils/axiosInstance";
 import { LoginRequestModel } from "../../types/adminAccount";
 import { useNavigate } from "react-router-dom";
 import PathConstants from "../../routers/path";
 
 export default function Login() {
   const [rememberId, setRembmber] = useState<boolean>(false);
+  const [errMsg, setErrMsg] = useState<string>("");
 
   const {
     register,
@@ -42,7 +42,7 @@ export default function Login() {
   const { mutate: userLogin } = api.AdminAccount.useUserLogin(); // login 훅 불러옴
 
   // store에서 필요한 것들을 불러온다.
-  const { clear, remember, setSaveLogin, loginId, accessToken } = useAuthStore([
+  const { clear, remember, setSaveLogin, loginId } = useAuthStore([
     "clear",
     "remember",
     "setSaveLogin",
@@ -57,66 +57,82 @@ export default function Login() {
     if (rememberId) {
       setSaveLogin(getValues("loginId"), true);
     }
-    // instance.post("/api/login", data);
     userLogin(data, {
       onSuccess: (data) => {
         console.log("성공:", data);
         navigate(PathConstants.Home);
       },
       onError: (e: unknown) => {
-        console.log("에러", e);
+        setErrMsg("사용자 정보가 잘못되었습니다.");
       },
     });
   };
 
+  // Enter 키가 눌리면 로그인
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSubmit(onSubmit)();
+    }
+  };
+
   useEffect(() => {
-    // remember이 true이면, 로컬 스토리지에서 get한 loginId를 불러온다.
     if (remember) {
       setValue("loginId", loginId ?? "");
+      setRembmber(remember);
     }
   }, []);
 
   return (
-    <Stack width={"300px"} gap={1.5} justifyContent={"center"}>
-      <Box>
-        <img src={Logo} alt="logo" width={"100%"} />
-      </Box>
-      <CenteredBox gap={1}>
-        <Typography color="primary.dark" width={"64px"}>
-          아이디
-        </Typography>
-        <BasicInput
-          {...register("loginId")}
-          placeholder="아이디를 입력하세요"
-          fullWidth
-        />
-      </CenteredBox>
-      <CenteredBox gap={1}>
-        <Typography color="primary.dark">비밀번호</Typography>
-        <PasswordInput
-          {...register("pwdNo")}
-          placeholder="비밀번호를 입력하세요"
-          fullWidth
-        />
-      </CenteredBox>
-      {/* api 완성 후 수정 */}
-      <Typography marginTop={1} color="error.main">
-        사용자 정보가 잘못되었습니다.
-      </Typography>
+    <form autoComplete="on" onSubmit={handleSubmit(onSubmit)}>
+      <Stack width={"300px"} gap={1.5} justifyContent={"center"}>
+        <Box>
+          <img src={Logo} alt="logo" width={"100%"} />
+        </Box>
+        <CenteredBox gap={1}>
+          <Typography color="primary.dark" width={"64px"}>
+            아이디
+          </Typography>
+          <BasicInput
+            {...register("loginId")}
+            placeholder="아이디를 입력하세요"
+            fullWidth
+            name="loginId" // name 속성 추가
+            autoComplete="username" // 자동완성 활성화
+          />
+        </CenteredBox>
+        <CenteredBox gap={1}>
+          <Typography color="primary.dark">비밀번호</Typography>
+          <PasswordInput
+            {...register("pwdNo")}
+            placeholder="비밀번호를 입력하세요"
+            fullWidth
+            onKeyDown={handleKeyDown}
+            name="pwdNo" // name 속성 추가
+            autoComplete="current-password" // 자동완성 활성화
+          />
+        </CenteredBox>
 
-      <Box style={{ display: "flex" }}>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={rememberId}
-              onChange={() => setRembmber(!rememberId)}
-            />
-          }
-          label="아이디 기억하기"
-        />
-      </Box>
-      <BlackButton onClick={handleSubmit(onSubmit)}>로그인</BlackButton>
-      <Typography color="pageTab.tabIcon">문의 전화번호 : 1661-8050</Typography>
-    </Stack>
+        {/* api 완성 후 수정 */}
+        <Typography marginTop={1} color="error.main">
+          {errMsg}
+        </Typography>
+
+        <Box style={{ display: "flex" }}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={rememberId}
+                onChange={() => setRembmber(!rememberId)}
+              />
+            }
+            label="아이디 기억하기"
+          />
+        </Box>
+        <BlackButton type="submit">로그인</BlackButton>
+        <Typography color="pageTab.tabIcon">
+          문의 전화번호 : 1661-8050
+        </Typography>
+      </Stack>
+    </form>
   );
 }

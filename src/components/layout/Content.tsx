@@ -1,7 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import PageTab from "../Tab/PageTab";
-import { useState } from "react";
-import { MdCloseFullscreen } from "react-icons/md";
+import { useMenuStore } from "../../stores/menuStore";
 
 interface ContentProps {
   children: React.ReactNode;
@@ -14,14 +13,14 @@ export default function Content({ children }: ContentProps) {
   // 메뉴를 클릭하면 tabItem에 tabName과 함께 url을 추가하는 함수
   // 현재 열린 메뉴 목록을 zuStatnd로 사용해야 함
   // x버튼을 누르면 tabItem에서 클릭한 url을 받아 tabItem [] 에서 삭제해야 함
-  const [tabItem, setTabItem] = useState([
-    { icon: <MdCloseFullscreen />, tabName: "탭이름", url: "/" },
-    { icon: <MdCloseFullscreen />, tabName: "탭이름2", url: "/test" },
-  ]);
+
+  const { menus, closeMenu } = useMenuStore();
+  console.log("메뉴 목록:", menus);
 
   const onDelete = (url: string) => {
-    setTabItem((prevTabItem) => prevTabItem.filter((item) => item.url !== url));
+    closeMenu(url);
   };
+  // 엑세스 토큰이 있을 때에만 useQuery 실행
 
   return (
     <>
@@ -33,12 +32,12 @@ export default function Content({ children }: ContentProps) {
           display: "flex",
         }}
       >
-        {tabItem.map((item, index) => {
+        {menus.map((item, index) => {
           return (
             <PageTab
-              icon={item.icon}
+              // icon={item.icon}
               key={index}
-              tabName={item.tabName}
+              tabName={item.label}
               url={item.url}
               onDelete={onDelete}
             />
