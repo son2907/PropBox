@@ -18,9 +18,11 @@ import api from "../../api";
 import { LoginRequestModel } from "../../types/adminAccount";
 import { useNavigate } from "react-router-dom";
 import { openPopup } from "../../utils/openPopup";
+import { usePopupStore } from "../../stores/popupStore";
 export default function Login() {
   const [rememberId, setRembmber] = useState<boolean>(false);
   const [errMsg, setErrMsg] = useState<string>("");
+  const { popups } = usePopupStore();
 
   const { register, handleSubmit, setValue, getValues } = useForm({
     mode: "onSubmit",
@@ -52,7 +54,6 @@ export default function Login() {
     userLogin(data, {
       onSuccess: (data) => {
         console.log("데이터가 오고 이동됨:", data);
-        // navigate(PathConstants.Home);
         openPopup({
           url: "/siteSelection",
           windowName: "현장 선택",
@@ -78,6 +79,14 @@ export default function Login() {
       setRembmber(remember);
     }
   }, []);
+
+  useEffect(() => {
+    console.log("팝업이 다 닫혔대..");
+    console.log("팝업 리스트:", popups);
+    if (popups.length == 0) {
+      navigate("/");
+    }
+  }, [popups]);
 
   return (
     <form autoComplete="on" onSubmit={handleSubmit(onSubmit)}>
