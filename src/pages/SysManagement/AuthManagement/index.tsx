@@ -20,11 +20,14 @@ import TableSelect from "../../../components/Select/TableSelect";
 import { RiDeleteBinLine } from "react-icons/ri";
 import CheckboxTable from "../../../components/Table/CheckboxTable";
 import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
-import { BiChevronLeft } from "react-icons/bi"
+import { BiChevronLeft } from "react-icons/bi";
 
 export default function AuthManagement() {
-  const { selectValue, handleChange } = useSelect();
-
+  const { selectListData, selectValue, handleChange } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
   const [selectedAge, setSelectedAge] = useState<number | null>(null);
 
   //useMultiRowSelection 분리해서 각 테이블에 독립적으로 selectedRows와 toggleRowsSelection을 전달하여 동작이 분리되도록 설정.
@@ -40,19 +43,19 @@ export default function AuthManagement() {
     toggleRowsSelection: toggleUnauthorizedRowsSelection,
   } = useMultiRowSelection();
 
-  const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함 
+  const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함
 
   // usePagination에
   const { currentPage, onChangePage } = usePagination();
 
-  //구성원 메뉴 권한 등록 및 수정 
+  //구성원 메뉴 권한 등록 및 수정
   const memberMenuPermission = {
     url: PathConstants.System.MemberMenuPermission,
     windowName: "구성원 메뉴 권한 등록 및 수정",
     windowFeatures: "width=1860,height=735,scrollbars=yes,resizable=yes",
   };
 
-  //구성원 메뉴 권한 복사 
+  //구성원 메뉴 권한 복사
   const menuPermissionCopy = {
     url: PathConstants.System.MenuPermissionCopy,
     windowName: "구성원 메뉴 권한 복사",
@@ -72,13 +75,18 @@ export default function AuthManagement() {
       <Stack width={"100%"} height={"100%"} gap={1} marginBottom={1}>
         <GrayBox gap={2} justifyContent="space-between">
           <Stack direction="row" gap={1}>
-
             <SearchInput placeholder="사용자이름 및 현장이름 검색" />
           </Stack>
         </GrayBox>
         <Stack width={"100%"} spacing={1} height={"100%"}>
           {/* 사용자 정보 리스트 */}
-          <Stack bgcolor={"white"} marginLeft={1} width={"100%"} height={"50%"} direction={"row"}>
+          <Stack
+            bgcolor={"white"}
+            marginLeft={1}
+            width={"100%"}
+            height={"50%"}
+            direction={"row"}
+          >
             <Box width={"30%"}>
               <TableBox>
                 <TableBox.Inner>
@@ -143,9 +151,7 @@ export default function AuthManagement() {
                       <CheckboxTable.Th>솔루션ID</CheckboxTable.Th>
                       <CheckboxTable.Th>솔루션명</CheckboxTable.Th>
                       <CheckboxTable.Th>구분</CheckboxTable.Th>
-                      <CheckboxTable.Th colSpan={3}>
-                        라이선스
-                      </CheckboxTable.Th>
+                      <CheckboxTable.Th colSpan={3}>라이선스</CheckboxTable.Th>
                     </CheckboxTable.Tr>
                     <CheckboxTable.Tr>
                       <CheckboxTable.Th> </CheckboxTable.Th>
@@ -179,7 +185,8 @@ export default function AuthManagement() {
             bgcolor={"white"}
             direction="row"
             height={"45%"} // 화면 크기에 맞추기
-            overflow="hidden">
+            overflow="hidden"
+          >
             {/* 사용자 허가 솔루션 테이블 */}
             <Stack
               width={"30%"}
@@ -207,12 +214,14 @@ export default function AuthManagement() {
                             >
                               <BasicTable.Td>{item.phone}</BasicTable.Td>
                               <BasicTable.Td>{item.name}</BasicTable.Td>
-                              <BasicTable.Td><Select
-                                value={selectValue}
-                                onChange={handleChange}
-                                selectData={selectTestData}
-                                sx={{ width: "204px" }}
-                              /></BasicTable.Td>
+                              <BasicTable.Td>
+                                <Select
+                                  value={selectValue}
+                                  onChange={handleChange}
+                                  selectData={selectTestData}
+                                  sx={{ width: "204px" }}
+                                />
+                              </BasicTable.Td>
                             </BasicTable.Tr>
                           );
                         })}
@@ -230,7 +239,9 @@ export default function AuthManagement() {
               style={{ display: "flex", flexDirection: "column" }}
             >
               <GrayBox style={{ flexShrink: 0, padding: "8px 16px" }}>
-                <Typography fontWeight={"bold"}>사용자 미허가 솔루션</Typography>
+                <Typography fontWeight={"bold"}>
+                  사용자 미허가 솔루션
+                </Typography>
               </GrayBox>
               <div style={{ flex: 1, overflow: "auto" }}>
                 <TableBox>
@@ -265,7 +276,10 @@ export default function AuthManagement() {
                   </TableBox.Inner>
                 </TableBox>
               </div>
-              <GrayBox style={{ flexShrink: 0, padding: "8px 16px" }} justifyContent={"space-between"}>
+              <GrayBox
+                style={{ flexShrink: 0, padding: "8px 16px" }}
+                justifyContent={"space-between"}
+              >
                 <Stack gap={2} direction={"row"}>
                   <BasicButton>새로고침</BasicButton>
                   <BasicButton>저장</BasicButton>
@@ -279,7 +293,9 @@ export default function AuthManagement() {
                         windowFeatures: memberMenuPermission.windowFeatures,
                       });
                     }}
-                  >권한관리</BasicButton>
+                  >
+                    권한관리
+                  </BasicButton>
                   <BasicButton
                     onClick={() => {
                       openPopup({
@@ -288,7 +304,9 @@ export default function AuthManagement() {
                         windowFeatures: menuPermissionCopy.windowFeatures,
                       });
                     }}
-                  >권한복사</BasicButton>
+                  >
+                    권한복사
+                  </BasicButton>
                   <BasicButton
                     onClick={() => {
                       openPopup({
@@ -297,16 +315,15 @@ export default function AuthManagement() {
                         windowFeatures: permissionRevoke.windowFeatures,
                       });
                     }}
-                  >권한회수</BasicButton>
+                  >
+                    권한회수
+                  </BasicButton>
                 </Stack>
-
               </GrayBox>
             </Stack>
-
           </Stack>
         </Stack>
       </Stack>
-
     </>
   );
 }

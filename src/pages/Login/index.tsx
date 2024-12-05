@@ -17,19 +17,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import api from "../../api";
 import { LoginRequestModel } from "../../types/adminAccount";
 import { useNavigate } from "react-router-dom";
-import PathConstants from "../../routers/path";
-
+import { openPopup } from "../../utils/openPopup";
 export default function Login() {
   const [rememberId, setRembmber] = useState<boolean>(false);
   const [errMsg, setErrMsg] = useState<string>("");
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { isValid, errors },
-    getValues,
-  } = useForm({
+  const { register, handleSubmit, setValue, getValues } = useForm({
     mode: "onSubmit",
     defaultValues: {
       loginId: "",
@@ -52,17 +45,21 @@ export default function Login() {
 
   const onSubmit = (data: LoginRequestModel) => {
     clear(); // 일단, 기존에 존재하는 store를 비운다.
-    console.log("onSubmit : ", data);
     queryClient.resetQueries(); // 모든 쿼리를 리셋한다.
     if (rememberId) {
       setSaveLogin(getValues("loginId"), true);
     }
     userLogin(data, {
       onSuccess: (data) => {
-        console.log("성공:", data);
-        navigate(PathConstants.Home);
+        console.log("데이터가 오고 이동됨:", data);
+        // navigate(PathConstants.Home);
+        openPopup({
+          url: "/siteSelection",
+          windowName: "현장 선택",
+          windowFeatures: "width=345,height=500,scrollbars=yes,resizable=no",
+        });
       },
-      onError: (e: unknown) => {
+      onError: () => {
         setErrMsg("사용자 정보가 잘못되었습니다.");
       },
     });

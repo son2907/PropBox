@@ -8,7 +8,7 @@ interface PageTabProps {
   icon?: ReactNode;
   tabName: string;
   url: string;
-  onDelete: (url: string) => void;
+  onDelete: (url: string, e: React.SyntheticEvent) => void; // onDelete의 타입을 두 인자로 수정
 }
 
 // 메뉴 클릭함 -> zuStand에 메뉴의 아이콘, 메뉴명, url 정보 넘김 -> zuStand에서 현재 메뉴 배열에 추가
@@ -64,8 +64,8 @@ export default function PageTab({
         {tabName}
       </Typography>
       <IconButton
-        onClick={() => {
-          onDelete(url);
+        onClick={(e) => {
+          onDelete(url, e); // 이벤트 객체를 함께 전달
         }}
       >
         <IoCloseOutline />

@@ -32,7 +32,11 @@ interface Data {
 }
 
 export default function DeviceType() {
-  const { selectValue: s_0, handleChange: o_0 } = useSelect();
+  const {
+    selectListData: sd_0,
+    selectValue: s_0,
+    handleChange: o_0,
+  } = useSelect(selectTestData, "value", "data");
 
   const { selectedValues, handleSelectChange } = useMultiSelect<number>();
   const [data, setData] = useState<Data[]>(tableTestData);
@@ -47,7 +51,7 @@ export default function DeviceType() {
     windowName: "전화기 추가",
   };
 
-  const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함 
+  const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함
 
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(new Date());
@@ -56,14 +60,23 @@ export default function DeviceType() {
     defaultValue: true,
   });
 
-  const { selectValue, handleChange } = useSelect();
+  const { selectListData, selectValue, handleChange } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
 
   // Basicinput에 연결할 ref, 값은 bRef1.current?.value 에 들어있습니다.
   const bRef1 = useRef<HTMLInputElement>(null); //
   const bRef2 = useRef<HTMLInputElement>(null); // HTMLInputElement로 타입 지정
 
   return (
-    <Stack width={"100%"} height={"100%"} bgcolor={"white"} justifyContent={"space-between"}>
+    <Stack
+      width={"100%"}
+      height={"100%"}
+      bgcolor={"white"}
+      justifyContent={"space-between"}
+    >
       <Stack height={"100%"} gap={2}>
         <TableBox height="75%">
           <TableBox.Inner>
@@ -95,13 +108,21 @@ export default function DeviceType() {
             </BasicTable>
           </TableBox.Inner>
         </TableBox>
-        <GrayBox height={"25%"} >
+        <GrayBox height={"25%"}>
           <Stack gap={1} width={"100%"}>
-            <Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
+            <Stack
+              direction={"row"}
+              justifyContent={"space-between"}
+              alignItems={"center"}
+            >
               <Typography>장치구분이름</Typography>
               <BasicInput ref={bRef1} sx={{ width: "80%" }} />
             </Stack>
-            <Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
+            <Stack
+              direction={"row"}
+              justifyContent={"space-between"}
+              alignItems={"center"}
+            >
               <Typography>호스트</Typography>
               <BasicInput ref={bRef2} sx={{ width: "80%" }} />
             </Stack>
@@ -109,9 +130,14 @@ export default function DeviceType() {
               <Typography>사용여부</Typography>
               <ToggleButton checked={toggle} onChange={setToggle} label="" />
             </Stack>
-            <Stack gap={1} width={"100%"} direction={"row"} justifyContent={"end"}>
-              <BasicButton >추가</BasicButton>
-              <BasicButton >저장</BasicButton>
+            <Stack
+              gap={1}
+              width={"100%"}
+              direction={"row"}
+              justifyContent={"end"}
+            >
+              <BasicButton>추가</BasicButton>
+              <BasicButton>저장</BasicButton>
             </Stack>
           </Stack>
         </GrayBox>

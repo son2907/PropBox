@@ -17,8 +17,10 @@ export default function Content({ children }: ContentProps) {
   const { menus, closeMenu } = useMenuStore();
   console.log("메뉴 목록:", menus);
 
-  const onDelete = (url: string) => {
+  const onDelete = (url: string, e: React.SyntheticEvent) => {
     closeMenu(url);
+    e.preventDefault(); // 기본 동작을 막음
+    e.stopPropagation(); // 이벤트 버블링을 막음
   };
   // 엑세스 토큰이 있을 때에만 useQuery 실행
 

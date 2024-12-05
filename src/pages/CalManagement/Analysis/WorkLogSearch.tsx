@@ -19,18 +19,50 @@ import Calendar from "../../../components/Calendar/Calendar";
 import { useRadioGroup } from "../../../hooks/useRadioGroup";
 
 export default function WorkLogSearch() {
-  const { selectValue: s_0, handleChange: o_0 } = useSelect();
+  const { selectValue: s_0, handleChange: o_0 } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
 
-  const { selectValue: s_1, handleChange: o_1 } = useSelect();
-  const { selectValue: s_2, handleChange: o_2 } = useSelect();
+  const { selectValue: s_1, handleChange: o_1 } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
+  const { selectValue: s_2, handleChange: o_2 } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
 
-  const { selectValue: s_3, handleChange: o_3 } = useSelect();
-  const { selectValue: s_4, handleChange: o_4 } = useSelect();
+  const { selectValue: s_3, handleChange: o_3 } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
+  const { selectValue: s_4, handleChange: o_4 } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
 
-  const { selectValue: s_5, handleChange: o_5 } = useSelect();
-  const { selectValue: s_6, handleChange: o_6 } = useSelect();
+  const { selectValue: s_5, handleChange: o_5 } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
+  const { selectValue: s_6, handleChange: o_6 } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
 
-  const { selectValue: s_7, handleChange: o_7 } = useSelect();
+  const { selectValue: s_7, handleChange: o_7 } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
 
   const f_staticsInfo = [
     {

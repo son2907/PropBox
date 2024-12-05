@@ -30,7 +30,11 @@ interface Data {
 }
 
 export default function LocalRegistration() {
-  const { selectValue: s_0, handleChange: o_0 } = useSelect();
+  const {
+    selectListData: sd_0,
+    selectValue: s_0,
+    handleChange: o_0,
+  } = useSelect(selectTestData, "value", "data");
 
   const { selectedValues, handleSelectChange } = useMultiSelect<number>();
   const [data, setData] = useState<Data[]>(tableTestData);
@@ -45,7 +49,7 @@ export default function LocalRegistration() {
     windowName: "현장 등록 및 수정",
   };
 
-  const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함 
+  const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함
 
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(new Date());
@@ -54,50 +58,101 @@ export default function LocalRegistration() {
     defaultValue: true,
   });
 
-  const { selectValue, handleChange } = useSelect();
+  const { selectListData, selectValue, handleChange } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
 
   return (
-    <Stack width={"100%"} height={"100%"} bgcolor={"white"} alignItems={"center"} justifyContent={"space-between"} alignContent={"center"}>
+    <Stack
+      width={"100%"}
+      height={"100%"}
+      bgcolor={"white"}
+      alignItems={"center"}
+      justifyContent={"space-between"}
+      alignContent={"center"}
+    >
       <Stack width={"80%"}>
-        <Stack direction={"row"} gap={1} marginTop={1} alignItems={"center"} justifyContent={"space-between"} >
+        <Stack
+          direction={"row"}
+          gap={1}
+          marginTop={1}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+        >
           <Typography>현장아이디</Typography>
           <BasicInput sx={{ width: "80%" }}></BasicInput>
         </Stack>
-        <Stack direction={"row"} gap={1} marginTop={1} alignItems={"center"} justifyContent={"space-between"}>
+        <Stack
+          direction={"row"}
+          gap={1}
+          marginTop={1}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+        >
           <Typography>현장이름</Typography>
           <BasicInput sx={{ width: "80%" }}></BasicInput>
         </Stack>
-        <Stack direction={"row"} gap={1} marginTop={1} alignItems={"center"} justifyContent={"space-between"}>
+        <Stack
+          direction={"row"}
+          gap={1}
+          marginTop={1}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+        >
           <Typography>사용시기</Typography>
-          <Box width={"80%"}><Calendar selectedDate={startDate} setSelectedDate={setStartDate} /></Box>
+          <Box width={"80%"}>
+            <Calendar selectedDate={startDate} setSelectedDate={setStartDate} />
+          </Box>
         </Stack>
-        <Stack direction={"row"} gap={1} marginTop={1} alignItems={"center"} justifyContent={"space-between"}>
+        <Stack
+          direction={"row"}
+          gap={1}
+          marginTop={1}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+        >
           <Typography>사용종료</Typography>
-          <Box width={"80%"}><Calendar selectedDate={endDate} setSelectedDate={setEndDate}/></Box>
+          <Box width={"80%"}>
+            <Calendar selectedDate={endDate} setSelectedDate={setEndDate} />
+          </Box>
         </Stack>
         <Stack direction={"row"} gap={5} marginTop={1} alignItems={"center"}>
           <Typography>사용여부</Typography>
           <ToggleButton checked={toggle} onChange={setToggle} label="" />
         </Stack>
-        <Stack direction={"row"} gap={1} marginTop={1} alignItems={"center"} justifyContent={"space-between"}>
+        <Stack
+          direction={"row"}
+          gap={1}
+          marginTop={1}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+        >
           <Typography>구분</Typography>
           <Box width={"80%"}>
-          <Select
-                value={selectValue}
-                onChange={handleChange}
-                selectData={selectTestData}
-              />
+            <Select
+              value={selectValue}
+              onChange={handleChange}
+              selectData={selectTestData}
+            />
           </Box>
         </Stack>
-        <Stack direction={"row"} gap={1} marginTop={1} alignItems={"center"} justifyContent={"space-between"}>
+        <Stack
+          direction={"row"}
+          gap={1}
+          marginTop={1}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+        >
           <Typography>비고</Typography>
           <BasicInput sx={{ width: "80%" }}></BasicInput>
         </Stack>
       </Stack>
       <GrayBox width={"100%"}>
         <Box sx={{ marginLeft: "auto" }}>
-          <BasicButton >확인</BasicButton>
-          <BasicButton >취소</BasicButton>
+          <BasicButton>확인</BasicButton>
+          <BasicButton>취소</BasicButton>
         </Box>
       </GrayBox>
     </Stack>

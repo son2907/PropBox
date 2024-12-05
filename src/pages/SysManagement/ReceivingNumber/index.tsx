@@ -19,13 +19,16 @@ import useToggleButtton from "../../../hooks/useToggleButton";
 import TextArea from "../../../components/TextArea/TextArea";
 
 export default function ReceivingNumber() {
-
   // BasicTable에 연결할 한 행만 선택 가능하게 하는거(BasicTable 수정을 해야겐네요..)
   const { selectedRow, toggleRowSelection } = useSingleRowSelection();
 
   const { currentPage, onChangePage } = usePagination();
 
-  const { selectValue, handleChange } = useSelect();
+  const { selectListData, selectValue, handleChange } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
 
   const [selectedAge, setSelectedAge] = useState<number | null>(null);
 
@@ -39,12 +42,25 @@ export default function ReceivingNumber() {
 
   return (
     <>
-      <Stack width={"100%"} height={"100%"} marginBottom={1} direction={"row"} gap={1}>
+      <Stack
+        width={"100%"}
+        height={"100%"}
+        marginBottom={1}
+        direction={"row"}
+        gap={1}
+      >
         <Stack width={"70%"} height={"100%"}>
           <GrayBox>
             <SearchInput placeholder="고객정보 검색"></SearchInput>
           </GrayBox>
-          <Stack height={"100%"} gap={1} width={"100%"} justifyContent={"space-between"} overflow={"hidden"} direction={"row"}>
+          <Stack
+            height={"100%"}
+            gap={1}
+            width={"100%"}
+            justifyContent={"space-between"}
+            overflow={"hidden"}
+            direction={"row"}
+          >
             <Stack width={"30%"} gap={1}>
               <Stack height={"95%"}>
                 <TableBox height="100%">
@@ -71,7 +87,11 @@ export default function ReceivingNumber() {
                 </TableBox>
               </Stack>
               <Stack height={"5%"} width={"100%"} justifyContent={"center"}>
-                <Pagination count={25} page={currentPage} onChange={onChangePage} />
+                <Pagination
+                  count={25}
+                  page={currentPage}
+                  onChange={onChangePage}
+                />
               </Stack>
             </Stack>
             <Stack width={"70%"}>
@@ -117,10 +137,13 @@ export default function ReceivingNumber() {
                 </TableBox>
               </Stack>
               <Stack height={"5%"} width={"100%"} justifyContent={"center"}>
-                <Pagination count={25} page={currentPage} onChange={onChangePage} />
+                <Pagination
+                  count={25}
+                  page={currentPage}
+                  onChange={onChangePage}
+                />
               </Stack>
             </Stack>
-
           </Stack>
         </Stack>
         <Stack width={"30%"} height={"100%"}>
@@ -134,8 +157,10 @@ export default function ReceivingNumber() {
               alignItems="start"
             >
               <Box width="100%" justifyContent="flex-start">
-                <Typography fontSize={"24px"} fontWeight={"bold"}>상세정보</Typography>
-                </Box>
+                <Typography fontSize={"24px"} fontWeight={"bold"}>
+                  상세정보
+                </Typography>
+              </Box>
               <Box
                 display="flex"
                 flexDirection="column" // 세로 방향 설정
@@ -193,7 +218,12 @@ export default function ReceivingNumber() {
                   placeholder=""
                 />
               </Box>
-              <Stack justifyContent={"end"} width={"100%"} gap={1} direction={"row"}>
+              <Stack
+                justifyContent={"end"}
+                width={"100%"}
+                gap={1}
+                direction={"row"}
+              >
                 <BasicButton>추가</BasicButton>
                 <BasicButton>저장</BasicButton>
                 <BasicButton>삭제</BasicButton>

@@ -1,15 +1,28 @@
 import { useState } from "react";
-import { selectType } from "../types/Select";
 import { SelectChangeEvent } from "@mui/material";
+import { Data, transformSelectData } from "../utils/transformSelectData";
 
-export default function useSelect(defaultValue?: selectType) {
-  const [selectValue, setValue] = useState<selectType>(
-    defaultValue?.toString() || ""
-  );
+export default function useSelect<T extends Data>(
+  data: T[],
+  valueKey: string,
+  dataKey: string,
+  defaultValue?: any
+) {
+  // 선택된 값 상태 관리
+  const [selectValue, setSelectValue] = useState<any>(defaultValue ?? "");
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setValue(event.target.value);
+  // 전체 데이터 변환
+  // data가 undefined일 경우 빈 배열로 처리
+  const selectListData =
+    data && data.length > 0 ? transformSelectData(data, valueKey, dataKey) : [];
+
+  const handleChange = (event: SelectChangeEvent<any>) => {
+    setSelectValue(event.target.value);
   };
 
-  return { selectValue, handleChange };
+  return {
+    selectListData,
+    selectValue,
+    handleChange,
+  };
 }

@@ -2,7 +2,11 @@ import { Box, Stack, Typography } from "@mui/material";
 import useTabs from "../../../hooks/useTabs";
 import GrayBox from "../../../components/Box/GrayBox";
 import SearchInput from "../../../components/Input/SearchInput";
-import { BasicButton, IconButton, ToggleButton } from "../../../components/Button";
+import {
+  BasicButton,
+  IconButton,
+  ToggleButton,
+} from "../../../components/Button";
 import TableBox from "../../../components/Box/TableBox";
 import BasicTable from "../../../components/Table/BasicTable";
 import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
@@ -26,7 +30,6 @@ import useToggleButtton from "../../../hooks/useToggleButton";
 import TextArea from "../../../components/TextArea/TextArea";
 
 export default function PhoneManagement() {
-
   //useMultiRowSelection 분리해서 각 테이블에 독립적으로 selectedRows와 toggleRowsSelection을 전달하여 동작이 분리되도록 설정.
   // 사용자 리스트 - 선택 상태 관리
   const {
@@ -58,12 +61,20 @@ export default function PhoneManagement() {
     toggleRowsSelection: toggleLocalUnuseRowsSelection,
   } = useMultiRowSelection();
 
-  const { selectValue, handleChange } = useSelect()
+  const { selectListData, selectValue, handleChange } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
 
   const [date, setDate] = useState<Date>(new Date());
 
   //   수신동의 고객 select
-  const { selectValue: s_1, handleChange: o_1 } = useSelect();
+  const {
+    selectListData: sd_1,
+    selectValue: s_1,
+    handleChange: o_1,
+  } = useSelect(selectTestData, "value", "data");
 
   // 이 ref를 통해 textArea에 입력된 값에 접근할 수 있음
   const tRef1 = useRef<HTMLTextAreaElement>(null); // textArea에 연결해 줄 ref
@@ -72,7 +83,6 @@ export default function PhoneManagement() {
   const { toggle: receive, onChange: receiveToggle } = useToggleButtton({
     defaultValue: true,
   });
-
 
   //전화기 추가 팝업
   const phoneAddPopup = {
@@ -116,7 +126,13 @@ export default function PhoneManagement() {
             </TableBox>
           </Stack>
           {/* 전화기 리스트 */}
-          <Stack height={"96%"} width={"100%"} direction={"row"} gap={1} sx={{ minWidth: '800px', overflowX: 'auto' }}>
+          <Stack
+            height={"96%"}
+            width={"100%"}
+            direction={"row"}
+            gap={1}
+            sx={{ minWidth: "800px", overflowX: "auto" }}
+          >
             <Stack width={"50%"} justifyContent={"start"} overflow={"hidden"}>
               <Box overflow={"auto"}>
                 <TableBox>
@@ -131,9 +147,9 @@ export default function PhoneManagement() {
                           <CheckboxTable.CheckboxTh />
                           <CheckboxTable.Th>전화기ID</CheckboxTable.Th>
                           <CheckboxTable.Th>전화기이름</CheckboxTable.Th>
-                          <CheckboxTable.Th >아이디</CheckboxTable.Th>
-                          <CheckboxTable.Th >비밀번호</CheckboxTable.Th>
-                          <CheckboxTable.Th >전화번호</CheckboxTable.Th>
+                          <CheckboxTable.Th>아이디</CheckboxTable.Th>
+                          <CheckboxTable.Th>비밀번호</CheckboxTable.Th>
+                          <CheckboxTable.Th>전화번호</CheckboxTable.Th>
                         </CheckboxTable.Tr>
                       </CheckboxTable.Thead>
 
@@ -157,11 +173,28 @@ export default function PhoneManagement() {
                 <BasicButton>새로고침</BasicButton>
               </GrayBox>
             </Stack>
-            <Stack width={"3%"} bgcolor={"white"} justifyContent={"space-between"} justifyItems={"center"}>
-              <BasicButton sx={{ backgroundColor: "primary.A100", height: "200px", width: "5px" }}>
+            <Stack
+              width={"3%"}
+              bgcolor={"white"}
+              justifyContent={"space-between"}
+              justifyItems={"center"}
+            >
+              <BasicButton
+                sx={{
+                  backgroundColor: "primary.A100",
+                  height: "200px",
+                  width: "5px",
+                }}
+              >
                 <BiChevronLeft size={"24px"} />
               </BasicButton>
-              <BasicButton sx={{ backgroundColor: "primary.A100", height: "200px", width: "5px" }}>
+              <BasicButton
+                sx={{
+                  backgroundColor: "primary.A100",
+                  height: "200px",
+                  width: "5px",
+                }}
+              >
                 <BiChevronLeft size={"24px"} />
               </BasicButton>
             </Stack>
@@ -179,10 +212,10 @@ export default function PhoneManagement() {
                           <CheckboxTable.CheckboxTh />
                           <CheckboxTable.Th>전화기ID</CheckboxTable.Th>
                           <CheckboxTable.Th>전화기이름</CheckboxTable.Th>
-                          <CheckboxTable.Th >아이디</CheckboxTable.Th>
-                          <CheckboxTable.Th >비밀번호</CheckboxTable.Th>
-                          <CheckboxTable.Th >전화번호</CheckboxTable.Th>
-                          <CheckboxTable.Th >상세보기</CheckboxTable.Th>
+                          <CheckboxTable.Th>아이디</CheckboxTable.Th>
+                          <CheckboxTable.Th>비밀번호</CheckboxTable.Th>
+                          <CheckboxTable.Th>전화번호</CheckboxTable.Th>
+                          <CheckboxTable.Th>상세보기</CheckboxTable.Th>
                         </CheckboxTable.Tr>
                       </CheckboxTable.Thead>
                       <CheckboxTable.Tbody>
@@ -214,7 +247,9 @@ export default function PhoneManagement() {
                   alignItems="start"
                 >
                   <Box width="100%" justifyContent="flex-start">
-                    <Typography fontSize={"24px"} fontWeight={"bold"}>상세정보</Typography>
+                    <Typography fontSize={"24px"} fontWeight={"bold"}>
+                      상세정보
+                    </Typography>
                   </Box>
                   <Box
                     display="flex"
@@ -293,7 +328,12 @@ export default function PhoneManagement() {
                       placeholder=""
                     />
                   </Box>
-                  <Stack justifyContent={"end"} width={"100%"} gap={1} direction={"row"}>
+                  <Stack
+                    justifyContent={"end"}
+                    width={"100%"}
+                    gap={1}
+                    direction={"row"}
+                  >
                     <BasicButton>추가</BasicButton>
                     <BasicButton>저장</BasicButton>
                     <BasicButton>삭제</BasicButton>

@@ -22,7 +22,11 @@ import PathConstants from "../../../routers/path";
 
 export default function InfoGroup({ tabType }: TabType) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const { selectValue, handleChange } = useSelect();
+  const { selectListData, selectValue, handleChange } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
 
   // 테이블 선택 조건이 없으므로 다중선택 ui 적용
   const { selectedRow, toggleRowSelection } = useSingleRowSelection();
@@ -157,7 +161,7 @@ export default function InfoGroup({ tabType }: TabType) {
               <Select
                 value={selectValue}
                 onChange={handleChange}
-                selectData={selectTestData}
+                selectData={selectListData}
                 sx={{ width: "204px" }}
               />
             </Box>

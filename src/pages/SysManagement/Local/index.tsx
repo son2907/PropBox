@@ -20,11 +20,15 @@ import TableSelect from "../../../components/Select/TableSelect";
 import { RiDeleteBinLine } from "react-icons/ri";
 import CheckboxTable from "../../../components/Table/CheckboxTable";
 import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
-import { BiChevronLeft } from "react-icons/bi"
+import { BiChevronLeft } from "react-icons/bi";
 import Calendar from "../../../components/Calendar/Calendar";
 
 export default function LocalManagement() {
-  const { selectValue, handleChange } = useSelect();
+  const { selectListData, selectValue, handleChange } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
 
   const [selectedAge, setSelectedAge] = useState<number | null>(null);
 
@@ -81,8 +85,15 @@ export default function LocalManagement() {
               sx={{ width: "204px" }}
               placeholder="종료 구분 선택"
             />
-            <Box width={"200px"}><Calendar selectedDate={endDate} setSelectedDate={setEndDate} /></Box>
-            <Box width={"200px"}><Calendar selectedDate={startDate} setSelectedDate={setStartDate} /></Box>
+            <Box width={"200px"}>
+              <Calendar selectedDate={endDate} setSelectedDate={setEndDate} />
+            </Box>
+            <Box width={"200px"}>
+              <Calendar
+                selectedDate={startDate}
+                setSelectedDate={setStartDate}
+              />
+            </Box>
           </Stack>
           <Stack direction="row" gap={1}>
             <BasicButton
@@ -93,13 +104,15 @@ export default function LocalManagement() {
                   windowFeatures: localRegistration.windowFeatures,
                 });
               }}
-            >추가</BasicButton>
+            >
+              추가
+            </BasicButton>
           </Stack>
         </GrayBox>
         <Stack width={"100%"} spacing={1} height={"100%"}>
           <Stack direction={"row"} height={"50%"}>
             {/* 사용자 정보 리스트 */}
-            <Stack bgcolor={"white"} marginLeft={1} width={"30%"} >
+            <Stack bgcolor={"white"} marginLeft={1} width={"30%"}>
               <TableBox>
                 <TableBox.Inner>
                   <BasicTable data={tableTestData}>
@@ -123,7 +136,7 @@ export default function LocalManagement() {
                 </TableBox.Inner>
               </TableBox>
             </Stack>
-            <Stack bgcolor={"white"} marginLeft={1} width={"70%"} >
+            <Stack bgcolor={"white"} marginLeft={1} width={"70%"}>
               <TableBox>
                 <TableBox.Inner>
                   <BasicTable data={tableTestData}>
@@ -150,10 +163,13 @@ export default function LocalManagement() {
                                   openPopup({
                                     url: localRegistration.url,
                                     windowName: localRegistration.windowName,
-                                    windowFeatures: localRegistration.windowFeatures,
+                                    windowFeatures:
+                                      localRegistration.windowFeatures,
                                   });
                                 }}
-                              >수정</BasicButton>
+                              >
+                                수정
+                              </BasicButton>
                             </BasicTable.Td>
                           </BasicTable.Tr>
                         );
@@ -171,7 +187,8 @@ export default function LocalManagement() {
             bgcolor={"white"}
             direction="row"
             height={"45%"} // 화면 크기에 맞추기
-            overflow="hidden">
+            overflow="hidden"
+          >
             {/* 사용자 허가 솔루션 테이블 */}
             <Stack
               width={"70%"}
@@ -230,11 +247,28 @@ export default function LocalManagement() {
                 <BasicButton sx={{ marginLeft: "auto" }}>새로고침</BasicButton>
               </GrayBox>
             </Stack>
-            <Stack width={"3%"} bgcolor={"white"} justifyContent={"space-between"} justifyItems={"center"}>
-              <BasicButton sx={{ backgroundColor: "primary.A100", height: "200px", width: "5px" }}>
+            <Stack
+              width={"3%"}
+              bgcolor={"white"}
+              justifyContent={"space-between"}
+              justifyItems={"center"}
+            >
+              <BasicButton
+                sx={{
+                  backgroundColor: "primary.A100",
+                  height: "200px",
+                  width: "5px",
+                }}
+              >
                 <BiChevronLeft size={"24px"} />
               </BasicButton>
-              <BasicButton sx={{ backgroundColor: "primary.A100", height: "200px", width: "5px" }}>
+              <BasicButton
+                sx={{
+                  backgroundColor: "primary.A100",
+                  height: "200px",
+                  width: "5px",
+                }}
+              >
                 <BiChevronLeft size={"24px"} />
               </BasicButton>
             </Stack>
@@ -245,7 +279,9 @@ export default function LocalManagement() {
               style={{ display: "flex", flexDirection: "column" }}
             >
               <GrayBox style={{ flexShrink: 0, padding: "8px 16px" }}>
-                <Typography fontWeight={"bold"}>사용자 미허가 솔루션</Typography>
+                <Typography fontWeight={"bold"}>
+                  사용자 미허가 솔루션
+                </Typography>
               </GrayBox>
               <div style={{ flex: 1, overflow: "auto" }}>
                 <TableBox>
@@ -260,7 +296,7 @@ export default function LocalManagement() {
                           <CheckboxTable.CheckboxTh />
                           <CheckboxTable.Th>솔루션ID</CheckboxTable.Th>
                           <CheckboxTable.Th>솔루션이름</CheckboxTable.Th>
-                          <CheckboxTable.Th >구분</CheckboxTable.Th>
+                          <CheckboxTable.Th>구분</CheckboxTable.Th>
                         </CheckboxTable.Tr>
                       </CheckboxTable.Thead>
 
@@ -282,11 +318,9 @@ export default function LocalManagement() {
                 <BasicButton sx={{ marginLeft: "auto" }}>새로고침</BasicButton>
               </GrayBox>
             </Stack>
-
           </Stack>
         </Stack>
       </Stack>
-
     </>
   );
 }

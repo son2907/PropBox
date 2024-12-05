@@ -12,7 +12,12 @@ import { useMultiRowSelection } from "../../../../hooks/useMultiRowSelection";
 import CheckboxTable from "../../../../components/Table/CheckboxTable";
 
 export default function RegistrationExel() {
-  const { selectValue: s_0, handleChange: o_0 } = useSelect();
+  const {
+    selectListData: sd_0,
+    selectValue: s_0,
+    handleChange: o_0,
+  } = useSelect(selectTestData, "value", "data");
+
   const [data, setData] = useState<tableDataType[]>(tableTestData);
   const { selectedRows, toggleRowsSelection } = useMultiRowSelection(); //
 
@@ -21,7 +26,7 @@ export default function RegistrationExel() {
       <GrayBox gap={1}>
         <BasicButton>찾아보기</BasicButton>
         <Select
-          selectData={selectTestData}
+          selectData={sd_0}
           value={s_0}
           onChange={o_0}
           sx={{ width: "250px" }}

@@ -17,6 +17,7 @@ export const useUserLogin = () => {
   return useMutation({
     mutationFn: API.login,
     onSuccess: (res: AxiosResponse<LoginResponseModel>) => {
+      console.log("로그인 성공하고 나서");
       const { contents, accessToken, refreshToken } = res.data;
       const {
         uuid,
@@ -47,9 +48,5 @@ export const useUserLogin = () => {
         refreshToken,
       });
     },
-    // onError: (error) => {
-    //   // 로그인 실패 처리
-    //   console.error("Login failed", error);
-    // },
   });
 };

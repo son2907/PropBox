@@ -59,9 +59,16 @@ export default function AutoMessage() {
   };
 
   // select 쓸땐 useSelect 같이 쓴다고 생각하면 됨
-  const { selectValue: s_0, handleChange: o_0 } = useSelect();
-  //   수신동의 고객 select
-  const { selectValue: s_1, handleChange: o_1 } = useSelect();
+  const {
+    selectListData: sd_0,
+    selectValue: s_0,
+    handleChange: o_0,
+  } = useSelect(selectTestData, "value", "data"); //   수신동의 고객 select
+  const {
+    selectListData: sd_1,
+    selectValue: s_1,
+    handleChange: o_1,
+  } = useSelect(selectTestData, "value", "data");
 
   // BasicTable에 연결할 한 행만 선택 가능하게 하는거(BasicTable 수정을 해야겐네요..)
   const { selectedRow, toggleRowSelection } = useSingleRowSelection();

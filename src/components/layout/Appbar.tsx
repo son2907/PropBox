@@ -22,26 +22,30 @@ const AppBarArea = styled(Box)(({ theme }) => ({
 
 const testData = [
   {
-    value: 1,
+    value: "1",
     data: "대구 수성구 센터",
   },
   {
-    value: 2,
+    value: "2",
     data: "대구 OO구 센터2",
   },
   {
-    value: 3,
+    value: "3",
     data: "대구 OO구 센터3",
   },
   {
-    value: 4,
+    value: "4",
     data: "대구 OO구 센터4",
   },
 ];
 // 실시간으로 상태를 받아서 보여주어야 함
 export default function Appbar() {
   const [state, setState] = useState<boolean>(true);
-  const { selectValue, handleChange } = useSelect();
+  const { selectListData, selectValue, handleChange } = useSelect(
+    testData,
+    "value",
+    "data"
+  );
   const text = "010-1111-1111";
 
   return (
@@ -49,7 +53,7 @@ export default function Appbar() {
       <Select
         value={selectValue}
         onChange={handleChange}
-        selectData={testData}
+        selectData={selectListData}
         placeholder={"현장 선택"}
         sx={{ width: "160px" }}
       />

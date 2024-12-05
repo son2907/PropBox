@@ -1,25 +1,15 @@
 import Solution from "../sidebar/Solution";
 import MenuItem from "../sidebar/MenuItem";
 import { Box, styled } from "@mui/material";
-import { memo, ReactNode, useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import Logo from "../../assets/images/logo.png";
 import Menu from "../../assets/svg/hambuger.svg";
-import { IoSettingsOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import api from "../../api";
 import { useAuthStore } from "../../stores/authStore";
-import { LuHeadphones } from "react-icons/lu";
-import { MdOutlineMailOutline } from "react-icons/md";
-import { GoPeople } from "react-icons/go";
 import { transformMenuData } from "../../utils/transformMenuData";
 import { useMenuStore } from "../../stores/menuStore";
-
-const IconList: ReactNode[] = [
-  <LuHeadphones />,
-  <MdOutlineMailOutline />,
-  <GoPeople />,
-  <IoSettingsOutline />,
-];
+import { IconList } from "./MenuIconList";
 
 const SideMenu = styled(Box, {
   shouldForwardProp: (prop) => prop !== "fold", // fold 속성을 DOM으로 전달하지 않음
@@ -54,7 +44,7 @@ const Sidebar = memo(function Sidebar() {
   useEffect(() => {
     if (isSuccess && accessToken) {
       console.log("데이터좀요:", data.data);
-      const result = transformMenuData(data?.data.contents);
+      const result = transformMenuData(data?.data.contents, IconList);
       setAllMenuData(result);
     }
   }, [accessToken, isSuccess]);
@@ -100,7 +90,7 @@ const Sidebar = memo(function Sidebar() {
           <Solution
             key={index}
             label={item.label}
-            icon={IconList[index]}
+            icon={item.icon}
             auth={item.auth}
             isOpen={true}
             fold={fold}

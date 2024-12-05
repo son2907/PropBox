@@ -47,6 +47,8 @@ import DeviceType from "../pages/SysManagement/Phone/popup/DeviceType";
 import LocalmemberManagement from "../pages/SysManagement/Localmember";
 import AuthCode from "../pages/SysManagement/AuthCode";
 import ReceivingNumber from "../pages/SysManagement/ReceivingNumber";
+import SiteSelection from "../pages/SiteSelection";
+import NetworkSetupPop from "../pages/NetworkSetup/popup";
 
 export const routes: RouteObject[] = [
   {
@@ -147,7 +149,7 @@ export const routes: RouteObject[] = [
           },
           {
             path: PathConstants.System.LocalMember,
-            element: <LocalmemberManagement/>,
+            element: <LocalmemberManagement />,
           },
           {
             path: PathConstants.System.Auth,
@@ -159,15 +161,15 @@ export const routes: RouteObject[] = [
           },
           {
             path: PathConstants.System.AuthCode,
-            element: <AuthCode/>,
+            element: <AuthCode />,
           },
           {
             path: PathConstants.System.ReceivingNumber,
-            element: <ReceivingNumber/>,
+            element: <ReceivingNumber />,
           },
           {
             path: PathConstants.System.Phone,
-            element: <PhoneManagement/>,
+            element: <PhoneManagement />,
           },
         ],
       },
@@ -256,10 +258,18 @@ export const routes: RouteObject[] = [
   },
   {
     path: PathConstants.System.PhoneAdd,
-    element: <PhoneAdd/>,
+    element: <PhoneAdd />,
   },
   {
     path: PathConstants.System.DeviceType,
-    element: <DeviceType/>,
+    element: <DeviceType />,
+  },
+  {
+    path: PathConstants.SiteSelection,
+    element: <SiteSelection />,
+  },
+  {
+    path: PathConstants.NetworkSetup,
+    element: <NetworkSetupPop />,
   },
 ];

@@ -1,32 +1,46 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { Select } from "../../../components/Select";
 import useSelect from "../../../hooks/useSelect";
 import { BasicButton } from "../../../components/Button";
-
-const testData = [
-  {
-    value: 1,
-    data: "장치하나",
-  },
-  {
-    value: 2,
-    data: "장치둘",
-  },
-  {
-    value: 3,
-    data: "장치셋",
-  },
-  {
-    value: 4,
-    data: "장치넷",
-  },
-];
+import { useSiteList } from "../../../api/siteList";
+import { useEffect, useState } from "react";
+import { filterDataByValues } from "../../../utils/filterDataByValues";
 
 export default function NetworkSetupPop() {
-  const { selectValue, handleChange } = useSelect();
+  const { data, isSuccess } = useSiteList();
+  console.log(data?.data.contents);
+  const [listData, setListData] = useState<any>([]);
+
+  useEffect(() => {
+    setListData(data?.data.contents);
+  }, [data, isSuccess]);
+
+  const { selectListData, selectValue, handleChange } = useSelect(
+    listData,
+    "sptNo",
+    "sptNm"
+  );
+  console.log("선택한 값:", selectValue);
+
+  const onClick = () => {
+    // 이 창을 닫는다.
+    console.log(
+      filterDataByValues({
+        data: listData,
+        key: "sptNo",
+        values: ["3001", "3002"],
+      })
+    );
+  };
 
   return (
-    <Box display="flex" flexDirection="column">
+    <Stack
+      width={"100%"}
+      height={"100%"}
+      bgcolor={"primary.light"}
+      gap={1}
+      padding={2}
+    >
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Typography noWrap marginRight={2}>
           장치 구분
@@ -36,12 +50,12 @@ export default function NetworkSetupPop() {
           value={selectValue}
           onChange={handleChange}
           placeholder="장치 선택"
-          selectData={testData}
+          selectData={selectListData}
         />
       </Box>
       <Box display="flex" justifyContent="flex-end" marginTop={2}>
-        <BasicButton>저장</BasicButton>
+        <BasicButton onClick={onClick}>저장</BasicButton>
       </Box>
-    </Box>
+    </Stack>
   );
 }

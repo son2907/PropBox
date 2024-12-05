@@ -22,7 +22,7 @@ type AuthStoreType = {
   // 상태 변경 함수들
   setSaveLogin: (loginId: string, remember: boolean) => void; //자동 로그인
   setAuthData: (data: Partial<AuthStoreType>) => void; // JSON 데이터로 상태 설정
-  setAuthToken: (accessToken: string, refreshToken: string) => void;
+  setAuthToken: (accessToken: string) => void;
   clear: () => void; // 상태 초기화
 };
 
@@ -38,8 +38,7 @@ export const store = createWithEqualityFn<AuthStoreType>(
     (set) => ({
       // 상태 변경 함수들 구현
       setAuthData: (data) => set((state) => ({ ...state, ...data })),
-      setAuthToken: (accessToken, refreshToken) =>
-        set({ accessToken, refreshToken }),
+      setAuthToken: (accessToken) => set({ accessToken }),
       setSaveLogin: (loginId, remember) => set({ loginId, remember }),
       clear: () =>
         set(() => ({

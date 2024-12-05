@@ -14,8 +14,11 @@ import PathConstants from "../../../routers/path";
 import { openPopup } from "../../../utils/openPopup";
 
 export default function Registration() {
-  const { selectValue, handleChange } = useSelect();
-
+  const { selectListData, selectValue, handleChange } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
   const [selectedAge, setSelectedAge] = useState<number | null>(null);
 
   //엑셀업로드 팝업 오픈
@@ -38,9 +41,11 @@ export default function Registration() {
         <GrayBox gap={2} justifyContent="space-between">
           <Stack direction="row" gap={1}>
             <SearchInput />
-            <BasicButton sx={{ color: "root.mainBlue", border: 1 }}>SMS 전송</BasicButton>
+            <BasicButton sx={{ color: "root.mainBlue", border: 1 }}>
+              SMS 전송
+            </BasicButton>
           </Stack>
-          <Stack direction="row" gap={1} >
+          <Stack direction="row" gap={1}>
             <BasicButton
               onClick={() => {
                 openPopup({
@@ -49,7 +54,9 @@ export default function Registration() {
                   windowFeatures: GroupManagement.windowFeatures,
                 });
               }}
-            >그룹관리</BasicButton>
+            >
+              그룹관리
+            </BasicButton>
             <BasicButton
               onClick={() => {
                 openPopup({
@@ -58,7 +65,9 @@ export default function Registration() {
                   windowFeatures: uploadRegistration.windowFeatures,
                 });
               }}
-            >엑셀등록</BasicButton>
+            >
+              엑셀등록
+            </BasicButton>
           </Stack>
           <Stack direction="row" gap={1}>
             <BasicButton>엑셀저장</BasicButton>
@@ -78,7 +87,9 @@ export default function Registration() {
       <Stack width={"30%"} marginLeft={1}>
         {/* 상담항목 */}
         <GrayBox>
-          <Typography fontSize={"20px"} fontWeight="bold">고객 정보</Typography>
+          <Typography fontSize={"20px"} fontWeight="bold">
+            고객 정보
+          </Typography>
         </GrayBox>
         <GrayBox
           flexDirection={"column"}
@@ -161,7 +172,7 @@ export default function Registration() {
             <Select
               value={selectValue}
               onChange={handleChange}
-              selectData={selectTestData}
+              selectData={selectListData}
               sx={{ width: "80%" }}
             />
           </Box>
@@ -219,7 +230,6 @@ export default function Registration() {
           ))}
         </GrayBox>
       </Stack>
-
     </>
   );
 }
