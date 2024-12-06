@@ -8,11 +8,12 @@ import { usePopupStore } from "../../../stores/popupStore";
 
 export default function NetworkSetupPop() {
   const { data, isSuccess } = useSiteList();
-  console.log(data?.data.contents);
+
   const [listData, setListData] = useState<any>([]);
 
   useEffect(() => {
     setListData(data?.data.contents);
+    console.log("useEffect");
   }, [data, isSuccess]);
 
   const { selectListData, selectValue, handleChange } = useSelect(
@@ -21,20 +22,13 @@ export default function NetworkSetupPop() {
     "sptNm"
   );
 
+  console.log("선택한 값:", selectValue);
+
   const onClick = () => {
     const { closeAllPopups } = usePopupStore.getState();
 
     // 팝업 닫기
     closeAllPopups();
-
-    // 원래 창으로 메시지 전송
-    if (window.opener) {
-      window.opener.location.href = "/"; // 부모 창을 Home으로 이동
-    } else {
-      console.warn(
-        "원래 창이 없습니다. 팝업이 아닌 창에서 호출되었을 수 있습니다."
-      );
-    }
     // 부모 창 닫기
     window.opener.close();
     // 현재 창 닫기

@@ -9,7 +9,7 @@ export const loginSchema = yup.object().shape({
       "유효하지 않은 문자가 포함되어 있습니다."
     )
     .required("아이디를 입력하세요.")
-    .trim(), // 공백 제거
+    .trim(),
   pwdNo: yup
     .string()
     .matches(
@@ -17,5 +17,5 @@ export const loginSchema = yup.object().shape({
       "유효하지 않은 문자가 포함되어 있습니다."
     )
     .required("비밀번호를 입력하세요.")
-    .trim(), // 공백 제거
+    .trim(),
 });
