@@ -1,11 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import instance from "../utils/axiosInstance";
 import { useAuthStore } from "../stores/authStore";
-import { TelDataType } from "../types/TelList";
+import { TelApiResponseType } from "../types/TelList";
 
 const API = {
-  getTelList: async () => {
-    return await instance.get<TelDataType>("/api/tel/list/bylogin");
+  getTelList: async (sptNo: string) => {
+    return await instance.get<TelApiResponseType>(
+      `/api/tel/list/bylogin?sptNo=${sptNo}`
+    );
   },
 };
 
@@ -13,7 +15,7 @@ const KEY = {
   getTelList: () => ["/api/tel/list/bylogin"],
 };
 
-export const useTelList = () => {
+export const useTelList = (sptNo: string) => {
   const { accessToken } = useAuthStore(["accessToken"]);
   return useQuery({
     queryKey: KEY.getTelList(),
@@ -21,7 +23,7 @@ export const useTelList = () => {
       if (!accessToken) {
         throw new Error("Access token is required");
       }
-      return await API.getTelList();
+      return await API.getTelList(sptNo);
     },
     enabled: !!accessToken,
   });

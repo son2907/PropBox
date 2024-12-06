@@ -2,27 +2,22 @@ import { Box, Stack, Typography } from "@mui/material";
 import { Select } from "../../../components/Select";
 import useSelect from "../../../hooks/useSelect";
 import { BasicButton } from "../../../components/Button";
-import { useSiteList } from "../../../api/siteList";
-import { useEffect, useState } from "react";
 import { usePopupStore } from "../../../stores/popupStore";
+import { useTelList } from "../../../api/telList";
 
 export default function NetworkSetupPop() {
-  const { data, isSuccess } = useSiteList();
+  const sptNo =
+    JSON.parse(localStorage.getItem("selectedSite") || "[]")[0]?.sptNo || "";
 
-  const [listData, setListData] = useState<any>([]);
+  const { data } = useTelList(sptNo);
 
-  useEffect(() => {
-    setListData(data?.data.contents);
-    console.log("useEffect");
-  }, [data, isSuccess]);
+  console.log(data);
 
   const { selectListData, selectValue, handleChange } = useSelect(
-    listData,
-    "sptNo",
-    "sptNm"
+    data?.data.contents,
+    "telId",
+    "tleno"
   );
-
-  console.log("선택한 값:", selectValue);
 
   const onClick = () => {
     const { closeAllPopups } = usePopupStore.getState();
@@ -34,6 +29,14 @@ export default function NetworkSetupPop() {
     // 현재 창 닫기
     window.close();
   };
+
+  if (data?.data.result === "FAIL") {
+    if (
+      window.confirm(`${data.data.message}\n\n확인을 누르면 창이 닫힙니다.`)
+    ) {
+      window.close();
+    }
+  }
 
   return (
     <Stack

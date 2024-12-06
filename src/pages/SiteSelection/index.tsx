@@ -1,6 +1,6 @@
 import { Stack, Typography } from "@mui/material";
 import SearchInput from "../../components/Input/SearchInput";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SiteBtn from "./Btn/SiteBtn";
 import { useAuthStore } from "../../stores/authStore";
 import { useSiteList } from "../../api/siteList";
@@ -8,10 +8,12 @@ import BlackButton from "../../components/Button/BlackButton";
 import { useSingleRowSelection } from "../../hooks/useSingleRowSelection";
 import { openPopup } from "../../utils/openPopup";
 import PathConstants from "../../routers/path";
+import { filterDataByValues } from "../../utils/filterDataByValues";
 
 export default function SiteSelection() {
   const searchRef = useRef<HTMLInputElement | null>(null);
   const [searchText, setSearchText] = useState<string>("");
+  const [errText, setErrText] = useState<string>("");
 
   const { userNm, mbtlNo } = useAuthStore(["userNm", "mbtlNo"]);
   const { data } = useSiteList();
@@ -19,11 +21,38 @@ export default function SiteSelection() {
   const { selectedRow: selectedSite, toggleRowSelection: setSelectSite } =
     useSingleRowSelection();
 
-  const hasPopupOpenedRef = useRef(false);
-
   const filteredData = data?.data.contents.filter((item) =>
     item.sptNm.includes(searchText)
   );
+
+  const onClickSiteBtn = (item: any) => {
+    setSelectSite(item.sptNo); // 선택 상태 업데이트
+  };
+
+  const onClickSelectBtn = () => {
+    if (selectedSite.size === 0) return setErrText("현장을 선택해 주십시오.");
+
+    openPopup({
+      url: PathConstants.NetworkSetup,
+      windowName: "통신환경설정",
+      windowFeatures: "width=300,height=250,scrollbars=no,resizable=no",
+    });
+  };
+  useEffect(() => {
+    if (selectedSite.size === 0) setErrText("현장을 선택해 주십시오.");
+    else setErrText("");
+    // 선택된 데이터를 로컬 스토리지에 저장
+    localStorage.setItem(
+      "selectedSite",
+      JSON.stringify(
+        filterDataByValues({
+          data: data?.data.contents,
+          key: "sptNo",
+          values: Array.from(selectedSite),
+        })
+      )
+    );
+  }, [selectedSite]);
 
   return (
     <Stack
@@ -36,6 +65,7 @@ export default function SiteSelection() {
       <Typography paddingBottom={1}>
         {userNm} ( {mbtlNo} )
       </Typography>
+      <Typography color="error.main">{errText}</Typography>
       <SearchInput
         ref={searchRef}
         placeholder="현장 검색"
@@ -54,25 +84,14 @@ export default function SiteSelection() {
             key={index}
             selected={selectedSite.has(item.sptNo)} // 선택 상태 전달
             onClick={() => {
-              if (!hasPopupOpenedRef.current) {
-                // 팝업이 열리지 않았다면 팝업 열기
-                hasPopupOpenedRef.current = true;
-                openPopup({
-                  url: PathConstants.NetworkSetup,
-                  windowName: "통신환경설정",
-                  windowFeatures:
-                    "width=300,height=250,scrollbars=no,resizable=no",
-                });
-              }
-              setSelectSite(item.sptNo); // 선택 상태 업데이트
-              hasPopupOpenedRef.current = true;
+              onClickSiteBtn(item);
             }}
           >
             {item.sptNm}
           </SiteBtn>
         ))}
       </Stack>
-      <BlackButton>선택</BlackButton>
+      <BlackButton onClick={onClickSelectBtn}>선택</BlackButton>
     </Stack>
   );
 }

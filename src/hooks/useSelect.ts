@@ -3,7 +3,7 @@ import { SelectChangeEvent } from "@mui/material";
 import { Data, transformSelectData } from "../utils/transformSelectData";
 
 export default function useSelect<T extends Data>(
-  data: T[],
+  data: T[] | undefined,
   valueKey: string,
   dataKey: string,
   defaultValue?: any

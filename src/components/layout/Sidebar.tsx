@@ -43,7 +43,6 @@ const Sidebar = memo(function Sidebar() {
 
   useEffect(() => {
     if (isSuccess && accessToken) {
-      console.log("데이터좀요:", data.data);
       const result = transformMenuData(data?.data.contents, IconList);
       setAllMenuData(result);
     }

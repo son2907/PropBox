@@ -1,3 +1,5 @@
+import { ApiResponseType } from "./apiResponse";
+
 export type TelDataType = TelData[];
 
 export type TelData = {
@@ -17,3 +19,7 @@ export type TelData = {
   userId: string; // 사용자ID
   constntUserNo: string; // 구성원 번호
 };
+
+export interface TelApiResponseType extends ApiResponseType {
+  contents: TelDataType;
+}

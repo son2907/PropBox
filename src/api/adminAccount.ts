@@ -17,7 +17,6 @@ export const useUserLogin = () => {
   return useMutation({
     mutationFn: API.login,
     onSuccess: (res: AxiosResponse<LoginResponseModel>) => {
-      console.log("로그인 성공하고 나서");
       const { contents, accessToken, refreshToken } = res.data;
       const {
         uuid,
