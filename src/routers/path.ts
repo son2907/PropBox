@@ -54,6 +54,9 @@ const PathConstants = {
     PhoneAdd: "/system/phone/phoneAdd",
     DeviceType: "/system/phone/deviceType",
   },
+  Err: {
+    Err404: "/err-not-page-404",
+  },
 };
 
 export default PathConstants;

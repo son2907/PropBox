@@ -49,6 +49,7 @@ import AuthCode from "../pages/SysManagement/AuthCode";
 import ReceivingNumber from "../pages/SysManagement/ReceivingNumber";
 import SiteSelection from "../pages/SiteSelection";
 import NetworkSetupPop from "../pages/NetworkSetup/popup";
+import Err404 from "../pages/ERROR/Err404";
 
 export const routes: RouteObject[] = [
   {
@@ -170,6 +171,15 @@ export const routes: RouteObject[] = [
           {
             path: PathConstants.System.Phone,
             element: <PhoneManagement />,
+          },
+        ],
+      },
+      {
+        children: [
+          {
+            // 모든 페이지의 404 경로 처리
+            path: "*", // 경로가 일치하지 않는 모든 요청을 처리
+            element: <Err404 />, // 404 페이지
           },
         ],
       },
