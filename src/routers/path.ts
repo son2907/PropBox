@@ -52,6 +52,18 @@ const PathConstants = {
     PhoneAdd : "/system/phone/phoneAdd",
     DeviceType : "/system/phone/deviceType",
   },
+  Notice : {
+    NoticeList : "/notice/noticeList",
+    NoticeAdd : "/notice/noticeAdd",
+    NoticeDetail : "/notice/noticeDetail",
+    NoticeModify : "/notice/noticeModify",
+  },
+  FAQ : {
+    FAQList : "/faq/faqList",
+    FAQAdd : "/faq/faqAdd",
+    FAQDetail : "/faq/faqDetail",
+    FAQModify : "/faq/faqModify",
+  },
 };
 
 export default PathConstants;
