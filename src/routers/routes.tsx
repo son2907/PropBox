@@ -4,7 +4,6 @@ import PathConstants from "./path";
 import Main from "../pages/main";
 import Test from "../pages/test";
 import Login from "../pages/Login";
-import NetworkSetup from "../pages/SysManagement/Phone";
 import CallConsultation from "../pages/CalManagement/Consultation";
 import SearchCustomer from "../pages/CalManagement/Consultation/popup/SearchCustomer";
 import ConsultationStatus from "../pages/CalManagement/Consultation/popup/ConsultationStatus";
@@ -55,6 +54,8 @@ import FAQModify from "../pages/FAQ/FAQModify";
 import LocalmemberManagement from "../pages/SysManagement/Localmember";
 import AuthCode from "../pages/SysManagement/AuthCode";
 import ReceivingNumber from "../pages/SysManagement/ReceivingNumber";
+import PhoneSetting from "../pages/SysManagement/Phone";
+import NetworkSetup from "../pages/NetworkSetup";
 
 export const routes: RouteObject[] = [
   {
@@ -175,7 +176,7 @@ export const routes: RouteObject[] = [
           },
           {
             path: PathConstants.System.Phone,
-            element: <div>전화기관리</div>,
+            element: <PhoneSetting />,
           },
         ],
       },

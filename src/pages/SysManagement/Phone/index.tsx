@@ -25,7 +25,7 @@ import BasicInput from "../../../components/Input/BasicInput";
 import useToggleButtton from "../../../hooks/useToggleButton";
 import TextArea from "../../../components/TextArea/TextArea";
 
-export default function NetworkSetup() {
+export default function PhoneSetting() {
 
   //useMultiRowSelection 분리해서 각 테이블에 독립적으로 selectedRows와 toggleRowsSelection을 전달하여 동작이 분리되도록 설정.
   // 사용자 리스트 - 선택 상태 관리
