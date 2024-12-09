@@ -24,7 +24,12 @@ import { useRadioGroup } from "../../../../hooks/useRadioGroup";
 
 export default function SMSSending() {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { selectValue, handleChange } = useSelect("1");
+  const { selectListData, selectValue, handleChange } = useSelect(
+    selectTestData,
+    "value",
+    "data",
+    "1"
+  );
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
@@ -84,7 +89,7 @@ export default function SMSSending() {
               </Typography>
               <Select
                 value={selectValue}
-                selectData={selectTestData}
+                selectData={selectListData}
                 onChange={handleChange}
                 sx={{ width: "250px" }}
               />

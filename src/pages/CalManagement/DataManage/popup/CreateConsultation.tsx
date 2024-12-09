@@ -28,8 +28,11 @@ interface Data {
   [key: string]: any;
 }
 export default function CreateConsultation() {
-  const { selectValue: s_0, handleChange: o_0 } = useSelect();
-
+  const {
+    selectListData: sd_0,
+    selectValue: s_0,
+    handleChange: o_0,
+  } = useSelect(selectTestData, "value", "data");
   const { selectedValues, handleSelectChange } = useMultiSelect<number>();
   const [data, setData] = useState<Data[]>(tableTestData);
 
@@ -53,7 +56,7 @@ export default function CreateConsultation() {
       <GrayBox gap={1}>
         <Typography>상담주제</Typography>
         <Select
-          selectData={selectTestData}
+          selectData={sd_0}
           value={s_0}
           onChange={o_0}
           placeholder="1차 아웃바운드"

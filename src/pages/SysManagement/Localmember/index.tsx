@@ -20,13 +20,16 @@ import TableSelect from "../../../components/Select/TableSelect";
 import { RiDeleteBinLine } from "react-icons/ri";
 import CheckboxTable from "../../../components/Table/CheckboxTable";
 import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
-import { BiChevronLeft } from "react-icons/bi"
+import { BiChevronLeft } from "react-icons/bi";
 import Calendar from "../../../components/Calendar/Calendar";
 import SelectInput from "@mui/material/Select/SelectInput";
 
 export default function LocalmemberManagement() {
-  const { selectValue, handleChange } = useSelect();
-
+  const { selectListData, selectValue, handleChange } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
   const [selectedAge, setSelectedAge] = useState<number | null>(null);
 
   //useMultiRowSelection 분리해서 각 테이블에 독립적으로 selectedRows와 toggleRowsSelection을 전달하여 동작이 분리되도록 설정.
@@ -67,7 +70,11 @@ export default function LocalmemberManagement() {
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(new Date());
 
-  const { selectValue: s_1, handleChange: o_1 } = useSelect();
+  const { selectValue: s_1, handleChange: o_1 } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
 
   return (
     <>
@@ -80,7 +87,7 @@ export default function LocalmemberManagement() {
         <Stack width={"100%"} spacing={1} height={"100%"}>
           <Stack direction={"row"} height={"50%"}>
             {/* 사용자 정보 리스트 */}
-            <Stack bgcolor={"white"} marginLeft={1} width={"30%"} >
+            <Stack bgcolor={"white"} marginLeft={1} width={"30%"}>
               <TableBox>
                 <TableBox.Inner>
                   <BasicTable data={tableTestData}>
@@ -104,7 +111,7 @@ export default function LocalmemberManagement() {
                 </TableBox.Inner>
               </TableBox>
             </Stack>
-            <Stack bgcolor={"white"} marginLeft={1} width={"70%"} >
+            <Stack bgcolor={"white"} marginLeft={1} width={"70%"}>
               <TableBox>
                 <TableBox.Inner>
                   <BasicTable data={tableTestData}>
@@ -138,7 +145,8 @@ export default function LocalmemberManagement() {
             bgcolor={"white"}
             direction="row"
             height={"45%"} // 화면 크기에 맞추기
-            overflow="hidden">
+            overflow="hidden"
+          >
             {/* 사용자 허가 솔루션 테이블 */}
             <Stack
               width={"70%"}
@@ -170,12 +178,14 @@ export default function LocalmemberManagement() {
                             <CheckboxTable.CheckboxTd item={item} />
                             <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
                             <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
-                            <CheckboxTable.Td><Select
-                              sx={{ width: "200px" }}
-                              selectData={selectTestData}
-                              value={s_1}
-                              onChange={o_1}
-                            /></CheckboxTable.Td>
+                            <CheckboxTable.Td>
+                              <Select
+                                sx={{ width: "200px" }}
+                                selectData={selectTestData}
+                                value={s_1}
+                                onChange={o_1}
+                              />
+                            </CheckboxTable.Td>
                           </CheckboxTable.Tr>
                         ))}
                       </CheckboxTable.Tbody>
@@ -187,11 +197,28 @@ export default function LocalmemberManagement() {
                 <BasicButton sx={{ marginLeft: "auto" }}>새로고침</BasicButton>
               </GrayBox>
             </Stack>
-            <Stack width={"3%"} bgcolor={"white"} justifyContent={"space-between"} justifyItems={"center"}>
-              <BasicButton sx={{ backgroundColor: "primary.A100", height: "200px", width: "5px" }}>
+            <Stack
+              width={"3%"}
+              bgcolor={"white"}
+              justifyContent={"space-between"}
+              justifyItems={"center"}
+            >
+              <BasicButton
+                sx={{
+                  backgroundColor: "primary.A100",
+                  height: "200px",
+                  width: "5px",
+                }}
+              >
                 <BiChevronLeft size={"24px"} />
               </BasicButton>
-              <BasicButton sx={{ backgroundColor: "primary.A100", height: "200px", width: "5px" }}>
+              <BasicButton
+                sx={{
+                  backgroundColor: "primary.A100",
+                  height: "200px",
+                  width: "5px",
+                }}
+              >
                 <BiChevronLeft size={"24px"} />
               </BasicButton>
             </Stack>
@@ -237,11 +264,9 @@ export default function LocalmemberManagement() {
                 <BasicButton sx={{ marginLeft: "auto" }}>새로고침</BasicButton>
               </GrayBox>
             </Stack>
-
           </Stack>
         </Stack>
       </Stack>
-
     </>
   );
 }

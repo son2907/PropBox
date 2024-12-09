@@ -6,7 +6,7 @@ import { selectType } from "../../types/Select";
 import { MdOutlineUnfoldMore } from "react-icons/md";
 
 interface SelectProps {
-  selectData: { value: number; data: string }[];
+  selectData: { value: number | string; data: string }[];
   defaultValue?: selectType;
   value: selectType;
   onChange: (e: SelectChangeEvent) => void;

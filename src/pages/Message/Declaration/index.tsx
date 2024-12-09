@@ -19,7 +19,11 @@ import PathConstants from "../../../routers/path";
 import { openPopup } from "../../../utils/openPopup";
 
 export default function DeclarationMessage() {
-  const { selectValue: s_0, handleChange: o_0 } = useSelect();
+  const {
+    selectListData: sd_0,
+    selectValue: s_0,
+    handleChange: o_0,
+  } = useSelect(selectTestData, "value", "data");
   const { selectedRows: ts_1, toggleRowsSelection: tt_1 } =
     useMultiRowSelection();
   const { selectedRows: ts_2, toggleRowsSelection: tt_2 } =
@@ -41,7 +45,7 @@ export default function DeclarationMessage() {
     <Stack width={"100%"} height={"100%"}>
       <GrayBox gap={1}>
         <Select
-          selectData={selectTestData}
+          selectData={sd_0}
           value={s_0}
           onChange={o_0}
           sx={{ width: "300px" }}

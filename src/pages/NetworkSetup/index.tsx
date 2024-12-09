@@ -21,7 +21,6 @@ import PathConstants from "../../routers/path";
 import { openPopup } from "../../utils/openPopup";
 
 export default function NetworkSetup() {
-
   //useMultiRowSelection 분리해서 각 테이블에 독립적으로 selectedRows와 toggleRowsSelection을 전달하여 동작이 분리되도록 설정.
   // 사용자 리스트 - 선택 상태 관리
   const {
@@ -53,12 +52,19 @@ export default function NetworkSetup() {
     toggleRowsSelection: toggleLocalUnuseRowsSelection,
   } = useMultiRowSelection();
 
-  const { selectValue, handleChange } = useSelect()
-
+  const { selectListData, selectValue, handleChange } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
   const [date, setDate] = useState<Date>(new Date());
 
   //   수신동의 고객 select
-  const { selectValue: s_1, handleChange: o_1 } = useSelect();
+  const { selectValue: s_1, handleChange: o_1 } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
 
   //전화기 추가 팝업
   const phoneAddPopup = {
@@ -80,7 +86,9 @@ export default function NetworkSetup() {
                 windowFeatures: phoneAddPopup.windowFeatures,
               });
             }}
-          >전화기추가</BasicButton>
+          >
+            전화기추가
+          </BasicButton>
         </GrayBox>
         <Stack height={"100%"} direction={"row"}>
           {/* 사용자 및 회사 정보 */}
@@ -175,11 +183,19 @@ export default function NetworkSetup() {
             </Stack>
           </Stack>
           {/* 전화기 리스트 */}
-          <Stack height={"96%"} width={"100%"} direction={"row"} gap={1} sx={{ minWidth: '800px', overflowX: 'auto' }}>
+          <Stack
+            height={"96%"}
+            width={"100%"}
+            direction={"row"}
+            gap={1}
+            sx={{ minWidth: "800px", overflowX: "auto" }}
+          >
             <Stack width={"30%"} justifyContent={"start"} overflow={"hidden"}>
               <GrayBox>
                 <Stack gap={1} direction={"row"}>
-                  <Box width={"200px"}><Calendar selectedDate={date} setSelectedDate={setDate} /></Box>
+                  <Box width={"200px"}>
+                    <Calendar selectedDate={date} setSelectedDate={setDate} />
+                  </Box>
                   <BasicButton>
                     <MdArrowBackIos />
                     이전
@@ -207,9 +223,9 @@ export default function NetworkSetup() {
                           <CheckboxTable.CheckboxTh />
                           <CheckboxTable.Th>구분</CheckboxTable.Th>
                           <CheckboxTable.Th>전화번호</CheckboxTable.Th>
-                          <CheckboxTable.Th >시작일</CheckboxTable.Th>
-                          <CheckboxTable.Th >종료일</CheckboxTable.Th>
-                          <CheckboxTable.Th >삭제</CheckboxTable.Th>
+                          <CheckboxTable.Th>시작일</CheckboxTable.Th>
+                          <CheckboxTable.Th>종료일</CheckboxTable.Th>
+                          <CheckboxTable.Th>삭제</CheckboxTable.Th>
                         </CheckboxTable.Tr>
                       </CheckboxTable.Thead>
 
@@ -226,7 +242,6 @@ export default function NetworkSetup() {
                                 <RiDeleteBinLine />
                               </IconButton>
                             </CheckboxTable.Td>
-
                           </CheckboxTable.Tr>
                         ))}
                       </CheckboxTable.Tbody>
@@ -236,15 +251,37 @@ export default function NetworkSetup() {
               </Box>
               <SearchResult total={100} />
             </Stack>
-            <Stack width={"3%"} bgcolor={"white"} justifyContent={"space-between"} justifyItems={"center"}>
-              <BasicButton sx={{ backgroundColor: "primary.A100", height: "200px", width: "5px" }}>
+            <Stack
+              width={"3%"}
+              bgcolor={"white"}
+              justifyContent={"space-between"}
+              justifyItems={"center"}
+            >
+              <BasicButton
+                sx={{
+                  backgroundColor: "primary.A100",
+                  height: "200px",
+                  width: "5px",
+                }}
+              >
                 <BiChevronLeft size={"24px"} />
               </BasicButton>
-              <BasicButton sx={{ backgroundColor: "primary.A100", height: "200px", width: "5px" }}>
+              <BasicButton
+                sx={{
+                  backgroundColor: "primary.A100",
+                  height: "200px",
+                  width: "5px",
+                }}
+              >
                 <BiChevronLeft size={"24px"} />
               </BasicButton>
             </Stack>
-            <Stack width={"30%"} justifyContent={"start"} overflow={"hidden"} marginLeft={1}>
+            <Stack
+              width={"30%"}
+              justifyContent={"start"}
+              overflow={"hidden"}
+              marginLeft={1}
+            >
               <GrayBox>
                 <Stack gap={1} direction={"row"}>
                   <Select
@@ -269,8 +306,8 @@ export default function NetworkSetup() {
                           <CheckboxTable.CheckboxTh />
                           <CheckboxTable.Th>구분</CheckboxTable.Th>
                           <CheckboxTable.Th>전화번호</CheckboxTable.Th>
-                          <CheckboxTable.Th >할당여부</CheckboxTable.Th>
-                          <CheckboxTable.Th >할당된현장명</CheckboxTable.Th>
+                          <CheckboxTable.Th>할당여부</CheckboxTable.Th>
+                          <CheckboxTable.Th>할당된현장명</CheckboxTable.Th>
                         </CheckboxTable.Tr>
                       </CheckboxTable.Thead>
 
@@ -291,10 +328,12 @@ export default function NetworkSetup() {
               </Box>
               <SearchResult total={100} />
             </Stack>
-            <Stack width={"30%"} overflow={"hidden"} height={"100%"} >
+            <Stack width={"30%"} overflow={"hidden"} height={"100%"}>
               <GrayBox>
                 <Stack gap={1} direction={"row"}>
-                  <Box width={"200px"}><Calendar selectedDate={date} setSelectedDate={setDate} /></Box>
+                  <Box width={"200px"}>
+                    <Calendar selectedDate={date} setSelectedDate={setDate} />
+                  </Box>
                   <BasicButton>
                     <MdArrowBackIos />
                     이전
@@ -344,15 +383,37 @@ export default function NetworkSetup() {
                 </TableBox>
               </Box>
             </Stack>
-            <Stack width={"3%"} bgcolor={"white"} justifyContent={"space-between"} justifyItems={"center"}>
-              <BasicButton sx={{ backgroundColor: "primary.A100", height: "200px", width: "5px" }}>
+            <Stack
+              width={"3%"}
+              bgcolor={"white"}
+              justifyContent={"space-between"}
+              justifyItems={"center"}
+            >
+              <BasicButton
+                sx={{
+                  backgroundColor: "primary.A100",
+                  height: "200px",
+                  width: "5px",
+                }}
+              >
                 <BiChevronLeft size={"24px"} />
               </BasicButton>
-              <BasicButton sx={{ backgroundColor: "primary.A100", height: "200px", width: "5px" }}>
+              <BasicButton
+                sx={{
+                  backgroundColor: "primary.A100",
+                  height: "200px",
+                  width: "5px",
+                }}
+              >
                 <BiChevronLeft size={"24px"} />
               </BasicButton>
             </Stack>
-            <Stack width={"30%"} overflow={"hidden"} height={"100%"} marginLeft={1}>
+            <Stack
+              width={"30%"}
+              overflow={"hidden"}
+              height={"100%"}
+              marginLeft={1}
+            >
               <Stack gap={1} direction={"row"}>
                 <Select
                   sx={{ width: "200px" }}

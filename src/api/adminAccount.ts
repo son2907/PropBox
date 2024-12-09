@@ -47,9 +47,5 @@ export const useUserLogin = () => {
         refreshToken,
       });
     },
-    // onError: (error) => {
-    //   // 로그인 실패 처리
-    //   console.error("Login failed", error);
-    // },
   });
 };

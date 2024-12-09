@@ -1,24 +1,33 @@
-import { ReactNode, useState } from "react";
-import { BasicButton, IconButton } from "../../../components/Button";
+import { ReactNode } from "react";
+import { BasicButton } from "../../../components/Button";
 import { LiaMapMarkerSolid } from "react-icons/lia";
 import { Typography } from "@mui/material";
 
-export default function SiteBtn({ children }: { children: ReactNode }) {
-  const [click, setClick] = useState(false);
+interface BtnProps {
+  children: ReactNode;
+  selected: boolean; // 선택 상태
+  onClick: () => void;
+}
 
+export default function SiteBtn({
+  children,
+  selected,
+  onClick,
+  ...rest
+}: BtnProps) {
   return (
     <BasicButton
-      onClick={() => {
-        setClick(!click);
-      }}
       sx={{
-        borderColor: click ? "#9492F4" : "primary",
+        borderColor: selected ? "#9492F4" : "primary",
+        width: "100%",
+        gap: 1,
+        padding: 3,
       }}
+      {...rest}
+      onClick={onClick}
     >
-      <IconButton sx={{ color: "#22005E" }}>
-        <LiaMapMarkerSolid />
-      </IconButton>
-      <Typography color="#22005E"> {children} </Typography>
+      <LiaMapMarkerSolid color="#22005E" size={20} />
+      <Typography color="#22005E">{children}</Typography>
     </BasicButton>
   );
 }

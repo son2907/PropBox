@@ -15,6 +15,7 @@ export default function UserInfo() {
 
   const onLogout = () => {
     clear.clear();
+    localStorage.clear();
     navigate("/login");
   };
 

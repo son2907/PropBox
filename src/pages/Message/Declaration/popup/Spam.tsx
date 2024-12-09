@@ -10,7 +10,11 @@ import { useMultiRowSelection } from "../../../../hooks/useMultiRowSelection";
 import CheckboxTable from "../../../../components/Table/CheckboxTable";
 
 export default function Spam() {
-  const { selectValue: s_0, handleChange: o_0 } = useSelect();
+  const {
+    selectListData: sd_0,
+    selectValue: s_0,
+    handleChange: o_0,
+  } = useSelect(selectTestData, "value", "data");
   const { selectedRows: ts_1, toggleRowsSelection: tt_1 } =
     useMultiRowSelection();
   const { selectedRows: ts_2, toggleRowsSelection: tt_2 } =
@@ -23,7 +27,7 @@ export default function Spam() {
         <BasicButton sx={{ marginRight: "auto" }}>컬럼보기</BasicButton>
 
         <Select
-          selectData={selectTestData}
+          selectData={sd_0}
           value={s_0}
           onChange={o_0}
           sx={{ width: "200px" }}

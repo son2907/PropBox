@@ -26,8 +26,11 @@ interface Data {
   [key: string]: any;
 }
 export default function GroupManagement() {
-  const { selectValue: s_0, handleChange: o_0 } = useSelect();
-
+  const { selectListData, selectValue, handleChange } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
   const { selectedValues, handleSelectChange } = useMultiSelect<number>();
   const [data, setData] = useState<Data[]>(tableTestData);
 
@@ -41,7 +44,7 @@ export default function GroupManagement() {
     windowName: "상담 주제 등록",
   };
 
-  const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함 
+  const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함
 
   return (
     <Stack width={"100%"} height={"100%"} bgcolor={"white"}>
@@ -88,9 +91,7 @@ export default function GroupManagement() {
       </TableBox>
       {/* 고정제목 */}
       <GrayBox justifyContent={"space-between"}>
-        <Typography fontWeight="bold">
-          그룹별 고정제목 관리
-        </Typography>
+        <Typography fontWeight="bold">그룹별 고정제목 관리</Typography>
         <Stack direction={"row"} gap={1}>
           <BasicButton>새로고침</BasicButton>
           <BasicButton>저장</BasicButton>
@@ -102,37 +103,96 @@ export default function GroupManagement() {
           <GrayBox marginBottom={1}>
             <Typography>고정 제목</Typography>
           </GrayBox>
-          <Stack width={"50%"} alignItems="center" justifyContent={"center"} pr={2} height={"48px"} >
+          <Stack
+            width={"50%"}
+            alignItems="center"
+            justifyContent={"center"}
+            pr={2}
+            height={"48px"}
+          >
             <Typography>기본정보1</Typography>
           </Stack>
-          <Stack width={"50%"} alignItems="center" justifyContent={"center"} pr={2} height={"48px"} >
+          <Stack
+            width={"50%"}
+            alignItems="center"
+            justifyContent={"center"}
+            pr={2}
+            height={"48px"}
+          >
             <Typography>기본정보2</Typography>
           </Stack>
-          <Stack width={"50%"} alignItems="center" justifyContent={"center"} pr={2} height={"48px"} >
+          <Stack
+            width={"50%"}
+            alignItems="center"
+            justifyContent={"center"}
+            pr={2}
+            height={"48px"}
+          >
             <Typography>기본정보3</Typography>
           </Stack>
-          <Stack width={"50%"} alignItems="center" justifyContent={"center"} pr={2} height={"48px"} >
+          <Stack
+            width={"50%"}
+            alignItems="center"
+            justifyContent={"center"}
+            pr={2}
+            height={"48px"}
+          >
             <Typography>기본정보4</Typography>
           </Stack>
-          <Stack width={"50%"} alignItems="center" justifyContent={"center"} pr={2} height={"48px"} >
+          <Stack
+            width={"50%"}
+            alignItems="center"
+            justifyContent={"center"}
+            pr={2}
+            height={"48px"}
+          >
             <Typography>기본정보5</Typography>
           </Stack>
-          <Stack width={"50%"} alignItems="center" justifyContent={"center"} pr={2} height={"48px"} >
+          <Stack
+            width={"50%"}
+            alignItems="center"
+            justifyContent={"center"}
+            pr={2}
+            height={"48px"}
+          >
             <Typography>기본정보6</Typography>
           </Stack>
-          <Stack width={"50%"} alignItems="center" justifyContent={"center"} pr={2} height={"48px"} >
+          <Stack
+            width={"50%"}
+            alignItems="center"
+            justifyContent={"center"}
+            pr={2}
+            height={"48px"}
+          >
             <Typography>기본정보7</Typography>
           </Stack>
-          <Stack width={"50%"} alignItems="center" justifyContent={"center"} pr={2} height={"48px"} >
+          <Stack
+            width={"50%"}
+            alignItems="center"
+            justifyContent={"center"}
+            pr={2}
+            height={"48px"}
+          >
             <Typography>기본정보8</Typography>
           </Stack>
-          <Stack width={"50%"} alignItems="center" justifyContent={"center"} pr={2} height={"48px"} >
+          <Stack
+            width={"50%"}
+            alignItems="center"
+            justifyContent={"center"}
+            pr={2}
+            height={"48px"}
+          >
             <Typography>기본정보9</Typography>
           </Stack>
-          <Stack width={"50%"} alignItems="center" justifyContent={"center"} pr={2} height={"48px"} >
+          <Stack
+            width={"50%"}
+            alignItems="center"
+            justifyContent={"center"}
+            pr={2}
+            height={"48px"}
+          >
             <Typography>기본정보10</Typography>
           </Stack>
-
         </Stack>
         <Stack width={"100%"} alignItems="flex-start" gap={1}>
           {/* 상담항목 */}
@@ -181,7 +241,6 @@ export default function GroupManagement() {
           </Box>
         </Stack>
       </Stack>
-
     </Stack>
   );
 }

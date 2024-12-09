@@ -32,7 +32,11 @@ interface Data {
 }
 
 export default function MenuPermissionCopy() {
-  const { selectValue: s_0, handleChange: o_0 } = useSelect();
+  const {
+    selectListData: sd_0,
+    selectValue: s_0,
+    handleChange: o_0,
+  } = useSelect(selectTestData, "value", "data");
 
   const { selectedValues, handleSelectChange } = useMultiSelect<number>();
   const [data, setData] = useState<Data[]>(tableTestData);
@@ -47,7 +51,7 @@ export default function MenuPermissionCopy() {
     windowName: "구성원 메뉴 권한 등록 및 수정",
   };
 
-  const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함 
+  const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함
 
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(new Date());
@@ -56,7 +60,11 @@ export default function MenuPermissionCopy() {
     defaultValue: true,
   });
 
-  const { selectValue, handleChange } = useSelect();
+  const { selectListData, selectValue, handleChange } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
 
   //useMultiRowSelection 분리해서 각 테이블에 독립적으로 selectedRows와 toggleRowsSelection을 전달하여 동작이 분리되도록 설정.
   // 권한 메뉴 - 선택 상태 관리
@@ -65,31 +73,71 @@ export default function MenuPermissionCopy() {
     toggleRowsSelection: toggleAuthorizedRowsSelection,
   } = useMultiRowSelection();
 
-
   return (
-    <Stack width={"100%"} height={"100%"} bgcolor={"white"} justifyContent={"space-between"}>
+    <Stack
+      width={"100%"}
+      height={"100%"}
+      bgcolor={"white"}
+      justifyContent={"space-between"}
+    >
       {/* 구성원 정보 */}
       <Stack height={"92%"}>
         <Stack>
           <Stack bgcolor={"primary.A100"} direction={"row"} paddingLeft={1}>
-            <Stack width={"100%"} alignItems={"center"} borderRight={1} borderColor={"primary.100"} padding={1}>
+            <Stack
+              width={"100%"}
+              alignItems={"center"}
+              borderRight={1}
+              borderColor={"primary.100"}
+              padding={1}
+            >
               <Typography>구성원ID</Typography>
             </Stack>
-            <Stack width={"100%"} alignItems={"center"} borderRight={1} borderColor={"primary.100"} padding={1}>
+            <Stack
+              width={"100%"}
+              alignItems={"center"}
+              borderRight={1}
+              borderColor={"primary.100"}
+              padding={1}
+            >
               <Typography>구성원ID</Typography>
             </Stack>
-            <Stack width={"100%"} alignItems={"center"} borderRight={1} borderColor={"primary.100"} padding={1}>
+            <Stack
+              width={"100%"}
+              alignItems={"center"}
+              borderRight={1}
+              borderColor={"primary.100"}
+              padding={1}
+            >
               <Typography>구성원ID</Typography>
             </Stack>
           </Stack>
           <Stack bgcolor={"white"} direction={"row"} marginLeft={1}>
-            <Stack width={"100%"} alignItems={"center"} padding={1} borderRight={1} borderColor={"primary.100"}>
+            <Stack
+              width={"100%"}
+              alignItems={"center"}
+              padding={1}
+              borderRight={1}
+              borderColor={"primary.100"}
+            >
               <Typography>{"구성원"}</Typography>
             </Stack>
-            <Stack width={"100%"} alignItems={"center"} padding={1} borderRight={1} borderColor={"primary.100"}>
+            <Stack
+              width={"100%"}
+              alignItems={"center"}
+              padding={1}
+              borderRight={1}
+              borderColor={"primary.100"}
+            >
               <Typography>{"구성원"}</Typography>
             </Stack>
-            <Stack width={"100%"} alignItems={"center"} padding={1} borderRight={1} borderColor={"primary.100"}>
+            <Stack
+              width={"100%"}
+              alignItems={"center"}
+              padding={1}
+              borderRight={1}
+              borderColor={"primary.100"}
+            >
               <Typography>{"구성원"}</Typography>
             </Stack>
           </Stack>
@@ -101,7 +149,8 @@ export default function MenuPermissionCopy() {
           bgcolor={"white"}
           direction="row"
           height={"100%"} // 화면 크기에 맞추기
-          overflow="hidden">
+          overflow="hidden"
+        >
           {/* 권한 메뉴 테이블 */}
           <Stack
             width={"100%"}
@@ -149,7 +198,6 @@ export default function MenuPermissionCopy() {
             </TableBox>
           </Stack>
         </Stack>
-
       </Stack>
       <GrayBox gap={2} justifyContent={"end"}>
         <BasicButton>권한복사</BasicButton>

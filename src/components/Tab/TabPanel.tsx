@@ -21,6 +21,7 @@ export default function TabPanel(props: TabPanelProps) {
         display: value === index ? "flex" : "none",
         flexDirection: "column",
         overflow: "hidden",
+        gap: 1,
       }}
       {...other}
     >

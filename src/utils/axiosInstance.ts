@@ -1,11 +1,11 @@
 import axios, {
-  AxiosError,
   AxiosInstance,
+  AxiosError,
   InternalAxiosRequestConfig,
 } from "axios";
 import qs from "qs";
-import { useCallback, useEffect } from "react";
-import { useAuthStore } from "../stores/authStore";
+import { store } from "../stores/authStore";
+import PathConstants from "../routers/path";
 
 const instance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -16,62 +16,37 @@ const instance: AxiosInstance = axios.create({
   withCredentials: true,
 });
 
-// App.tsx 에서 반드시 호출해야 함
-export function useAxiosInterceptor() {
-  const { accessToken } = useAuthStore(["accessToken", "clear"]);
+// 요청 인터셉터 등록
+instance.interceptors.request.use(
+  (config: InternalAxiosRequestConfig) => {
+    const accessToken = store.getState().accessToken;
+    if (accessToken && config.headers) {
+      config.headers.accessToken = accessToken;
+    }
+    console.log("헤더:", config.headers?.accessToken);
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
-  // 요청 인터셉터
-  const requestInterceptor = useCallback(
-    (config: InternalAxiosRequestConfig) => {
-      if (accessToken && config.headers) {
-        config.headers.accessToken = accessToken;
-      }
-      console.log("헤더:", config.headers?.accessToken);
-      return config;
-    },
-    [accessToken]
-  );
+// 응답 에러 인터셉터 등록
+instance.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError) => {
+    console.log("에러 인터셉터 - 에러:", error);
+    if (error.response?.status === 401) {
+      store.getState().clear();
+      localStorage.clear();
+      alert("인증이 만료되었습니다. 로그인 페이지로 이동합니다.");
+      window.location.href = PathConstants.Login;
+    }
+    return Promise.reject(error);
+  }
+);
 
-  // 응답 에러 인터셉터
-  const responseErrorInterceptor = useCallback(
-    (error: AxiosError<any>) => {
-      console.log("에러 인터셉터 - 에러:", error);
-      return Promise.reject(error);
-    },
-    [accessToken]
-  );
-
-  // 인터셉터 등록
-  const register = useCallback(() => {
-    instance.interceptors.request.use(requestInterceptor, function (error) {
-      return Promise.reject(error);
-    });
-
-    instance.interceptors.response.use(function (response) {
-      return response;
-    }, responseErrorInterceptor);
-  }, [accessToken]);
-
-  useEffect(() => {
-    instance.interceptors.request.clear();
-    instance.interceptors.response.clear();
-    register();
-  }, [accessToken]);
-}
-
-export function paramsDotSerializer(params: Record<string, any>) {
-  return Object.keys(params)
-    .map((key) => {
-      if (typeof params[key] === "object") {
-        return Object.keys(params[key])
-          .map((subKey) => `${key}.${subKey}=${params[key][subKey]}`)
-          .join("&");
-      }
-      return `${key}=${params[key]}`;
-    })
-    .join("&");
-}
-
+// 파라미터 직렬화 함수
 export function paramsRepeatSerializer(params: Record<string, any>) {
   return qs.stringify(params, { arrayFormat: "repeat" });
 }

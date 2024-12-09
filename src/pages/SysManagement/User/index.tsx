@@ -20,10 +20,14 @@ import TableSelect from "../../../components/Select/TableSelect";
 import { RiDeleteBinLine } from "react-icons/ri";
 import CheckboxTable from "../../../components/Table/CheckboxTable";
 import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
-import { BiChevronLeft } from "react-icons/bi"
+import { BiChevronLeft } from "react-icons/bi";
 
 export default function Registration() {
-  const { selectValue, handleChange } = useSelect();
+  const { selectListData, selectValue, handleChange } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
 
   const [selectedAge, setSelectedAge] = useState<number | null>(null);
 
@@ -40,7 +44,7 @@ export default function Registration() {
     toggleRowsSelection: toggleUnauthorizedRowsSelection,
   } = useMultiRowSelection();
 
-  const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함 
+  const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함
 
   // usePagination에
   const { currentPage, onChangePage } = usePagination();
@@ -69,7 +73,9 @@ export default function Registration() {
                   windowFeatures: uploadUser.windowFeatures,
                 });
               }}
-            >사용자추가</BasicButton>
+            >
+              사용자추가
+            </BasicButton>
           </Stack>
         </GrayBox>
         <Stack width={"100%"} spacing={1} height={"100%"}>
@@ -116,7 +122,9 @@ export default function Registration() {
                                   windowFeatures: uploadUser.windowFeatures,
                                 });
                               }}
-                            >수정</BasicButton>
+                            >
+                              수정
+                            </BasicButton>
                           </BasicTable.Td>
                         </BasicTable.Tr>
                       );
@@ -132,7 +140,8 @@ export default function Registration() {
             bgcolor={"white"}
             direction="row"
             height={"45%"} // 화면 크기에 맞추기
-            overflow="hidden">
+            overflow="hidden"
+          >
             {/* 사용자 허가 솔루션 테이블 */}
             <Stack
               width={"70%"}
@@ -191,11 +200,28 @@ export default function Registration() {
                 <BasicButton sx={{ marginLeft: "auto" }}>새로고침</BasicButton>
               </GrayBox>
             </Stack>
-            <Stack width={"3%"} bgcolor={"white"} justifyContent={"space-between"} justifyItems={"center"}>
-              <BasicButton sx={{ backgroundColor: "primary.A100", height: "200px", width: "5px" }}>
+            <Stack
+              width={"3%"}
+              bgcolor={"white"}
+              justifyContent={"space-between"}
+              justifyItems={"center"}
+            >
+              <BasicButton
+                sx={{
+                  backgroundColor: "primary.A100",
+                  height: "200px",
+                  width: "5px",
+                }}
+              >
                 <BiChevronLeft size={"24px"} />
               </BasicButton>
-              <BasicButton sx={{ backgroundColor: "primary.A100", height: "200px", width: "5px" }}>
+              <BasicButton
+                sx={{
+                  backgroundColor: "primary.A100",
+                  height: "200px",
+                  width: "5px",
+                }}
+              >
                 <BiChevronLeft size={"24px"} />
               </BasicButton>
             </Stack>
@@ -206,7 +232,9 @@ export default function Registration() {
               style={{ display: "flex", flexDirection: "column" }}
             >
               <GrayBox style={{ flexShrink: 0, padding: "8px 16px" }}>
-                <Typography fontWeight={"bold"}>사용자 미허가 솔루션</Typography>
+                <Typography fontWeight={"bold"}>
+                  사용자 미허가 솔루션
+                </Typography>
               </GrayBox>
               <div style={{ flex: 1, overflow: "auto" }}>
                 <TableBox>
@@ -221,7 +249,7 @@ export default function Registration() {
                           <CheckboxTable.CheckboxTh />
                           <CheckboxTable.Th>솔루션ID</CheckboxTable.Th>
                           <CheckboxTable.Th>솔루션이름</CheckboxTable.Th>
-                          <CheckboxTable.Th >구분</CheckboxTable.Th>
+                          <CheckboxTable.Th>구분</CheckboxTable.Th>
                         </CheckboxTable.Tr>
                       </CheckboxTable.Thead>
 
@@ -243,11 +271,9 @@ export default function Registration() {
                 <BasicButton sx={{ marginLeft: "auto" }}>새로고침</BasicButton>
               </GrayBox>
             </Stack>
-
           </Stack>
         </Stack>
       </Stack>
-
     </>
   );
 }

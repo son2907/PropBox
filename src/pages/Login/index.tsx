@@ -17,31 +17,36 @@ import { useQueryClient } from "@tanstack/react-query";
 import api from "../../api";
 import { LoginRequestModel } from "../../types/adminAccount";
 import { useNavigate } from "react-router-dom";
-import PathConstants from "../../routers/path";
+import { openPopup } from "../../utils/openPopup";
+import { usePopupStore } from "../../stores/popupStore";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { loginSchema } from "../../utils/adminResolver";
+import { useMenuStore } from "../../stores/menuStore";
 
 export default function Login() {
   const [rememberId, setRembmber] = useState<boolean>(false);
   const [errMsg, setErrMsg] = useState<string>("");
+  const { popups } = usePopupStore();
 
   const {
     register,
     handleSubmit,
     setValue,
-    formState: { isValid, errors },
     getValues,
+    formState: { errors },
   } = useForm({
     mode: "onSubmit",
     defaultValues: {
       loginId: "",
       pwdNo: "",
     },
+    resolver: yupResolver(loginSchema),
   });
 
   const navigate = useNavigate();
-  const queryClient = useQueryClient(); // queryClient 생성
-  const { mutate: userLogin } = api.AdminAccount.useUserLogin(); // login 훅 불러옴
+  const queryClient = useQueryClient();
+  const { mutate: userLogin } = api.AdminAccount.useUserLogin();
 
-  // store에서 필요한 것들을 불러온다.
   const { clear, remember, setSaveLogin, loginId } = useAuthStore([
     "clear",
     "remember",
@@ -50,25 +55,30 @@ export default function Login() {
     "accessToken",
   ]);
 
+  const { clear: clearMenu } = useMenuStore();
+
   const onSubmit = (data: LoginRequestModel) => {
-    clear(); // 일단, 기존에 존재하는 store를 비운다.
-    console.log("onSubmit : ", data);
-    queryClient.resetQueries(); // 모든 쿼리를 리셋한다.
+    clear();
+    clearMenu();
+    localStorage.clear();
+    queryClient.resetQueries();
     if (rememberId) {
       setSaveLogin(getValues("loginId"), true);
     }
     userLogin(data, {
-      onSuccess: (data) => {
-        console.log("성공:", data);
-        navigate(PathConstants.Home);
+      onSuccess: () => {
+        openPopup({
+          url: "/siteSelection",
+          windowName: "현장 선택",
+          windowFeatures: "width=345,height=500,scrollbars=yes,resizable=no",
+        });
       },
-      onError: (e: unknown) => {
+      onError: () => {
         setErrMsg("사용자 정보가 잘못되었습니다.");
       },
     });
   };
 
-  // Enter 키가 눌리면 로그인
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       handleSubmit(onSubmit)();
@@ -81,6 +91,12 @@ export default function Login() {
       setRembmber(remember);
     }
   }, []);
+
+  useEffect(() => {
+    if (popups.length == 0) {
+      navigate("/");
+    }
+  }, [popups]);
 
   return (
     <form autoComplete="on" onSubmit={handleSubmit(onSubmit)}>
@@ -96,10 +112,14 @@ export default function Login() {
             {...register("loginId")}
             placeholder="아이디를 입력하세요"
             fullWidth
-            name="loginId" // name 속성 추가
-            autoComplete="username" // 자동완성 활성화
+            name="loginId"
+            autoComplete="username"
+            error={!!errors.loginId}
           />
         </CenteredBox>
+        {errors.loginId && (
+          <Typography color="error.main">{errors.loginId.message}</Typography>
+        )}
         <CenteredBox gap={1}>
           <Typography color="primary.dark">비밀번호</Typography>
           <PasswordInput
@@ -107,12 +127,15 @@ export default function Login() {
             placeholder="비밀번호를 입력하세요"
             fullWidth
             onKeyDown={handleKeyDown}
-            name="pwdNo" // name 속성 추가
-            autoComplete="current-password" // 자동완성 활성화
+            name="pwdNo"
+            autoComplete="current-password"
+            error={!!errors.pwdNo}
           />
         </CenteredBox>
+        {errors.loginId && (
+          <Typography color="error.main">{errors.loginId.message}</Typography>
+        )}
 
-        {/* api 완성 후 수정 */}
         <Typography marginTop={1} color="error.main">
           {errMsg}
         </Typography>

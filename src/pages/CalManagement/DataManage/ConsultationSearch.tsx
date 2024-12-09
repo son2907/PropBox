@@ -12,8 +12,11 @@ import { BasicButton } from "../../../components/Button";
 export default function ConsultationSearch() {
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(new Date());
-  const { selectValue: s_0, handleChange: o_0 } = useSelect();
-
+  const {
+    selectListData: sd_0,
+    selectValue: s_0,
+    handleChange: o_0,
+  } = useSelect(selectTestData, "value", "data");
   const { inputRefs: checkListRef, getInputValues } = useMultiInputValue();
 
   const checkList = [
@@ -58,7 +61,7 @@ export default function ConsultationSearch() {
       <CenteredBox gap={1}>
         <Typography>상담구분</Typography>
         <Select
-          selectData={selectTestData}
+          selectData={sd_0}
           value={s_0}
           onChange={o_0}
           placeholder="받기"

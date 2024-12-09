@@ -1,7 +1,6 @@
 import { RouteObject } from "react-router-dom";
 import DefaultLayout from "../layout";
 import PathConstants from "./path";
-import Main from "../pages/main";
 import Test from "../pages/test";
 import Login from "../pages/Login";
 import CallConsultation from "../pages/CalManagement/Consultation";
@@ -54,6 +53,10 @@ import FAQModify from "../pages/FAQ/FAQModify";
 import LocalmemberManagement from "../pages/SysManagement/Localmember";
 import AuthCode from "../pages/SysManagement/AuthCode";
 import ReceivingNumber from "../pages/SysManagement/ReceivingNumber";
+import SiteSelection from "../pages/SiteSelection";
+import NetworkSetupPop from "../pages/NetworkSetup/popup";
+import Err404 from "../pages/ERROR/Err404";
+import Launcher from "../pages/Launcher";
 import PhoneSetting from "../pages/SysManagement/Phone";
 import NetworkSetup from "../pages/NetworkSetup";
 
@@ -66,7 +69,7 @@ export const routes: RouteObject[] = [
     ),
     // 에러 엘리먼트 추가 필요
     children: [
-      { path: PathConstants.Home, element: <Main /> },
+      { path: PathConstants.Home, element: <Launcher /> },
       {
         children: [
           {
@@ -156,7 +159,7 @@ export const routes: RouteObject[] = [
           },
           {
             path: PathConstants.System.LocalMember,
-            element: <LocalmemberManagement/>,
+            element: <LocalmemberManagement />,
           },
           {
             path: PathConstants.System.Auth,
@@ -168,15 +171,24 @@ export const routes: RouteObject[] = [
           },
           {
             path: PathConstants.System.AuthCode,
-            element: <AuthCode/>,
+            element: <AuthCode />,
           },
           {
             path: PathConstants.System.ReceivingNumber,
-            element: <ReceivingNumber/>,
+            element: <ReceivingNumber />,
           },
           {
             path: PathConstants.System.Phone,
             element: <PhoneSetting />,
+          },
+        ],
+      },
+      {
+        children: [
+          {
+            // 모든 페이지의 404 경로 처리
+            path: "*", // 경로가 일치하지 않는 모든 요청을 처리
+            element: <Err404 />, // 404 페이지
           },
         ],
       },
@@ -265,42 +277,42 @@ export const routes: RouteObject[] = [
   },
   {
     path: PathConstants.System.PhoneAdd,
-    element: <PhoneAdd/>,
+    element: <PhoneAdd />,
   },
   {
     path: PathConstants.System.DeviceType,
-    element: <DeviceType/>,
+    element: <DeviceType />,
   },
   {
     path: PathConstants.Notice.NoticeList,
-    element: <NoticeList/>,
+    element: <NoticeList />,
   },
   {
     path: PathConstants.Notice.NoticeAdd,
-    element: <NoticeAdd/>,
+    element: <NoticeAdd />,
   },
   {
     path: PathConstants.Notice.NoticeDetail,
-    element: <NoticeDetail/>,
+    element: <NoticeDetail />,
   },
   {
     path: PathConstants.Notice.NoticeModify,
-    element: <NoticeModify/>,
+    element: <NoticeModify />,
   },
   {
     path: PathConstants.FAQ.FAQList,
-    element: <FAQList/>,
+    element: <FAQList />,
   },
   {
     path: PathConstants.FAQ.FAQAdd,
-    element: <FAQAdd/>,
+    element: <FAQAdd />,
   },
   {
     path: PathConstants.FAQ.FAQDetail,
-    element: <FAQDetail/>,
+    element: <FAQDetail />,
   },
   {
     path: PathConstants.FAQ.FAQModify,
-    element: <FAQModify/>,
+    element: <FAQModify />,
   },
 ];

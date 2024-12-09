@@ -569,7 +569,11 @@ export default function SolutionGroup() {
     },
   ]); // 드래그 후 데이터를 업데이트할 상태
 
-  const { selectValue, handleChange } = useSelect();
+  const { selectListData, selectValue, handleChange } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
 
   const { toggle, onChange: setToggle } = useToggleButtton({
     defaultValue: true,
