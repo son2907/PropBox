@@ -8,12 +8,13 @@ import { filterDataByValues } from "../../../utils/filterDataByValues";
 import getItemByStorageOne from "../../../utils/getItemByStorageOne";
 import BlackButton from "../../../components/Button/BlackButton";
 import { useTelStore } from "../../../stores/telStore";
+import { useEffect } from "react";
 
 export default function NetworkSetupPop() {
   const sptNo = getItemByStorageOne("selectedSite")?.sptNo;
 
   const { data } = useTelList(sptNo);
-  const { setTelInfo } = useTelStore(["setTelInfo"]);
+  const { setTelInfo } = useTelStore();
 
   const { selectListData, selectValue, handleChange } = useSelect(
     data?.data.contents,
@@ -21,23 +22,18 @@ export default function NetworkSetupPop() {
     "telno"
   );
 
-  const onClick = () => {
+  const onCancle = () => {
     const { closeAllPopups } = usePopupStore.getState();
-    const selectInfo = filterDataByValues({
-      data: data?.data.contents,
-      key: "telId",
-      values: Array.from(selectValue),
-    });
-
-    // todo 전화기를 등록하는 API가 있어야 함
-
-    setTelInfo(selectInfo[0].telId, selectInfo[0].telno);
-
-    // 팝업 닫기
     closeAllPopups();
-    // 부모 창 닫기
+    setTelInfo("", "");
     window.opener.close();
-    // 현재 창 닫기
+    window.close();
+  };
+
+  const onSave = () => {
+    const { closeAllPopups } = usePopupStore.getState();
+    closeAllPopups();
+    window.opener.close();
     window.close();
   };
 
@@ -48,6 +44,17 @@ export default function NetworkSetupPop() {
       window.close();
     }
   }
+
+  useEffect(() => {
+    if (selectValue) {
+      const selectInfo = filterDataByValues({
+        data: data?.data.contents,
+        key: "telId",
+        values: Array.from(selectValue),
+      });
+      setTelInfo(selectInfo[0].telId, selectInfo[0].telno);
+    }
+  }, [selectValue]);
 
   return (
     <Stack
@@ -70,8 +77,8 @@ export default function NetworkSetupPop() {
         />
       </Box>
       <Box display="flex" justifyContent="flex-end" marginTop={2} gap={1}>
-        <BasicButton onClick={onClick}>설정 안함</BasicButton>
-        <BlackButton onClick={onClick}>저장</BlackButton>
+        <BasicButton onClick={onCancle}>설정 안함</BasicButton>
+        <BlackButton onClick={onSave}>저장</BlackButton>
       </Box>
     </Stack>
   );

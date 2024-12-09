@@ -60,6 +60,7 @@ export default function Login() {
   const onSubmit = (data: LoginRequestModel) => {
     clear();
     clearMenu();
+    localStorage.clear();
     queryClient.resetQueries();
     if (rememberId) {
       setSaveLogin(getValues("loginId"), true);
