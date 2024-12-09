@@ -6,6 +6,8 @@ import { TbLogout } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 import { IconButton } from "../Button";
 import { useState } from "react";
+import { openPopup } from "../../utils/openPopup";
+import PathConstants from "../../routers/path";
 
 export default function UserInfo() {
   const { userNm, mbtlNo } = useAuthStore(["userNm", "mbtlNo"]);
@@ -20,6 +22,19 @@ export default function UserInfo() {
   };
 
   const toggleMenu = () => setOpen((prev) => !prev); // 메뉴 토글 함수
+  const openNotice = () => {
+    openPopup({
+      url: PathConstants.Notice.NoticeList,
+      windowName: "공지사항",
+    });
+  };
+
+  const openFAQ = () => {
+    openPopup({
+      url: PathConstants.FAQ.FAQList,
+      windowName: "FAQ",
+    });
+  };
 
   return (
     <CenteredBox height={"100%"} fontSize={"x-large"} gap={1}>
@@ -61,8 +76,8 @@ export default function UserInfo() {
         >
           <Stack>
             <MenuItem>원격 지원</MenuItem>
-            <MenuItem>공지사항</MenuItem>
-            <MenuItem>FAQ</MenuItem>
+            <MenuItem onClick={openNotice}>공지사항</MenuItem>
+            <MenuItem onClick={openFAQ}>FAQ</MenuItem>
           </Stack>
         </Box>
       )}
