@@ -2,7 +2,7 @@ import useTabs from "../../../hooks/useTabs";
 import BasicTable from "../../../components/Table/BasicTable";
 import { tableTestData } from "../../../utils/testData";
 import SearchResult from "../../../components/Table/SearchResult";
-import { Box } from "@mui/material";
+import { Stack } from "@mui/material";
 import TabPanel from "../../../components/Tab/TabPanel";
 import { TabType } from "../../../types/menu";
 import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
@@ -10,6 +10,7 @@ import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
 import { openPopup } from "../../../utils/openPopup";
 import PathConstants from "../../../routers/path";
 import TabMenus from "../../../components/Tab/TabMenus";
+import TableBox from "../../../components/Box/TableBox";
 
 export default function CallTable({ tabType, tabChange }: TabType) {
   //  통화콜, 부재콜
@@ -36,48 +37,39 @@ export default function CallTable({ tabType, tabChange }: TabType) {
         <TabMenus.Tab label="전화걸기" disableRipple />
       </TabMenus>
       {/* 전화받기 탭 */}
-      <div
-        style={{
-          height: "100%",
-          overflow: "hidden",
-        }}
-      >
+      <Stack height={"100%"} overflow={"hidden"}>
         <TabPanel value={tabType} index={0}>
           <TabMenus value={takeValue} handleChange={takeChange}>
             <TabMenus.Tab label="통화콜" disableRipple />
             <TabMenus.Tab label="부재콜" disableRipple />
           </TabMenus>
           {/*  통화콜, 부재콜 탭에 따라 데이터가 바뀌도록 데이터 바인딩 해야함  */}
-          <Box
-            sx={{
-              width: "100%",
-              height: "100%",
-              overflow: "auto",
-              marginBottom: 1,
-              flexGrow: 1,
-            }}
-          >
-            <BasicTable data={tableTestData}>
-              <BasicTable.Theader>이름</BasicTable.Theader>
-              <BasicTable.Theader>상담전화</BasicTable.Theader>
-              <BasicTable.Theader>상담일시</BasicTable.Theader>
-              <BasicTable.Tbody>
-                {tableTestData.map((item, index) => {
-                  return (
-                    <BasicTable.Tr
-                      key={index}
-                      isClicked={selectedRow.has(item.id)}
-                      onClick={() => toggleRowSelection(item.id)}
-                    >
-                      <BasicTable.Td>{item.name}</BasicTable.Td>
-                      <BasicTable.Td>{item.age}</BasicTable.Td>
-                      <BasicTable.Td>{item.job}</BasicTable.Td>
-                    </BasicTable.Tr>
-                  );
-                })}
-              </BasicTable.Tbody>
-            </BasicTable>
-          </Box>
+
+          <TableBox>
+            <TableBox.Inner>
+              <BasicTable data={tableTestData}>
+                <BasicTable.Th>이름</BasicTable.Th>
+                <BasicTable.Th>상담전화</BasicTable.Th>
+                <BasicTable.Th>상담일시</BasicTable.Th>
+                <BasicTable.Tbody>
+                  {tableTestData.map((item, index) => {
+                    return (
+                      <BasicTable.Tr
+                        key={index}
+                        isClicked={selectedRow.has(item.id)}
+                        onClick={() => toggleRowSelection(item.id)}
+                      >
+                        <BasicTable.Td>{item.name}</BasicTable.Td>
+                        <BasicTable.Td>{item.age}</BasicTable.Td>
+                        <BasicTable.Td>{item.job}</BasicTable.Td>
+                      </BasicTable.Tr>
+                    );
+                  })}
+                </BasicTable.Tbody>
+              </BasicTable>
+            </TableBox.Inner>
+          </TableBox>
+
           <SearchResult total={100} />
         </TabPanel>
 
@@ -100,37 +92,31 @@ export default function CallTable({ tabType, tabChange }: TabType) {
             />
           </TabMenus>
           {/*  탭에 따라 데이터가 바뀌도록 데이터 바인딩 해야함  */}
-          <Box
-            sx={{
-              width: "100%",
-              height: "100%",
-              overflow: "auto",
-              marginBottom: 1,
-              flexGrow: 1,
-            }}
-          >
-            <BasicTable data={tableTestData}>
-              <BasicTable.Theader>이름</BasicTable.Theader>
-              <BasicTable.Theader>주제</BasicTable.Theader>
-              <BasicTable.Tbody>
-                {tableTestData.map((item, index) => {
-                  return (
-                    <BasicTable.Tr
-                      key={index}
-                      isClicked={selectedRows.has(item.id)}
-                      onClick={() => toggleRowsSelection(item.id)}
-                    >
-                      <BasicTable.Td>{item.name}</BasicTable.Td>
-                      <BasicTable.Td>{item.age}</BasicTable.Td>
-                    </BasicTable.Tr>
-                  );
-                })}
-              </BasicTable.Tbody>
-            </BasicTable>
-          </Box>
+          <TableBox>
+            <TableBox.Inner>
+              <BasicTable data={tableTestData}>
+                <BasicTable.Th>이름</BasicTable.Th>
+                <BasicTable.Th>주제</BasicTable.Th>
+                <BasicTable.Tbody>
+                  {tableTestData.map((item, index) => {
+                    return (
+                      <BasicTable.Tr
+                        key={index}
+                        isClicked={selectedRows.has(item.id)}
+                        onClick={() => toggleRowsSelection(item.id)}
+                      >
+                        <BasicTable.Td>{item.name}</BasicTable.Td>
+                        <BasicTable.Td>{item.age}</BasicTable.Td>
+                      </BasicTable.Tr>
+                    );
+                  })}
+                </BasicTable.Tbody>
+              </BasicTable>
+            </TableBox.Inner>
+          </TableBox>
           <SearchResult total={100} />
         </TabPanel>
-      </div>
+      </Stack>
     </>
   );
 }

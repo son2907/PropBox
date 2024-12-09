@@ -5,10 +5,10 @@ import { IconButton } from "../Button";
 import { IoCloseOutline } from "react-icons/io5";
 
 interface PageTabProps {
-  icon: ReactNode;
+  icon?: ReactNode;
   tabName: string;
   url: string;
-  onDelete: (url: string) => void;
+  onDelete: (url: string, e: React.SyntheticEvent) => void; // onDelete의 타입을 두 인자로 수정
 }
 
 // 메뉴 클릭함 -> zuStand에 메뉴의 아이콘, 메뉴명, url 정보 넘김 -> zuStand에서 현재 메뉴 배열에 추가
@@ -27,14 +27,14 @@ const PageTabStyle = styled(Box, {
   backgroundColor:
     nowUrl === url
       ? theme.palette.pageTab.selectedTabBg
-      : theme.palette.pageTab.tabBg, // 추후 테마를 이용한 색상으로 변경
-  display: "flex",
+      : theme.palette.pageTab.tabBg,
+  display: nowUrl == "/" ? "none" : "flex",
   alignItems: "center",
   cursor: "pointer",
 }));
 
 const Icon = styled(Box)(({ theme }) => ({
-  color: theme.palette.pageTab.tabIcon, // 테마의 primary 색상으로 설정
+  color: theme.palette.pageTab.tabIcon,
 }));
 
 export default function PageTab({
@@ -64,8 +64,8 @@ export default function PageTab({
         {tabName}
       </Typography>
       <IconButton
-        onClick={() => {
-          onDelete(url);
+        onClick={(e) => {
+          onDelete(url, e); // 이벤트 객체를 함께 전달
         }}
       >
         <IoCloseOutline />

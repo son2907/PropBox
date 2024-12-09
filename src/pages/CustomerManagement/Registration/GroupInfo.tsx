@@ -64,9 +64,9 @@ export default function GroupInfo({ onSelect }: GroupInfoProps) {
               }}
             >
               <BasicTable data={tableTestData}>
-                <BasicTable.Theader>구분</BasicTable.Theader>
-                <BasicTable.Theader>그룹명칭</BasicTable.Theader>
-                <BasicTable.Theader>등록건수</BasicTable.Theader>
+                <BasicTable.Th>구분</BasicTable.Th>
+                <BasicTable.Th>그룹명칭</BasicTable.Th>
+                <BasicTable.Th>등록건수</BasicTable.Th>
                 <BasicTable.Tbody>
                   {tableTestData.map((item, index) => {
                     return (

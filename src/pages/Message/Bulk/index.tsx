@@ -51,8 +51,11 @@ export default function BulkMessage() {
   const { value, handleChange: tabChange } = useTabs(0);
 
   // select
-  const { selectValue: s_0, handleChange: o_0 } = useSelect();
-
+  const {
+    selectListData: sd_0,
+    selectValue: s_0,
+    handleChange: o_0,
+  } = useSelect(selectTestData, "value", "data");
   const { selectedValue, handleRadioChange } = useRadioGroup(""); // 초기값은 빈 문자열
 
   const [date, setDate] = useState<Date>(new Date()); // 날짜
@@ -135,7 +138,7 @@ export default function BulkMessage() {
 
           <CenteredBox gap={1}>
             <Typography>발신번호</Typography>
-            <Select selectData={selectTestData} value={s_0} onChange={o_0} />
+            <Select selectData={sd_0} value={s_0} onChange={o_0} />
             <IconButton sx={{ color: "root.mainBlue" }}>
               {/* react-icon 사이트에서 아이콘 찾아서 이용함 */}
               <IoSettingsOutline />
@@ -196,18 +199,10 @@ export default function BulkMessage() {
             <TableBox>
               <TableBox.Inner>
                 <MultipleCheckboxTable data={tableTestData}>
-                  <MultipleCheckboxTable.Theader>
-                    전체
-                  </MultipleCheckboxTable.Theader>
-                  <MultipleCheckboxTable.Theader>
-                    그룹명
-                  </MultipleCheckboxTable.Theader>
-                  <MultipleCheckboxTable.Theader>
-                    인원수
-                  </MultipleCheckboxTable.Theader>
-                  <MultipleCheckboxTable.Theader>
-                    제외
-                  </MultipleCheckboxTable.Theader>
+                  <MultipleCheckboxTable.Th>전체</MultipleCheckboxTable.Th>
+                  <MultipleCheckboxTable.Th>그룹명</MultipleCheckboxTable.Th>
+                  <MultipleCheckboxTable.Th>인원수</MultipleCheckboxTable.Th>
+                  <MultipleCheckboxTable.Th>제외</MultipleCheckboxTable.Th>
 
                   <MultipleCheckboxTable.Tbody>
                     {tableTestData.map((item) => {
@@ -270,8 +265,8 @@ export default function BulkMessage() {
               <TableBox>
                 <TableBox.Inner>
                   <BasicTable data={tableTestData}>
-                    <BasicTable.Theader>휴대전화</BasicTable.Theader>
-                    <BasicTable.Theader>고객정보</BasicTable.Theader>
+                    <BasicTable.Th>휴대전화</BasicTable.Th>
+                    <BasicTable.Th>고객정보</BasicTable.Th>
 
                     <BasicTable.Tbody>
                       {tableTestData.map((item, index) => {
@@ -311,10 +306,10 @@ export default function BulkMessage() {
           <TableBox>
             <TableBox.Inner>
               <BasicTable data={tableTestData}>
-                <BasicTable.Theader> </BasicTable.Theader>
-                <BasicTable.Theader> </BasicTable.Theader>
-                <BasicTable.Theader>메시지</BasicTable.Theader>
-                <BasicTable.Theader>삭제</BasicTable.Theader>
+                <BasicTable.Th> </BasicTable.Th>
+                <BasicTable.Th> </BasicTable.Th>
+                <BasicTable.Th>메시지</BasicTable.Th>
+                <BasicTable.Th>삭제</BasicTable.Th>
 
                 <BasicTable.Tbody>
                   {tableTestData.map((item, index) => {

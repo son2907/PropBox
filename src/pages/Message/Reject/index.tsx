@@ -14,6 +14,59 @@ import { usePagination } from "../../../hooks/usePagination";
 import BasicInput from "../../../components/Input/BasicInput";
 import { openPopup } from "../../../utils/openPopup";
 import PathConstants from "../../../routers/path";
+import useModal from "../../../hooks/useModal";
+// import BasicAlert from "../../../components/Alert/BasicAlert";
+import CustomAlert from "../../../components/Alert/CustomAlert";
+
+// const AlertComponent1 = ({
+//   onClose,
+//   onSubmit,
+//   modalId,
+// }: {
+//   onClose: () => void;
+//   onSubmit: () => void;
+//   modalId: string;
+// }) => {
+//   return (
+//     <BasicAlert>
+//       <BasicAlert.Content>{modalId}</BasicAlert.Content>
+//       <BasicAlert.ButtonZone>
+//         <BasicButton onClick={onClose} variant="outlined">
+//           취소
+//         </BasicButton>
+//         <BasicButton onClick={onSubmit} variant="contained">
+//           확인
+//         </BasicButton>
+//       </BasicAlert.ButtonZone>
+//     </BasicAlert>
+//   );
+// };
+
+const AlertComponent2 = ({
+  onClose,
+  onSubmit,
+}: {
+  onClose: () => void;
+  onSubmit: () => void;
+  modalId: string;
+}) => {
+  return (
+    <CustomAlert onClose={onClose}>
+      <CustomAlert.Title color="error.main">
+        등록정보가 삭제됩니다.
+      </CustomAlert.Title>
+      <CustomAlert.Content>삭제하시겠습니까?</CustomAlert.Content>
+      <CustomAlert.ButtonZone>
+        <BasicButton onClick={onClose} variant="outlined">
+          예
+        </BasicButton>
+        <BasicButton onClick={onSubmit} variant="contained">
+          아니오
+        </BasicButton>
+      </CustomAlert.ButtonZone>
+    </CustomAlert>
+  );
+};
 
 export default function RejectMessage() {
   const { selectedRows: ts_1, toggleRowsSelection: tt_1 } =
@@ -25,6 +78,17 @@ export default function RejectMessage() {
     windowName: "수신거부 엑셀등록",
     windowFeatures: "width=1000,height=500,scrollbars=yes,resizable=yes",
   };
+  const { openModal } = useModal();
+
+  const handleOpenStackedModal = () => {
+    openModal(AlertComponent2, {
+      modalId: "alert1",
+      stack: true, // 단일 모달 모드 = false,
+      onClose: () => console.log("모달 닫힘"),
+      onSubmit: () => console.log("확인"),
+    });
+  };
+
   return (
     <Stack width={"100%"} height={"100%"} gap={2}>
       <GrayBox gap={1}>
@@ -45,9 +109,9 @@ export default function RejectMessage() {
         <Stack width="100%" minWidth={"900px"} height={"100%"}>
           <TableBox.Inner>
             <BasicTable data={tableTestData}>
-              <BasicTable.Theader>전송일시</BasicTable.Theader>
-              <BasicTable.Theader>구분</BasicTable.Theader>
-              <BasicTable.Theader>메시지</BasicTable.Theader>
+              <BasicTable.Th>전송일시</BasicTable.Th>
+              <BasicTable.Th>구분</BasicTable.Th>
+              <BasicTable.Th>메시지</BasicTable.Th>
 
               <BasicTable.Tbody>
                 {tableTestData.map((item, index) => {
@@ -83,7 +147,7 @@ export default function RejectMessage() {
               <BasicInput />
               <CenteredBox justifyContent={"flex-end"} gap={1} marginTop={3}>
                 <BasicButton>저장</BasicButton>
-                <BasicButton>삭제</BasicButton>
+                <BasicButton onClick={handleOpenStackedModal}>삭제</BasicButton>
               </CenteredBox>
             </Stack>
           </GrayBox>

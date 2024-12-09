@@ -19,10 +19,21 @@ import TextArea from "../../../components/TextArea/TextArea";
 import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
 import { openPopup } from "../../../utils/openPopup";
 import PathConstants from "../../../routers/path";
+import CenteredBox from "../../../components/Box/CenteredBox";
+import { useCnsltItemList } from "../../../api/consultationItemsList";
+import useMultiInputValue from "../../../hooks/useMultiInputValue";
 
 export default function InfoGroup({ tabType }: TabType) {
+  const { data: cunsltItemList } = useCnsltItemList();
+  const { inputRefs, getInputValues } = useMultiInputValue();
+  // console.log("상담항목 데이터:", cunsltItemList);
+
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const { selectValue, handleChange } = useSelect();
+  const { selectListData, selectValue, handleChange } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
 
   // 테이블 선택 조건이 없으므로 다중선택 ui 적용
   const { selectedRow, toggleRowSelection } = useSingleRowSelection();
@@ -45,7 +56,7 @@ export default function InfoGroup({ tabType }: TabType) {
 
   return (
     <>
-      <Stack marginBottom={1}>
+      <Stack width={"100%"} height={"100%"}>
         {/* 상단 회색박스 ********************************************** */}
         <GrayBox height={"50px"} width={"100%"}>
           <LabelTypo>상담일자</LabelTypo>
@@ -87,18 +98,12 @@ export default function InfoGroup({ tabType }: TabType) {
             </BasicButton>
           </Box>
         </GrayBox>
-        <Box
-          display="flex"
-          width={"100%"}
-          height={"100%"}
-          padding={0.8}
-          paddingLeft={2}
-        >
+        <Box display="flex" width={"100%"} padding={0.8} paddingLeft={2}>
           {/* 왼쪽 */}
-          <Box display="flex" flexDirection={"column"} width={"80%"} gap={0.7}>
-            <Box display="flex" alignItems="center">
+          <Stack width={"80%"} gap={1}>
+            <CenteredBox>
               <LabelTypo>
-                <span className="text-red-500">*</span>
+                <Typography color="error.main">*</Typography>
                 상담전화
               </LabelTypo>
               <BasicInput />
@@ -112,10 +117,11 @@ export default function InfoGroup({ tabType }: TabType) {
               >
                 <IoSearchOutline size={"1em"} />
               </IconSquareButton>
-            </Box>
-            <Box display="flex" alignItems="center">
+            </CenteredBox>
+            <CenteredBox>
               <LabelTypo>
-                <span className="text-red-500">*</span>이름
+                <Typography color="error.main">*</Typography>
+                이름
               </LabelTypo>
               <BasicInput />
               <IconSquareButton>
@@ -127,12 +133,12 @@ export default function InfoGroup({ tabType }: TabType) {
                   <Typography>부재콜</Typography>
                 </>
               ) : null}
-            </Box>
-            <Box display="flex" alignItems="center">
+            </CenteredBox>
+            <CenteredBox>
               <LabelTypo>고객정보</LabelTypo>
               <BasicInput />
-            </Box>
-            <Box display="flex" alignItems="center">
+            </CenteredBox>
+            <CenteredBox>
               <LabelTypo>휴대전화</LabelTypo>
               <BasicInput />
               {tabType ? (
@@ -147,29 +153,24 @@ export default function InfoGroup({ tabType }: TabType) {
                   <IoCallOutline size={"1rem"} />
                 </IconSquareButton>
               ) : null}
-            </Box>
-            <Box display="flex" alignItems="center">
+            </CenteredBox>
+            <CenteredBox>
               <LabelTypo>주소</LabelTypo>
               <BasicInput sx={{ width: "500px" }} />
-            </Box>
-            <Box display="flex" alignItems="center">
+            </CenteredBox>
+            <CenteredBox>
               <LabelTypo>관리지역</LabelTypo>
               <Select
                 value={selectValue}
                 onChange={handleChange}
-                selectData={selectTestData}
+                selectData={selectListData}
                 sx={{ width: "204px" }}
               />
-            </Box>
-          </Box>
+            </CenteredBox>
+          </Stack>
 
           {/* 오른쪽 */}
-          <Box
-            width={"20%"}
-            height={"100%"}
-            display={"flex"}
-            flexDirection={"column"}
-          >
+          <Stack width={"20%"}>
             <GrayBox
               flexDirection={"column"}
               justifyContent={"center"}
@@ -180,41 +181,28 @@ export default function InfoGroup({ tabType }: TabType) {
               marginRight={2}
               gap={0.5}
             >
-              <Box
-                display="flex"
-                alignItems="center" // 수직 중앙 정렬
-              >
+              <CenteredBox>
                 <LabelTypo>호응도</LabelTypo>
                 <BasicInput sx={{ width: "80px" }} />
-              </Box>
-              <Box
-                display="flex"
-                alignItems="center" // 수직 중앙 정렬
-              >
+              </CenteredBox>
+              <CenteredBox>
                 <LabelTypo>희망평형</LabelTypo>
                 <BasicInput sx={{ width: "80px" }} />
-              </Box>
-              <Box
-                display="flex"
-                alignItems="center" // 수직 중앙 정렬
-              >
+              </CenteredBox>
+              <CenteredBox>
                 <LabelTypo>상담횟수</LabelTypo>
                 <BasicInput sx={{ width: "80px" }} />
-              </Box>
-              <Box
-                display="flex"
-                alignItems="center" // 수직 중앙 정렬
-              >
+              </CenteredBox>
+              <CenteredBox>
                 <LabelTypo>수신동의</LabelTypo>
                 <BasicInput sx={{ width: "80px" }} />
-              </Box>
+              </CenteredBox>
             </GrayBox>
-          </Box>
+          </Stack>
         </Box>
       </Stack>
 
       {/* 상담항목, 세부항목 회색 인풋 영역 */}
-      {/* 테이블을 감쌀 때 아래 Box 사용 */}
       <Box display="flex" overflow="hidden" maxHeight="600px">
         {/* 상담항목 세부항목 */}
         <GrayBox
@@ -224,22 +212,26 @@ export default function InfoGroup({ tabType }: TabType) {
           gap={1}
           overflow="auto"
         >
-          {Array.from({ length: 40 }).map((_, index) => (
+          {cunsltItemList?.data.contents.map((item: any, index: number) => (
             <Box
-              key={index}
+              key={item.itemNo}
               display="flex"
               alignItems="center" // 수직 중앙 정렬
               flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
             >
-              <LabelTypo>수신동의</LabelTypo>
+              <LabelTypo>{item.itemNm}</LabelTypo>
               {/* height: 24px */}
-              <BasicInput sx={{ minHeight: "24px" }} />
+              <BasicInput
+                sx={{ minHeight: "24px" }}
+                ref={(el) => (inputRefs.current[index] = el)}
+                defaultValue={item.useYn}
+              />
             </Box>
           ))}
         </GrayBox>
         <GrayBox flexDirection={"column"} width={"50%"} overflow="auto">
           <BasicTable data={tableTestData}>
-            <BasicTable.Theader>
+            <BasicTable.Th>
               <Box
                 display="flex"
                 justifyContent="space-between"
@@ -248,7 +240,7 @@ export default function InfoGroup({ tabType }: TabType) {
                 세부항목
                 <BasicButton>새로고침</BasicButton>
               </Box>
-            </BasicTable.Theader>
+            </BasicTable.Th>
 
             <BasicTable.Tbody>
               {tableTestData.map((item, index) => {

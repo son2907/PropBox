@@ -16,7 +16,7 @@ export default function CallConsultation() {
       </Stack>
 
       {/* 중간 상담 정보  */}
-      <Stack width={"50%"} minWidth={"750px"}>
+      <Stack width={"50%"} minWidth={"1010px"}>
         <InfoGroup tabType={callValue} tabChange={callChange} />
       </Stack>
 

@@ -22,7 +22,7 @@ interface CheckboxThProps extends CheckboxTdProps {
   [property: string]: any;
 }
 
-const Theader: React.FC<TableItemProps> = ({ children, ...rest }) => {
+const Th: React.FC<TableItemProps> = ({ children, ...rest }) => {
   return (
     <th
       {...rest}
@@ -55,13 +55,13 @@ const CheckboxTh = ({
   };
 
   return (
-    <Theader>
+    <Th>
       <input
         type="checkbox"
         checked={allSelected}
         onChange={handleSelectAllChange}
       />
-    </Theader>
+    </Th>
   );
 };
 
@@ -118,7 +118,7 @@ const CheckboxTd = ({
 };
 
 const MultipleCheckboxTable: React.FC<TableProps> & {
-  Theader: typeof Theader;
+  Th: typeof Th;
   CheckboxTh: typeof CheckboxTh;
   Tr: typeof Tr;
   Td: typeof Td;
@@ -137,7 +137,7 @@ const MultipleCheckboxTable: React.FC<TableProps> & {
               {React.Children.map(children, (child) => {
                 if (
                   (child as React.ReactElement<any>).type ===
-                    MultipleCheckboxTable.Theader ||
+                    MultipleCheckboxTable.Th ||
                   (child as React.ReactElement<any>).type ===
                     MultipleCheckboxTable.CheckboxTh
                 ) {
@@ -163,7 +163,7 @@ const MultipleCheckboxTable: React.FC<TableProps> & {
 };
 
 MultipleCheckboxTable.EmptyTable = EmptyTable;
-MultipleCheckboxTable.Theader = Theader;
+MultipleCheckboxTable.Th = Th;
 MultipleCheckboxTable.Tr = Tr;
 MultipleCheckboxTable.Td = Td;
 MultipleCheckboxTable.CheckboxTd = CheckboxTd;

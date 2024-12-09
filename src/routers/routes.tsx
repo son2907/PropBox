@@ -1,10 +1,8 @@
 import { RouteObject } from "react-router-dom";
 import DefaultLayout from "../layout";
 import PathConstants from "./path";
-import Main from "../pages/main";
 import Test from "../pages/test";
 import Login from "../pages/Login";
-import NetworkSetup from "../pages/NetworkSetup";
 import CallConsultation from "../pages/CalManagement/Consultation";
 import SearchCustomer from "../pages/CalManagement/Consultation/popup/SearchCustomer";
 import ConsultationStatus from "../pages/CalManagement/Consultation/popup/ConsultationStatus";
@@ -31,13 +29,47 @@ import SMSDetail from "../pages/Message/Result/popup/SMSDetail";
 import Registration from "../pages/CustomerManagement/Registration";
 import UploadRegistration from "../pages/CustomerManagement/Registration/popup/UploadRegistration";
 import GroupManagement from "../pages/CustomerManagement/Registration/popup/GroupManagement";
+import UserManagement from "../pages/SysManagement/User";
+import UserUpload from "../pages/SysManagement/User/popup/UploadUser";
+import AuthManagement from "../pages/SysManagement/AuthManagement";
+import MemberMenuPermission from "../pages/SysManagement/AuthManagement/popup/MemberMenuPermission";
+import MenuPermissionCopy from "../pages/SysManagement/AuthManagement/popup/MenuPermissionCopy";
+import PermissionRevoke from "../pages/SysManagement/AuthManagement/popup/PermissionRevoke";
+import MemberManagement from "../pages/SysManagement/Member";
+import LocalManagement from "../pages/SysManagement/Local";
+import LocalRegistration from "../pages/SysManagement/Local/popup/LocalRegistration";
+import AuthGuard from "./guard/AuthGuard";
+import PhoneManagement from "../pages/SysManagement/Phone";
+import PhoneAdd from "../pages/SysManagement/Phone/popup/PhoneAdd";
+import DeviceType from "../pages/SysManagement/Phone/popup/DeviceType";
+import NoticeList from "../pages/Notice";
+import NoticeAdd from "../pages/Notice/NoticeAdd";
+import NoticeDetail from "../pages/Notice/NoticeDetail";
+import NoticeModify from "../pages/Notice/NoticeModify";
+import FAQList from "../pages/FAQ";
+import FAQAdd from "../pages/FAQ/FAQAdd";
+import FAQDetail from "../pages/FAQ/FAQDetail";
+import FAQModify from "../pages/FAQ/FAQModify";
+import LocalmemberManagement from "../pages/SysManagement/Localmember";
+import AuthCode from "../pages/SysManagement/AuthCode";
+import ReceivingNumber from "../pages/SysManagement/ReceivingNumber";
+import SiteSelection from "../pages/SiteSelection";
+import NetworkSetupPop from "../pages/NetworkSetup/popup";
+import Err404 from "../pages/ERROR/Err404";
+import Launcher from "../pages/Launcher";
+import PhoneSetting from "../pages/SysManagement/Phone";
+import NetworkSetup from "../pages/NetworkSetup";
 
 export const routes: RouteObject[] = [
   {
-    element: <DefaultLayout />,
+    element: (
+      <AuthGuard>
+        <DefaultLayout />
+      </AuthGuard>
+    ),
     // 에러 엘리먼트 추가 필요
     children: [
-      { path: PathConstants.Home, element: <Main /> },
+      { path: PathConstants.Home, element: <Launcher /> },
       {
         children: [
           {
@@ -102,7 +134,7 @@ export const routes: RouteObject[] = [
         children: [
           {
             path: PathConstants.Customer.Registration,
-            element: <Registration/>,
+            element: <Registration />,
           },
         ],
       },
@@ -115,27 +147,48 @@ export const routes: RouteObject[] = [
           },
           {
             path: PathConstants.System.User,
-            element: <div>사용자 관리</div>,
+            element: <UserManagement />,
           },
           {
             path: PathConstants.System.Member,
-            element: <div>구성원 관리</div>,
+            element: <MemberManagement />,
           },
           {
             path: PathConstants.System.Local,
-            element: <div>현장 관리</div>,
+            element: <LocalManagement />,
           },
           {
             path: PathConstants.System.LocalMember,
-            element: <div>현장 별 구성원 관리</div>,
+            element: <LocalmemberManagement />,
           },
           {
             path: PathConstants.System.Auth,
-            element: <div>현장 구성원 권한 관리</div>,
+            element: <AuthManagement />,
           },
           {
             path: PathConstants.System.NetworkSetup,
             element: <NetworkSetup />,
+          },
+          {
+            path: PathConstants.System.AuthCode,
+            element: <AuthCode />,
+          },
+          {
+            path: PathConstants.System.ReceivingNumber,
+            element: <ReceivingNumber />,
+          },
+          {
+            path: PathConstants.System.Phone,
+            element: <PhoneSetting />,
+          },
+        ],
+      },
+      {
+        children: [
+          {
+            // 모든 페이지의 404 경로 처리
+            path: "*", // 경로가 일치하지 않는 모든 요청을 처리
+            element: <Err404 />, // 404 페이지
           },
         ],
       },
@@ -201,5 +254,65 @@ export const routes: RouteObject[] = [
   {
     path: PathConstants.Customer.CustomerGroupManagement,
     element: <GroupManagement />,
+  },
+  {
+    path: PathConstants.System.UserUpload,
+    element: <UserUpload />,
+  },
+  {
+    path: PathConstants.System.MemberMenuPermission,
+    element: <MemberMenuPermission />,
+  },
+  {
+    path: PathConstants.System.MenuPermissionCopy,
+    element: <MenuPermissionCopy />,
+  },
+  {
+    path: PathConstants.System.PermissionRevoke,
+    element: <PermissionRevoke />,
+  },
+  {
+    path: PathConstants.System.LocalRegistration,
+    element: <LocalRegistration />,
+  },
+  {
+    path: PathConstants.System.PhoneAdd,
+    element: <PhoneAdd />,
+  },
+  {
+    path: PathConstants.System.DeviceType,
+    element: <DeviceType />,
+  },
+  {
+    path: PathConstants.Notice.NoticeList,
+    element: <NoticeList />,
+  },
+  {
+    path: PathConstants.Notice.NoticeAdd,
+    element: <NoticeAdd />,
+  },
+  {
+    path: PathConstants.Notice.NoticeDetail,
+    element: <NoticeDetail />,
+  },
+  {
+    path: PathConstants.Notice.NoticeModify,
+    element: <NoticeModify />,
+  },
+  {
+    path: PathConstants.FAQ.FAQList,
+    element: <FAQList />,
+  },
+  {
+    path: PathConstants.FAQ.FAQAdd,
+    element: <FAQAdd />,
+  },
+  {
+    path: PathConstants.FAQ.FAQDetail,
+    element: <FAQDetail />,
+  },
+  {
+    path: PathConstants.FAQ.FAQModify,
+    element: <FAQModify />,
   },
 ];

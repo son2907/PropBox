@@ -15,7 +15,7 @@ export default function ConfigSetting() {
 
   return (
     <>
-      <Stack width={"50%"} minWidth={"400px"} height={"100%"}>
+      <Stack width={"50%"} minWidth={"400px"} height={"100%"} gap={1}>
         <GrayBox gap={1}>
           <Typography>상담항목</Typography>
           <SearchInput />
@@ -25,9 +25,9 @@ export default function ConfigSetting() {
         <TableBox>
           <TableBox.Inner>
             <RowDragTable data={data} checkbox={false} setData={setData}>
-              <RowDragTable.Theader>상담항목</RowDragTable.Theader>
-              <RowDragTable.Theader>사용</RowDragTable.Theader>
-              <RowDragTable.Theader>삭제</RowDragTable.Theader>
+              <RowDragTable.Th>상담항목</RowDragTable.Th>
+              <RowDragTable.Th>사용</RowDragTable.Th>
+              <RowDragTable.Th>삭제</RowDragTable.Th>
 
               <RowDragTable.Tbody>
                 {data.map((item) => (
@@ -61,9 +61,9 @@ export default function ConfigSetting() {
         <TableBox>
           <TableBox.Inner>
             <RowDragTable data={data2} checkbox={false} setData={setData2}>
-              <RowDragTable.Theader>상담항목</RowDragTable.Theader>
-              <RowDragTable.Theader>사용</RowDragTable.Theader>
-              <RowDragTable.Theader>삭제</RowDragTable.Theader>
+              <RowDragTable.Th>상담항목</RowDragTable.Th>
+              <RowDragTable.Th>사용</RowDragTable.Th>
+              <RowDragTable.Th>삭제</RowDragTable.Th>
 
               <RowDragTable.Tbody>
                 {data2.map((item) => (

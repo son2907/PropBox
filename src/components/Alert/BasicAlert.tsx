@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
+import React, { ReactNode } from "react";
 import { renderChild } from "../../utils/renderChild";
-import { ReactNode } from "react";
 
 export default function BasicAlert({ children }: { children: ReactNode }) {
   return (

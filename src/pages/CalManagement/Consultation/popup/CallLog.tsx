@@ -53,13 +53,16 @@ export default function CallLog() {
             selectedRows={selectedRows}
             toggleRowsSelection={toggleRowsSelection}
           >
-            <CheckboxTable.Theader>No</CheckboxTable.Theader>
-            <CheckboxTable.Theader>이름</CheckboxTable.Theader>
-            <CheckboxTable.Theader>걸기</CheckboxTable.Theader>
-            <CheckboxTable.Theader>통화콜</CheckboxTable.Theader>
-            <CheckboxTable.Theader>부재콜</CheckboxTable.Theader>
-            <CheckboxTable.Theader>계</CheckboxTable.Theader>
-
+            <CheckboxTable.Thead>
+              <CheckboxTable.Tr>
+                <CheckboxTable.Th>No</CheckboxTable.Th>
+                <CheckboxTable.Th>이름</CheckboxTable.Th>
+                <CheckboxTable.Th>걸기</CheckboxTable.Th>
+                <CheckboxTable.Th>통화콜</CheckboxTable.Th>
+                <CheckboxTable.Th>부재콜</CheckboxTable.Th>
+                <CheckboxTable.Th>계</CheckboxTable.Th>
+              </CheckboxTable.Tr>
+            </CheckboxTable.Thead>
             <CheckboxTable.Tbody>
               {tableTestData.map((item) => (
                 <CheckboxTable.Tr key={item.id} id={item.id}>
@@ -85,12 +88,15 @@ export default function CallLog() {
             selectedRows={selectedRows2}
             toggleRowsSelection={toggleRowsSelection2}
           >
-            <CheckboxTable.Theader>상담일자</CheckboxTable.Theader>
-            <CheckboxTable.Theader>걸기</CheckboxTable.Theader>
-            <CheckboxTable.Theader>통화콜</CheckboxTable.Theader>
-            <CheckboxTable.Theader>부재콜</CheckboxTable.Theader>
-            <CheckboxTable.Theader>계</CheckboxTable.Theader>
-
+            <CheckboxTable.Thead>
+              <CheckboxTable.Tr>
+                <CheckboxTable.Th>상담일자</CheckboxTable.Th>
+                <CheckboxTable.Th>걸기</CheckboxTable.Th>
+                <CheckboxTable.Th>통화콜</CheckboxTable.Th>
+                <CheckboxTable.Th>부재콜</CheckboxTable.Th>
+                <CheckboxTable.Th>계</CheckboxTable.Th>
+              </CheckboxTable.Tr>
+            </CheckboxTable.Thead>
             <CheckboxTable.Tbody>
               {tableTestData.map((item) => (
                 <CheckboxTable.Tr key={item.id} id={item.id}>

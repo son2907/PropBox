@@ -4,8 +4,6 @@ import SolutionGroup from "./SolutionGroup";
 import useTabs from "../../../hooks/useTabs";
 
 export default function SolutionManagement() {
-  // 전화 받기, 전화 걸기
-  const { value: callValue, handleChange: callChange } = useTabs(0);
 
   return (
     <>

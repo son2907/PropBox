@@ -24,7 +24,12 @@ import { useRadioGroup } from "../../../../hooks/useRadioGroup";
 
 export default function SMSSending() {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { selectValue, handleChange } = useSelect("1");
+  const { selectListData, selectValue, handleChange } = useSelect(
+    selectTestData,
+    "value",
+    "data",
+    "1"
+  );
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
@@ -84,7 +89,7 @@ export default function SMSSending() {
               </Typography>
               <Select
                 value={selectValue}
-                selectData={selectTestData}
+                selectData={selectListData}
                 onChange={handleChange}
                 sx={{ width: "250px" }}
               />
@@ -180,10 +185,14 @@ export default function SMSSending() {
               selectedRows={selectedRows}
               toggleRowsSelection={toggleRowsSelection}
             >
-              <CheckboxTable.Theader>메시지</CheckboxTable.Theader>
-              <CheckboxTable.Theader> </CheckboxTable.Theader>
-              <CheckboxTable.Theader> </CheckboxTable.Theader>
-              <CheckboxTable.Theader>구분</CheckboxTable.Theader>
+              <CheckboxTable.Thead>
+                <CheckboxTable.Tr>
+                  <CheckboxTable.Th>메시지</CheckboxTable.Th>
+                  <CheckboxTable.Th> </CheckboxTable.Th>
+                  <CheckboxTable.Th> </CheckboxTable.Th>
+                  <CheckboxTable.Th>구분</CheckboxTable.Th>
+                </CheckboxTable.Tr>
+              </CheckboxTable.Thead>
 
               <CheckboxTable.Tbody>
                 {tableTestData.map((item) => (
@@ -207,9 +216,12 @@ export default function SMSSending() {
               selectedRows={selectedRows}
               toggleRowsSelection={toggleRowsSelection}
             >
-              <CheckboxTable.Theader>매크로</CheckboxTable.Theader>
-              <CheckboxTable.Theader>실제 변환 예제</CheckboxTable.Theader>
-
+              <CheckboxTable.Thead>
+                <CheckboxTable.Tr>
+                  <CheckboxTable.Th>매크로</CheckboxTable.Th>
+                  <CheckboxTable.Th>실제 변환 예제</CheckboxTable.Th>
+                </CheckboxTable.Tr>
+              </CheckboxTable.Thead>
               <CheckboxTable.Tbody>
                 {tableTestData.map((item) => (
                   <CheckboxTable.Tr key={item.id} id={item.id}>

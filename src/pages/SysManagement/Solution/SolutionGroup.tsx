@@ -15,6 +15,8 @@ import { Select } from "../../../components/Select";
 import { selectTestData } from "../../../utils/testData";
 import useSelect from "../../../hooks/useSelect";
 import useToggleButtton from "../../../hooks/useToggleButton";
+import PathConstants from "../../../routers/path";
+import { openPopup } from "../../../utils/openPopup";
 
 interface Data {
   id: string;
@@ -567,11 +569,29 @@ export default function SolutionGroup() {
     },
   ]); // 드래그 후 데이터를 업데이트할 상태
 
-  const { selectValue, handleChange } = useSelect();
+  const { selectListData, selectValue, handleChange } = useSelect(
+    selectTestData,
+    "value",
+    "data"
+  );
 
   const { toggle, onChange: setToggle } = useToggleButtton({
     defaultValue: true,
   });
+
+  //전화기 추가 팝업
+  const OpenPopup = {
+    url: PathConstants.Notice.NoticeList,
+    windowName: "공지사항 목록",
+    windowFeatures: "width=500,height=500,scrollbars=yes,resizable=yes",
+  };
+
+  //전화기 추가 팝업
+  const OpenPopupfaq = {
+    url: PathConstants.FAQ.FAQList,
+    windowName: "FAQ 목록",
+    windowFeatures: "width=500,height=500,scrollbars=yes,resizable=yes",
+  };
 
   return (
     <>
@@ -587,9 +607,9 @@ export default function SolutionGroup() {
             data={data}
             setData={setData} // 데이터를 업데이트할 함수를 전달
           >
-            <RowDragTable.Theader>솔루션ID</RowDragTable.Theader>
-            <RowDragTable.Theader>솔루션이름</RowDragTable.Theader>
-            <RowDragTable.Theader>라이선스방식</RowDragTable.Theader>
+            <RowDragTable.Th>솔루션ID</RowDragTable.Th>
+            <RowDragTable.Th>솔루션이름</RowDragTable.Th>
+            <RowDragTable.Th>라이선스방식</RowDragTable.Th>
 
             <RowDragTable.Tbody>
               {data.map((item) => (
@@ -685,8 +705,24 @@ export default function SolutionGroup() {
             </Box>
           </Stack>
           <GrayBox height={"40px"} marginTop={1} justifyContent={"flex-end"}>
-            <BasicButton>추가</BasicButton>
-            <BasicButton>저장</BasicButton>
+            <BasicButton
+              onClick={() => {
+                openPopup({
+                  url: OpenPopup.url,
+                  windowName: OpenPopup.windowName,
+                  windowFeatures: OpenPopup.windowFeatures,
+                });
+              }}
+            >추가</BasicButton>
+            <BasicButton
+              onClick={() => {
+                openPopup({
+                  url: OpenPopupfaq.url,
+                  windowName: OpenPopupfaq.windowName,
+                  windowFeatures: OpenPopupfaq.windowFeatures,
+                });
+              }}
+            >저장</BasicButton>
             <BasicButton>삭제</BasicButton>
           </GrayBox>
         </Stack>

@@ -16,7 +16,12 @@ import { openPopup } from "../../../utils/openPopup";
 import PathConstants from "../../../routers/path";
 
 export default function ConsultationData() {
-  const { selectValue: s_0, handleChange: o_0 } = useSelect();
+  const {
+    selectListData: sd_0,
+    selectValue: s_0,
+    handleChange: o_0,
+  } = useSelect(selectTestData, "value", "data");
+
   const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
   const { currentPage, onChangePage } = usePagination();
 
@@ -31,7 +36,7 @@ export default function ConsultationData() {
       <GrayBox gap={1}>
         <Select
           sx={{ width: "150px" }}
-          selectData={selectTestData}
+          selectData={sd_0}
           value={s_0}
           onChange={o_0}
           placeholder="검색 항목 선택"
@@ -61,7 +66,11 @@ export default function ConsultationData() {
             toggleRowsSelection={toggleRowsSelection}
           >
             {/* 체크한 데이터에 따라 표시 */}
-            <CheckboxTable.Theader>고객이름</CheckboxTable.Theader>
+            <CheckboxTable.Thead>
+              <CheckboxTable.Tr>
+                <CheckboxTable.Th>고객이름</CheckboxTable.Th>
+              </CheckboxTable.Tr>
+            </CheckboxTable.Thead>
             <CheckboxTable.Tbody>
               {tableTestData.map((item) => (
                 <CheckboxTable.Tr key={item.id} id={item.id}>

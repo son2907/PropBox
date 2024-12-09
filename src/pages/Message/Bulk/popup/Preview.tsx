@@ -25,8 +25,8 @@ export default function Preview() {
         <TableBox>
           <TableBox.Inner>
             <BasicTable data={tableTestData}>
-              <BasicTable.Theader>휴대전화</BasicTable.Theader>
-              <BasicTable.Theader>고객정보</BasicTable.Theader>
+              <BasicTable.Th>휴대전화</BasicTable.Th>
+              <BasicTable.Th>고객정보</BasicTable.Th>
 
               <BasicTable.Tbody>
                 {tableTestData.map((item, index) => {

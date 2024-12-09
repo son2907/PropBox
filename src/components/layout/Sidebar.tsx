@@ -1,62 +1,15 @@
 import Solution from "../sidebar/Solution";
 import MenuItem from "../sidebar/MenuItem";
-import { MenuListType } from "../../types/menu";
 import { Box, styled } from "@mui/material";
-import { ReactNode, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import Logo from "../../assets/images/logo.png";
 import Menu from "../../assets/svg/hambuger.svg";
-import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
-import AllInboxIcon from "@mui/icons-material/AllInbox";
-import { StarBorder } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-// 예시 데이터
-const menuList: MenuListType = [
-  {
-    label: "전화관리",
-    auth: true,
-    subMenu: [
-      { label: "전화상담", url: "/call/consultation" },
-      { label: "상담분석", url: "/call/analysis" },
-      { label: "데이터관리", url: "/call/management" },
-      { label: "기본정보", url: "/call/information" },
-    ],
-  },
-  {
-    label: "문자관리",
-    auth: true,
-    subMenu: [
-      { label: "자동문자", url: "/message/auto" },
-      { label: "대량문자", url: "/message/bulk" },
-      { label: "방통위신고", url: "/message/declaration" },
-      { label: "수신거부", url: "/message/reject" },
-      { label: "결과보기", url: "/message/result" },
-    ],
-  },
-  {
-    label: "고객관리",
-    auth: true,
-    subMenu: [{ label: "고객등록", url: "/customer/registration" }],
-  },
-  {
-    label: "시스템관리",
-    auth: true,
-    subMenu: [
-      { label: "솔루션 및 메뉴 관리", url: "/system/solution" },
-      { label: "사용자 관리", url: "/system/user" },
-      { label: "구성원 관리", url: "/system/member" },
-      { label: "현장 관리", url: "/system/local" },
-      { label: "현장 별 구성원 관리", url: "/system/localmember" },
-      { label: "현장 구성원 권한 관리", url: "/system/auth" },
-
-      { label: "통신환경설정", url: "/system/networksetup" },
-    ],
-  },
-];
-const IconList: ReactNode[] = [
-  <StarBorder />,
-  <AlternateEmailIcon />,
-  <AllInboxIcon />,
-];
+import api from "../../api";
+import { useAuthStore } from "../../stores/authStore";
+import { transformMenuData } from "../../utils/transformMenuData";
+import { useMenuStore } from "../../stores/menuStore";
+import { IconList } from "./MenuIconList";
 
 const SideMenu = styled(Box, {
   shouldForwardProp: (prop) => prop !== "fold", // fold 속성을 DOM으로 전달하지 않음
@@ -82,11 +35,19 @@ const LogoArea = styled(Box)(() => ({
   cursor: "pointer",
 }));
 
-export default function Sidebar() {
+const Sidebar = memo(function Sidebar() {
   const [fold, setFold] = useState<boolean>(false);
+  const { allMenus, setAllMenuData } = useMenuStore();
+  const { accessToken } = useAuthStore(["accessToken"]);
+  const { isSuccess, data } = api.MenuList.useMenuList();
 
-  // 추후 useMenu()로 바꾸어주어야 함 ... (api없음)
-  const data = menuList;
+  useEffect(() => {
+    if (isSuccess && accessToken) {
+      const result = transformMenuData(data?.data.contents, IconList);
+      setAllMenuData(result);
+    }
+  }, [accessToken, isSuccess]);
+
   const onClick = () => {
     setFold(!fold);
   };
@@ -123,12 +84,12 @@ export default function Sidebar() {
           backgroundColor: "#e5e7eb",
         }}
       />
-      {data.map((item, index) => {
+      {allMenus?.map((item, index) => {
         return (
           <Solution
             key={index}
             label={item.label}
-            icon={IconList[index]}
+            icon={item.icon}
             auth={item.auth}
             isOpen={true}
             fold={fold}
@@ -146,4 +107,6 @@ export default function Sidebar() {
       })}
     </SideMenu>
   );
-}
+});
+
+export default Sidebar;

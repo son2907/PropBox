@@ -1,6 +1,8 @@
 const PathConstants = {
   Home: "/",
   Login: "/login",
+  SiteSelection: "/siteSelection",
+  NetworkSetup: "/networkSetup",
   Test: "/test",
   Call: {
     Consultation: "/call/consultation",
@@ -30,8 +32,8 @@ const PathConstants = {
   },
   Customer: {
     Registration: "/customer/registration",
-    RegistrationUpload : "/customer/registration/registration-upload",
-    CustomerGroupManagement : "/customer/registration/customergroup-management",
+    RegistrationUpload: "/customer/registration/registration-upload",
+    CustomerGroupManagement: "/customer/registration/customergroup-management",
   },
   System: {
     Solution: "/system/solution",
@@ -41,6 +43,31 @@ const PathConstants = {
     LocalMember: "/system/localmember",
     Auth: "/system/auth",
     NetworkSetup: "/system/networksetup",
+    UserUpload: "/system/user/uploadUser",
+    MemberMenuPermission: "/system/auth/memberMenuPermission",
+    MenuPermissionCopy: "/system/auth/menuPermissionCopy",
+    PermissionRevoke: "/system/auth/permissionRevoke",
+    ReceivingNumber: "/system/receivingNumber",
+    AuthCode: "/system/authCode",
+    Phone: "/system/phone",
+    LocalRegistration: "/system/local/localRegistration",
+    PhoneAdd: "/system/phone/phoneAdd",
+    DeviceType: "/system/phone/deviceType",
+  },
+  Err: {
+    Err404: "/err-not-page-404",
+  },
+  Notice : {
+    NoticeList : "/notice/noticeList",
+    NoticeAdd : "/notice/noticeAdd",
+    NoticeDetail : "/notice/noticeDetail",
+    NoticeModify : "/notice/noticeModify",
+  },
+  FAQ : {
+    FAQList : "/faq/faqList",
+    FAQAdd : "/faq/faqAdd",
+    FAQDetail : "/faq/faqDetail",
+    FAQModify : "/faq/faqModify",
   },
 };
 

@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { ApiResponseType } from "./apiResponse";
 
 // 컴포넌트를 위한 타입
 export type SolutionType = {
@@ -22,6 +23,7 @@ export type SubMenuType = {
 };
 
 export type MainMenuType = {
+  icon?: ReactNode;
   label: string;
   auth: boolean;
   subMenu: SubMenuType[]; // 소메뉴 리스트
@@ -35,3 +37,27 @@ export type TabType = {
   tabType: number;
   tabChange: (event: React.SyntheticEvent, newValue: number) => void;
 };
+
+// 메뉴 API 응답
+export interface MenuResponseModel extends ApiResponseType {
+  totalCnt: number | null;
+  contents: Array<{
+    slutnId: string;
+    upperSlutnId: string;
+    slutnNm: string;
+    lisneSeCd: string;
+    iconFlpth: string | null;
+    authorNthgUrl: string;
+    lnupOrd: string;
+    rollYn: string;
+    menuList: Array<{
+      slutnId: string;
+      upperSlutnId: string;
+      slutnNm: string;
+      lisneCnfirmYn: string;
+      url: string;
+      iconFlpth: string | null;
+      lnupOrd: string;
+    }>;
+  }>;
+}

@@ -46,12 +46,17 @@ export default function CustomerInfo({ selectedAge }: CustomerInfoProps) {
                 selectedRows={selectedRows}
                 toggleRowsSelection={toggleRowsSelection}
               >
-                <CheckboxTable.CheckboxTh />
-                <CheckboxTable.Theader>이름</CheckboxTable.Theader>
-                <CheckboxTable.Theader>휴대전화</CheckboxTable.Theader>
-                <CheckboxTable.Theader>일반전화</CheckboxTable.Theader>
-                <CheckboxTable.Theader>고객정보</CheckboxTable.Theader>
-                <CheckboxTable.Theader>주소</CheckboxTable.Theader>
+                <CheckboxTable.Thead>
+                  <CheckboxTable.Tr>
+                    <CheckboxTable.CheckboxTh />
+                    <CheckboxTable.Th>이름</CheckboxTable.Th>
+                    <CheckboxTable.Th>휴대전화</CheckboxTable.Th>
+                    <CheckboxTable.Th>일반전화</CheckboxTable.Th>
+                    <CheckboxTable.Th>고객정보</CheckboxTable.Th>
+                    <CheckboxTable.Th>주소</CheckboxTable.Th>
+                  </CheckboxTable.Tr>
+                </CheckboxTable.Thead>
+
                 <CheckboxTable.Tbody>
                   {tableTestData.map((item) => (
                     <CheckboxTable.Tr key={item.id} id={item.id}>

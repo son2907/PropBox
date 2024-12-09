@@ -26,7 +26,12 @@ export default function TableSelect({ total }: TableSelectProps) {
     },
   ];
 
-  const { selectValue, handleChange } = useSelect("10");
+  const { selectValue, handleChange } = useSelect(
+    selectData,
+    "value",
+    "data",
+    "10"
+  );
 
   return (
     <Box

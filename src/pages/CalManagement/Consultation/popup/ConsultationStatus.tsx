@@ -11,10 +11,10 @@ export default function ConsultationStatus() {
     <Box width={"100%"} height={"100%"} overflow={"hidden"}>
       <Box width={"100%"} height={"calc(100% - 47px)"} overflow={"auto"}>
         <BasicTable data={tableTestData}>
-          <BasicTable.Theader>시간</BasicTable.Theader>
-          <BasicTable.Theader>받기</BasicTable.Theader>
-          <BasicTable.Theader>걸기</BasicTable.Theader>
-          <BasicTable.Theader>전체</BasicTable.Theader>
+          <BasicTable.Th>시간</BasicTable.Th>
+          <BasicTable.Th>받기</BasicTable.Th>
+          <BasicTable.Th>걸기</BasicTable.Th>
+          <BasicTable.Th>전체</BasicTable.Th>
 
           <BasicTable.Tbody>
             {tableTestData.map((item, index) => {
@@ -35,10 +35,10 @@ export default function ConsultationStatus() {
         </BasicTable>
       </Box>
       <BasicTable data={tableTestData}>
-        <BasicTable.Theader>합계</BasicTable.Theader>
-        <BasicTable.Theader>0</BasicTable.Theader>
-        <BasicTable.Theader>11</BasicTable.Theader>
-        <BasicTable.Theader>0</BasicTable.Theader>
+        <BasicTable.Th>합계</BasicTable.Th>
+        <BasicTable.Th>0</BasicTable.Th>
+        <BasicTable.Th>11</BasicTable.Th>
+        <BasicTable.Th>0</BasicTable.Th>
       </BasicTable>
     </Box>
   );
