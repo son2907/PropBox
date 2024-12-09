@@ -29,7 +29,6 @@ import { useRadioGroup } from "../../../hooks/useRadioGroup";
 import Calendar from "../../../components/Calendar/Calendar";
 import TimePicker from "../../../components/TimePicker";
 // import { combineDateAndTime } from "../../../utils/combineDateAndTime";
-import { HiRefresh } from "react-icons/hi";
 import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
 import MultipleCheckboxTable from "../../../components/Table/MultipleCheckboxTable";
 // import { getCommonIds } from "../../../utils/getCommonIds";
@@ -95,9 +94,6 @@ export default function BulkMessage() {
           실험발송
         </BasicButton>
         <BasicButton>문자발송</BasicButton>
-        <IconSquareButton color="primary">
-          <HiRefresh />
-        </IconSquareButton>
       </GrayBox>
 
       <TableBox gap={2}>
@@ -188,10 +184,6 @@ export default function BulkMessage() {
           <TabPanel value={value} index={0}>
             <CenteredBox justifyContent={"center"} gap={1} margin={1}>
               <BasicButton>전체</BasicButton>
-              <IconSquareButton color="primary">
-                <HiRefresh />
-              </IconSquareButton>
-
               <BasicButton>대상 확인</BasicButton>
               <BasicButton>제외</BasicButton>
             </CenteredBox>

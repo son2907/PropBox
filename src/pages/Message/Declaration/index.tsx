@@ -13,7 +13,6 @@ import TableSelect from "../../../components/Select/TableSelect";
 import { usePagination } from "../../../hooks/usePagination";
 import CenteredBox from "../../../components/Box/CenteredBox";
 import BasicTable from "../../../components/Table/BasicTable";
-import { HiRefresh } from "react-icons/hi";
 import IconSquareButton from "../../../components/Button/IconSquareButton";
 import PathConstants from "../../../routers/path";
 import { openPopup } from "../../../utils/openPopup";
@@ -70,9 +69,6 @@ export default function DeclarationMessage() {
         >
           그룹관리
         </BasicButton>
-        <IconSquareButton color="primary">
-          <HiRefresh />
-        </IconSquareButton>
       </GrayBox>
       <TableBox gap={2}>
         <Stack width={"50%"} height={"100%"}>
