@@ -8,7 +8,6 @@ import { useTelStore } from "../../stores/telStore";
 
 export default function AppbarButton({ ...rest }: ButtonProps) {
   const { telno } = useTelStore();
-  console.log("값:", telno);
 
   //api로 전화기의 상태를 가져와 바인딩 해주어야 함..
   const [state, setState] = useState<boolean>(true);

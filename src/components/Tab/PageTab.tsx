@@ -45,7 +45,6 @@ export default function PageTab({
 }: PageTabProps) {
   const navigate = useNavigate();
   const nowUrl = useLocation();
-  console.log("지금url:", nowUrl);
 
   const onClick = () => {
     navigate(url);

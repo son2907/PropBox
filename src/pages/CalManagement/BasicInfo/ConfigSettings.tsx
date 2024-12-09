@@ -15,7 +15,7 @@ export default function ConfigSetting() {
 
   return (
     <>
-      <Stack width={"50%"} minWidth={"400px"} height={"100%"}>
+      <Stack width={"50%"} minWidth={"400px"} height={"100%"} gap={1}>
         <GrayBox gap={1}>
           <Typography>상담항목</Typography>
           <SearchInput />
