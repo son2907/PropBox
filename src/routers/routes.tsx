@@ -315,4 +315,12 @@ export const routes: RouteObject[] = [
     path: PathConstants.FAQ.FAQModify,
     element: <FAQModify />,
   },
+  {
+    path: PathConstants.SiteSelection,
+    element: <SiteSelection />,
+  },
+  {
+    path: PathConstants.NetworkSetup,
+    element: <NetworkSetupPop />,
+  },
 ];
