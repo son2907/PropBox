@@ -21,6 +21,7 @@ import { openPopup } from "../../utils/openPopup";
 import { usePopupStore } from "../../stores/popupStore";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "../../utils/adminResolver";
+import { useMenuStore } from "../../stores/menuStore";
 
 export default function Login() {
   const [rememberId, setRembmber] = useState<boolean>(false);
@@ -54,8 +55,11 @@ export default function Login() {
     "accessToken",
   ]);
 
+  const { clear: clearMenu } = useMenuStore();
+
   const onSubmit = (data: LoginRequestModel) => {
     clear();
+    clearMenu();
     queryClient.resetQueries();
     if (rememberId) {
       setSaveLogin(getValues("loginId"), true);

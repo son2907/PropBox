@@ -1,7 +1,6 @@
 import { RouteObject } from "react-router-dom";
 import DefaultLayout from "../layout";
 import PathConstants from "./path";
-import Main from "../pages/main";
 import Test from "../pages/test";
 import Login from "../pages/Login";
 import NetworkSetup from "../pages/NetworkSetup";
@@ -50,6 +49,7 @@ import ReceivingNumber from "../pages/SysManagement/ReceivingNumber";
 import SiteSelection from "../pages/SiteSelection";
 import NetworkSetupPop from "../pages/NetworkSetup/popup";
 import Err404 from "../pages/ERROR/Err404";
+import Launcher from "../pages/Launcher";
 
 export const routes: RouteObject[] = [
   {
@@ -60,7 +60,7 @@ export const routes: RouteObject[] = [
     ),
     // 에러 엘리먼트 추가 필요
     children: [
-      { path: PathConstants.Home, element: <Main /> },
+      { path: PathConstants.Home, element: <Launcher /> },
       {
         children: [
           {

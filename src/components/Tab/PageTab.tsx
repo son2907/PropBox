@@ -27,14 +27,14 @@ const PageTabStyle = styled(Box, {
   backgroundColor:
     nowUrl === url
       ? theme.palette.pageTab.selectedTabBg
-      : theme.palette.pageTab.tabBg, // 추후 테마를 이용한 색상으로 변경
-  display: "flex",
+      : theme.palette.pageTab.tabBg,
+  display: nowUrl == "/" ? "none" : "flex",
   alignItems: "center",
   cursor: "pointer",
 }));
 
 const Icon = styled(Box)(({ theme }) => ({
-  color: theme.palette.pageTab.tabIcon, // 테마의 primary 색상으로 설정
+  color: theme.palette.pageTab.tabIcon,
 }));
 
 export default function PageTab({
@@ -45,6 +45,7 @@ export default function PageTab({
 }: PageTabProps) {
   const navigate = useNavigate();
   const nowUrl = useLocation();
+  console.log("지금url:", nowUrl);
 
   const onClick = () => {
     navigate(url);

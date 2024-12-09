@@ -10,7 +10,6 @@ export default function useSelect<T extends Data>(
 ) {
   // 선택된 값 상태 관리
   const [selectValue, setSelectValue] = useState<any>(defaultValue ?? "");
-
   // 전체 데이터 변환
   // data가 undefined일 경우 빈 배열로 처리
   const selectListData =

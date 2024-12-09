@@ -1,10 +1,11 @@
 import { Box, styled } from "@mui/material";
 import { appBarHeight } from "../../config";
 import AppbarButton from "../appbar/AppbarButton";
-import { useState } from "react";
 import { Select } from "../Select";
 import useSelect from "../../hooks/useSelect";
 import UserInfo from "./UserInfo";
+import { useSiteList } from "../../api/siteList";
+import getItemByStorageOne from "../../utils/getItemByStorageOne";
 
 // AppBarArea 컴포넌트: 앱바 영역
 const AppBarArea = styled(Box)(({ theme }) => ({
@@ -20,33 +21,18 @@ const AppBarArea = styled(Box)(({ theme }) => ({
   padding: "0 20px 0 20px",
 }));
 
-const testData = [
-  {
-    value: "1",
-    data: "대구 수성구 센터",
-  },
-  {
-    value: "2",
-    data: "대구 OO구 센터2",
-  },
-  {
-    value: "3",
-    data: "대구 OO구 센터3",
-  },
-  {
-    value: "4",
-    data: "대구 OO구 센터4",
-  },
-];
 // 실시간으로 상태를 받아서 보여주어야 함
 export default function Appbar() {
-  const [state, setState] = useState<boolean>(true);
+  const sptNo = getItemByStorageOne("selectedSite")?.sptNo;
+
+  const { data } = useSiteList();
+
   const { selectListData, selectValue, handleChange } = useSelect(
-    testData,
-    "value",
-    "data"
+    data?.data.contents,
+    "sptNo", // 현장 번호
+    "sptNm", // 현장명
+    sptNo
   );
-  const text = "010-1111-1111";
 
   return (
     <AppBarArea>
@@ -57,7 +43,7 @@ export default function Appbar() {
         placeholder={"현장 선택"}
         sx={{ width: "160px" }}
       />
-      <AppbarButton state={state} text={text} />
+      <AppbarButton />
       <UserInfo />
     </AppBarArea>
   );

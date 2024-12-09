@@ -35,7 +35,6 @@ export default function Content({ children }: ContentProps) {
         // 첫번째 메뉴이면서 배열이 비어있지도 않을 때
         // 배열의 첫번재 항목으로 이동
         navigate(menus[1].url);
-        console.log("이건데.");
       }
     }
     e.preventDefault(); // 기본 동작을 막음
