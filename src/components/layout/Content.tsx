@@ -4,6 +4,8 @@ import { useMenuStore } from "../../stores/menuStore";
 import { useLocation, useNavigate } from "react-router-dom";
 import PathConstants from "../../routers/path";
 import { IconList } from "./MenuIconList";
+import { HiRefresh } from "react-icons/hi";
+import IconSquareButton from "../Button/IconSquareButton";
 
 interface ContentProps {
   children: React.ReactNode;
@@ -68,6 +70,11 @@ export default function Content({ children }: ContentProps) {
             />
           );
         })}
+        <Box marginLeft={"auto"}>
+          <IconSquareButton color="primary">
+            <HiRefresh />
+          </IconSquareButton>
+        </Box>
       </div>
       <Box
         display={"flex"}

@@ -8,17 +8,27 @@ import { IconButton } from "../Button";
 import { useState } from "react";
 import { openPopup } from "../../utils/openPopup";
 import PathConstants from "../../routers/path";
+import useModal from "../../hooks/useModal";
+import { LogoutModal } from "./modal/Logout";
 
 export default function UserInfo() {
   const { userNm, mbtlNo } = useAuthStore(["userNm", "mbtlNo"]);
   const [open, setOpen] = useState<boolean>(false); // 메뉴 토글 상태
   const clear = useAuthStore(["clear"]);
   const navigate = useNavigate();
+  const { openModal, closeModal } = useModal();
 
   const onLogout = () => {
-    clear.clear();
-    localStorage.clear();
-    navigate("/login");
+    openModal(LogoutModal, {
+      modalId: "logOut",
+      stack: false, // 단일 모달 모드 = false,
+      onClose: () => closeModal,
+      onSubmit: () => {
+        clear.clear();
+        localStorage.clear();
+        navigate("/login");
+      },
+    });
   };
 
   const toggleMenu = () => setOpen((prev) => !prev); // 메뉴 토글 함수

@@ -39,7 +39,6 @@ import MemberManagement from "../pages/SysManagement/Member";
 import LocalManagement from "../pages/SysManagement/Local";
 import LocalRegistration from "../pages/SysManagement/Local/popup/LocalRegistration";
 import AuthGuard from "./guard/AuthGuard";
-import PhoneManagement from "../pages/SysManagement/Phone";
 import PhoneAdd from "../pages/SysManagement/Phone/popup/PhoneAdd";
 import DeviceType from "../pages/SysManagement/Phone/popup/DeviceType";
 import NoticeList from "../pages/Notice";
@@ -314,5 +313,13 @@ export const routes: RouteObject[] = [
   {
     path: PathConstants.FAQ.FAQModify,
     element: <FAQModify />,
+  },
+  {
+    path: PathConstants.SiteSelection,
+    element: <SiteSelection />,
+  },
+  {
+    path: PathConstants.NetworkSetup,
+    element: <NetworkSetupPop />,
   },
 ];
