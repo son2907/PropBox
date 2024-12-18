@@ -46,6 +46,14 @@ export default function UserInfo() {
     });
   };
 
+  const openPasswordCheck = () => {
+    openPopup({
+      url: PathConstants.MyPage.PasswordCheck,
+      windowName: "PasswordCheck",
+      windowFeatures: "width=300,height=250,scrollbars=no,resizable=no",
+    });
+  }
+
   return (
     <CenteredBox height={"100%"} fontSize={"x-large"} gap={1}>
       {/* IconButton 클릭 시 메뉴 보이기 */}
@@ -53,7 +61,7 @@ export default function UserInfo() {
         <MdOutlineSupportAgent />
       </IconButton>
 
-      <Typography color="primary.main">
+      <Typography color="primary.main" onClick={openPasswordCheck}>
         {userNm} {mbtlNo}
       </Typography>
 

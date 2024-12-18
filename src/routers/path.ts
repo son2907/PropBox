@@ -69,6 +69,11 @@ const PathConstants = {
     FAQDetail : "/faq/faqDetail",
     FAQModify : "/faq/faqModify",
   },
+  MyPage:{
+    PasswordCheck : "/mypage/passwordCheck",
+    UserInfoPopup : "/mypage/userInfo",
+    AdminInfoPopup : "/mypage/adminInfo",
+  }
 };
 
 export default PathConstants;
