@@ -8,10 +8,12 @@ interface CalendarProps {
   selectedDate: Date;
   setSelectedDate: (date: Date) => void;
   width?: string;
+  useMaxDate?: boolean; // maxDate 사용 여부를 결정하는 프로퍼티 추가
 }
 export default function Calendar({
   selectedDate,
   setSelectedDate,
+  useMaxDate = true, // 기본값은 false로 설정
 }: CalendarProps) {
   // const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
@@ -22,7 +24,7 @@ export default function Calendar({
       dateFormat="yyyy.MM.dd" // 날짜 형태
       shouldCloseOnSelect // 날짜를 선택하면 datepicker가 자동으로 닫힘
       minDate={new Date("2000-01-01")} // minDate 이전 날짜 선택 불가
-      maxDate={new Date()} // maxDate 이후 날짜 선택 불가
+      maxDate={useMaxDate ? undefined : new Date()} // maxDate 이후 날짜 선택 불가
       selected={selectedDate}
       onChange={(date) => {
         if (date) {
