@@ -58,6 +58,9 @@ import Err404 from "../pages/ERROR/Err404";
 import Launcher from "../pages/Launcher";
 import PhoneSetting from "../pages/SysManagement/Phone";
 import NetworkSetup from "../pages/NetworkSetup";
+import PasswordCheck from "../pages/Mypage/popup/PasswordCheck";
+import UserInfoPopup from "../pages/Mypage";
+import AdminInfoPopup from "../pages/Mypage/AdminInfo";
 
 export const routes: RouteObject[] = [
   {
@@ -322,4 +325,16 @@ export const routes: RouteObject[] = [
     path: PathConstants.NetworkSetup,
     element: <NetworkSetupPop />,
   },
+  {
+    path: PathConstants.MyPage.PasswordCheck,
+    element: <PasswordCheck />,
+  },
+  {
+    path: PathConstants.MyPage.UserInfoPopup,
+    element: <UserInfoPopup />,
+  },
+  {
+    path: PathConstants.MyPage.AdminInfoPopup,
+    element: <AdminInfoPopup />,
+  }
 ];

@@ -19,6 +19,8 @@ import { BiChevronLeft } from "react-icons/bi";
 import { RiDeleteBinLine } from "react-icons/ri";
 import PathConstants from "../../routers/path";
 import { openPopup } from "../../utils/openPopup";
+import CenteredBox from "../../components/Box/CenteredBox";
+import TableSelect from "../../components/Select/TableSelect";
 
 export default function NetworkSetup() {
   //useMultiRowSelection 분리해서 각 테이블에 독립적으로 selectedRows와 toggleRowsSelection을 전달하여 동작이 분리되도록 설정.
@@ -75,7 +77,7 @@ export default function NetworkSetup() {
 
   return (
     <>
-      <Stack width={"100%"} height={"100%"} marginBottom={1}>
+      <Stack width={"100%"} height={"100%"} gap={1}>
         <GrayBox gap={2} justifyContent={"space-between"}>
           <SearchInput></SearchInput>
           <BasicButton
@@ -90,44 +92,40 @@ export default function NetworkSetup() {
             전화기추가
           </BasicButton>
         </GrayBox>
-        <Stack height={"100%"} direction={"row"}>
-          {/* 사용자 및 회사 정보 */}
-          <Stack width={"20%"} overflow={"auto"} height={"96%"}>
-            <TableBox>
-              <TableBox.Inner>
-                <BasicTable data={tableTestData}>
-                  <BasicTable.Th>사용자ID</BasicTable.Th>
-                  <BasicTable.Th>회사이름</BasicTable.Th>
-                  <BasicTable.Th>등록일자</BasicTable.Th>
-                  <BasicTable.Th>전화기수</BasicTable.Th>
-                  <BasicTable.Tbody>
-                    {tableTestData.map((item, index) => {
-                      return (
-                        <BasicTable.Tr
-                          key={index}
-                          isClicked={userSelectedRow.has(item.id)}
-                          onClick={() => toggleUserRowSelection(item.id)}
-                        >
-                          <BasicTable.Td>{item.phone}</BasicTable.Td>
-                          <BasicTable.Td>{item.name}</BasicTable.Td>
-                          <BasicTable.Td>{item.hireDate}</BasicTable.Td>
-                          <BasicTable.Td>{item.age}</BasicTable.Td>
-                        </BasicTable.Tr>
-                      );
-                    })}
-                  </BasicTable.Tbody>
-                </BasicTable>
-              </TableBox.Inner>
-            </TableBox>
-            <SearchResult total={100} />
+        <TableBox gap={1}>
+          <Stack width={"20%"} height={"100%"}>
+            <TableBox.Inner>
+              <BasicTable data={tableTestData}>
+                <BasicTable.Th>사용자ID</BasicTable.Th>
+                <BasicTable.Th>회사이름</BasicTable.Th>
+                <BasicTable.Th>등록일자</BasicTable.Th>
+                <BasicTable.Th>전화기수</BasicTable.Th>
+                <BasicTable.Tbody>
+                  {tableTestData.map((item, index) => {
+                    return (
+                      <BasicTable.Tr
+                        key={index}
+                        isClicked={userSelectedRow.has(item.id)}
+                        onClick={() => toggleUserRowSelection(item.id)}
+                      >
+                        <BasicTable.Td>{item.phone}</BasicTable.Td>
+                        <BasicTable.Td>{item.name}</BasicTable.Td>
+                        <BasicTable.Td>{item.hireDate}</BasicTable.Td>
+                        <BasicTable.Td>{item.age}</BasicTable.Td>
+                      </BasicTable.Tr>
+                    );
+                  })}
+                </BasicTable.Tbody>
+              </BasicTable>
+            </TableBox.Inner>
+            <CenteredBox justifyContent={"start"}>
+              <SearchResult total={100} />
+            </CenteredBox>
           </Stack>
-          {/* 회사 및 현장 정보 */}
-          <Stack width={"20%"} padding={1} height={"96%"}>
-            <Stack height={"50%"} gap={1}>
-              <Stack width={"50%"}>
-                <SearchInput placeholder="회사이름 검색"></SearchInput>
-              </Stack>
-              <TableBox>
+          <Stack width={"80%"} height={"100%"} gap={1}>
+            <TableBox width={"100%"} height={"50%"} gap={1}>
+              <Stack width={"20%"} height={"100%"} gap={1}>
+                <SearchInput placeholder="회사이름 검색" sx={{ width: "200px", height: "40px" }}></SearchInput>
                 <TableBox.Inner>
                   <BasicTable data={tableTestData}>
                     <BasicTable.Th>회사이름</BasicTable.Th>
@@ -150,151 +148,103 @@ export default function NetworkSetup() {
                     </BasicTable.Tbody>
                   </BasicTable>
                 </TableBox.Inner>
-              </TableBox>
-            </Stack>
-            <Stack height={"50%"} gap={1} marginBottom={1}>
-              <Stack width={"50%"}>
-                <SearchInput placeholder="회사이름 검색"></SearchInput>
               </Stack>
-              <TableBox>
-                <TableBox.Inner>
-                  <BasicTable data={tableTestData}>
-                    <BasicTable.Th>회사이름</BasicTable.Th>
-                    <BasicTable.Th>현장이름</BasicTable.Th>
-                    <BasicTable.Th>구성원이름</BasicTable.Th>
-                    <BasicTable.Tbody>
-                      {tableTestData.map((item, index) => {
-                        return (
-                          <BasicTable.Tr
-                            key={index}
-                            isClicked={companySelectedRow.has(item.id)}
-                            onClick={() => toggleCompanyRowSelection(item.id)}
-                          >
-                            <BasicTable.Td>{item.name}</BasicTable.Td>
-                            <BasicTable.Td>{item.hireDate}</BasicTable.Td>
-                            <BasicTable.Td>{item.age}</BasicTable.Td>
-                          </BasicTable.Tr>
-                        );
-                      })}
-                    </BasicTable.Tbody>
-                  </BasicTable>
-                </TableBox.Inner>
-              </TableBox>
-            </Stack>
-          </Stack>
-          {/* 전화기 리스트 */}
-          <Stack
-            height={"96%"}
-            width={"100%"}
-            direction={"row"}
-            gap={1}
-            sx={{ minWidth: "800px", overflowX: "auto" }}
-          >
-            <Stack width={"30%"} justifyContent={"start"} overflow={"hidden"}>
-              <GrayBox>
-                <Stack gap={1} direction={"row"}>
-                  <Box width={"200px"}>
-                    <Calendar selectedDate={date} setSelectedDate={setDate} />
-                  </Box>
-                  <BasicButton>
-                    <MdArrowBackIos />
-                    이전
-                  </BasicButton>
-                  <BasicButton>
-                    <MdArrowForwardIos />
-                    이후
-                  </BasicButton>
-                  <BasicButton>
-                    <FaArrowDown />
-                    오늘
-                  </BasicButton>
-                </Stack>
-              </GrayBox>
-              <Box overflow={"auto"}>
-                <TableBox>
-                  <TableBox.Inner>
-                    <CheckboxTable
-                      data={tableTestData}
-                      selectedRows={useSelectedRows}
-                      toggleRowsSelection={toggleUseRowsSelection}
-                    >
-                      <CheckboxTable.Thead>
-                        <CheckboxTable.Tr>
-                          <CheckboxTable.CheckboxTh />
-                          <CheckboxTable.Th>구분</CheckboxTable.Th>
-                          <CheckboxTable.Th>전화번호</CheckboxTable.Th>
-                          <CheckboxTable.Th>시작일</CheckboxTable.Th>
-                          <CheckboxTable.Th>종료일</CheckboxTable.Th>
-                          <CheckboxTable.Th>삭제</CheckboxTable.Th>
-                        </CheckboxTable.Tr>
-                      </CheckboxTable.Thead>
-
-                      <CheckboxTable.Tbody>
-                        {tableTestData.map((item) => (
-                          <CheckboxTable.Tr key={item.id} id={item.id}>
-                            <CheckboxTable.CheckboxTd item={item} />
-                            <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
-                            <CheckboxTable.Td>
-                              <IconButton color="error">
-                                <RiDeleteBinLine />
-                              </IconButton>
-                            </CheckboxTable.Td>
+              <TableBox width={"80%"} height={"100%"} gap={1}>
+                <Stack width={"50%"} height={"100%"}>
+                  <GrayBox width={"100%"} height={"40px"} sx={{ direction: "row" }} gap={1} padding={1}>
+                    <Box width={"200px"}>
+                      <Calendar selectedDate={date} setSelectedDate={setDate} />
+                    </Box>
+                    <BasicButton>
+                      <MdArrowBackIos />
+                      이전
+                    </BasicButton>
+                    <BasicButton>
+                      <MdArrowForwardIos />
+                      이후
+                    </BasicButton>
+                    <BasicButton>
+                      <FaArrowDown />
+                      오늘
+                    </BasicButton>
+                  </GrayBox>
+                  <Stack width={"100%"} height={"100"} overflow={"auto"}>
+                    <TableBox.Inner>
+                      <CheckboxTable
+                        data={tableTestData}
+                        selectedRows={useSelectedRows}
+                        toggleRowsSelection={toggleUseRowsSelection}
+                      >
+                        <CheckboxTable.Thead>
+                          <CheckboxTable.Tr>
+                            <CheckboxTable.CheckboxTh />
+                            <CheckboxTable.Th>구분</CheckboxTable.Th>
+                            <CheckboxTable.Th>전화번호</CheckboxTable.Th>
+                            <CheckboxTable.Th>시작일</CheckboxTable.Th>
+                            <CheckboxTable.Th>종료일</CheckboxTable.Th>
+                            <CheckboxTable.Th>삭제</CheckboxTable.Th>
                           </CheckboxTable.Tr>
-                        ))}
-                      </CheckboxTable.Tbody>
-                    </CheckboxTable>
-                  </TableBox.Inner>
-                </TableBox>
-              </Box>
-              <SearchResult total={100} />
-            </Stack>
-            <Stack
-              width={"3%"}
-              bgcolor={"white"}
-              justifyContent={"space-between"}
-              justifyItems={"center"}
-            >
-              <BasicButton
-                sx={{
-                  backgroundColor: "primary.A100",
-                  height: "200px",
-                  width: "5px",
-                }}
-              >
-                <BiChevronLeft size={"24px"} />
-              </BasicButton>
-              <BasicButton
-                sx={{
-                  backgroundColor: "primary.A100",
-                  height: "200px",
-                  width: "5px",
-                }}
-              >
-                <BiChevronLeft size={"24px"} />
-              </BasicButton>
-            </Stack>
-            <Stack
-              width={"30%"}
-              justifyContent={"start"}
-              overflow={"hidden"}
-              marginLeft={1}
-            >
-              <GrayBox>
-                <Stack gap={1} direction={"row"}>
-                  <Select
-                    sx={{ width: "200px" }}
-                    selectData={selectTestData}
-                    value={s_1}
-                    onChange={o_1}
-                  />
-                  <SearchInput></SearchInput>
+                        </CheckboxTable.Thead>
+
+                        <CheckboxTable.Tbody>
+                          {tableTestData.map((item) => (
+                            <CheckboxTable.Tr key={item.id} id={item.id}>
+                              <CheckboxTable.CheckboxTd item={item} />
+                              <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
+                              <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
+                              <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
+                              <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
+                              <CheckboxTable.Td>
+                                <IconButton color="error">
+                                  <RiDeleteBinLine />
+                                </IconButton>
+                              </CheckboxTable.Td>
+                            </CheckboxTable.Tr>
+                          ))}
+                        </CheckboxTable.Tbody>
+                      </CheckboxTable>
+                    </TableBox.Inner>
+                    <SearchResult total={100} />
+                  </Stack>
                 </Stack>
-              </GrayBox>
-              <Box overflow={"auto"}>
-                <TableBox>
+                <Stack width={"2%"} bgcolor={"white"} justifyContent={"space-between"}>
+                  <BasicButton
+                    sx={{
+                      backgroundColor: "primary.A100",
+                      height: "150px",
+                      width: "100%",
+                      padding: "0",
+                      margin: "0",
+                      minWidth: "unset", // 기본 minWidth 해제
+                    }}
+                  >
+                    <BiChevronLeft size={"24px"} />
+                  </BasicButton>
+                  <BasicButton
+                    sx={{
+                      backgroundColor: "primary.A100",
+                      height: "150px",
+                      width: "100%",
+                      padding: "0",
+                      margin: "0",
+                      minWidth: "unset", // 기본 minWidth 해제
+                    }}
+                  >
+                    <BiChevronLeft size={"24px"} />
+                  </BasicButton>
+                </Stack>
+                <Stack width={"50%"} height={"100%"}>
+                  <GrayBox width={"100%"}>
+                    <Stack gap={1} direction={"row"}>
+                      <Select
+                        sx={{ width: "200px" }}
+                        selectData={selectTestData}
+                        value={s_1}
+                        onChange={o_1}
+                      />
+                      <SearchInput></SearchInput>
+                    </Stack>
+                  </GrayBox>
                   <TableBox.Inner>
                     <CheckboxTable
                       data={tableTestData}
@@ -324,107 +274,123 @@ export default function NetworkSetup() {
                       </CheckboxTable.Tbody>
                     </CheckboxTable>
                   </TableBox.Inner>
-                </TableBox>
-              </Box>
-              <SearchResult total={100} />
-            </Stack>
-            <Stack width={"30%"} overflow={"hidden"} height={"100%"}>
-              <GrayBox>
-                <Stack gap={1} direction={"row"}>
-                  <Box width={"200px"}>
-                    <Calendar selectedDate={date} setSelectedDate={setDate} />
-                  </Box>
-                  <BasicButton>
-                    <MdArrowBackIos />
-                    이전
+                  <SearchResult total={100} />
+                </Stack>
+              </TableBox>
+            </TableBox>
+            <TableBox width={"100%"} height={"50%"} gap={1}>
+              <Stack width={"20%"} height={"100%"} gap={1}>
+                <SearchInput placeholder="회사이름 검색" sx={{ width: "200px", height: "40px" }}></SearchInput>
+                <TableBox.Inner>
+                  <BasicTable data={tableTestData}>
+                    <BasicTable.Th>회사이름</BasicTable.Th>
+                    <BasicTable.Th>현장이름</BasicTable.Th>
+                    <BasicTable.Th>구성원이름</BasicTable.Th>
+                    <BasicTable.Tbody>
+                      {tableTestData.map((item, index) => {
+                        return (
+                          <BasicTable.Tr
+                            key={index}
+                            isClicked={companySelectedRow.has(item.id)}
+                            onClick={() => toggleCompanyRowSelection(item.id)}
+                          >
+                            <BasicTable.Td>{item.name}</BasicTable.Td>
+                            <BasicTable.Td>{item.hireDate}</BasicTable.Td>
+                            <BasicTable.Td>{item.age}</BasicTable.Td>
+                          </BasicTable.Tr>
+                        );
+                      })}
+                    </BasicTable.Tbody>
+                  </BasicTable>
+                </TableBox.Inner>
+              </Stack>
+              <TableBox width={"80%"} height={"100%"} gap={1}>
+                <Stack width={"50%"} height={"100%"}>
+                  <GrayBox width={"100%"} height={"40px"} sx={{ direction: "row" }} gap={1} padding={1}>
+                    <Box width={"200px"}>
+                      <Calendar selectedDate={date} setSelectedDate={setDate} />
+                    </Box>
+                    <BasicButton>
+                      <MdArrowBackIos />
+                      이전
+                    </BasicButton>
+                    <BasicButton>
+                      <MdArrowForwardIos />
+                      이후
+                    </BasicButton>
+                    <BasicButton>
+                      <FaArrowDown />
+                      오늘
+                    </BasicButton>
+                  </GrayBox>
+                  <TableBox.Inner>
+                    <CheckboxTable
+                      data={tableTestData}
+                      selectedRows={useSelectedRows}
+                      toggleRowsSelection={toggleUseRowsSelection}
+                    >
+                      <CheckboxTable.Thead>
+                        <CheckboxTable.Tr>
+                          <CheckboxTable.CheckboxTh />
+                          <CheckboxTable.Th>구분</CheckboxTable.Th>
+                          <CheckboxTable.Th>전화번호</CheckboxTable.Th>
+                          <CheckboxTable.Th>할당여부</CheckboxTable.Th>
+                          <CheckboxTable.Th>할당된현장명</CheckboxTable.Th>
+                        </CheckboxTable.Tr>
+                      </CheckboxTable.Thead>
+
+                      <CheckboxTable.Tbody>
+                        {tableTestData.map((item) => (
+                          <CheckboxTable.Tr key={item.id} id={item.id}>
+                            <CheckboxTable.CheckboxTd item={item} />
+                            <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
+                            <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
+                            <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
+                            <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
+                          </CheckboxTable.Tr>
+                        ))}
+                      </CheckboxTable.Tbody>
+                    </CheckboxTable>
+                  </TableBox.Inner>
+                </Stack>
+                <Stack width={"2%"} bgcolor={"white"} justifyContent={"space-between"}>
+                  <BasicButton
+                    sx={{
+                      backgroundColor: "primary.A100",
+                      height: "150px",
+                      width: "100%",
+                      padding: "0",
+                      margin: "0",
+                      minWidth: "unset", // 기본 minWidth 해제
+                    }}
+                  >
+                    <BiChevronLeft size={"24px"} />
                   </BasicButton>
-                  <BasicButton>
-                    <MdArrowForwardIos />
-                    이후
-                  </BasicButton>
-                  <BasicButton>
-                    <FaArrowDown />
-                    오늘
+                  <BasicButton
+                    sx={{
+                      backgroundColor: "primary.A100",
+                      height: "150px",
+                      width: "100%",
+                      padding: "0",
+                      margin: "0",
+                      minWidth: "unset", // 기본 minWidth 해제
+                    }}
+                  >
+                    <BiChevronLeft size={"24px"} />
                   </BasicButton>
                 </Stack>
-              </GrayBox>
-              <Box overflow={"auto"}>
-                <TableBox>
-                  <TableBox.Inner>
-                    <BasicTable data={tableTestData}>
-                      <BasicTable.Th>구분</BasicTable.Th>
-                      <BasicTable.Th>전화번호</BasicTable.Th>
-                      <BasicTable.Th>시작일</BasicTable.Th>
-                      <BasicTable.Th>종료일</BasicTable.Th>
-                      <BasicTable.Th>삭제</BasicTable.Th>
-                      <BasicTable.Tbody>
-                        {tableTestData.map((item, index) => {
-                          return (
-                            <BasicTable.Tr
-                              key={index}
-                              isClicked={userSelectedRow.has(item.id)}
-                              onClick={() => toggleUserRowSelection(item.id)}
-                            >
-                              <BasicTable.Td>{item.phone}</BasicTable.Td>
-                              <BasicTable.Td>{item.name}</BasicTable.Td>
-                              <BasicTable.Td>{item.hireDate}</BasicTable.Td>
-                              <BasicTable.Td>{item.age}</BasicTable.Td>
-                              <BasicTable.Td>
-                                <IconButton color="error">
-                                  <RiDeleteBinLine />
-                                </IconButton>
-                              </BasicTable.Td>
-                            </BasicTable.Tr>
-                          );
-                        })}
-                      </BasicTable.Tbody>
-                    </BasicTable>
-                  </TableBox.Inner>
-                </TableBox>
-              </Box>
-            </Stack>
-            <Stack
-              width={"3%"}
-              bgcolor={"white"}
-              justifyContent={"space-between"}
-              justifyItems={"center"}
-            >
-              <BasicButton
-                sx={{
-                  backgroundColor: "primary.A100",
-                  height: "200px",
-                  width: "5px",
-                }}
-              >
-                <BiChevronLeft size={"24px"} />
-              </BasicButton>
-              <BasicButton
-                sx={{
-                  backgroundColor: "primary.A100",
-                  height: "200px",
-                  width: "5px",
-                }}
-              >
-                <BiChevronLeft size={"24px"} />
-              </BasicButton>
-            </Stack>
-            <Stack
-              width={"30%"}
-              overflow={"hidden"}
-              height={"100%"}
-              marginLeft={1}
-            >
-              <Stack gap={1} direction={"row"}>
-                <Select
-                  sx={{ width: "200px" }}
-                  selectData={selectTestData}
-                  value={s_1}
-                  onChange={o_1}
-                />
-                <SearchInput></SearchInput>
-              </Stack>
-              <Box overflow={"auto"}>
-                <TableBox>
+                <Stack width={"50%"} height={"100%"}>
+                  <GrayBox width={"100%"}>
+                    <Stack gap={1} direction={"row"}>
+                      <Select
+                        sx={{ width: "200px" }}
+                        selectData={selectTestData}
+                        value={s_1}
+                        onChange={o_1}
+                      />
+                      <SearchInput></SearchInput>
+                    </Stack>
+                  </GrayBox>
                   <TableBox.Inner>
                     <BasicTable data={tableTestData}>
                       <BasicTable.Th>구분</BasicTable.Th>
@@ -449,13 +415,12 @@ export default function NetworkSetup() {
                       </BasicTable.Tbody>
                     </BasicTable>
                   </TableBox.Inner>
-                </TableBox>
-              </Box>
-
-              <SearchResult total={100} />
-            </Stack>
+                  <SearchResult total={100} />
+                </Stack>
+              </TableBox>
+            </TableBox>
           </Stack>
-        </Stack>
+        </TableBox>
       </Stack>
     </>
   );
