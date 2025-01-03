@@ -1,7 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import instance from "../utils/axiosInstance";
 import getItemByStorageOne from "../utils/getItemByStorageOne";
 import { getFormattedDate } from "../utils/getFormattedDate";
+import { MemoRequestBody } from "../types/TelList";
 
 const API = {
   // 상담 항목 목록
@@ -36,21 +37,47 @@ const API = {
     const url = `/api/tel/cnslt/hist/list?sptNo=${spt}&cstmrNo=${cstmrNo}`;
     return await instance.get(url);
   },
+  getCnsltItem: async (
+    cstmrNo?: string, // 고객 번호
+    cnsltNo?: string // 상담번호
+  ) => {
+    const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
+    const url = `/api/tel/cnslt/item?sptNo=${spt}&cstmrNo=${cstmrNo}&cnsltNo=${cnsltNo}`;
+    return await instance.get(url);
+  },
+  getCnsltMemo: async (
+    userNo?: string // 사용자 번호
+  ) => {
+    const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
+    const url = `/api/tel/cnslt/memo?sptNo=${spt}&userNo=${userNo}`;
+    return await instance.get(url);
+  },
+  postCnsltMemo: async (requestData: { body: MemoRequestBody }) => {
+    const url = `/api/tel/cnslt/memo`;
+    return await instance.post(url, requestData.body);
+  },
 };
 
 const KEY = {
-  getCnsltItemList: () => ["/api/sptcnslt/itemlist"],
+  getCnsltItemList: () => ["/sptcnslt/itemlist"],
   getTelCnsltList: (absnceYn?: string, trsmYn?: string) => [
-    "/api/tel/cnslt",
+    "/tel/cnslt",
     absnceYn,
     trsmYn,
   ],
   getCnsltDetail: (cstmrNo?: string, cnsltNo?: string) => [
-    "/api/tel/cnslt/detail",
+    "/tel/cnslt/hist/detail",
     cstmrNo,
     cnsltNo,
   ],
-  getCnsltHistList: (cstmrNo?: string) => ["/api/tel/cnslt/hist/list", cstmrNo],
+  getCnsltHistList: (cstmrNo?: string) => ["/tel/cnslt/hist/list", cstmrNo],
+  getCnsltItem: (cstmrNo?: string, cnsltNo?: string) => [
+    "/tel/cnslt/item",
+    cstmrNo,
+    cnsltNo,
+  ],
+  getCnsltMemo: (userNo?: string) => ["/tel/cnslt/memo", userNo],
+  postCnsltMemo: () => ["/api/tel/cnslt/memo"],
 };
 
 export const useCnsltItemList = () => {
@@ -99,5 +126,40 @@ export const useCnslHist = (
       return await API.getCnsltHistList(cstmrNo);
     },
     enabled: !!cstmrNo,
+  });
+};
+
+// 상담 한 건에 대한 상담 항목 리스트 조회
+export const useCnsltItem = (
+  cstmrNo?: string, // 고객번호
+  cnsltNo?: string // 상담번호
+) => {
+  return useQuery({
+    queryKey: KEY.getCnsltItem(cstmrNo, cnsltNo),
+    queryFn: async () => {
+      return await API.getCnsltItem(cstmrNo, cnsltNo);
+    },
+    enabled: !!cstmrNo && !!cnsltNo,
+  });
+};
+
+// 사용자에 대한 메모 조회
+export const useCnsltMemo = (
+  userNo?: string // 고객번호
+) => {
+  return useQuery({
+    queryKey: KEY.getCnsltMemo(userNo),
+    queryFn: async () => {
+      return await API.getCnsltMemo(userNo);
+    },
+    enabled: !!userNo,
+  });
+};
+
+export const usePostMemo = () => {
+  return useMutation({
+    mutationFn: (requstData: { body: MemoRequestBody }) =>
+      API.postCnsltMemo(requstData),
+    mutationKey: KEY.postCnsltMemo(),
   });
 };

@@ -1,6 +1,5 @@
 import useTabs from "../../../hooks/useTabs";
 import BasicTable from "../../../components/Table/BasicTable";
-import { tableTestData } from "../../../utils/testData";
 import SearchResult from "../../../components/Table/SearchResult";
 import { Stack } from "@mui/material";
 import TabPanel from "../../../components/Tab/TabPanel";
@@ -27,15 +26,13 @@ export default function CallTable({ tabType, tabChange }: TabType) {
   // 단일 선택
   const { selectedRow, toggleRowSelection, resetSelection } =
     useSingleRowSelection();
-  // 다중 선택
-  const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
+
   const callPopupInfo = {
     url: PathConstants.Call.CallLog,
     windowFeatures: "width=1000,height=650,scrollbars=yes,resizable=yes",
     windowName: "전화걸기 처리내역",
   };
 
-  console.log("상세 테이블::", callOptionValue);
   // api -------------------------
 
   const [cnsltLog, setCnsltLog] = useState<TelCnsltType[]>([]);
@@ -77,13 +74,13 @@ export default function CallTable({ tabType, tabChange }: TabType) {
 
   useEffect(() => {
     if (cnsltData) {
+      console.log("전체 상담 데이터:", cnsltData);
       setCnsltLog(cnsltData.data.contents);
       resetSelection();
+    } else {
+      setCnsltLog([]);
     }
   }, [cnsltData]);
-
-  console.log("조건:", trsmYn);
-  console.log("api데이터:", cnsltData);
 
   useEffect(() => {
     if (selectedRow.size > 0) {
@@ -94,14 +91,14 @@ export default function CallTable({ tabType, tabChange }: TabType) {
         key: "cnsltNo",
         values: Array.from(selectedRow),
       });
-      console.log("선택한 고객 정보:", data);
-      setTelInfo(data[0].cstmrNo, data[0].cnsltNo);
+      console.log("선택한 고객 데이터:", data);
+      setTelInfo(data[0].cstmrNo, data[0].cnsltNo, trsmYn);
     }
 
     if (selectedRow.size == 0) {
       clear();
     }
-  }, [selectedRow]);
+  }, [selectedRow, trsmYn]);
 
   return (
     <>
@@ -176,13 +173,7 @@ export default function CallTable({ tabType, tabChange }: TabType) {
                     <BasicTable.Tbody>
                       {cnsltLog.map((item, index) => {
                         return (
-                          <BasicTable.Tr
-                            key={index}
-                            isClicked={selectedRows.has(item.waitCstmrNo)}
-                            onClick={() =>
-                              toggleRowsSelection(item.waitCstmrNo)
-                            }
-                          >
+                          <BasicTable.Tr key={index}>
                             <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
                             <BasicTable.Td>{item.themaNm}</BasicTable.Td>
                           </BasicTable.Tr>
@@ -204,8 +195,8 @@ export default function CallTable({ tabType, tabChange }: TabType) {
                         return (
                           <BasicTable.Tr
                             key={index}
-                            isClicked={selectedRows.has(item.cnsltNo)}
-                            onClick={() => toggleRowsSelection(item.cnsltNo)}
+                            isClicked={selectedRow.has(item.cnsltNo)}
+                            onClick={() => toggleRowSelection(item.cnsltNo)}
                           >
                             <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
                             <BasicTable.Td>{item.cnsltTelno}</BasicTable.Td>

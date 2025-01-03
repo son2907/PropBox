@@ -37,21 +37,6 @@ export default function Appbar() {
   );
 
   useEffect(() => {
-    // 현장 선택 데이터가 바뀌면
-    // data에서 해당 현장 정보를 가져와서
-    // storage에 저장된 값을 바꾸어야 함
-    // 그리고 사이트를 리셋함
-    console.log("현장:", selectValue);
-    console.log("데이터 리스트:", data?.data.contents);
-    console.log(sptNo == selectValue);
-    console.log(
-      filterDataByValues({
-        data: data?.data.contents,
-        key: "sptNo",
-        values: [selectValue],
-      })
-    );
-
     if (sptNo == selectValue) return;
 
     localStorage.setItem(
@@ -64,7 +49,6 @@ export default function Appbar() {
         })
       )
     );
-    // 위의 동작을 끝내고 나서 리프래시
     window.location.reload();
   }, [selectValue]);
 

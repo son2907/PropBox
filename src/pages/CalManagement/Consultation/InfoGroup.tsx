@@ -40,12 +40,14 @@ export default function InfoGroup({ tabType }: TabType) {
 
   const { cstmrNo, cnsltNo } = useCnsltStore();
   const { data: cunsltDetailList } = useCnsltDetail(cstmrNo, cnsltNo);
+  const { type } = useCnsltStore(); // 통화, 부재, 대기 타입
 
-  // 선택한 고객 한명에 대한 정보보
+  // 선택한 고객 한명에 대한 정보
   const [cnsltDetail, setcnsltDetail] = useState<any>([]);
 
   useEffect(() => {
     if (cunsltDetailList) {
+      console.log("선택한 고객의 detail api 조회 데이터:", cunsltDetailList);
       setcnsltDetail(cunsltDetailList.data.contents);
     } else {
       setcnsltDetail([]);
@@ -162,14 +164,14 @@ export default function InfoGroup({ tabType }: TabType) {
               <LabelTypo>고객정보</LabelTypo>
               <BasicInput
                 key={cnsltDetail.cstmrRmk}
-                defaultValue={cnsltDetail.cstmrRmk}
+                defaultValue={type == "Y" ? cnsltDetail.cstmrRmk : ""}
               />
             </CenteredBox>
             <CenteredBox>
               <LabelTypo>휴대전화</LabelTypo>
               <BasicInput
                 key={cnsltDetail.mbtlNo}
-                defaultValue={cnsltDetail.mbtlNo}
+                defaultValue={type == "Y" ? cnsltDetail.mbtlNo : ""}
               />
               {tabType ? (
                 <IconSquareButton>
@@ -179,7 +181,7 @@ export default function InfoGroup({ tabType }: TabType) {
               <LabelTypo marginLeft={2}>일반전화</LabelTypo>
               <BasicInput
                 key={cnsltDetail.telNo}
-                defaultValue={cnsltDetail.telNo}
+                defaultValue={type == "Y" ? cnsltDetail.telNo : ""}
               />
               {tabType ? (
                 <IconSquareButton>
@@ -192,7 +194,7 @@ export default function InfoGroup({ tabType }: TabType) {
               <BasicInput
                 sx={{ width: "500px" }}
                 key={cnsltDetail.addr}
-                defaultValue={cnsltDetail.addr}
+                defaultValue={type == "Y" ? cnsltDetail.addr : ""}
               />
             </CenteredBox>
             <CenteredBox>
@@ -265,22 +267,29 @@ export default function InfoGroup({ tabType }: TabType) {
           gap={1}
           overflow="auto"
         >
-          {cnsltDetail.itemList?.map((item: any, index: number) => (
-            <Box
-              key={item.itemNo}
-              display="flex"
-              alignItems="center" // 수직 중앙 정렬
-              flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
-            >
-              <LabelTypo>{item.itemNm}</LabelTypo>
-              {/* height: 24px */}
-              <BasicInput
-                sx={{ minHeight: "24px" }}
-                ref={(el) => (inputRefs.current[index] = el)}
-                defaultValue={item.detailNm}
-              />
-            </Box>
-          ))}
+          {cnsltDetail.itemList == undefined ? (
+            <Typography>
+              조회할 정보가 없습니다. 왼쪽 테이블에서 조회할 항목을
+              선택해주세요.
+            </Typography>
+          ) : (
+            cnsltDetail.itemList.map((item: any, index: number) => (
+              <Box
+                key={item.itemNo}
+                display="flex"
+                alignItems="center" // 수직 중앙 정렬
+                flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
+              >
+                <LabelTypo>{item.itemNm}</LabelTypo>
+                {/* height: 24px */}
+                <BasicInput
+                  sx={{ minHeight: "24px" }}
+                  ref={(el) => (inputRefs.current[index] = el)}
+                  defaultValue={item.detailNm}
+                />
+              </Box>
+            ))
+          )}
         </GrayBox>
         <GrayBox flexDirection={"column"} width={"50%"} overflow="auto">
           <BasicTable data={tableTestData}>

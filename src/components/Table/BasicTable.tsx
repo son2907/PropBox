@@ -26,7 +26,7 @@ const Td: React.FC<TableItemProps> = ({ children, ...rest }) => {
 };
 
 const Tr: React.FC<
-  TableItemProps & { isClicked: boolean; onClick: () => void }
+  TableItemProps & { isClicked?: boolean; onClick?: () => void }
 > = ({ children, isClicked, onClick, ...rest }) => {
   return (
     <tr

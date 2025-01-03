@@ -1,16 +1,24 @@
-import React, { forwardRef, useState } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 
 interface TextAreaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   resize?: "none" | "both" | "horizontal" | "vertical";
   height?: string;
   maxBytes?: number; // maxBytes 속성
+  value?: string;
 }
 
 const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
-  ({ resize = "both", height, maxBytes, ...rest }, ref) => {
+  ({ resize = "both", height, maxBytes, value, ...rest }, ref) => {
     const [currentBytes, setCurrentBytes] = useState(0);
-    const [text, setText] = useState(""); // 현재 텍스트 상태 관리
+    const [text, setText] = useState(value ?? ""); // 현재 텍스트 상태 관리
+
+    // 초기값 및 바이트 계산
+    useEffect(() => {
+      const initialText = value ?? ""; // 초기값 처리
+      setText(initialText);
+      setCurrentBytes(new Blob([initialText]).size); // 초기 바이트 계산
+    }, [value]);
 
     const handleInputChange = (
       event: React.ChangeEvent<HTMLTextAreaElement>

@@ -37,3 +37,11 @@ export type TelCnsltType = {
 export interface TelCnsltApiResponseType extends ApiResponseType {
   contents: TelCnsltType[];
 }
+
+// 메모 요청 body 데이터
+export type MemoRequestBody = {
+  sptNo: string;
+  userNo: string;
+  memo: string;
+  userId: string;
+};
