@@ -54,7 +54,7 @@ const API = {
   },
   postCnsltMemo: async (requestData: { body: MemoRequestBody }) => {
     const url = `/api/tel/cnslt/memo`;
-    return await instance.post(url, requestData.body);
+    return await instance.put(url, requestData.body);
   },
 };
 

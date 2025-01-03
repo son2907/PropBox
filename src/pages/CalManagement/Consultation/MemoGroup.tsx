@@ -43,11 +43,10 @@ export default function MemoGroup() {
   const memoRef = useRef<HTMLTextAreaElement>(null); // memo Ref
   const { mutate: postMemo } = usePostMemo();
   const testData = {
-    // sptNo: getItemByStorageOne("selectedSite").sptNo,
-    sptNo: "3001",
-    userNo: "2",
-    memo: "테스트용으로 넣을 메모 값",
-    userId: "sysmaster",
+    sptNo: getItemByStorageOne("selectedSite").sptNo,
+    userNo: userNo || "",
+    memo: memoRef.current?.value || "",
+    userId: loginId || "",
   };
 
   const postMemoFn = () => {
@@ -57,10 +56,10 @@ export default function MemoGroup() {
       },
       {
         onSuccess: (res) => {
-          console.log("성공했음:", res);
+          console.log("메모 저장 성공:", res);
         },
         onError: (res) => {
-          console.log("에러남", res);
+          console.log("메모 저장 에러", res);
         },
       }
     );
