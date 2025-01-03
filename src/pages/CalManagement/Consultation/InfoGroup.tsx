@@ -9,7 +9,7 @@ import { IoSearchOutline } from "react-icons/io5";
 import IconSquareButton from "../../../components/Button/IconSquareButton";
 import Calendar from "../../../components/Calendar/Calendar";
 import { MdInfoOutline } from "react-icons/md";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Select } from "../../../components/Select";
 import useSelect from "../../../hooks/useSelect";
 import { TabType } from "../../../types/menu";
@@ -20,13 +20,16 @@ import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
 import { openPopup } from "../../../utils/openPopup";
 import PathConstants from "../../../routers/path";
 import CenteredBox from "../../../components/Box/CenteredBox";
-import { useCnsltItemList } from "../../../api/consultationItemsList";
+import { useCnsltDetail } from "../../../api/callCnslt";
 import useMultiInputValue from "../../../hooks/useMultiInputValue";
+import { useCnsltStore } from "../../../stores/CunsltStore";
 
 export default function InfoGroup({ tabType }: TabType) {
-  const { data: cunsltItemList } = useCnsltItemList();
+  // 좌측 테이블에서 일련의 데이터가 선택되면 -> cstmrNo && cnsltNo가 바인딩 됨
+  // => zuStand에 넣어둠..
+  // sptNo는 현장번호
+
   const { inputRefs, getInputValues } = useMultiInputValue();
-  // console.log("상담항목 데이터:", cunsltItemList);
 
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const { selectListData, selectValue, handleChange } = useSelect(
@@ -34,6 +37,20 @@ export default function InfoGroup({ tabType }: TabType) {
     "value",
     "data"
   );
+
+  const { cstmrNo, cnsltNo } = useCnsltStore();
+  const { data: cunsltDetailList } = useCnsltDetail(cstmrNo, cnsltNo);
+
+  // 선택한 고객 한명에 대한 정보보
+  const [cnsltDetail, setcnsltDetail] = useState<any>([]);
+
+  useEffect(() => {
+    if (cunsltDetailList) {
+      setcnsltDetail(cunsltDetailList.data.contents);
+    } else {
+      setcnsltDetail([]);
+    }
+  }, [cstmrNo, cnsltNo, cunsltDetailList]);
 
   // 테이블 선택 조건이 없으므로 다중선택 ui 적용
   const { selectedRow, toggleRowSelection } = useSingleRowSelection();
@@ -106,7 +123,11 @@ export default function InfoGroup({ tabType }: TabType) {
                 <Typography color="error.main">*</Typography>
                 상담전화
               </LabelTypo>
-              <BasicInput />
+              <BasicInput
+                ref={(el) => (inputRefs.current[100] = el)}
+                key={cnsltDetail.cnsltTelno}
+                defaultValue={cnsltDetail.cnsltTelno}
+              />
               <IconSquareButton
                 onClick={() => {
                   openPopup({
@@ -123,7 +144,10 @@ export default function InfoGroup({ tabType }: TabType) {
                 <Typography color="error.main">*</Typography>
                 이름
               </LabelTypo>
-              <BasicInput />
+              <BasicInput
+                key={cnsltDetail.cstmrNm}
+                defaultValue={cnsltDetail.cstmrNm}
+              />
               <IconSquareButton>
                 <IoSearchOutline size={"1em"} />
               </IconSquareButton>
@@ -136,18 +160,27 @@ export default function InfoGroup({ tabType }: TabType) {
             </CenteredBox>
             <CenteredBox>
               <LabelTypo>고객정보</LabelTypo>
-              <BasicInput />
+              <BasicInput
+                key={cnsltDetail.cstmrRmk}
+                defaultValue={cnsltDetail.cstmrRmk}
+              />
             </CenteredBox>
             <CenteredBox>
               <LabelTypo>휴대전화</LabelTypo>
-              <BasicInput />
+              <BasicInput
+                key={cnsltDetail.mbtlNo}
+                defaultValue={cnsltDetail.mbtlNo}
+              />
               {tabType ? (
                 <IconSquareButton>
                   <TbBookmark size={"1rem"} />
                 </IconSquareButton>
               ) : null}
               <LabelTypo marginLeft={2}>일반전화</LabelTypo>
-              <BasicInput />
+              <BasicInput
+                key={cnsltDetail.telNo}
+                defaultValue={cnsltDetail.telNo}
+              />
               {tabType ? (
                 <IconSquareButton>
                   <IoCallOutline size={"1rem"} />
@@ -156,7 +189,11 @@ export default function InfoGroup({ tabType }: TabType) {
             </CenteredBox>
             <CenteredBox>
               <LabelTypo>주소</LabelTypo>
-              <BasicInput sx={{ width: "500px" }} />
+              <BasicInput
+                sx={{ width: "500px" }}
+                key={cnsltDetail.addr}
+                defaultValue={cnsltDetail.addr}
+              />
             </CenteredBox>
             <CenteredBox>
               <LabelTypo>관리지역</LabelTypo>
@@ -183,19 +220,35 @@ export default function InfoGroup({ tabType }: TabType) {
             >
               <CenteredBox>
                 <LabelTypo>호응도</LabelTypo>
-                <BasicInput sx={{ width: "80px" }} />
+                <BasicInput
+                  sx={{ width: "80px" }}
+                  key={cnsltDetail.complianceRate}
+                  defaultValue={cnsltDetail.complianceRate}
+                />
               </CenteredBox>
               <CenteredBox>
                 <LabelTypo>희망평형</LabelTypo>
-                <BasicInput sx={{ width: "80px" }} />
+                <BasicInput
+                  sx={{ width: "80px" }}
+                  key={cnsltDetail.hopeBalance}
+                  defaultValue={cnsltDetail.hopeBalance}
+                />
               </CenteredBox>
               <CenteredBox>
                 <LabelTypo>상담횟수</LabelTypo>
-                <BasicInput sx={{ width: "80px" }} />
+                <BasicInput
+                  sx={{ width: "80px" }}
+                  key={cnsltDetail.hopeBalance}
+                  defaultValue={cnsltDetail.hopeBalance}
+                />
               </CenteredBox>
               <CenteredBox>
                 <LabelTypo>수신동의</LabelTypo>
-                <BasicInput sx={{ width: "80px" }} />
+                <BasicInput
+                  sx={{ width: "80px" }}
+                  key={cnsltDetail.rctnRejectXyn}
+                  defaultValue={cnsltDetail.rctnRejectXyn}
+                />
               </CenteredBox>
             </GrayBox>
           </Stack>
@@ -212,7 +265,7 @@ export default function InfoGroup({ tabType }: TabType) {
           gap={1}
           overflow="auto"
         >
-          {cunsltItemList?.data.contents.map((item: any, index: number) => (
+          {cnsltDetail.itemList?.map((item: any, index: number) => (
             <Box
               key={item.itemNo}
               display="flex"
@@ -224,7 +277,7 @@ export default function InfoGroup({ tabType }: TabType) {
               <BasicInput
                 sx={{ minHeight: "24px" }}
                 ref={(el) => (inputRefs.current[index] = el)}
-                defaultValue={item.useYn}
+                defaultValue={item.detailNm}
               />
             </Box>
           ))}

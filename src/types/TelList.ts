@@ -23,3 +23,17 @@ export type TelData = {
 export interface TelApiResponseType extends ApiResponseType {
   contents: TelDataType;
 }
+
+// 전화받기, 전화걸기의 응답 데이터
+export type TelCnsltType = {
+  cnsltDttm: string;
+  cnsltNo: string;
+  cnsltTelno: string;
+  cstmrNm: string;
+  cstmrNo: string;
+  sptNo: string;
+};
+
+export interface TelCnsltApiResponseType extends ApiResponseType {
+  contents: TelCnsltType[];
+}

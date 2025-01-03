@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 
 interface TableProps {
-  data: { id: string; [key: string]: any }[]; // Table data
+  data: { id?: string; [key: string]: any }[]; // Table data
   children: ReactNode;
 }
 
@@ -84,9 +84,7 @@ const BasicTable: React.FC<TableProps> & {
           <thead>
             <tr>
               {React.Children.map(children, (child) => {
-                if (
-                  (child as React.ReactElement<any>).type === BasicTable.Th
-                ) {
+                if ((child as React.ReactElement<any>).type === BasicTable.Th) {
                   return child; // Th 컴포넌트를 렌더링
                 }
                 return null; // 헤더가 아닌 경우 무시

@@ -10,12 +10,26 @@ import LabelTypo from "../../../components/Typography/LabelTypo";
 import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
 import TextArea from "../../../components/TextArea/TextArea";
 import TabMenus from "../../../components/Tab/TabMenus";
+import { useCnslHist } from "../../../api/callCnslt";
+import { useCnsltStore } from "../../../stores/CunsltStore";
+import { useEffect, useState } from "react";
 
 export default function MemoGroup() {
   const { value, handleChange: tabChange } = useTabs(0);
 
   // 테이블 선택 조건이 없으므로 다중선택 ui 적용
   const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
+
+  const { cstmrNo } = useCnsltStore();
+  const { data } = useCnslHist(cstmrNo);
+
+  const [histList, setHistList] = useState<any>([]);
+
+  useEffect(() => {
+    if (data) {
+      setHistList(data?.data.contents);
+    }
+  }, [data]);
 
   return (
     <>
@@ -24,24 +38,24 @@ export default function MemoGroup() {
         <TabMenus.Tab label="메모" disableRipple />
       </TabMenus>
       <TabPanel value={value} index={0}>
-        <Box style={{ maxHeight: "350px", marginTop: 1, overflow: "auto" }}>
+        <Box style={{ height: "300px", marginTop: 1, overflow: "auto" }}>
           <BasicTable data={tableTestData}>
             <BasicTable.Th>구분</BasicTable.Th>
             <BasicTable.Th>일자</BasicTable.Th>
             <BasicTable.Th>특기사항</BasicTable.Th>
             <BasicTable.Th>상담내용</BasicTable.Th>
             <BasicTable.Tbody>
-              {tableTestData.map((item, index) => {
+              {histList.map((item, index) => {
                 return (
                   <BasicTable.Tr
                     key={index}
-                    isClicked={selectedRows.has(item.id)}
-                    onClick={() => toggleRowsSelection(item.id)}
+                    isClicked={selectedRows.has(item.cnsltNo)}
+                    onClick={() => toggleRowsSelection(item.cnsltNo)}
                   >
-                    <BasicTable.Td>{item.name}</BasicTable.Td>
-                    <BasicTable.Td>{item.age}</BasicTable.Td>
-                    <BasicTable.Td>{item.job}</BasicTable.Td>
-                    <BasicTable.Td>{item.hireDate}</BasicTable.Td>
+                    <BasicTable.Td>{item.callYn}</BasicTable.Td>
+                    <BasicTable.Td>{item.cnsltDt}</BasicTable.Td>
+                    <BasicTable.Td>{item.spcmnt}</BasicTable.Td>
+                    <BasicTable.Td>상담내용</BasicTable.Td>
                   </BasicTable.Tr>
                 );
               })}
