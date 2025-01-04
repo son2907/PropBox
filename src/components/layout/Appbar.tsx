@@ -6,6 +6,8 @@ import useSelect from "../../hooks/useSelect";
 import UserInfo from "./UserInfo";
 import { useSiteList } from "../../api/siteList";
 import getItemByStorageOne from "../../utils/getItemByStorageOne";
+import { useEffect } from "react";
+import { filterDataByValues } from "../../utils/filterDataByValues";
 
 // AppBarArea 컴포넌트: 앱바 영역
 const AppBarArea = styled(Box)(({ theme }) => ({
@@ -33,6 +35,22 @@ export default function Appbar() {
     "sptNm", // 현장명
     sptNo
   );
+
+  useEffect(() => {
+    if (sptNo == selectValue) return;
+
+    localStorage.setItem(
+      "selectedSite",
+      JSON.stringify(
+        filterDataByValues({
+          data: data?.data.contents,
+          key: "sptNo",
+          values: [selectValue],
+        })
+      )
+    );
+    window.location.reload();
+  }, [selectValue]);
 
   return (
     <AppBarArea>

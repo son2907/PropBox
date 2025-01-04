@@ -17,7 +17,11 @@ export function useSingleRowSelection() {
     });
   };
 
-  return { selectedRow, toggleRowSelection };
+  const resetSelection = () => {
+    setSelectedRows(new Set()); // 상태 초기화
+  };
+
+  return { selectedRow, toggleRowSelection, resetSelection };
 }
 
 // 아래와 같이 사용
