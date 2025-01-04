@@ -1,6 +1,5 @@
 import useTabs from "../../../hooks/useTabs";
 import BasicTable from "../../../components/Table/BasicTable";
-import { tableTestData } from "../../../utils/testData";
 import SearchResult from "../../../components/Table/SearchResult";
 import { Stack } from "@mui/material";
 import TabPanel from "../../../components/Tab/TabPanel";
@@ -11,24 +10,95 @@ import { openPopup } from "../../../utils/openPopup";
 import PathConstants from "../../../routers/path";
 import TabMenus from "../../../components/Tab/TabMenus";
 import TableBox from "../../../components/Box/TableBox";
+import { useTelCnsltList } from "../../../api/callCnslt";
+import { useEffect, useState } from "react";
+import { TelCnsltType } from "../../../types/TelList";
+import { useCnsltStore } from "../../../stores/CunsltStore";
+import { filterDataByValues } from "../../../utils/filterDataByValues";
 
 export default function CallTable({ tabType, tabChange }: TabType) {
   //  통화콜, 부재콜
-  const { value: takeValue, handleChange: takeChange } = useTabs(1);
+  const { value: takeValue, handleChange: takeChange } = useTabs(0);
 
   // 대기, 부재, 통화콜, 기타
   const { value: callOptionValue, handleChange: callOptionChange } = useTabs(0);
 
   // 단일 선택
-  const { selectedRow, toggleRowSelection } = useSingleRowSelection();
-  // 다중 선택
-  const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
+  const { selectedRow, toggleRowSelection, resetSelection } =
+    useSingleRowSelection();
 
   const callPopupInfo = {
     url: PathConstants.Call.CallLog,
     windowFeatures: "width=1000,height=650,scrollbars=yes,resizable=yes",
     windowName: "전화걸기 처리내역",
   };
+
+  // api -------------------------
+
+  const [cnsltLog, setCnsltLog] = useState<TelCnsltType[]>([]);
+
+  // tabType이 0이면 전화받기, 1이면 전화걸기
+  // takeValue가 0이면 통화콜, 1이면 부재콜
+  // callOptionValue 가 0이면 대기, 1이면 부재, 2면 통화콜
+
+  // tabType이 0이면 takevalue로 trsmYn를 결정하고
+  // tabType이 1이면 callOptionValue로 trsmYn를 결정함
+  // 통화면 Y, 부재면 N, 대기면 W.
+
+  //   absnceYn?: string, // 전화받기/걸기구분
+  //   trsmYn?: string // 대기, 부재, 통화
+  const absnceYn = tabType == 0 ? "N" : "Y";
+  let trsmYn: string;
+
+  if (tabType === 0) {
+    trsmYn = takeValue === 0 ? "Y" : "N"; // 통화콜 또는 부재콜
+  } else {
+    switch (callOptionValue) {
+      case 2:
+        trsmYn = "Y"; // 통화콜
+        break;
+      case 1:
+        trsmYn = "N"; // 부재
+        break;
+      case 0:
+        trsmYn = "W"; // 대기
+        break;
+      default:
+        trsmYn = "W"; // 대기
+        break;
+    }
+  }
+
+  const { data: cnsltData } = useTelCnsltList(absnceYn, trsmYn);
+  const { setTelInfo, clear } = useCnsltStore();
+
+  useEffect(() => {
+    if (cnsltData) {
+      console.log("전체 상담 데이터:", cnsltData);
+      setCnsltLog(cnsltData.data.contents);
+      resetSelection();
+    } else {
+      setCnsltLog([]);
+    }
+  }, [cnsltData]);
+
+  useEffect(() => {
+    if (selectedRow.size > 0) {
+      // selectedRow의 데이터가 바뀔 때 cnsltLog 에서 cnsltNo가 selectedRow인 값을 찾은 뒤
+      // useCnsltStore에 저장
+      const data = filterDataByValues({
+        data: cnsltLog,
+        key: "cnsltNo",
+        values: Array.from(selectedRow),
+      });
+      console.log("선택한 고객 데이터:", data);
+      setTelInfo(data[0].cstmrNo, data[0].cnsltNo, trsmYn);
+    }
+
+    if (selectedRow.size == 0) {
+      clear();
+    }
+  }, [selectedRow, trsmYn]);
 
   return (
     <>
@@ -47,21 +117,21 @@ export default function CallTable({ tabType, tabChange }: TabType) {
 
           <TableBox>
             <TableBox.Inner>
-              <BasicTable data={tableTestData}>
+              <BasicTable data={cnsltLog}>
                 <BasicTable.Th>이름</BasicTable.Th>
                 <BasicTable.Th>상담전화</BasicTable.Th>
                 <BasicTable.Th>상담일시</BasicTable.Th>
                 <BasicTable.Tbody>
-                  {tableTestData.map((item, index) => {
+                  {cnsltLog.map((item, index) => {
                     return (
                       <BasicTable.Tr
                         key={index}
-                        isClicked={selectedRow.has(item.id)}
-                        onClick={() => toggleRowSelection(item.id)}
+                        isClicked={selectedRow.has(item.cnsltNo)}
+                        onClick={() => toggleRowSelection(item.cnsltNo)}
                       >
-                        <BasicTable.Td>{item.name}</BasicTable.Td>
-                        <BasicTable.Td>{item.age}</BasicTable.Td>
-                        <BasicTable.Td>{item.job}</BasicTable.Td>
+                        <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
+                        <BasicTable.Td>{item.cnsltTelno}</BasicTable.Td>
+                        <BasicTable.Td>{item.cnsltDttm}</BasicTable.Td>
                       </BasicTable.Tr>
                     );
                   })}
@@ -94,24 +164,49 @@ export default function CallTable({ tabType, tabChange }: TabType) {
           {/*  탭에 따라 데이터가 바뀌도록 데이터 바인딩 해야함  */}
           <TableBox>
             <TableBox.Inner>
-              <BasicTable data={tableTestData}>
-                <BasicTable.Th>이름</BasicTable.Th>
-                <BasicTable.Th>주제</BasicTable.Th>
-                <BasicTable.Tbody>
-                  {tableTestData.map((item, index) => {
-                    return (
-                      <BasicTable.Tr
-                        key={index}
-                        isClicked={selectedRows.has(item.id)}
-                        onClick={() => toggleRowsSelection(item.id)}
-                      >
-                        <BasicTable.Td>{item.name}</BasicTable.Td>
-                        <BasicTable.Td>{item.age}</BasicTable.Td>
-                      </BasicTable.Tr>
-                    );
-                  })}
-                </BasicTable.Tbody>
-              </BasicTable>
+              {
+                // callOptionValue 가 0이면 대기, 1이면 부재, 2면 통화콜
+                callOptionValue == 0 && (
+                  <BasicTable data={cnsltLog}>
+                    <BasicTable.Th>이름</BasicTable.Th>
+                    <BasicTable.Th>주제</BasicTable.Th>
+                    <BasicTable.Tbody>
+                      {cnsltLog.map((item, index) => {
+                        return (
+                          <BasicTable.Tr key={index}>
+                            <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
+                            <BasicTable.Td>{item.themaNm}</BasicTable.Td>
+                          </BasicTable.Tr>
+                        );
+                      })}
+                    </BasicTable.Tbody>
+                  </BasicTable>
+                )
+              }
+
+              {callOptionValue == 1 ||
+                (callOptionValue == 2 && (
+                  <BasicTable data={cnsltLog}>
+                    <BasicTable.Th>이름</BasicTable.Th>
+                    <BasicTable.Th>상담전화</BasicTable.Th>
+                    <BasicTable.Th>상담일시</BasicTable.Th>
+                    <BasicTable.Tbody>
+                      {cnsltLog.map((item, index) => {
+                        return (
+                          <BasicTable.Tr
+                            key={index}
+                            isClicked={selectedRow.has(item.cnsltNo)}
+                            onClick={() => toggleRowSelection(item.cnsltNo)}
+                          >
+                            <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
+                            <BasicTable.Td>{item.cnsltTelno}</BasicTable.Td>
+                            <BasicTable.Td>{item.cnsltDttm}</BasicTable.Td>
+                          </BasicTable.Tr>
+                        );
+                      })}
+                    </BasicTable.Tbody>
+                  </BasicTable>
+                ))}
             </TableBox.Inner>
           </TableBox>
           <SearchResult total={100} />

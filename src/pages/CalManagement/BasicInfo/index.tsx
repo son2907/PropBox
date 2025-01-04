@@ -7,11 +7,7 @@ import ConfigSetting from "./ConfigSettings";
 import RegionRegistration from "./RegionRegistration";
 
 export default function BasicInfo() {
-  const { value, handleChange } = useTabs(1);
-
-  // value = 현재 선택된 값
-  // index = 버튼의 고윳값
-  console.log(value);
+  const { value, handleChange } = useTabs(0);
   return (
     <>
       <Stack minWidth={"400px"} height={"100%"} gap={1}>
