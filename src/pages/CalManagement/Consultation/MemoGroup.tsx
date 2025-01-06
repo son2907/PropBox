@@ -1,4 +1,4 @@
-import { Box, Stack } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import GrayBox from "../../../components/Box/GrayBox";
 import { BasicButton } from "../../../components/Button";
 import BasicInput from "../../../components/Input/BasicInput";
@@ -7,38 +7,33 @@ import TabPanel from "../../../components/Tab/TabPanel";
 import BasicTable from "../../../components/Table/BasicTable";
 import { tableTestData } from "../../../utils/testData";
 import LabelTypo from "../../../components/Typography/LabelTypo";
-import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
 import TextArea from "../../../components/TextArea/TextArea";
 import TabMenus from "../../../components/Tab/TabMenus";
 import {
   useCnslHist,
-  useCnsltItem,
+  useCnsltDetail,
   useCnsltMemo,
   usePostMemo,
 } from "../../../api/callCnslt";
 import { useCnsltStore } from "../../../stores/CunsltStore";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useAuthStore } from "../../../stores/authStore";
 import getItemByStorageOne from "../../../utils/getItemByStorageOne";
+import { HiOutlineDocumentText } from "react-icons/hi";
+import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
+import { filterDataByValues } from "../../../utils/filterDataByValues";
 
 export default function MemoGroup() {
   const { value, handleChange: tabChange } = useTabs(0);
 
-  // 테이블 선택 조건이 없으므로 다중선택 ui 적용
-  const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
+  const { selectedRow, toggleRowSelection, resetSelection } =
+    useSingleRowSelection();
 
-  const { cstmrNo, cnsltNo } = useCnsltStore(); // 사용자 번호와 상담 번호
-  const { userNo, loginId } = useAuthStore(["userNo", "loginId"]); // 로그인 한 유저의 넘버
+  const { cstmrNo } = useCnsltStore();
+  const { userNo, loginId } = useAuthStore(["userNo", "loginId"]);
 
-  const { data } = useCnslHist(cstmrNo);
-  const { data: cnsltItemList } = useCnsltItem(cstmrNo, cnsltNo);
+  const { data: histListData } = useCnslHist(cstmrNo);
   const { data: memoData } = useCnsltMemo(userNo);
-
-  const [histList, setHistList] = useState<any>([]);
-
-  const [cnsltItem, setCnsltItem] = useState<any>([]);
-
-  const [memo, setMemo] = useState<any>([]);
 
   const memoRef = useRef<HTMLTextAreaElement>(null); // memo Ref
   const { mutate: postMemo } = usePostMemo();
@@ -48,6 +43,21 @@ export default function MemoGroup() {
     memo: memoRef.current?.value || "",
     userId: loginId || "",
   };
+
+  const userData = filterDataByValues({
+    data: histListData?.data.contents,
+    key: "cnsltNo",
+    values: Array.from(selectedRow),
+  });
+
+  const { data: cnsltItemList } = useCnsltDetail(
+    userData[0]?.cstmrNo,
+    userData[0]?.cnsltNo
+  );
+
+  useEffect(() => {
+    resetSelection();
+  }, [histListData]);
 
   const postMemoFn = () => {
     postMemo(
@@ -65,35 +75,6 @@ export default function MemoGroup() {
     );
   };
 
-  // 상담 상세
-  // TO Do API 수정 후 상담구분, 일시, 특기사항을 바인딩
-  useEffect(() => {
-    if (cnsltItemList) {
-      setCnsltItem(cnsltItemList?.data.contents);
-    } else {
-      setCnsltItem([]);
-    }
-  }, [cstmrNo, cnsltNo, cnsltItemList]);
-
-  // 상담 이력 테이블
-  useEffect(() => {
-    if (data) {
-      setHistList(data?.data.contents);
-    } else {
-      setHistList([]);
-    }
-  }, [cstmrNo, data]);
-
-  // 메모
-  useEffect(() => {
-    if (memoData) {
-      console.log("메모:", memoData);
-      setMemo(memoData?.data.contents);
-    } else {
-      setHistList([]);
-    }
-  }, [userNo, memoData]);
-
   return (
     <>
       <TabMenus value={value} handleChange={tabChange}>
@@ -108,12 +89,12 @@ export default function MemoGroup() {
             <BasicTable.Th>특기사항</BasicTable.Th>
             <BasicTable.Th>상담내용</BasicTable.Th>
             <BasicTable.Tbody>
-              {histList.map((item, index) => {
+              {histListData?.data.contents.map((item, index) => {
                 return (
                   <BasicTable.Tr
                     key={index}
-                    isClicked={selectedRows.has(item.cnsltNo)}
-                    onClick={() => toggleRowsSelection(item.cnsltNo)}
+                    isClicked={selectedRow.has(item.cnsltNo)}
+                    onClick={() => toggleRowSelection(item.cnsltNo)}
                   >
                     <BasicTable.Td>{item.callYn}</BasicTable.Td>
                     <BasicTable.Td>{item.cnsltDt}</BasicTable.Td>
@@ -125,22 +106,40 @@ export default function MemoGroup() {
             </BasicTable.Tbody>
           </BasicTable>
         </Box>
-        <GrayBox marginBottom={1}>상담상세</GrayBox>
+        <GrayBox marginBottom={1} gap={1}>
+          <HiOutlineDocumentText />
+          <Typography variant="h5">상담상세</Typography>
+        </GrayBox>
         <Stack overflow={"hidden"} height={"100%"}>
           <Stack gap={1} overflow={"scroll"} height={"100%"}>
             <Box display={"flex"} alignItems={"center"} padding={1}>
               <LabelTypo> 상담구분 </LabelTypo>
-              <BasicInput fullWidth />
+              <BasicInput
+                key={cnsltItemList?.data.contents.callSe}
+                defaultValue={cnsltItemList?.data.contents.callSe}
+                fullWidth
+                readOnly
+              />
             </Box>
             <Box display={"flex"} alignItems={"center"} padding={1}>
               <LabelTypo> 일시 </LabelTypo>
-              <BasicInput fullWidth />
+              <BasicInput
+                key={cnsltItemList?.data.contents.cnsltDtm}
+                defaultValue={cnsltItemList?.data.contents.cnsltDtm}
+                fullWidth
+                readOnly
+              />
             </Box>
-            <Box display={"flex"} alignItems={"center"} padding={1}>
+            <Box
+              display={"flex"}
+              alignItems={"center"}
+              padding={1}
+              marginBottom={3}
+            >
               <LabelTypo> 특기사항 </LabelTypo>
-              <TextArea />
+              <TextArea readOnly value={cnsltItemList?.data.contents.spcmnt} />
             </Box>
-            {cnsltItem.map((item, index) => {
+            {cnsltItemList?.data.contents.itemList.map((item, index) => {
               return (
                 <Box
                   display={"flex"}
@@ -150,10 +149,11 @@ export default function MemoGroup() {
                   paddingBottom={1}
                   key={index}
                 >
-                  <LabelTypo>{item.itemNm}</LabelTypo>
+                  <Typography width={150}>{item.itemNm}</Typography>
                   <BasicInput
                     key={item.detailNm}
                     defaultValue={item.detailNm}
+                    readOnly
                     fullWidth
                   />
                 </Box>
@@ -171,7 +171,7 @@ export default function MemoGroup() {
           메모장
           <BasicButton onClick={postMemoFn}>저장</BasicButton>
         </GrayBox>
-        <TextArea value={memo?.memo} ref={memoRef} />
+        <TextArea value={memoData?.data.contents?.memo} ref={memoRef} />
       </TabPanel>
     </>
   );

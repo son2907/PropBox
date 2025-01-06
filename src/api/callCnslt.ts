@@ -10,6 +10,7 @@ const API = {
     const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
     return await instance.get(`/api/sptcnslt/itemlist/${spt}`);
   },
+  // 전화 받기, 전화 걸기 테이블
   getTelCnsltList: async (
     absnceYn?: string, // 전화받기/걸기구분
     trsmYn?: string // 통화여부 (선택적)
@@ -22,6 +23,7 @@ const API = {
     const url = `/api/tel/cnslt?sptNo=${spt}&cnsltDt=${date}&callYn=${absnceYn}&trsmYn=${trsmYn}`;
     return await instance.get(url);
   },
+  // 오른쪽 상담 상세 목록
   getCnsltDetail: async (
     cstmrNo?: string, // 고객번호
     cnsltNo?: string // 상담번호
@@ -30,6 +32,7 @@ const API = {
     const url = `/api/tel/cnslt/hist/detail?sptNo=${spt}&cstmrNo=${cstmrNo}&cnsltNo=${cnsltNo}`;
     return await instance.get(url);
   },
+  // 오른쪽 위 상담 이력 테이블
   getCnsltHistList: async (
     cstmrNo?: string // 고객 번호
   ) => {
@@ -37,6 +40,7 @@ const API = {
     const url = `/api/tel/cnslt/hist/list?sptNo=${spt}&cstmrNo=${cstmrNo}`;
     return await instance.get(url);
   },
+  // InfoGroup - 상담 항목 리스트 조회 및 우측 상담 상세
   getCnsltItem: async (
     cstmrNo?: string, // 고객 번호
     cnsltNo?: string // 상담번호
@@ -45,6 +49,29 @@ const API = {
     const url = `/api/tel/cnslt/item?sptNo=${spt}&cstmrNo=${cstmrNo}&cnsltNo=${cnsltNo}`;
     return await instance.get(url);
   },
+  // InfoGroup - 세부 항목
+  getItemDetList: async ({
+    itemNo,
+    detailNm,
+    useYn,
+  }: {
+    itemNo: string;
+    detailNm?: string;
+    useYn?: string;
+  }) => {
+    const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
+    let url = `/api/sptcnslt/itemdet/list/${spt}/${itemNo}`;
+    if (detailNm) url += `&detailNm=${detailNm}`;
+    if (useYn) url += `&useYn=${useYn}`;
+    return await instance.get(url);
+  },
+  // 관리지역 목록
+  getAreaList: async () => {
+    const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
+    const url = `/api/sptcnslt/area/list/${spt}`;
+    return await instance.get(url);
+  },
+  // 메모
   getCnsltMemo: async (
     userNo?: string // 사용자 번호
   ) => {
@@ -78,6 +105,16 @@ const KEY = {
   ],
   getCnsltMemo: (userNo?: string) => ["/tel/cnslt/memo", userNo],
   postCnsltMemo: () => ["/api/tel/cnslt/memo"],
+  getItemDetList: ({
+    itemNo,
+    detailNm,
+    useYn,
+  }: {
+    itemNo: string;
+    detailNm?: string;
+    useYn?: string;
+  }) => ["/api/sptcnslt/itemdet/list", itemNo, detailNm, useYn],
+  getAreaList: () => ["/api/sptcnslt/area/list"],
 };
 
 export const useCnsltItemList = () => {
@@ -96,13 +133,19 @@ export const useTelCnsltList = (
 ) => {
   return useQuery({
     queryKey: KEY.getTelCnsltList(absnceYn, trsmYn), // KEY에 매개변수 전달
+    // ==================로딩 컴포넌트 테스트 코드==================
+    // queryFn: async () => {
+    //   // 1초 딜레이 추가
+    //   await new Promise((resolve) => setTimeout(resolve, 1000)); // 1초 대기
+    //   return await API.getTelCnsltList(absnceYn, trsmYn); // 실제 API 호출
+    // },
     queryFn: async () => {
       return await API.getTelCnsltList(absnceYn, trsmYn);
     },
   });
 };
 
-// 상담 상세
+// 오른쪽 상담 상세 목록
 export const useCnsltDetail = (
   cstmrNo?: string, // 고객번호
   cnsltNo?: string // 상담번호
@@ -116,9 +159,9 @@ export const useCnsltDetail = (
   });
 };
 
-// 고객 한 명에 대한 상담 이력 (전화상담->최우측상단 테이블)
+// 오른쪽 위 상담 이력 테이블
 export const useCnslHist = (
-  cstmrNo?: string // 고객번호호
+  cstmrNo?: string // 고객번호
 ) => {
   return useQuery({
     queryKey: KEY.getCnsltHistList(cstmrNo),
@@ -129,7 +172,7 @@ export const useCnslHist = (
   });
 };
 
-// 상담 한 건에 대한 상담 항목 리스트 조회
+// InfoGroup - 상담 항목 리스트 조회 및 우측 상담 상세
 export const useCnsltItem = (
   cstmrNo?: string, // 고객번호
   cnsltNo?: string // 상담번호
@@ -140,6 +183,25 @@ export const useCnsltItem = (
       return await API.getCnsltItem(cstmrNo, cnsltNo);
     },
     enabled: !!cstmrNo && !!cnsltNo,
+  });
+};
+
+// 세부 항목
+export const useItemDetList = ({
+  itemNo,
+  detailNm,
+  useYn,
+}: {
+  itemNo: string;
+  detailNm?: string;
+  useYn?: string;
+}) => {
+  return useQuery({
+    queryKey: KEY.getItemDetList({ itemNo, detailNm, useYn }),
+    queryFn: async () => {
+      return await API.getItemDetList({ itemNo, detailNm, useYn });
+    },
+    enabled: !!itemNo,
   });
 };
 
@@ -161,5 +223,15 @@ export const usePostMemo = () => {
     mutationFn: (requstData: { body: MemoRequestBody }) =>
       API.postCnsltMemo(requstData),
     mutationKey: KEY.postCnsltMemo(),
+  });
+};
+
+//전화 상담 관리지역 목록 조회
+export const useAreaList = () => {
+  return useQuery({
+    queryKey: KEY.getAreaList(),
+    queryFn: async () => {
+      return await API.getAreaList();
+    },
   });
 };
