@@ -23,7 +23,7 @@ instance.interceptors.request.use(
     if (accessToken && config.headers) {
       config.headers.accessToken = accessToken;
     }
-    console.log("헤더:", config.headers?.accessToken);
+    console.log("헤더0:", config.headers?.accessToken);
     return config;
   },
   (error) => {
