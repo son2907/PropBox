@@ -4,7 +4,6 @@ import LabelTypo from "../../../components/Typography/LabelTypo";
 import { BasicButton } from "../../../components/Button";
 import BasicInput from "../../../components/Input/BasicInput";
 import BasicTable from "../../../components/Table/BasicTable";
-import { selectTestData, tableTestData } from "../../../utils/testData";
 import { IoSearchOutline } from "react-icons/io5";
 import IconSquareButton from "../../../components/Button/IconSquareButton";
 import Calendar from "../../../components/Calendar/Calendar";
@@ -334,7 +333,7 @@ export default function InfoGroup({ tabType }: TabType) {
           height={"100%"}
           overflow="auto"
         >
-          <BasicTable data={tableTestData}>
+          <BasicTable data={itemDetList?.data.contents}>
             <BasicTable.Th>
               <Box
                 display="flex"
@@ -346,7 +345,7 @@ export default function InfoGroup({ tabType }: TabType) {
               </Box>
             </BasicTable.Th>
             <BasicTable.Tbody>
-              {itemDetList?.data.contents.map((item, index) => {
+              {itemDetList?.data.contents.map((item: any, index: any) => {
                 return (
                   <BasicTable.Tr
                     key={index}

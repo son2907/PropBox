@@ -114,7 +114,7 @@ export default function CallTable({ tabType, tabChange }: TabType) {
                 <BasicTable.Th>상담전화</BasicTable.Th>
                 <BasicTable.Th>상담일시</BasicTable.Th>
                 <BasicTable.Tbody>
-                  {cnsltData?.data.contents.map((item, index) => {
+                  {cnsltData?.data.contents.map((item: any, index: any) => {
                     return (
                       <BasicTable.Tr
                         key={index}
@@ -163,7 +163,7 @@ export default function CallTable({ tabType, tabChange }: TabType) {
                     <BasicTable.Th>이름</BasicTable.Th>
                     <BasicTable.Th>주제</BasicTable.Th>
                     <BasicTable.Tbody>
-                      {cnsltData?.data.contents.map((item, index) => {
+                      {cnsltData?.data.contents.map((item: any, index: any) => {
                         return (
                           <BasicTable.Tr key={index}>
                             <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
@@ -181,7 +181,7 @@ export default function CallTable({ tabType, tabChange }: TabType) {
                   <BasicTable.Th>상담전화</BasicTable.Th>
                   <BasicTable.Th>상담일시</BasicTable.Th>
                   <BasicTable.Tbody>
-                    {cnsltData?.data.contents.map((item, index) => {
+                    {cnsltData?.data.contents.map((item: any, index: any) => {
                       return (
                         <BasicTable.Tr
                           key={index}
