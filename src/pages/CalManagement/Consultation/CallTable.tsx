@@ -5,14 +5,12 @@ import { Stack } from "@mui/material";
 import TabPanel from "../../../components/Tab/TabPanel";
 import { TabType } from "../../../types/menu";
 import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
-import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
 import { openPopup } from "../../../utils/openPopup";
 import PathConstants from "../../../routers/path";
 import TabMenus from "../../../components/Tab/TabMenus";
 import TableBox from "../../../components/Box/TableBox";
 import { useTelCnsltList } from "../../../api/callCnslt";
-import { useEffect, useState } from "react";
-import { TelCnsltType } from "../../../types/TelList";
+import { useEffect } from "react";
 import { useCnsltStore } from "../../../stores/CunsltStore";
 import { filterDataByValues } from "../../../utils/filterDataByValues";
 
@@ -34,8 +32,6 @@ export default function CallTable({ tabType, tabChange }: TabType) {
   };
 
   // api -------------------------
-
-  const [cnsltLog, setCnsltLog] = useState<TelCnsltType[]>([]);
 
   // tabType이 0이면 전화받기, 1이면 전화걸기
   // takeValue가 0이면 통화콜, 1이면 부재콜
@@ -73,32 +69,28 @@ export default function CallTable({ tabType, tabChange }: TabType) {
   const { setTelInfo, clear } = useCnsltStore();
 
   useEffect(() => {
-    if (cnsltData) {
-      console.log("전체 상담 데이터:", cnsltData);
-      setCnsltLog(cnsltData.data.contents);
-      resetSelection();
-    } else {
-      setCnsltLog([]);
-    }
-  }, [cnsltData]);
+    clear();
+    resetSelection();
+  }, [tabType, takeValue, callOptionValue]);
 
   useEffect(() => {
-    if (selectedRow.size > 0) {
-      // selectedRow의 데이터가 바뀔 때 cnsltLog 에서 cnsltNo가 selectedRow인 값을 찾은 뒤
-      // useCnsltStore에 저장
+    if (selectedRow.size > 0 && cnsltData?.data?.contents) {
       const data = filterDataByValues({
-        data: cnsltLog,
+        data: cnsltData.data.contents,
         key: "cnsltNo",
         values: Array.from(selectedRow),
       });
-      console.log("선택한 고객 데이터:", data);
-      setTelInfo(data[0].cstmrNo, data[0].cnsltNo, trsmYn);
+
+      if (data.length > 0) {
+        console.log("선택한 고객 데이터:", data);
+        setTelInfo(data[0].cstmrNo, data[0].cnsltNo, trsmYn);
+      }
     }
 
-    if (selectedRow.size == 0) {
+    if (selectedRow.size === 0) {
       clear();
     }
-  }, [selectedRow, trsmYn]);
+  }, [selectedRow]);
 
   return (
     <>
@@ -117,12 +109,12 @@ export default function CallTable({ tabType, tabChange }: TabType) {
 
           <TableBox>
             <TableBox.Inner>
-              <BasicTable data={cnsltLog}>
+              <BasicTable data={cnsltData?.data.contents}>
                 <BasicTable.Th>이름</BasicTable.Th>
                 <BasicTable.Th>상담전화</BasicTable.Th>
                 <BasicTable.Th>상담일시</BasicTable.Th>
                 <BasicTable.Tbody>
-                  {cnsltLog.map((item, index) => {
+                  {cnsltData?.data.contents.map((item, index) => {
                     return (
                       <BasicTable.Tr
                         key={index}
@@ -167,11 +159,11 @@ export default function CallTable({ tabType, tabChange }: TabType) {
               {
                 // callOptionValue 가 0이면 대기, 1이면 부재, 2면 통화콜
                 callOptionValue == 0 && (
-                  <BasicTable data={cnsltLog}>
+                  <BasicTable data={cnsltData?.data.contents}>
                     <BasicTable.Th>이름</BasicTable.Th>
                     <BasicTable.Th>주제</BasicTable.Th>
                     <BasicTable.Tbody>
-                      {cnsltLog.map((item, index) => {
+                      {cnsltData?.data.contents.map((item, index) => {
                         return (
                           <BasicTable.Tr key={index}>
                             <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
@@ -183,30 +175,28 @@ export default function CallTable({ tabType, tabChange }: TabType) {
                   </BasicTable>
                 )
               }
-
-              {callOptionValue == 1 ||
-                (callOptionValue == 2 && (
-                  <BasicTable data={cnsltLog}>
-                    <BasicTable.Th>이름</BasicTable.Th>
-                    <BasicTable.Th>상담전화</BasicTable.Th>
-                    <BasicTable.Th>상담일시</BasicTable.Th>
-                    <BasicTable.Tbody>
-                      {cnsltLog.map((item, index) => {
-                        return (
-                          <BasicTable.Tr
-                            key={index}
-                            isClicked={selectedRow.has(item.cnsltNo)}
-                            onClick={() => toggleRowSelection(item.cnsltNo)}
-                          >
-                            <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
-                            <BasicTable.Td>{item.cnsltTelno}</BasicTable.Td>
-                            <BasicTable.Td>{item.cnsltDttm}</BasicTable.Td>
-                          </BasicTable.Tr>
-                        );
-                      })}
-                    </BasicTable.Tbody>
-                  </BasicTable>
-                ))}
+              {(callOptionValue === 1 || callOptionValue === 2) && (
+                <BasicTable data={cnsltData?.data.contents}>
+                  <BasicTable.Th>이름</BasicTable.Th>
+                  <BasicTable.Th>상담전화</BasicTable.Th>
+                  <BasicTable.Th>상담일시</BasicTable.Th>
+                  <BasicTable.Tbody>
+                    {cnsltData?.data.contents.map((item, index) => {
+                      return (
+                        <BasicTable.Tr
+                          key={index}
+                          isClicked={selectedRow.has(item.cnsltNo)}
+                          onClick={() => toggleRowSelection(item.cnsltNo)}
+                        >
+                          <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
+                          <BasicTable.Td>{item.cnsltTelno}</BasicTable.Td>
+                          <BasicTable.Td>{item.cnsltDttm}</BasicTable.Td>
+                        </BasicTable.Tr>
+                      );
+                    })}
+                  </BasicTable.Tbody>
+                </BasicTable>
+              )}
             </TableBox.Inner>
           </TableBox>
           <SearchResult total={100} />
