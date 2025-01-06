@@ -1,19 +1,29 @@
 import { useRef } from "react";
 
-// useRef를 사용하여 여러 input 요소를 관리하는 훅
-// 테이블의 경우 클릭해도 ui 변경이 없는 체크박스 및 다중 input 그룹에 이용
 export default function useMultiInputValue() {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const getInputValues = () => {
-    // inputRefs 배열의 모든 요소를 순회하여
-    // 존재하는 input 요소의 value를 배열로 반환
-    return inputRefs.current
-      .filter((input) => input !== null) // null 값을 제외
-      .map((input) => input!.value); // value를 추출하여 배열 생성
+  // 값 설정 함수 (특정 인덱스에 대한 값 설정)
+  const setInputValue = (index: number, value: string) => {
+    const input = inputRefs.current[index];
+    if (input) {
+      input.value = value;
+    }
   };
 
-  return { inputRefs, getInputValues };
+  // 값 가져오기 함수 (매개변수가 있으면 특정 인덱스 값, 없으면 모든 값)
+  const getInputValue = (index?: number) => {
+    if (index !== undefined) {
+      const input = inputRefs.current[index];
+      return input ? input.value : "";
+    } else {
+      return inputRefs.current
+        .filter((input) => input !== null)
+        .map((input) => input!.value);
+    }
+  };
+
+  return { inputRefs, setInputValue, getInputValue };
 }
 
 // <input

@@ -77,7 +77,7 @@ const BasicTable: React.FC<TableProps> & {
 } = ({ data, children }) => {
   return (
     <>
-      {data.length === 0 ? (
+      {!data || data.length === 0 ? (
         <EmptyTable /> // data가 없을 경우 EmptyTable 렌더링
       ) : (
         <table className="table-auto w-full border-gray-300 border-collapse">
