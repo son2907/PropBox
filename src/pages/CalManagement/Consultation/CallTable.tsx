@@ -163,7 +163,7 @@ export default function CallTable({ tabType, tabChange }: TabType) {
                     <BasicTable.Th>이름</BasicTable.Th>
                     <BasicTable.Th>주제</BasicTable.Th>
                     <BasicTable.Tbody>
-                      {cnsltData?.data.contents.map((item: any, index: any) => {
+                      {cnsltData?.data.contents.map((item, index) => {
                         return (
                           <BasicTable.Tr key={index}>
                             <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
