@@ -177,7 +177,7 @@ export default function InfoGroup({ tabType }: TabType) {
               onClick={() => {
                 const data = getTopValue();
                 console.log("인풋 값:", data);
-                testRefs.current.forEach((ref, index) => {
+                testRefs.current.forEach((ref: any, index: any) => {
                   if (ref !== null) {
                     console.log(`testRefs.current[${index}]:`, ref);
                   }

@@ -45,18 +45,18 @@ export default function AutoMessage() {
   const [endDate, setEndDate] = useState<Date>(new Date());
 
   // 체크박스 그룹에 연결할 ref 배열
-  const { inputRefs, getInputValues } = useMultiInputValue();
+  const { inputRefs } = useMultiInputValue();
 
   // 체크된 데이터 가져옴
-  const handleSubmit = () => {
-    const checkedValues = getInputValues().filter((value) => {
-      // 체크된 항목만 필터링
-      const input = inputRefs.current.find((ref) => ref?.value === value);
-      return input?.checked;
-    });
+  // const handleSubmit = () => {
+  //   const checkedValues = getInputValues().filter((value) => {
+  //     // 체크된 항목만 필터링
+  //     const input = inputRefs.current.find((ref) => ref?.value === value);
+  //     return input?.checked;
+  //   });
 
-    console.log("Selected Times:", checkedValues); // 선택된 시간 출력
-  };
+  //   console.log("Selected Times:", checkedValues); // 선택된 시간 출력
+  // };
 
   // select 쓸땐 useSelect 같이 쓴다고 생각하면 됨
   const {
