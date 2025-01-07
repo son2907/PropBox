@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import instance from "../utils/axiosInstance";
 
 export type SolutionListType = {
-    id: string | undefined;
     slutnId: string,
     upperSlutnId: string,
     slutnNm: string,
