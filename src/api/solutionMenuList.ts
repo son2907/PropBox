@@ -2,26 +2,21 @@ import { useQuery } from "@tanstack/react-query";
 import instance from "../utils/axiosInstance";
 
 export type SolutionMenuListType = {
-    id?: string;
-    cd: string,
-    upCd: string,
-    cdNm: string,
-    othrSysCd: string,
-    chartrRef1: string,
-    chartrRef2: string,
-    chartrRef3: string,
-    chartrRef4: string,
-    chartrRef5: string,
-    numRef1: string,
-    numRef2: string,
-    numRef3: string,
-    numRef4: string,
-    numRef5: string,
+    slutnId: string,
+    upperSlutnId: string,
+    slutnNm: string,
+    lisneSeCd: string,
+    lisneSeNm: string,
+    lisneCnfirmYn: string | null,
+    url: string | null,
+    iconFlpth: string | null,
+    authorNthgUrl: string,
     useYn: string,
-    delYn: string,
-    lnupOrd: string,
-    updPsblYn: string,
-    rmk: string
+    delYn: string | null,
+    lnupOrd: string | null,
+    rmk: string | null,
+    regrId: string | null,
+    updrId: string | null
 };
 
 export interface SolutionMenuListResponse {
