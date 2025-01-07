@@ -33,6 +33,8 @@ function App() {
     };
   }, [isLoading]);
 
+  console.log("*************빌드 수정 확인용 콘솔*************");
+
   return (
     <ThemeProvider>
       {showLoading && <Loading />}
