@@ -33,6 +33,8 @@ function App() {
     };
   }, [isLoading]);
 
+  const trash = "쓰지 않는 변수";
+
   console.log("*************빌드 수정 확인용 콘솔*************");
 
   return (
