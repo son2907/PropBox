@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import instance from "../utils/axiosInstance";
 import getItemByStorageOne from "../utils/getItemByStorageOne";
 import { getFormattedDate } from "../utils/getFormattedDate";
-import { MemoRequestBody } from "../types/TelList";
+import { CnsltInfoRequestType, MemoRequestBody } from "../types/TelList";
 
 const API = {
   // 상담 항목 목록
@@ -83,6 +83,11 @@ const API = {
     const url = `/api/tel/cnslt/memo`;
     return await instance.put(url, requestData.body);
   },
+  // Info Group 수정 또는 추가
+  postCnsltInfo: async (requestData: { body: CnsltInfoRequestType }) => {
+    const url = `/api/tel/cnslt`;
+    return await instance.put(url, requestData.body);
+  },
 };
 
 const KEY = {
@@ -115,6 +120,7 @@ const KEY = {
     useYn?: string;
   }) => ["/api/sptcnslt/itemdet/list", itemNo, detailNm, useYn],
   getAreaList: () => ["/api/sptcnslt/area/list"],
+  postCnsltInfo: () => ["/api/tel/cnslt"],
 };
 
 export const useCnsltItemList = () => {
@@ -233,5 +239,14 @@ export const useAreaList = () => {
     queryFn: async () => {
       return await API.getAreaList();
     },
+  });
+};
+
+// 상담 수정
+export const usePostCnsltInfo = () => {
+  return useMutation({
+    mutationFn: (requstData: { body: CnsltInfoRequestType }) =>
+      API.postCnsltInfo(requstData),
+    mutationKey: KEY.postCnsltInfo(),
   });
 };

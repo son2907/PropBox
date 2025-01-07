@@ -82,7 +82,7 @@ export default function CallTable({ tabType, tabChange }: TabType) {
       });
 
       if (data.length > 0) {
-        console.log("선택한 고객 데이터:", data);
+        console.log("선택한 상담 데이터 그 자체:", data);
         setTelInfo(data[0].cstmrNo, data[0].cnsltNo, trsmYn);
       }
     }

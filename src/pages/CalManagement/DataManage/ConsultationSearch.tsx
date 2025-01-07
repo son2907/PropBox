@@ -17,7 +17,7 @@ export default function ConsultationSearch() {
     selectValue: s_0,
     handleChange: o_0,
   } = useSelect(selectTestData, "value", "data");
-  const { inputRefs: checkListRef, getInputValues } = useMultiInputValue();
+  const { inputRefs: checkListRef } = useMultiInputValue();
 
   const checkList = [
     { id: "date", label: "상담일시" },

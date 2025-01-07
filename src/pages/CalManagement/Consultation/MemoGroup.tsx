@@ -5,7 +5,6 @@ import BasicInput from "../../../components/Input/BasicInput";
 import useTabs from "../../../hooks/useTabs";
 import TabPanel from "../../../components/Tab/TabPanel";
 import BasicTable from "../../../components/Table/BasicTable";
-import { tableTestData } from "../../../utils/testData";
 import LabelTypo from "../../../components/Typography/LabelTypo";
 import TextArea from "../../../components/TextArea/TextArea";
 import TabMenus from "../../../components/Tab/TabMenus";
@@ -83,7 +82,7 @@ export default function MemoGroup() {
       </TabMenus>
       <TabPanel value={value} index={0}>
         <Box style={{ height: "300px", marginTop: 1, overflow: "auto" }}>
-          <BasicTable data={tableTestData}>
+          <BasicTable data={histListData?.data.contents}>
             <BasicTable.Th>구분</BasicTable.Th>
             <BasicTable.Th>일자</BasicTable.Th>
             <BasicTable.Th>특기사항</BasicTable.Th>

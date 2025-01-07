@@ -18,7 +18,7 @@ export default function AnalysisSearch() {
     handleChange: o_0,
   } = useSelect(selectTestData, "value", "data");
 
-  const { inputRefs, getInputValues } = useMultiInputValue();
+  const { inputRefs } = useMultiInputValue();
 
   const checkboxListData = [
     { id: "id", label: "상담항목" },

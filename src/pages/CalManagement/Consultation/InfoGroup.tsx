@@ -8,7 +8,7 @@ import { IoSearchOutline } from "react-icons/io5";
 import IconSquareButton from "../../../components/Button/IconSquareButton";
 import Calendar from "../../../components/Calendar/Calendar";
 import { MdInfoOutline } from "react-icons/md";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Select } from "../../../components/Select";
 import useSelect from "../../../hooks/useSelect";
 import { TabType } from "../../../types/menu";
@@ -23,17 +23,26 @@ import {
   useAreaList,
   useCnsltDetail,
   useItemDetList,
+  usePostCnsltInfo,
 } from "../../../api/callCnslt";
 import useMultiInputValue from "../../../hooks/useMultiInputValue";
 import { useCnsltStore } from "../../../stores/CunsltStore";
 import { filterDataByValues } from "../../../utils/filterDataByValues";
+import { CnsltInfoRequestType } from "../../../types/TelList";
 
 export default function InfoGroup({ tabType }: TabType) {
   // 좌측 테이블에서 일련의 데이터가 선택되면 -> cstmrNo && cnsltNo가 바인딩 됨
   // => zuStand에 넣어둠..
   // sptNo는 현장번호
 
-  const { inputRefs, setInputValue, getInputValue } = useMultiInputValue();
+  const testRefs = useRef<any>([]);
+
+  const {
+    inputRefs: topRefs,
+    setInputValue: setTopValue,
+    getInputValue: getTopValue,
+  } = useMultiInputValue();
+
   const { data: areaList } = useAreaList();
 
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -46,8 +55,7 @@ export default function InfoGroup({ tabType }: TabType) {
     itemNo: selectDetailItem ?? "",
   });
 
-  const { selectedRow, toggleRowSelection, resetSelection } =
-    useSingleRowSelection();
+  const { toggleRowSelection, resetSelection } = useSingleRowSelection();
 
   const { selectListData, selectValue, handleChange } = useSelect(
     areaList?.data.contents,
@@ -55,6 +63,28 @@ export default function InfoGroup({ tabType }: TabType) {
     "areaNm", // 현장명
     cunsltDetailList?.data.contents.areaNo
   );
+
+  // const {mutate: postInfo} = usePostCnsltInfo();
+
+  // const body :CnsltInfoRequestType = {
+
+  // }
+
+  // const postInfoFn = () => {
+  //    postInfo(
+  //      {
+  //        body: testData,
+  //      },
+  //      {
+  //        onSuccess: (res) => {
+  //          console.log("메모 저장 성공:", res);
+  //        },
+  //        onError: (res) => {
+  //          console.log("메모 저장 에러", res);
+  //        },
+  //      }
+  //    );
+  // }
 
   const searchPopupInfo = {
     url: PathConstants.Call.SearchCustomer,
@@ -76,26 +106,39 @@ export default function InfoGroup({ tabType }: TabType) {
     if (!selectDetailItem) return null;
     itemDetListRefetch();
     resetSelection();
+    testRefs.current = [];
   };
 
   useEffect(() => {
     if (!cunsltDetailList) {
       setDetailItem("");
       resetSelection();
+      testRefs.current = [];
     }
   }, [cunsltDetailList]);
 
-  console.log("선택값:", selectedRow);
-  console.log(itemDetList);
   console.log(
-    filterDataByValues({
-      data: itemDetList?.data.contents,
-      key: "detailNo",
-      values: Array.from(selectedRow),
-    })
+    "선택한 상담에 대한 데이터:",
+    cunsltDetailList,
+    "상세사항",
+    itemDetList
   );
-  console.log("값:", cunsltDetailList);
-  console.log("디테일 리스트:", itemDetList);
+
+  const isToday = (date: Date): boolean => {
+    const today = new Date();
+    // 오늘 날짜와 selectedDate의 날짜 부분만 비교
+    return today.toISOString().slice(0, 10) === date.toISOString().slice(0, 10);
+  };
+
+  const selectDetItem = (item: any) => {
+    toggleRowSelection(item.detailNo);
+    testRefs.current[item.itemNo] = {
+      itemNo: item.itemNo,
+      detailNo: item.detailNo,
+      detailNm: item.detailNm,
+    };
+  };
+
   return (
     <>
       <Stack width={"100%"} height={"100%"}>
@@ -109,8 +152,13 @@ export default function InfoGroup({ tabType }: TabType) {
             />
           </Box>
           <Typography variant="bodySS" color="error.main" paddingLeft={2}>
-            <MdInfoOutline />
-            현재 날짜가 아닙니다.
+            {!isToday(selectedDate) ? (
+              <>
+                <MdInfoOutline /> 오늘 날짜가 아닙니다.
+              </>
+            ) : (
+              ""
+            )}
           </Typography>
 
           {/* 오른쪽 버튼 그룹 */}
@@ -125,7 +173,19 @@ export default function InfoGroup({ tabType }: TabType) {
             >
               상담현황
             </BasicButton>
-            <BasicButton>추가</BasicButton>
+            <BasicButton
+              onClick={() => {
+                const data = getTopValue();
+                console.log("인풋 값:", data);
+                testRefs.current.forEach((ref: any, index: any) => {
+                  if (ref !== null) {
+                    console.log(`testRefs.current[${index}]:`, ref);
+                  }
+                });
+              }}
+            >
+              추가
+            </BasicButton>
             <BasicButton>삭제</BasicButton>
             <BasicButton
               onClick={() => {
@@ -151,6 +211,7 @@ export default function InfoGroup({ tabType }: TabType) {
               <BasicInput
                 key={cunsltDetailList?.data.contents.cnsltTelno}
                 defaultValue={cunsltDetailList?.data.contents.cnsltTelno}
+                ref={(el) => (topRefs.current[0] = el)}
               />
               <IconSquareButton
                 onClick={() => {
@@ -171,6 +232,7 @@ export default function InfoGroup({ tabType }: TabType) {
               <BasicInput
                 key={cunsltDetailList?.data.contents.cstmrNm}
                 defaultValue={cunsltDetailList?.data.contents.cstmrNm}
+                ref={(el) => (topRefs.current[1] = el)}
               />
               <IconSquareButton>
                 <IoSearchOutline size={"1em"} />
@@ -189,6 +251,7 @@ export default function InfoGroup({ tabType }: TabType) {
                 defaultValue={
                   type == "Y" ? cunsltDetailList?.data.contents.cstmrRmk : ""
                 }
+                ref={(el) => (topRefs.current[2] = el)}
               />
             </CenteredBox>
             <CenteredBox>
@@ -198,6 +261,7 @@ export default function InfoGroup({ tabType }: TabType) {
                 defaultValue={
                   type == "Y" ? cunsltDetailList?.data.contents.mbtlNo : ""
                 }
+                ref={(el) => (topRefs.current[3] = el)}
               />
               {tabType ? (
                 <IconSquareButton>
@@ -210,6 +274,7 @@ export default function InfoGroup({ tabType }: TabType) {
                 defaultValue={
                   type == "Y" ? cunsltDetailList?.data.contents.telNo : ""
                 }
+                ref={(el) => (topRefs.current[4] = el)}
               />
               {tabType ? (
                 <IconSquareButton>
@@ -225,6 +290,7 @@ export default function InfoGroup({ tabType }: TabType) {
                 defaultValue={
                   type == "Y" ? cunsltDetailList?.data.contents.addr : ""
                 }
+                ref={(el) => (topRefs.current[5] = el)}
               />
             </CenteredBox>
             <CenteredBox>
@@ -319,8 +385,10 @@ export default function InfoGroup({ tabType }: TabType) {
                 <Typography width={150}>{item.itemNm}</Typography>
                 <BasicInput
                   sx={{ minHeight: "24px" }}
-                  ref={(el) => (inputRefs.current[item.itemNo] = el)}
-                  defaultValue={item.detailNm}
+                  name={item.itemNo}
+                  value={
+                    testRefs.current[item.itemNo]?.detailNm ?? item.detailNm
+                  }
                   readOnly
                 />
               </Box>
@@ -349,10 +417,11 @@ export default function InfoGroup({ tabType }: TabType) {
                 return (
                   <BasicTable.Tr
                     key={index}
-                    isClicked={getInputValue(item.itemNo) == item.detailNm}
+                    isClicked={
+                      testRefs.current[item.itemNo]?.detailNo === item.detailNo
+                    }
                     onClick={() => {
-                      toggleRowSelection(item.detailNo);
-                      setInputValue(item.itemNo, item.detailNm);
+                      selectDetItem(item);
                     }}
                   >
                     <BasicTable.Td>{item.detailNm}</BasicTable.Td>
