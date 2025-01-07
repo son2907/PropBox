@@ -45,3 +45,30 @@ export type MemoRequestBody = {
   memo: string;
   userId: string;
 };
+
+type TelCnsltCn = {
+  itemNo: string;
+  detailNo: string;
+};
+
+export interface CnsltInfoRequestType {
+  sptNo: string;
+  cstmrNo: string;
+  waitCstmrNo: string;
+  cnsltNo: string;
+  telId: string;
+  cnsltTelno: string;
+  callYn: string;
+  trsmYn: string;
+  cnsltnt: string;
+  cstmrNm: string;
+  mbtlNo: string;
+  telNo: string;
+  cstmrRmk: string;
+  addr: string;
+  areaNo: string;
+  spcmnt: string;
+  legacySlutnId: string;
+  userId: string;
+  telCnsltCnList: TelCnsltCn[];
+}

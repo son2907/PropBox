@@ -5,7 +5,6 @@ import BasicInput from "../../../components/Input/BasicInput";
 import useTabs from "../../../hooks/useTabs";
 import TabPanel from "../../../components/Tab/TabPanel";
 import BasicTable from "../../../components/Table/BasicTable";
-import { tableTestData } from "../../../utils/testData";
 import LabelTypo from "../../../components/Typography/LabelTypo";
 import TextArea from "../../../components/TextArea/TextArea";
 import TabMenus from "../../../components/Tab/TabMenus";
@@ -83,13 +82,13 @@ export default function MemoGroup() {
       </TabMenus>
       <TabPanel value={value} index={0}>
         <Box style={{ height: "300px", marginTop: 1, overflow: "auto" }}>
-          <BasicTable data={tableTestData}>
+          <BasicTable data={histListData?.data.contents}>
             <BasicTable.Th>구분</BasicTable.Th>
             <BasicTable.Th>일자</BasicTable.Th>
             <BasicTable.Th>특기사항</BasicTable.Th>
             <BasicTable.Th>상담내용</BasicTable.Th>
             <BasicTable.Tbody>
-              {histListData?.data.contents.map((item, index) => {
+              {histListData?.data.contents.map((item: any, index: any) => {
                 return (
                   <BasicTable.Tr
                     key={index}
@@ -139,26 +138,28 @@ export default function MemoGroup() {
               <LabelTypo> 특기사항 </LabelTypo>
               <TextArea readOnly value={cnsltItemList?.data.contents.spcmnt} />
             </Box>
-            {cnsltItemList?.data.contents.itemList.map((item, index) => {
-              return (
-                <Box
-                  display={"flex"}
-                  alignItems={"center"}
-                  paddingLeft={1}
-                  paddingRight={1}
-                  paddingBottom={1}
-                  key={index}
-                >
-                  <Typography width={150}>{item.itemNm}</Typography>
-                  <BasicInput
-                    key={item.detailNm}
-                    defaultValue={item.detailNm}
-                    readOnly
-                    fullWidth
-                  />
-                </Box>
-              );
-            })}
+            {cnsltItemList?.data.contents.itemList.map(
+              (item: any, index: any) => {
+                return (
+                  <Box
+                    display={"flex"}
+                    alignItems={"center"}
+                    paddingLeft={1}
+                    paddingRight={1}
+                    paddingBottom={1}
+                    key={index}
+                  >
+                    <Typography width={150}>{item.itemNm}</Typography>
+                    <BasicInput
+                      key={item.detailNm}
+                      defaultValue={item.detailNm}
+                      readOnly
+                      fullWidth
+                    />
+                  </Box>
+                );
+              }
+            )}
           </Stack>
         </Stack>
       </TabPanel>
