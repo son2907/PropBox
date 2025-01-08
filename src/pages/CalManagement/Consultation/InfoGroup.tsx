@@ -141,9 +141,9 @@ export default function InfoGroup({ tabType }: TabType) {
 
   return (
     <>
-      <Stack width={"100%"} height={"100%"}>
+      <Stack width={"100%"} height={"50%"} paddingBottom={1}>
         {/* 상단 회색박스 ********************************************** */}
-        <GrayBox height={"50px"} width={"100%"}>
+        <GrayBox height={"50px"} width={"100%"} marginBottom={1}>
           <LabelTypo>상담일자</LabelTypo>
           <Box width={"250px"}>
             <Calendar
@@ -354,7 +354,7 @@ export default function InfoGroup({ tabType }: TabType) {
       </Stack>
 
       {/* 상담항목, 세부항목 회색 인풋 영역 */}
-      <Box display="flex" overflow="hidden" minHeight="300px" gap={1}>
+      <Box display="flex" overflow="hidden" height={"100%"} gap={1}>
         {/* 상담항목 세부항목 */}
         <GrayBox
           flexDirection={"column"}

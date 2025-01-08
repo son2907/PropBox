@@ -10,6 +10,7 @@ import { useAuthStore } from "../../stores/authStore";
 import { transformMenuData } from "../../utils/transformMenuData";
 import { useMenuStore } from "../../stores/menuStore";
 import { IconList } from "./MenuIconList";
+import { testMenuList } from "../../utils/testData";
 
 const SideMenu = styled(Box, {
   shouldForwardProp: (prop) => prop !== "fold", // fold 속성을 DOM으로 전달하지 않음
@@ -43,8 +44,8 @@ const Sidebar = memo(function Sidebar() {
 
   useEffect(() => {
     if (isSuccess && accessToken) {
-      const result = transformMenuData(data?.data.contents, IconList);
-      setAllMenuData(result);
+      // const result = transformMenuData(data?.data.contents, IconList);
+      // setAllMenuData(result);
     }
   }, [accessToken, isSuccess]);
 
@@ -84,12 +85,12 @@ const Sidebar = memo(function Sidebar() {
           backgroundColor: "#e5e7eb",
         }}
       />
-      {allMenus?.map((item, index) => {
+      {testMenuList?.map((item, index) => {
         return (
           <Solution
             key={index}
             label={item.label}
-            icon={item.icon}
+            // icon={item.icon}
             auth={item.auth}
             isOpen={true}
             fold={fold}

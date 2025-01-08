@@ -558,3 +558,45 @@ export const selectTestData = [
     data: "장치넷",
   },
 ];
+
+export const testMenuList = [
+  {
+    label: "전화관리",
+    auth: true,
+    subMenu: [
+      { label: "전화상담", url: "/call/consultation" },
+      { label: "상담분석", url: "/call/analysis" },
+      { label: "데이터관리", url: "/call/management" },
+      { label: "기본정보", url: "/call/information" },
+    ],
+  },
+  {
+    label: "문자관리",
+    auth: true,
+    subMenu: [
+      { label: "자동문자", url: "/message/auto" },
+      { label: "대량문자", url: "/message/bulk" },
+      { label: "방통위신고", url: "/message/declartion" },
+      { label: "수신거부", url: "/message/reject" },
+    ],
+  },
+  {
+    label: "고객관리",
+    auth: true,
+    subMenu: [{ label: "고객등록", url: "/customer/registration" }],
+  },
+  {
+    label: "시스템관리",
+    auth: true,
+    subMenu: [
+      { label: "솔루션 및 메뉴 관리", url: "/system/solution" },
+      { label: "사용자 관리", url: "/system/user" },
+      { label: "구성원 관리", url: "/system/member" },
+      { label: "현장 관리", url: "/system/local" },
+      { label: "현장 별 구성원 관리", url: "/system/localmember" },
+      { label: "현장 구성원 권한 관리", url: "/system/auth" },
+
+      { label: "통신환경설정", url: "/system/NetworkSettings" },
+    ],
+  },
+];
