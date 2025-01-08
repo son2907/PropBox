@@ -319,7 +319,7 @@ export default function InfoGroup({ tabType }: TabType) {
               <CenteredBox>
                 <LabelTypo>호응도</LabelTypo>
                 <BasicInput
-                  sx={{ width: "80px" }}
+                  sx={{ width: "60px" }}
                   key={cunsltDetailList?.data.contents.complianceRate}
                   defaultValue={cunsltDetailList?.data.contents.complianceRate}
                 />
@@ -327,7 +327,7 @@ export default function InfoGroup({ tabType }: TabType) {
               <CenteredBox>
                 <LabelTypo>희망평형</LabelTypo>
                 <BasicInput
-                  sx={{ width: "80px" }}
+                  sx={{ width: "60px" }}
                   key={cunsltDetailList?.data.contents.hopeBalance}
                   defaultValue={cunsltDetailList?.data.contents.hopeBalance}
                 />
@@ -335,7 +335,7 @@ export default function InfoGroup({ tabType }: TabType) {
               <CenteredBox>
                 <LabelTypo>상담횟수</LabelTypo>
                 <BasicInput
-                  sx={{ width: "80px" }}
+                  sx={{ width: "60px" }}
                   key={cunsltDetailList?.data.contents.cnsltCnt}
                   defaultValue={cunsltDetailList?.data.contents.cnsltCnt}
                 />
@@ -343,7 +343,7 @@ export default function InfoGroup({ tabType }: TabType) {
               <CenteredBox>
                 <LabelTypo>수신동의</LabelTypo>
                 <BasicInput
-                  sx={{ width: "80px" }}
+                  sx={{ width: "60px" }}
                   key={cunsltDetailList?.data.contents.rctnRejectXyn}
                   defaultValue={cunsltDetailList?.data.contents.rctnRejectXyn}
                 />
