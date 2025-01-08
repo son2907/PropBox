@@ -243,7 +243,7 @@ export default function AutoMessage() {
                 </BasicTable>
               </TableBox.Inner>
             </TableBox>
-            <GrayBox height={"20%"}>
+            <GrayBox height={"30%"}>
               <Stack gap={1} width={"100%"}>
                 <CenteredBox gap={1}>
                   <Typography variant="h3">발송대상</Typography>
