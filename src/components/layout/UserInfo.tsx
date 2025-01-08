@@ -52,7 +52,7 @@ export default function UserInfo() {
       windowName: "PasswordCheck",
       windowFeatures: "width=300,height=250,scrollbars=no,resizable=no",
     });
-  }
+  };
 
   return (
     <CenteredBox height={"100%"} fontSize={"x-large"} gap={1}>
