@@ -37,7 +37,7 @@ instance.interceptors.response.use(
   (error: AxiosError) => {
     console.log("에러 인터셉터 - 에러:", error);
     if (error.response?.status === 401) {
-      alert("인증이 만료되었습니다. 로그인 페이지로 이동합니다.");
+      alert("인증 정보가 만료되었습니다. 로그인 페이지로 이동합니다.");
       store.getState().clear();
       localStorage.clear();
       window.location.href = PathConstants.Login;

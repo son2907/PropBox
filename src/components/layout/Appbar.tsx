@@ -6,8 +6,8 @@ import useSelect from "../../hooks/useSelect";
 import UserInfo from "./UserInfo";
 import { useSiteList } from "../../api/siteList";
 import getItemByStorageOne from "../../utils/getItemByStorageOne";
-import { useEffect } from "react";
 import { filterDataByValues } from "../../utils/filterDataByValues";
+import useDidMountEffect from "../../hooks/useDidMountEffect";
 
 // AppBarArea 컴포넌트: 앱바 영역
 const AppBarArea = styled(Box)(({ theme }) => ({
@@ -36,7 +36,7 @@ export default function Appbar() {
     sptNo
   );
 
-  useEffect(() => {
+  useDidMountEffect(() => {
     if (sptNo == selectValue) return;
 
     localStorage.setItem(

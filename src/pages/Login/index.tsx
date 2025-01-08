@@ -22,6 +22,7 @@ import { usePopupStore } from "../../stores/popupStore";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "../../utils/adminResolver";
 import { useMenuStore } from "../../stores/menuStore";
+import useDidMountEffect from "../../hooks/useDidMountEffect";
 
 export default function Login() {
   const [rememberId, setRembmber] = useState<boolean>(false);
@@ -92,7 +93,7 @@ export default function Login() {
     }
   }, []);
 
-  useEffect(() => {
+  useDidMountEffect(() => {
     if (popups.length == 0) {
       navigate("/");
     }
