@@ -33,7 +33,7 @@ export default function AnalysisSearch() {
   ];
 
   return (
-    <Stack width={"100%"} gap={2}>
+    <Stack width={"100%"} gap={2} height={"100%"}>
       <CenteredBox gap={1}>
         <Calendar selectedDate={startDate} setSelectedDate={setStartDate} />
         <Typography>~</Typography>
@@ -59,7 +59,7 @@ export default function AnalysisSearch() {
       </CenteredBox>
       <CheckboxList data={checkboxListData} refArray={inputRefs.current} />
       <CenteredBox justifyContent={"center"}>
-        <BasicButton sx={{ width: "250px" }}>조회</BasicButton>
+        <BasicButton>조회</BasicButton>
       </CenteredBox>
     </Stack>
   );

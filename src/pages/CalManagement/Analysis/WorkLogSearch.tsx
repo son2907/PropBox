@@ -126,7 +126,14 @@ export default function WorkLogSearch() {
     useRadioGroup(""); // 초기값은 빈 문자열
 
   return (
-    <Stack width={"100%"} gap={2}>
+    <Stack
+      width={"100%"}
+      gap={1}
+      height={"100%"}
+      paddingTop={1}
+      paddingBottom={1}
+      overflow={"auto"}
+    >
       <CenteredBox gap={1}>
         <Calendar
           selectedDate={selectedDate}
@@ -193,7 +200,7 @@ export default function WorkLogSearch() {
       {/* 특기사항 */}
       <CenteredBox gap={1}>
         <Typography>특기사항</Typography>
-        <TextArea height="100px" resize="none" />
+        <TextArea height="80px" resize="none" />
       </CenteredBox>
       {/* 조회 조건 저장 */}
       <CenteredBox justifyContent={"center"} gap={1}>

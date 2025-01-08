@@ -17,7 +17,7 @@ export default function GraphSearch() {
   } = useSelect(selectTestData, "value", "data");
 
   return (
-    <Stack width={"100%"} gap={3}>
+    <Stack width={"100%"} gap={3} height={"100%"}>
       <CenteredBox gap={1} marginTop={1}>
         <Calendar selectedDate={startDate} setSelectedDate={setStartDate} />
         <Typography>~</Typography>

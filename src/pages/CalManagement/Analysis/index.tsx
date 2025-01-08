@@ -12,7 +12,7 @@ export default function Analysis() {
   const { value, handleChange: tabChange } = useTabs(0);
   return (
     <>
-      <Stack minWidth={"400px"} height={"100%"}>
+      <Stack width={"400px"} height={"100%"}>
         <TabMenus value={value} handleChange={tabChange}>
           <TabMenus.Tab label="업무일지" />
           <TabMenus.Tab label="상담분석" />

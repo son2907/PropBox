@@ -37,7 +37,7 @@ export default function Registration() {
 
   return (
     <>
-      <Stack width={"70%"} height={"100%"} gap={1} marginBottom={1}>
+      <Stack width={"100%"} height={"100%"} gap={1} marginBottom={1}>
         <GrayBox gap={2} justifyContent="space-between">
           <Stack direction="row" gap={1}>
             <SearchInput />
@@ -84,7 +84,7 @@ export default function Registration() {
           </Stack>
         </Stack>
       </Stack>
-      <Stack width={"30%"} marginLeft={1}>
+      <Stack width={"30%"} marginLeft={1} gap={1}>
         {/* 상담항목 */}
         <GrayBox>
           <Typography fontSize={"20px"} fontWeight="bold">

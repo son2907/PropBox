@@ -11,16 +11,16 @@ export default function CallConsultation() {
   return (
     <>
       {/* 좌측 전화받기/전화걸기, 통화콜/부재콜 테이블 */}
-      <Stack width={"30%"} minWidth={"350px"} marginRight={1} height={"100%"}>
+      <Stack width={"30%"} marginRight={1} height={"100%"}>
         <CallTable tabType={callValue} tabChange={callChange} />
       </Stack>
 
       {/* 중간 상담 정보  */}
-      <Stack width={"50%"} minWidth={"1010px"}>
+      <Stack width={"50%"} height={"100%"}>
         <InfoGroup tabType={callValue} tabChange={callChange} />
       </Stack>
 
-      <Stack width={"20%"} minWidth={"400px"} bgcolor={"white"} marginLeft={1}>
+      <Stack width={"20%"} bgcolor={"white"} marginLeft={1} height={"100%"}>
         <MemoGroup />
       </Stack>
     </>

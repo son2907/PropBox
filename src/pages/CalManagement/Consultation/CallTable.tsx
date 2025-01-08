@@ -92,6 +92,8 @@ export default function CallTable({ tabType, tabChange }: TabType) {
     }
   }, [selectedRow]);
 
+  console.log("테이블 데이터", cnsltData);
+
   return (
     <>
       <TabMenus value={tabType} handleChange={tabChange}>

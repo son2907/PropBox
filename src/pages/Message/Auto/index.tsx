@@ -262,8 +262,10 @@ export default function AutoMessage() {
           </Stack>
 
           {/* 오른쪽 수신동의 고객 확인 문자 영역 */}
-          <Stack width={"40%"} minWidth={"400px"} height={"100%"} gap={2}>
-            <Typography variant="h3">수신동의 고객 확인 문자</Typography>
+          <Stack width={"40%"} minWidth={"400px"} height={"100%"} gap={1}>
+            <Typography variant="h3" marginTop={3} marginBottom={3}>
+              수신동의 고객 확인 문자
+            </Typography>
             {/* 수신 동의 고객 */}
             <ToggleButton
               checked={receive}
@@ -287,7 +289,7 @@ export default function AutoMessage() {
               </BasicButton>
               <BasicButton>기본메시지</BasicButton>
             </CenteredBox>
-            <TextArea resize="none" height="200px" />
+            <TextArea resize="none" height="100px" />
             <CenteredBox>
               <RadioGroup value={radioValue} onChange={setRadioValue} row>
                 <FormControlLabel
@@ -327,7 +329,7 @@ export default function AutoMessage() {
               </BasicButton>
               <BasicButton>기본메시지</BasicButton>
             </CenteredBox>
-            <TextArea resize="none" height="200px" />
+            <TextArea resize="none" height="100px" />
             <CenteredBox>
               <RadioGroup value={radioValue2} onChange={setRadioValue2} row>
                 <FormControlLabel
@@ -367,7 +369,7 @@ export default function AutoMessage() {
               </BasicButton>
               <BasicButton>기본메시지</BasicButton>
             </CenteredBox>
-            <TextArea resize="none" height="200px" />
+            <TextArea resize="none" height="100px" />
             <CenteredBox>
               <RadioGroup value={radioValue3} onChange={setRadioValue3} row>
                 <FormControlLabel

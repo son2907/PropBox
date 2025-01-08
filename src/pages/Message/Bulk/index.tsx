@@ -128,7 +128,7 @@ export default function BulkMessage() {
 
           <TextArea
             resize="none"
-            height="200px"
+            height="100px"
             placeholder="자동문자 메시지를 입력해 주십시오."
           />
 
@@ -146,7 +146,7 @@ export default function BulkMessage() {
             <BasicInput placeholder="수신 거부 번호" />
             <BasicButton>복사하기</BasicButton>
           </CenteredBox>
-          <CenteredBox gap={1}>
+          <CenteredBox gap={1} marginBottom={1}>
             <FormControlLabel control={<Checkbox />} label="예약문자" />
             <Stack width={"100%"} gap={1}>
               <Calendar selectedDate={date} setSelectedDate={setDate} />

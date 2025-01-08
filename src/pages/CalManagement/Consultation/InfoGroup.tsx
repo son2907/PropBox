@@ -354,7 +354,7 @@ export default function InfoGroup({ tabType }: TabType) {
       </Stack>
 
       {/* 상담항목, 세부항목 회색 인풋 영역 */}
-      <Box display="flex" overflow="hidden" minHeight="600px" gap={1}>
+      <Box display="flex" overflow="hidden" minHeight="300px" gap={1}>
         {/* 상담항목 세부항목 */}
         <GrayBox
           flexDirection={"column"}
