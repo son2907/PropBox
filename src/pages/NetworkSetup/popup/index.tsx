@@ -32,6 +32,15 @@ export default function NetworkSetupPop() {
 
   const onSave = () => {
     const { closeAllPopups } = usePopupStore.getState();
+    if (selectValue) {
+      const selectInfo = filterDataByValues({
+        data: data?.data.contents,
+        key: "telId",
+        values: Array.from(selectValue),
+      });
+      setTelInfo(selectInfo[0].telId, selectInfo[0].telno);
+    }
+
     closeAllPopups();
     window.opener.close();
     window.close();
@@ -44,17 +53,6 @@ export default function NetworkSetupPop() {
       window.close();
     }
   }
-
-  useEffect(() => {
-    if (selectValue) {
-      const selectInfo = filterDataByValues({
-        data: data?.data.contents,
-        key: "telId",
-        values: Array.from(selectValue),
-      });
-      setTelInfo(selectInfo[0].telId, selectInfo[0].telno);
-    }
-  }, [selectValue]);
 
   return (
     <Stack

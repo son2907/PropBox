@@ -5,11 +5,13 @@ import { useEffect, useState } from "react";
 import { openPopup } from "../../utils/openPopup";
 import PathConstants from "../../routers/path";
 import { useTelStore } from "../../stores/telStore";
+import useDidMountEffect from "../../hooks/useDidMountEffect";
+import { useStorageStore } from "../../hooks/useStorageStore";
 
 export default function AppbarButton({ ...rest }: ButtonProps) {
-  const { telno } = useTelStore();
-
-  //api로 전화기의 상태를 가져와 바인딩 해주어야 함..
+  const telStore = useStorageStore(useTelStore, "selectedTel");
+  // 연결 상태, 원활할 시 true, 끊겼을 시 false
+  // websoket api로 받아와야 한다.
   const [state, setState] = useState<boolean>(true);
 
   const setTel = () => {
@@ -21,9 +23,7 @@ export default function AppbarButton({ ...rest }: ButtonProps) {
   };
 
   const handleClick = () => {
-    if (!state) {
-      setTel();
-    }
+    if (telStore.telno == "") setTel();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
@@ -31,14 +31,9 @@ export default function AppbarButton({ ...rest }: ButtonProps) {
     e.stopPropagation();
   };
 
-  useEffect(() => {
-    // todo 조건에 api로 가져온 전화기의 상태를 추가하여야 함
-    if (telno !== "") {
-      setState(true);
-    } else {
-      setState(false);
-    }
-  }, [telno]);
+  useDidMountEffect(() => {
+    useTelStore.persist.rehydrate();
+  }, [telStore.telno]);
 
   useEffect(() => {
     useTelStore.persist.rehydrate();
@@ -49,9 +44,11 @@ export default function AppbarButton({ ...rest }: ButtonProps) {
       variant="contained"
       sx={{
         bgcolor: state
-          ? "appbar.appbarItemColorGreen"
-          : telno === ""
-            ? "grey.300" // 회색
+          ? telStore.telno != ""
+            ? "appbar.appbarItemColorGreen"
+            : "grey.300"
+          : telStore.telno == ""
+            ? "grey.300"
             : "appbar.appbarItemColorRed",
         color: "appbar.appbarItemTextColor",
         padding: "7px 20px 7px 20px",
@@ -66,7 +63,7 @@ export default function AppbarButton({ ...rest }: ButtonProps) {
         src={state ? Connection : UnConnection}
         style={{ paddingRight: "8px" }}
       />
-      {telno == "" ? "전화기 연결" : telno}
+      {telStore.telno == "" ? "전화기 연결" : telStore.telno}
     </Button>
   );
 }
