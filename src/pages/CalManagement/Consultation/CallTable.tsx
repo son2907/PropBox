@@ -41,9 +41,9 @@ export default function CallTable({ tabType, tabChange }: TabType) {
   // tabType이 1이면 callOptionValue로 trsmYn를 결정함
   // 통화면 Y, 부재면 N, 대기면 W.
 
-  //   absnceYn?: string, // 전화받기/걸기구분
+  //   callYn?: string, // 전화받기/걸기구분
   //   trsmYn?: string // 대기, 부재, 통화
-  const absnceYn = tabType == 0 ? "N" : "Y";
+  const callYn = tabType == 0 ? "N" : "Y";
   let trsmYn: string;
 
   if (tabType === 0) {
@@ -65,7 +65,7 @@ export default function CallTable({ tabType, tabChange }: TabType) {
     }
   }
 
-  const { data: cnsltData } = useTelCnsltList(absnceYn, trsmYn);
+  const { data: cnsltData } = useTelCnsltList(callYn, trsmYn);
   const { setTelInfo, clear } = useCnsltStore();
 
   useEffect(() => {
@@ -82,8 +82,7 @@ export default function CallTable({ tabType, tabChange }: TabType) {
       });
 
       if (data.length > 0) {
-        console.log("선택한 상담 데이터 그 자체:", data);
-        setTelInfo(data[0].cstmrNo, data[0].cnsltNo, trsmYn);
+        setTelInfo(data[0].cstmrNo, data[0].cnsltNo, callYn, trsmYn);
       }
     }
 
@@ -91,8 +90,6 @@ export default function CallTable({ tabType, tabChange }: TabType) {
       clear();
     }
   }, [selectedRow]);
-
-  console.log("테이블 데이터", cnsltData);
 
   return (
     <>

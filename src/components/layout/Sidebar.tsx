@@ -44,8 +44,8 @@ const Sidebar = memo(function Sidebar() {
 
   useEffect(() => {
     if (isSuccess && accessToken) {
-      // const result = transformMenuData(data?.data.contents, IconList);
-      // setAllMenuData(result);
+      const result = transformMenuData(data?.data.contents, IconList);
+      setAllMenuData(result);
     }
   }, [accessToken, isSuccess]);
 
@@ -85,12 +85,12 @@ const Sidebar = memo(function Sidebar() {
           backgroundColor: "#e5e7eb",
         }}
       />
-      {testMenuList?.map((item, index) => {
+      {allMenus?.map((item, index) => {
         return (
           <Solution
             key={index}
             label={item.label}
-            // icon={item.icon}
+            icon={item.icon}
             auth={item.auth}
             isOpen={true}
             fold={fold}

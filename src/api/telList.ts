@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import instance from "../utils/axiosInstance";
 import { useAuthStore } from "../stores/authStore";
-import { TelApiResponseType } from "../types/TelList";
+import { TelApiResponseType } from "../types/callCnslt";
 
 const API = {
   getTelList: async (sptNo: string) => {

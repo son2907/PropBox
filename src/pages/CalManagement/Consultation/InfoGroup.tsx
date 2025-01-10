@@ -28,20 +28,20 @@ import {
 import useMultiInputValue from "../../../hooks/useMultiInputValue";
 import { useCnsltStore } from "../../../stores/CunsltStore";
 import { filterDataByValues } from "../../../utils/filterDataByValues";
-import { CnsltInfoRequestType } from "../../../types/TelList";
+import { CnsltInfoRequestType } from "../../../types/callCnslt";
+import { useForm } from "react-hook-form";
+import { getFormattedDate } from "../../../utils/getFormattedDate";
+import { useAuthStore } from "../../../stores/authStore";
+import useDidMountEffect from "../../../hooks/useDidMountEffect";
 
 export default function InfoGroup({ tabType }: TabType) {
   // 좌측 테이블에서 일련의 데이터가 선택되면 -> cstmrNo && cnsltNo가 바인딩 됨
   // => zuStand에 넣어둠..
   // sptNo는 현장번호
 
-  const testRefs = useRef<any>([]);
+  const { loginId } = useAuthStore(["loginId"]);
 
-  const {
-    inputRefs: topRefs,
-    setInputValue: setTopValue,
-    getInputValue: getTopValue,
-  } = useMultiInputValue();
+  const detailRefs = useRef<any>([]);
 
   const { data: areaList } = useAreaList();
 
@@ -49,7 +49,7 @@ export default function InfoGroup({ tabType }: TabType) {
 
   const [selectDetailItem, setDetailItem] = useState<string>("");
 
-  const { cstmrNo, cnsltNo, type } = useCnsltStore();
+  const { cstmrNo, cnsltNo, callYn, trsmYn } = useCnsltStore();
   const { data: cunsltDetailList } = useCnsltDetail(cstmrNo, cnsltNo);
   const { data: itemDetList, refetch: itemDetListRefetch } = useItemDetList({
     itemNo: selectDetailItem ?? "",
@@ -64,27 +64,7 @@ export default function InfoGroup({ tabType }: TabType) {
     cunsltDetailList?.data.contents.areaNo
   );
 
-  // const {mutate: postInfo} = usePostCnsltInfo();
-
-  // const body :CnsltInfoRequestType = {
-
-  // }
-
-  // const postInfoFn = () => {
-  //    postInfo(
-  //      {
-  //        body: testData,
-  //      },
-  //      {
-  //        onSuccess: (res) => {
-  //          console.log("메모 저장 성공:", res);
-  //        },
-  //        onError: (res) => {
-  //          console.log("메모 저장 에러", res);
-  //        },
-  //      }
-  //    );
-  // }
+  const { mutate: postInfo } = usePostCnsltInfo();
 
   const searchPopupInfo = {
     url: PathConstants.Call.SearchCustomer,
@@ -106,14 +86,14 @@ export default function InfoGroup({ tabType }: TabType) {
     if (!selectDetailItem) return null;
     itemDetListRefetch();
     resetSelection();
-    testRefs.current = [];
+    detailRefs.current = [];
   };
 
   useEffect(() => {
     if (!cunsltDetailList) {
       setDetailItem("");
       resetSelection();
-      testRefs.current = [];
+      detailRefs.current = [];
     }
   }, [cunsltDetailList]);
 
@@ -132,317 +112,350 @@ export default function InfoGroup({ tabType }: TabType) {
 
   const selectDetItem = (item: any) => {
     toggleRowSelection(item.detailNo);
-    testRefs.current[item.itemNo] = {
+    detailRefs.current[item.itemNo] = {
       itemNo: item.itemNo,
       detailNo: item.detailNo,
       detailNm: item.detailNm,
     };
   };
 
+  const { register, handleSubmit, reset } = useForm();
+
+  useDidMountEffect(() => {
+    const defaultValues = {
+      cnsltTelno: "",
+      cstmrNm: "",
+      cstmrRmk: "",
+      mbtlNo: "",
+      telNo: "",
+      addr: "",
+      complianceRate: "",
+      hopeBalance: "",
+      cnsltCnt: "",
+      rctnRejectXyn: "",
+      spcmnt: "",
+      areaNo: "",
+    };
+
+    if (cunsltDetailList?.data?.contents) {
+      reset({ ...defaultValues, ...cunsltDetailList.data.contents });
+    } else {
+      reset(defaultValues);
+    }
+  }, [cunsltDetailList]);
+
+  const onSubmit = (data: any) => {
+    const data_1 = cunsltDetailList?.data.contents;
+    const telCnsltCnList = detailRefs.current
+      .filter(
+        (item): item is { itemNo: string; detailNo: string } => item !== null
+      )
+      .map(({ itemNo, detailNo }) => ({ itemNo, detailNo }));
+
+    const body: CnsltInfoRequestType = {
+      sptNo: data_1.sptNo,
+      cstmrNo: data_1.cstmrNo,
+      cnsltNo: data_1.cnsltNo,
+      cnsltnt: data_1.cnsltnt,
+      cnsltDt: getFormattedDate(selectedDate),
+      telId: data_1.telId,
+      cnsltTelno: data.cnsltTelno,
+      cstmrNm: data.cstmrNm,
+      mbtlNo: data.mbtlNo,
+      telNo: data.telNo,
+      cstmrRmk: data.cstmrRmk,
+      addr: data.addr,
+      areaNo: selectValue,
+      spcmnt: data.spcmnt,
+      callYn: callYn,
+      trsmYn: trsmYn,
+      legacySlutnId: trsmYn == "W" ? "CS0001" : "TM0001",
+      userId: loginId,
+      telCnsltCnList: telCnsltCnList,
+      ...(data_1.waitCstmrNo && { waitCstmrNo: data_1.waitCstmrNo }),
+    };
+
+    console.log("보낼 데이터:", body);
+
+    postInfo(
+      {
+        body: body,
+      },
+      {
+        onSuccess: (res) => {
+          console.log("유저 정보 저장 성공:", res);
+        },
+        onError: (res) => {
+          console.log("유저 정보 저장 에러", res);
+        },
+      }
+    );
+  };
+
   return (
     <>
-      <Stack width={"100%"} height={"50%"} paddingBottom={1}>
-        {/* 상단 회색박스 ********************************************** */}
-        <GrayBox height={"50px"} width={"100%"} marginBottom={1}>
-          <LabelTypo>상담일자</LabelTypo>
-          <Box width={"250px"}>
-            <Calendar
-              selectedDate={selectedDate}
-              setSelectedDate={setSelectedDate}
-            />
-          </Box>
-          <Typography variant="bodySS" color="error.main" paddingLeft={2}>
-            {!isToday(selectedDate) ? (
-              <>
-                <MdInfoOutline /> 오늘 날짜가 아닙니다.
-              </>
-            ) : (
-              ""
-            )}
-          </Typography>
-
-          {/* 오른쪽 버튼 그룹 */}
-          <Box display="flex" gap={1} marginLeft="auto">
-            <BasicButton
-              onClick={() => {
-                openPopup({
-                  url: statusPopupInfo.url,
-                  windowName: statusPopupInfo.windowName,
-                });
-              }}
-            >
-              상담현황
-            </BasicButton>
-            <BasicButton
-              onClick={() => {
-                const data = getTopValue();
-                console.log("인풋 값:", data);
-                testRefs.current.forEach((ref: any, index: any) => {
-                  if (ref !== null) {
-                    console.log(`testRefs.current[${index}]:`, ref);
-                  }
-                });
-              }}
-            >
-              추가
-            </BasicButton>
-            <BasicButton>삭제</BasicButton>
-            <BasicButton
-              onClick={() => {
-                openPopup({
-                  url: smsPopupInfo.url,
-                  windowFeatures: smsPopupInfo.windowFeatures,
-                  windowName: smsPopupInfo.windowName,
-                });
-              }}
-            >
-              문자
-            </BasicButton>
-          </Box>
-        </GrayBox>
-        <Box display="flex" width={"100%"} padding={0.8} paddingLeft={2}>
-          {/* 왼쪽 */}
-          <Stack width={"80%"} gap={1}>
-            <CenteredBox>
-              <LabelTypo>
-                <Typography color="error.main">*</Typography>
-                상담전화
-              </LabelTypo>
-              <BasicInput
-                key={cunsltDetailList?.data.contents.cnsltTelno}
-                defaultValue={cunsltDetailList?.data.contents.cnsltTelno}
-                ref={(el) => (topRefs.current[0] = el)}
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+          height: "100%",
+          overflow: "hidden",
+          boxSizing: "border-box",
+        }}
+      >
+        <Stack width={"100%"} height={"50%"} paddingBottom={1}>
+          {/* 상단 회색박스 ********************************************** */}
+          <GrayBox height={"50px"} width={"100%"} marginBottom={1}>
+            <LabelTypo>상담일자</LabelTypo>
+            <Box width={"250px"}>
+              <Calendar
+                selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
               />
-              <IconSquareButton
+            </Box>
+            <Typography variant="bodySS" color="error.main" paddingLeft={2}>
+              {!isToday(selectedDate) ? (
+                <>
+                  <MdInfoOutline /> 오늘 날짜가 아닙니다.
+                </>
+              ) : (
+                ""
+              )}
+            </Typography>
+
+            {/* 오른쪽 버튼 그룹 */}
+            <Box display="flex" gap={1} marginLeft="auto">
+              <BasicButton
                 onClick={() => {
                   openPopup({
-                    url: searchPopupInfo.url,
-                    windowName: searchPopupInfo.windowName,
+                    url: statusPopupInfo.url,
+                    windowName: statusPopupInfo.windowName,
                   });
                 }}
               >
-                <IoSearchOutline size={"1em"} />
-              </IconSquareButton>
-            </CenteredBox>
-            <CenteredBox>
-              <LabelTypo>
-                <Typography color="error.main">*</Typography>
-                이름
-              </LabelTypo>
-              <BasicInput
-                key={cunsltDetailList?.data.contents.cstmrNm}
-                defaultValue={cunsltDetailList?.data.contents.cstmrNm}
-                ref={(el) => (topRefs.current[1] = el)}
-              />
-              <IconSquareButton>
-                <IoSearchOutline size={"1em"} />
-              </IconSquareButton>
-              {tabType ? (
-                <>
-                  <input type="checkbox" />
-                  <Typography>부재콜</Typography>
-                </>
-              ) : null}
-            </CenteredBox>
-            <CenteredBox>
-              <LabelTypo>고객정보</LabelTypo>
-              <BasicInput
-                key={cunsltDetailList?.data.contents.cstmrRmk}
-                defaultValue={
-                  type == "Y" ? cunsltDetailList?.data.contents.cstmrRmk : ""
-                }
-                ref={(el) => (topRefs.current[2] = el)}
-              />
-            </CenteredBox>
-            <CenteredBox>
-              <LabelTypo>휴대전화</LabelTypo>
-              <BasicInput
-                key={cunsltDetailList?.data.contents.mbtlNo}
-                defaultValue={
-                  type == "Y" ? cunsltDetailList?.data.contents.mbtlNo : ""
-                }
-                ref={(el) => (topRefs.current[3] = el)}
-              />
-              {tabType ? (
-                <IconSquareButton>
-                  <TbBookmark size={"1rem"} />
-                </IconSquareButton>
-              ) : null}
-              <LabelTypo marginLeft={2}>일반전화</LabelTypo>
-              <BasicInput
-                key={cunsltDetailList?.data.contents.telNo}
-                defaultValue={
-                  type == "Y" ? cunsltDetailList?.data.contents.telNo : ""
-                }
-                ref={(el) => (topRefs.current[4] = el)}
-              />
-              {tabType ? (
-                <IconSquareButton>
-                  <IoCallOutline size={"1rem"} />
-                </IconSquareButton>
-              ) : null}
-            </CenteredBox>
-            <CenteredBox>
-              <LabelTypo>주소</LabelTypo>
-              <BasicInput
-                sx={{ width: "500px" }}
-                key={cunsltDetailList?.data.contents.addr}
-                defaultValue={
-                  type == "Y" ? cunsltDetailList?.data.contents.addr : ""
-                }
-                ref={(el) => (topRefs.current[5] = el)}
-              />
-            </CenteredBox>
-            <CenteredBox>
-              <LabelTypo>관리지역</LabelTypo>
-              <Select
-                value={selectValue}
-                onChange={handleChange}
-                selectData={selectListData}
-                sx={{ width: "204px" }}
-              />
-            </CenteredBox>
-          </Stack>
-
-          {/* 오른쪽 */}
-          <Stack width={"20%"}>
-            <GrayBox
-              flexDirection={"column"}
-              justifyContent={"center"}
-              width={"100%"}
-              height={"200px"}
-              borderRadius={"8px"}
-              marginTop={2}
-              marginRight={2}
-              gap={0.5}
-            >
-              <CenteredBox>
-                <LabelTypo>호응도</LabelTypo>
-                <BasicInput
-                  sx={{ width: "60px" }}
-                  key={cunsltDetailList?.data.contents.complianceRate}
-                  defaultValue={cunsltDetailList?.data.contents.complianceRate}
-                />
-              </CenteredBox>
-              <CenteredBox>
-                <LabelTypo>희망평형</LabelTypo>
-                <BasicInput
-                  sx={{ width: "60px" }}
-                  key={cunsltDetailList?.data.contents.hopeBalance}
-                  defaultValue={cunsltDetailList?.data.contents.hopeBalance}
-                />
-              </CenteredBox>
-              <CenteredBox>
-                <LabelTypo>상담횟수</LabelTypo>
-                <BasicInput
-                  sx={{ width: "60px" }}
-                  key={cunsltDetailList?.data.contents.cnsltCnt}
-                  defaultValue={cunsltDetailList?.data.contents.cnsltCnt}
-                />
-              </CenteredBox>
-              <CenteredBox>
-                <LabelTypo>수신동의</LabelTypo>
-                <BasicInput
-                  sx={{ width: "60px" }}
-                  key={cunsltDetailList?.data.contents.rctnRejectXyn}
-                  defaultValue={cunsltDetailList?.data.contents.rctnRejectXyn}
-                />
-              </CenteredBox>
-            </GrayBox>
-          </Stack>
-        </Box>
-      </Stack>
-
-      {/* 상담항목, 세부항목 회색 인풋 영역 */}
-      <Box display="flex" overflow="hidden" height={"100%"} gap={1}>
-        {/* 상담항목 세부항목 */}
-        <GrayBox
-          flexDirection={"column"}
-          width={"50%"}
-          height={"100%"}
-          gap={1}
-          overflow="auto"
-        >
-          {cunsltDetailList?.data.contents.itemList == undefined ? (
-            <Typography>
-              조회할 정보가 없습니다. 왼쪽 테이블에서 조회할 항목을
-              선택해주세요.
-            </Typography>
-          ) : (
-            cunsltDetailList?.data.contents.itemList.map((item: any) => (
-              <Box
-                key={item.itemNo}
-                display="flex"
-                alignItems="center" // 수직 중앙 정렬
-                flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
+                상담현황
+              </BasicButton>
+              <BasicButton type="submit">추가</BasicButton>
+              <BasicButton>삭제</BasicButton>
+              <BasicButton
                 onClick={() => {
-                  setDetailItem(item.itemNo);
-                }}
-                sx={{
-                  cursor: "pointer",
+                  openPopup({
+                    url: smsPopupInfo.url,
+                    windowFeatures: smsPopupInfo.windowFeatures,
+                    windowName: smsPopupInfo.windowName,
+                  });
                 }}
               >
-                <Typography width={150}>{item.itemNm}</Typography>
-                <BasicInput
-                  sx={{ minHeight: "24px" }}
-                  name={item.itemNo}
-                  value={
-                    testRefs.current[item.itemNo]?.detailNm ?? item.detailNm
-                  }
-                  readOnly
+                문자
+              </BasicButton>
+            </Box>
+          </GrayBox>
+          <Box display="flex" width={"100%"} padding={0.8} paddingLeft={2}>
+            {/* 왼쪽 */}
+            <Stack width={"80%"} gap={1}>
+              <CenteredBox>
+                <LabelTypo>
+                  <Typography color="error.main">*</Typography>
+                  상담전화
+                </LabelTypo>
+                <BasicInput {...register("cnsltTelno")} />
+                <IconSquareButton
+                  onClick={() => {
+                    openPopup({
+                      url: searchPopupInfo.url,
+                      windowName: searchPopupInfo.windowName,
+                    });
+                  }}
+                >
+                  <IoSearchOutline size={"1em"} />
+                </IconSquareButton>
+              </CenteredBox>
+              <CenteredBox>
+                <LabelTypo>
+                  <Typography color="error.main">*</Typography>
+                  이름
+                </LabelTypo>
+                <BasicInput {...register("cstmrNm")} />
+                <IconSquareButton>
+                  <IoSearchOutline size={"1em"} />
+                </IconSquareButton>
+                {tabType ? (
+                  <>
+                    <input type="checkbox" />
+                    <Typography>부재콜</Typography>
+                  </>
+                ) : null}
+              </CenteredBox>
+              <CenteredBox>
+                <LabelTypo>고객정보</LabelTypo>
+                <BasicInput {...register("cstmrRmk")} />
+              </CenteredBox>
+              <CenteredBox>
+                <LabelTypo>휴대전화</LabelTypo>
+                <BasicInput {...register("mbtlNo")} />
+                {tabType ? (
+                  <IconSquareButton>
+                    <TbBookmark size={"1rem"} />
+                  </IconSquareButton>
+                ) : null}
+                <LabelTypo marginLeft={2}>일반전화</LabelTypo>
+                <BasicInput {...register("telNo")} />
+                {tabType ? (
+                  <IconSquareButton>
+                    <IoCallOutline size={"1rem"} />
+                  </IconSquareButton>
+                ) : null}
+              </CenteredBox>
+              <CenteredBox>
+                <LabelTypo>주소</LabelTypo>
+                <BasicInput sx={{ width: "500px" }} {...register("addr")} />
+              </CenteredBox>
+              <CenteredBox>
+                <LabelTypo>관리지역</LabelTypo>
+                <Select
+                  defaultValue={selectValue}
+                  value={selectValue}
+                  onChange={handleChange}
+                  selectData={selectListData}
+                  sx={{ width: "204px" }}
                 />
-              </Box>
-            ))
-          )}
-        </GrayBox>
-        <Box
-          flexDirection={"column"}
-          width={"50%"}
-          height={"100%"}
-          overflow="auto"
-        >
-          <BasicTable data={itemDetList?.data.contents}>
-            <BasicTable.Th>
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
+              </CenteredBox>
+            </Stack>
+
+            {/* 오른쪽 */}
+            <Stack width={"20%"}>
+              <GrayBox
+                flexDirection={"column"}
+                justifyContent={"center"}
+                width={"100%"}
+                height={"200px"}
+                borderRadius={"8px"}
+                marginTop={2}
+                marginRight={2}
+                gap={0.5}
               >
-                세부항목
-                <BasicButton onClick={refreshDetList}>새로고침</BasicButton>
-              </Box>
-            </BasicTable.Th>
-            <BasicTable.Tbody>
-              {itemDetList?.data.contents.map((item: any, index: any) => {
-                return (
-                  <BasicTable.Tr
-                    key={index}
-                    isClicked={
-                      testRefs.current[item.itemNo]?.detailNo === item.detailNo
+                <CenteredBox>
+                  <LabelTypo>호응도</LabelTypo>
+                  <BasicInput
+                    sx={{ width: "60px" }}
+                    {...register("complianceRate")}
+                  />
+                </CenteredBox>
+                <CenteredBox>
+                  <LabelTypo>희망평형</LabelTypo>
+                  <BasicInput
+                    sx={{ width: "60px" }}
+                    {...register("hopeBalance")}
+                  />
+                </CenteredBox>
+                <CenteredBox>
+                  <LabelTypo>상담횟수</LabelTypo>
+                  <BasicInput
+                    sx={{ width: "60px" }}
+                    {...register("cnsltCnt")}
+                  />
+                </CenteredBox>
+                <CenteredBox>
+                  <LabelTypo>수신동의</LabelTypo>
+                  <BasicInput
+                    sx={{ width: "60px" }}
+                    {...register("rctnRejectXyn")}
+                  />
+                </CenteredBox>
+              </GrayBox>
+            </Stack>
+          </Box>
+        </Stack>
+
+        {/* 상담항목, 세부항목 회색 인풋 영역 */}
+        <Box display="flex" overflow="hidden" height={"100%"} gap={1}>
+          {/* 상담항목 세부항목 */}
+          <GrayBox
+            flexDirection={"column"}
+            width={"50%"}
+            height={"100%"}
+            gap={1}
+            overflow="auto"
+          >
+            {cunsltDetailList?.data.contents.itemList == undefined ? (
+              <Typography>
+                조회할 정보가 없습니다. 왼쪽 테이블에서 조회할 항목을
+                선택해주세요.
+              </Typography>
+            ) : (
+              cunsltDetailList?.data.contents.itemList.map((item: any) => (
+                <Box
+                  key={item.itemNo}
+                  display="flex"
+                  alignItems="center" // 수직 중앙 정렬
+                  flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
+                  onClick={() => {
+                    setDetailItem(item.itemNo);
+                  }}
+                  sx={{
+                    cursor: "pointer",
+                  }}
+                >
+                  <Typography width={150}>{item.itemNm}</Typography>
+                  <BasicInput
+                    sx={{ minHeight: "24px" }}
+                    value={
+                      detailRefs.current[item.itemNo]?.detailNm ?? item.detailNm
                     }
-                    onClick={() => {
-                      selectDetItem(item);
-                    }}
-                  >
-                    <BasicTable.Td>{item.detailNm}</BasicTable.Td>
-                  </BasicTable.Tr>
-                );
-              })}
-            </BasicTable.Tbody>
-          </BasicTable>
+                    readOnly
+                  />
+                </Box>
+              ))
+            )}
+          </GrayBox>
+          <Box
+            flexDirection={"column"}
+            width={"50%"}
+            height={"100%"}
+            overflow="auto"
+          >
+            <BasicTable data={itemDetList?.data.contents}>
+              <BasicTable.Th>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  세부항목
+                  <BasicButton onClick={refreshDetList}>새로고침</BasicButton>
+                </Box>
+              </BasicTable.Th>
+              <BasicTable.Tbody>
+                {itemDetList?.data.contents.map((item: any, index: any) => {
+                  return (
+                    <BasicTable.Tr
+                      key={index}
+                      isClicked={
+                        detailRefs.current[item.itemNo]?.detailNo ===
+                        item.detailNo
+                      }
+                      onClick={() => {
+                        selectDetItem(item);
+                      }}
+                    >
+                      <BasicTable.Td>{item.detailNm}</BasicTable.Td>
+                    </BasicTable.Tr>
+                  );
+                })}
+              </BasicTable.Tbody>
+            </BasicTable>
+          </Box>
         </Box>
-      </Box>
-      <GrayBox height={"40px"} marginTop={1} marginBlock={1}>
-        특기사항
-      </GrayBox>
-      <TextArea
-        height="140px"
-        key={cunsltDetailList?.data.contents.spcmnt}
-        value={cunsltDetailList?.data.contents.spcmnt}
-      />
-      <GrayBox height={"40px"} marginTop={1} justifyContent={"flex-end"}>
-        <BasicButton>저장</BasicButton>
-      </GrayBox>
+        <GrayBox height={"40px"} marginTop={1} marginBlock={1}>
+          특기사항
+        </GrayBox>
+        <TextArea height="140px" {...register("spcmnt")} />
+        <GrayBox height={"40px"} marginTop={1} justifyContent={"flex-end"}>
+          <BasicButton>저장</BasicButton>
+        </GrayBox>
+      </form>
     </>
   );
 }

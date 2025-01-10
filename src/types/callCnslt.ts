@@ -52,23 +52,24 @@ type TelCnsltCn = {
 };
 
 export interface CnsltInfoRequestType {
-  sptNo: string;
-  cstmrNo: string;
-  waitCstmrNo: string;
-  cnsltNo: string;
-  telId: string;
-  cnsltTelno: string;
-  callYn: string;
-  trsmYn: string;
-  cnsltnt: string;
-  cstmrNm: string;
-  mbtlNo: string;
-  telNo: string;
-  cstmrRmk: string;
-  addr: string;
-  areaNo: string;
-  spcmnt: string;
-  legacySlutnId: string;
-  userId: string;
-  telCnsltCnList: TelCnsltCn[];
+  sptNo: string; // 지원 번호
+  cstmrNo: string; // 고객 번호
+  waitCstmrNo?: string; // 대기 고객 번호 (선택적)
+  cnsltNo: string; // 상담 번호
+  telId: string; // 전화 ID
+  cnsltTelno: string; // 상담 전화번호
+  callYn: string; // 걸기 여부
+  trsmYn: string; // 통화 여부
+  cnsltnt: string; // 상담자
+  cnsltDt: string; // 상담 날짜
+  cstmrNm: string; // 고객 이름
+  mbtlNo: string; // 휴대전화 번호
+  telNo: string; // 일반전화 번호
+  cstmrRmk: string; // 고객 정보
+  addr?: string; // 주소 (선택적)
+  areaNo: string; // 지역 번호
+  spcmnt: string; // 특이 사항
+  legacySlutnId?: string; // 레거시 솔루션 ID (선택적)
+  userId: string; // 사용자 ID
+  telCnsltCnList: TelCnsltCn[]; // 상담 항목 목록
 }

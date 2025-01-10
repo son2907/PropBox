@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import instance from "../utils/axiosInstance";
 import getItemByStorageOne from "../utils/getItemByStorageOne";
 import { getFormattedDate } from "../utils/getFormattedDate";
-import { CnsltInfoRequestType, MemoRequestBody } from "../types/TelList";
+import { CnsltInfoRequestType, MemoRequestBody } from "../types/callCnslt";
 
 const API = {
   // 상담 항목 목록
@@ -20,6 +20,7 @@ const API = {
     // const date = getFormattedDate(); // 상담 일자는 반드시 금일
     // ======================================테스트 날짜======================================
     const date = 20241223;
+    // const date = 20250120;
     const url = `/api/tel/cnslt?sptNo=${spt}&cnsltDt=${date}&callYn=${absnceYn}&trsmYn=${trsmYn}`;
     return await instance.get(url);
   },
@@ -86,7 +87,7 @@ const API = {
   // Info Group 수정 또는 추가
   postCnsltInfo: async (requestData: { body: CnsltInfoRequestType }) => {
     const url = `/api/tel/cnslt`;
-    return await instance.put(url, requestData.body);
+    return await instance.post(url, requestData.body);
   },
 };
 
