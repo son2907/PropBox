@@ -25,9 +25,7 @@ import {
   useItemDetList,
   usePostCnsltInfo,
 } from "../../../api/callCnslt";
-import useMultiInputValue from "../../../hooks/useMultiInputValue";
 import { useCnsltStore } from "../../../stores/CunsltStore";
-import { filterDataByValues } from "../../../utils/filterDataByValues";
 import { CnsltInfoRequestType } from "../../../types/callCnslt";
 import { useForm } from "react-hook-form";
 import { getFormattedDate } from "../../../utils/getFormattedDate";
@@ -35,20 +33,11 @@ import { useAuthStore } from "../../../stores/authStore";
 import useDidMountEffect from "../../../hooks/useDidMountEffect";
 
 export default function InfoGroup({ tabType }: TabType) {
-  // 좌측 테이블에서 일련의 데이터가 선택되면 -> cstmrNo && cnsltNo가 바인딩 됨
-  // => zuStand에 넣어둠..
-  // sptNo는 현장번호
-
   const { loginId } = useAuthStore(["loginId"]);
-
   const detailRefs = useRef<any>([]);
-
   const { data: areaList } = useAreaList();
-
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-
   const [selectDetailItem, setDetailItem] = useState<string>("");
-
   const { cstmrNo, cnsltNo, callYn, trsmYn } = useCnsltStore();
   const { data: cunsltDetailList } = useCnsltDetail(cstmrNo, cnsltNo);
   const { data: itemDetList, refetch: itemDetListRefetch } = useItemDetList({
@@ -56,6 +45,21 @@ export default function InfoGroup({ tabType }: TabType) {
   });
 
   const { toggleRowSelection, resetSelection } = useSingleRowSelection();
+
+  const defaultValue = {
+    cnsltTelno: "",
+    cstmrNm: "",
+    cstmrRmk: "",
+    mbtlNo: "",
+    telNo: "",
+    addr: "",
+    complianceRate: "",
+    hopeBalance: "",
+    cnsltCnt: "",
+    rctnRejectXyn: "",
+    spcmnt: "",
+    areaNo: "",
+  };
 
   const { selectListData, selectValue, handleChange } = useSelect(
     areaList?.data.contents,
@@ -89,14 +93,6 @@ export default function InfoGroup({ tabType }: TabType) {
     detailRefs.current = [];
   };
 
-  useEffect(() => {
-    if (!cunsltDetailList) {
-      setDetailItem("");
-      resetSelection();
-      detailRefs.current = [];
-    }
-  }, [cunsltDetailList]);
-
   console.log(
     "선택한 상담에 대한 데이터:",
     cunsltDetailList,
@@ -119,28 +115,18 @@ export default function InfoGroup({ tabType }: TabType) {
     };
   };
 
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset } = useForm({
+    defaultValues: defaultValue,
+  });
 
   useDidMountEffect(() => {
-    const defaultValues = {
-      cnsltTelno: "",
-      cstmrNm: "",
-      cstmrRmk: "",
-      mbtlNo: "",
-      telNo: "",
-      addr: "",
-      complianceRate: "",
-      hopeBalance: "",
-      cnsltCnt: "",
-      rctnRejectXyn: "",
-      spcmnt: "",
-      areaNo: "",
-    };
-
     if (cunsltDetailList?.data?.contents) {
-      reset({ ...defaultValues, ...cunsltDetailList.data.contents });
+      reset({ ...cunsltDetailList.data.contents });
     } else {
-      reset(defaultValues);
+      reset(defaultValue);
+      setDetailItem("");
+      resetSelection();
+      detailRefs.current = [];
     }
   }, [cunsltDetailList]);
 
