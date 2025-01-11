@@ -152,7 +152,6 @@ export default function CallTable({ tabType, tabChange }: TabType) {
               disableRipple
             />
           </TabMenus>
-          {/*  탭에 따라 데이터가 바뀌도록 데이터 바인딩 해야함  */}
           <TableBox>
             <TableBox.Inner>
               {
@@ -163,8 +162,13 @@ export default function CallTable({ tabType, tabChange }: TabType) {
                     <BasicTable.Th>주제</BasicTable.Th>
                     <BasicTable.Tbody>
                       {cnsltData?.data.contents.map((item, index) => {
+                        console.log("대기:", item);
                         return (
-                          <BasicTable.Tr key={index}>
+                          <BasicTable.Tr
+                            key={index}
+                            isClicked={selectedRow.has(item.cnsltNo)}
+                            onClick={() => toggleRowSelection(item.cnsltNo)}
+                          >
                             <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
                             <BasicTable.Td>{item.themaNm}</BasicTable.Td>
                           </BasicTable.Tr>
@@ -181,6 +185,7 @@ export default function CallTable({ tabType, tabChange }: TabType) {
                   <BasicTable.Th>상담일시</BasicTable.Th>
                   <BasicTable.Tbody>
                     {cnsltData?.data.contents.map((item: any, index: any) => {
+                      console.log("통화 또는 부재:", item);
                       return (
                         <BasicTable.Tr
                           key={index}

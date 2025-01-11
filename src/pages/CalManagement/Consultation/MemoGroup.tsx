@@ -21,8 +21,6 @@ import getItemByStorageOne from "../../../utils/getItemByStorageOne";
 import { HiOutlineDocumentText } from "react-icons/hi";
 import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
 import { filterDataByValues } from "../../../utils/filterDataByValues";
-import { useForm } from "react-hook-form";
-import useDidMountEffect from "../../../hooks/useDidMountEffect";
 
 export default function MemoGroup() {
   const { value, handleChange: tabChange } = useTabs(0);
@@ -38,12 +36,6 @@ export default function MemoGroup() {
 
   const memoRef = useRef<HTMLTextAreaElement>(null); // memo Ref
   const { mutate: postMemo } = usePostMemo();
-  const testData = {
-    sptNo: getItemByStorageOne("selectedSite").sptNo,
-    userNo: userNo || "",
-    memo: memoRef.current?.value || "",
-    userId: loginId || "",
-  };
 
   const userData = filterDataByValues({
     data: histListData?.data.contents,
@@ -61,9 +53,15 @@ export default function MemoGroup() {
   }, [histListData]);
 
   const postMemoFn = () => {
+    const body = {
+      sptNo: getItemByStorageOne("selectedSite").sptNo,
+      userNo: userNo,
+      memo: memoRef.current?.value || "",
+      userId: loginId,
+    };
     postMemo(
       {
-        body: testData,
+        body: body,
       },
       {
         onSuccess: (res) => {

@@ -1,7 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material";
-import { useState } from "react";
-import { tableDataType } from "../../../types";
-import { tableTestData } from "../../../utils/testData";
+import { useEffect, useState } from "react";
 import RowDragTable from "../../../components/Table/RowDragTable";
 import GrayBox from "../../../components/Box/GrayBox";
 import CenteredBox from "../../../components/Box/CenteredBox";
@@ -10,12 +8,24 @@ import TableBox from "../../../components/Box/TableBox";
 import BasicInput from "../../../components/Input/BasicInput";
 import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
 import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
+import { useAreaList } from "../../../api/callCnslt";
+import { AreaListItem } from "../../../types/callCnslt";
 
 export default function RegionRegistration() {
-  const [data, setData] = useState<tableDataType[]>(tableTestData);
+  const [areaList, setAreaList] = useState<AreaListItem[]>([]);
   const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택
   const { selectedRows, toggleRowsSelection } = useMultiRowSelection(); // 체크박스
 
+  const { data: areaListApi } = useAreaList();
+  // useAreaList
+
+  useEffect(() => {
+    if (areaListApi) {
+      setAreaList(areaListApi?.data.contents);
+    }
+  }, [areaListApi]);
+
+  console.log("api:", areaList);
   return (
     <>
       <Box display={"flex"} width={"30%"} minWidth={"300px"} height={"100%"}>
@@ -24,24 +34,23 @@ export default function RegionRegistration() {
             <TableBox>
               <TableBox.Inner>
                 <RowDragTable
-                  data={data}
-                  setData={setData}
-                  checkbox={true}
+                  data={areaList}
+                  setData={setAreaList}
+                  checkbox={false}
                   selectedRows={selectedRows}
                   toggleRowsSelection={toggleRowsSelection}
+                  keyName="areaNo"
                 >
-                  <RowDragTable.CheckboxTh />
                   <RowDragTable.Th>관리지역</RowDragTable.Th>
                   <RowDragTable.Tbody>
-                    {data.map((item) => (
+                    {areaList.map((item) => (
                       <RowDragTable.Tr
-                        key={item.id}
-                        id={item.id}
-                        isClicked={selectedRow.has(item.id)}
-                        onClick={() => toggleRowSelection(item.id)}
+                        key={item.areaNo}
+                        id={item.areaNo ?? ""}
+                        isClicked={selectedRow.has(item.areaNo ?? "")}
+                        onClick={() => toggleRowSelection(item.areaNo ?? "")}
                       >
-                        <RowDragTable.CheckboxTd item={item} />
-                        <RowDragTable.Td>{item.name}</RowDragTable.Td>
+                        <RowDragTable.Td>{item.areaNm}</RowDragTable.Td>
                       </RowDragTable.Tr>
                     ))}
                   </RowDragTable.Tbody>

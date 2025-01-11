@@ -41,9 +41,9 @@ export interface TelCnsltApiResponseType extends ApiResponseType {
 // 메모 요청 body 데이터
 export type MemoRequestBody = {
   sptNo: string;
-  userNo: string;
+  userNo?: string;
+  userId?: string;
   memo: string;
-  userId: string;
 };
 
 type TelCnsltCn = {
@@ -72,4 +72,31 @@ export interface CnsltInfoRequestType {
   legacySlutnId?: string; // 레거시 솔루션 ID (선택적)
   userId: string; // 사용자 ID
   telCnsltCnList: TelCnsltCn[]; // 상담 항목 목록
+}
+
+export type CnsltItem = {
+  itemNo: string | null;
+  sptNo: string | null;
+  itemNm: string | null;
+  lnupOrd: string | null;
+  useYn: "Y" | "N" | null;
+  delYn: string | null;
+  userId: string | null;
+};
+export interface CnsltItemListResponseType extends ApiResponseType {
+  contents: CnsltItem[];
+}
+
+export type AreaListItem = {
+  sptNo: string | null;
+  areaNo: string | null;
+  areaNm: string | null;
+  lnupOrd: string | null;
+  useYn: string | null;
+  delYn: string | null;
+  userId: string | null;
+};
+
+export interface AreaListItemListResponseType extends ApiResponseType {
+  contents: AreaListItem[];
 }

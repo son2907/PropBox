@@ -2,13 +2,20 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import instance from "../utils/axiosInstance";
 import getItemByStorageOne from "../utils/getItemByStorageOne";
 import { getFormattedDate } from "../utils/getFormattedDate";
-import { CnsltInfoRequestType, MemoRequestBody } from "../types/callCnslt";
+import {
+  CnsltInfoRequestType,
+  CnsltItemListResponseType,
+  AreaListItemListResponseType,
+  MemoRequestBody,
+} from "../types/callCnslt";
 
 const API = {
   // 상담 항목 목록
   getCnsltItemList: async () => {
     const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
-    return await instance.get(`/api/sptcnslt/itemlist/${spt}`);
+    return await instance.get<CnsltItemListResponseType>(
+      `/api/sptcnslt/itemlist/${spt}`
+    );
   },
   // 전화 받기, 전화 걸기 테이블
   getTelCnsltList: async (
@@ -70,7 +77,7 @@ const API = {
   getAreaList: async () => {
     const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
     const url = `/api/sptcnslt/area/list/${spt}`;
-    return await instance.get(url);
+    return await instance.get<AreaListItemListResponseType>(url);
   },
   // 메모
   getCnsltMemo: async (

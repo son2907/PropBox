@@ -85,12 +85,12 @@ const Sidebar = memo(function Sidebar() {
           backgroundColor: "#e5e7eb",
         }}
       />
-      {allMenus?.map((item, index) => {
+      {testMenuList?.map((item, index) => {
         return (
           <Solution
             key={index}
             label={item.label}
-            icon={item.icon}
+            // icon={item.icon}
             auth={item.auth}
             isOpen={true}
             fold={fold}

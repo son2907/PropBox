@@ -8,14 +8,13 @@ import { IoSearchOutline } from "react-icons/io5";
 import IconSquareButton from "../../../components/Button/IconSquareButton";
 import Calendar from "../../../components/Calendar/Calendar";
 import { MdInfoOutline } from "react-icons/md";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Select } from "../../../components/Select";
 import useSelect from "../../../hooks/useSelect";
 import { TabType } from "../../../types/menu";
 import { TbBookmark } from "react-icons/tb";
 import { IoCallOutline } from "react-icons/io5";
 import TextArea from "../../../components/TextArea/TextArea";
-import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
 import { openPopup } from "../../../utils/openPopup";
 import PathConstants from "../../../routers/path";
 import CenteredBox from "../../../components/Box/CenteredBox";
@@ -33,19 +32,34 @@ import { useAuthStore } from "../../../stores/authStore";
 import useDidMountEffect from "../../../hooks/useDidMountEffect";
 
 export default function InfoGroup({ tabType }: TabType) {
+  // 로그인 아이디
   const { loginId } = useAuthStore(["loginId"]);
-  const detailRefs = useRef<any>([]);
-  const { data: areaList } = useAreaList();
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [selectDetailItem, setDetailItem] = useState<string>("");
+
+  // 검색 조건 (왼쪽 테이블에서 선택한 한 행)
   const { cstmrNo, cnsltNo, callYn, trsmYn } = useCnsltStore();
+
+  // 상담 일자
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+
+  // 선택한 상담 항목
+  const [selectDetailItem, setDetailItem] = useState<string>("");
+
+  // <========================= GET API =========================>
+
+  // 지역 리스트 api
+  const { data: areaList } = useAreaList();
+
+  // 전체 데이터 (상담 전화~상담항목 목록) api
   const { data: cunsltDetailList } = useCnsltDetail(cstmrNo, cnsltNo);
+
+  // 선택한 상담 항목 목록에 대한 상세항목 api
   const { data: itemDetList, refetch: itemDetListRefetch } = useItemDetList({
     itemNo: selectDetailItem ?? "",
   });
+  // 선택한 세부 사항
+  const [detailInfo, setDetailInfo] = useState<any[]>([{}]);
 
-  const { toggleRowSelection, resetSelection } = useSingleRowSelection();
-
+  // 초깃값
   const defaultValue = {
     cnsltTelno: "",
     cstmrNm: "",
@@ -61,6 +75,12 @@ export default function InfoGroup({ tabType }: TabType) {
     areaNo: "",
   };
 
+  // input 할당 useForm
+  const { register, handleSubmit, reset } = useForm({
+    defaultValues: defaultValue,
+  });
+
+  // 관리지역 select
   const { selectListData, selectValue, handleChange } = useSelect(
     areaList?.data.contents,
     "areaNo", // 현장 번호
@@ -68,7 +88,7 @@ export default function InfoGroup({ tabType }: TabType) {
     cunsltDetailList?.data.contents.areaNo
   );
 
-  const { mutate: postInfo } = usePostCnsltInfo();
+  // <========================= Popup =========================>
 
   const searchPopupInfo = {
     url: PathConstants.Call.SearchCustomer,
@@ -86,13 +106,6 @@ export default function InfoGroup({ tabType }: TabType) {
     windowName: "sms 전송",
   };
 
-  const refreshDetList = () => {
-    if (!selectDetailItem) return null;
-    itemDetListRefetch();
-    resetSelection();
-    detailRefs.current = [];
-  };
-
   console.log(
     "선택한 상담에 대한 데이터:",
     cunsltDetailList,
@@ -100,44 +113,54 @@ export default function InfoGroup({ tabType }: TabType) {
     itemDetList
   );
 
+  // 날짜비교
   const isToday = (date: Date): boolean => {
     const today = new Date();
-    // 오늘 날짜와 selectedDate의 날짜 부분만 비교
     return today.toISOString().slice(0, 10) === date.toISOString().slice(0, 10);
   };
 
+  // 상세항목 테이블 클릭
   const selectDetItem = (item: any) => {
-    toggleRowSelection(item.detailNo);
-    detailRefs.current[item.itemNo] = {
-      itemNo: item.itemNo,
-      detailNo: item.detailNo,
-      detailNm: item.detailNm,
-    };
+    setDetailInfo((prev) => {
+      const updatedArray = [...prev];
+      updatedArray[item.itemNo] = {
+        itemNo: item.itemNo,
+        detailNo: item.detailNo,
+        detailNm: item.detailNm,
+      };
+      return updatedArray;
+    });
   };
 
-  const { register, handleSubmit, reset } = useForm({
-    defaultValues: defaultValue,
-  });
+  // 세부항목 새로고침 버튼
+  const refreshDetList = () => {
+    if (!selectDetailItem) return null;
+    itemDetListRefetch();
+    setDetailInfo([{}]);
+  };
 
+  // api 재호출 또는 항목 선택 해제 시 데이터 비움
   useDidMountEffect(() => {
     if (cunsltDetailList?.data?.contents) {
       reset({ ...cunsltDetailList.data.contents });
     } else {
       reset(defaultValue);
       setDetailItem("");
-      resetSelection();
-      detailRefs.current = [];
+      setDetailInfo([{}]);
     }
   }, [cunsltDetailList]);
 
+  // <========================= POST =========================>
+
+  const { mutate: postInfo } = usePostCnsltInfo();
+  console.log("디테일:", detailInfo);
   const onSubmit = (data: any) => {
     const data_1 = cunsltDetailList?.data.contents;
-    const telCnsltCnList = detailRefs.current
-      .filter(
-        (item): item is { itemNo: string; detailNo: string } => item !== null
-      )
+    const telCnsltCnList = detailInfo
+      .filter((item) => Object.keys(item).length > 0) // 빈 객체가 아닌 경우만 필터링
       .map(({ itemNo, detailNo }) => ({ itemNo, detailNo }));
 
+    // console.log("잠만:", telCnsltCnList);
     const body: CnsltInfoRequestType = {
       sptNo: data_1.sptNo,
       cstmrNo: data_1.cstmrNo,
@@ -387,9 +410,7 @@ export default function InfoGroup({ tabType }: TabType) {
                   <Typography width={150}>{item.itemNm}</Typography>
                   <BasicInput
                     sx={{ minHeight: "24px" }}
-                    value={
-                      detailRefs.current[item.itemNo]?.detailNm ?? item.detailNm
-                    }
+                    value={detailInfo[item.itemNo]?.detailNm ?? item.detailNm}
                     readOnly
                   />
                 </Box>
@@ -419,8 +440,7 @@ export default function InfoGroup({ tabType }: TabType) {
                     <BasicTable.Tr
                       key={index}
                       isClicked={
-                        detailRefs.current[item.itemNo]?.detailNo ===
-                        item.detailNo
+                        detailInfo[item.itemNo]?.detailNo === item.detailNo
                       }
                       onClick={() => {
                         selectDetItem(item);
