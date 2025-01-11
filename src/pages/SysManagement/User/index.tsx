@@ -59,12 +59,10 @@ export default function Registration() {
   return (
     <>
       {/* 사용자 리스트 테이블 - 상단 테이블 */}
-      <Stack width={"100%"} height={"100%"} gap={1} marginBottom={1}>
-        <GrayBox gap={2} justifyContent="space-between">
-          <Stack direction="row" gap={1}>
-            <SearchInput placeholder="사용자이름 검색" />
-          </Stack>
-          <Stack direction="row" gap={1}>
+      <Stack width={"100%"} height={"100%"} gap={1}>
+        <GrayBox gap={1} justifyContent={"space-between"}>
+          <SearchInput placeholder="사용자이름 검색" />
+          <Box gap={1}>
             <BasicButton
               onClick={() => {
                 openPopup({
@@ -76,201 +74,174 @@ export default function Registration() {
             >
               사용자추가
             </BasicButton>
-          </Stack>
+          </Box>
         </GrayBox>
-        <Stack width={"100%"} spacing={1} height={"100%"}>
-          {/* 사용자 정보 리스트 */}
-          <Stack bgcolor={"white"} marginLeft={1} width={"100%"} height={"50%"}>
-            <TableBox>
-              <TableBox.Inner>
-                <BasicTable data={tableTestData}>
-                  <BasicTable.Th>사용자ID</BasicTable.Th>
-                  <BasicTable.Th>사용자이름</BasicTable.Th>
-                  <BasicTable.Th>휴대전화</BasicTable.Th>
-                  <BasicTable.Th>PREFIX</BasicTable.Th>
-                  <BasicTable.Th>회사이름</BasicTable.Th>
-                  <BasicTable.Th>사업자번호</BasicTable.Th>
-                  <BasicTable.Th>사용여부</BasicTable.Th>
-                  <BasicTable.Th>삭제</BasicTable.Th>
-                  <BasicTable.Th>수정</BasicTable.Th>
-                  <BasicTable.Tbody>
-                    {tableTestData.map((item, index) => {
-                      return (
-                        <BasicTable.Tr
-                          key={index}
-                          isClicked={selectedRow.has(item.id)}
-                          onClick={() => toggleRowSelection(item.id)}
-                        >
-                          <BasicTable.Td>{item.phone}</BasicTable.Td>
-                          <BasicTable.Td>{item.name}</BasicTable.Td>
-                          <BasicTable.Td>{item.age}</BasicTable.Td>
-                          <BasicTable.Td>{item.job}</BasicTable.Td>
-                          <BasicTable.Td>{item.job}</BasicTable.Td>
-                          <BasicTable.Td>{item.job}</BasicTable.Td>
-                          <BasicTable.Td>{item.job}</BasicTable.Td>
-                          <BasicTable.Td>
-                            <IconButton>
-                              <RiDeleteBinLine color="#f4475f" />
-                            </IconButton>
-                          </BasicTable.Td>
-                          <BasicTable.Td>
-                            <BasicButton
-                              onClick={() => {
-                                openPopup({
-                                  url: uploadUser.url,
-                                  windowName: uploadUser.windowName,
-                                  windowFeatures: uploadUser.windowFeatures,
-                                });
-                              }}
-                            >
-                              수정
-                            </BasicButton>
-                          </BasicTable.Td>
-                        </BasicTable.Tr>
-                      );
-                    })}
-                  </BasicTable.Tbody>
-                </BasicTable>
-              </TableBox.Inner>
-            </TableBox>
+        <Stack width={"100%"} height={"95%"}>
+          <Stack width={"100%"} height={"40%"}>
+            <TableBox.Inner>
+              <BasicTable data={tableTestData}>
+                <BasicTable.Th>사용자ID</BasicTable.Th>
+                <BasicTable.Th>사용자이름</BasicTable.Th>
+                <BasicTable.Th>휴대전화</BasicTable.Th>
+                <BasicTable.Th>PREFIX</BasicTable.Th>
+                <BasicTable.Th>회사이름</BasicTable.Th>
+                <BasicTable.Th>사업자번호</BasicTable.Th>
+                <BasicTable.Th>사용여부</BasicTable.Th>
+                <BasicTable.Th>삭제</BasicTable.Th>
+                <BasicTable.Th>수정</BasicTable.Th>
+                <BasicTable.Tbody>
+                  {tableTestData.map((item, index) => {
+                    return (
+                      <BasicTable.Tr
+                        key={index}
+                        isClicked={selectedRow.has(item.id)}
+                        onClick={() => toggleRowSelection(item.id)}
+                      >
+                        <BasicTable.Td>{item.phone}</BasicTable.Td>
+                        <BasicTable.Td>{item.name}</BasicTable.Td>
+                        <BasicTable.Td>{item.age}</BasicTable.Td>
+                        <BasicTable.Td>{item.job}</BasicTable.Td>
+                        <BasicTable.Td>{item.job}</BasicTable.Td>
+                        <BasicTable.Td>{item.job}</BasicTable.Td>
+                        <BasicTable.Td>{item.job}</BasicTable.Td>
+                        <BasicTable.Td>
+                          <IconButton>
+                            <RiDeleteBinLine color="#f4475f" />
+                          </IconButton>
+                        </BasicTable.Td>
+                        <BasicTable.Td>
+                          <BasicButton
+                            onClick={() => {
+                              openPopup({
+                                url: uploadUser.url,
+                                windowName: uploadUser.windowName,
+                                windowFeatures: uploadUser.windowFeatures,
+                              });
+                            }}
+                          >
+                            수정
+                          </BasicButton>
+                        </BasicTable.Td>
+                      </BasicTable.Tr>
+                    );
+                  })}
+                </BasicTable.Tbody>
+              </BasicTable>
+            </TableBox.Inner>
           </Stack>
-          <Stack
-            gap={1}
-            width={"100%"}
-            bgcolor={"white"}
-            direction="row"
-            height={"45%"} // 화면 크기에 맞추기
-            overflow="hidden"
-          >
-            {/* 사용자 허가 솔루션 테이블 */}
-            <Stack
-              width={"70%"}
-              height="100%"
-              style={{ display: "flex", flexDirection: "column" }}
-            >
-              <GrayBox style={{ flexShrink: 0, padding: "8px 16px" }}>
-                <Typography fontWeight={"bold"}>사용자 허가 솔루션</Typography>
-              </GrayBox>
-              <div style={{ flex: 1, overflow: "auto" }}>
-                <TableBox>
-                  <TableBox.Inner>
-                    <CheckboxTable
-                      data={tableTestData}
-                      selectedRows={authorizedSelectedRows}
-                      toggleRowsSelection={toggleAuthorizedRowsSelection}
-                    >
-                      <CheckboxTable.Thead>
-                        <CheckboxTable.Tr>
-                          <CheckboxTable.CheckboxTh />
-                          <CheckboxTable.Th>솔루션ID</CheckboxTable.Th>
-                          <CheckboxTable.Th>솔루션명</CheckboxTable.Th>
-                          <CheckboxTable.Th>구분</CheckboxTable.Th>
-                          <CheckboxTable.Th colSpan={3}>
-                            라이선스
-                          </CheckboxTable.Th>
+          <Stack width={"100%"} height={"60%"}>
+            <TableBox gap={1}>
+              <Stack width={"69%"} height={"100%"} gap={1}>
+                <GrayBox>
+                  <Typography fontWeight={"bold"}>사용자 허가 솔루션</Typography>
+                </GrayBox>
+                <TableBox.Inner>
+                  <CheckboxTable
+                    data={tableTestData}
+                    selectedRows={authorizedSelectedRows}
+                    toggleRowsSelection={toggleAuthorizedRowsSelection}
+                  >
+                    <CheckboxTable.Thead>
+                      <CheckboxTable.Tr>
+                        <CheckboxTable.CheckboxTh />
+                        <CheckboxTable.Th>솔루션ID</CheckboxTable.Th>
+                        <CheckboxTable.Th>솔루션명</CheckboxTable.Th>
+                        <CheckboxTable.Th>구분</CheckboxTable.Th>
+                        <CheckboxTable.Th colSpan={3}>
+                          라이선스
+                        </CheckboxTable.Th>
+                      </CheckboxTable.Tr>
+                      <CheckboxTable.Tr>
+                        <CheckboxTable.Th> </CheckboxTable.Th>
+                        <CheckboxTable.Th> </CheckboxTable.Th>
+                        <CheckboxTable.Th> </CheckboxTable.Th>
+                        <CheckboxTable.Th> </CheckboxTable.Th>
+                        <CheckboxTable.Th>전체</CheckboxTable.Th>
+                        <CheckboxTable.Th>사용</CheckboxTable.Th>
+                        <CheckboxTable.Th>잔여</CheckboxTable.Th>
+                      </CheckboxTable.Tr>
+                    </CheckboxTable.Thead>
+                    <CheckboxTable.Tbody>
+                      {tableTestData.map((item) => (
+                        <CheckboxTable.Tr key={item.id} id={item.id}>
+                          <CheckboxTable.CheckboxTd item={item} />
+                          <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
+                          <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
+                          <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
+                          <CheckboxTable.Td>{item.address}</CheckboxTable.Td>
+                          <CheckboxTable.Td>{item.age}</CheckboxTable.Td>
+                          <CheckboxTable.Td>{item.age}</CheckboxTable.Td>
                         </CheckboxTable.Tr>
-                        <CheckboxTable.Tr>
-                          <CheckboxTable.Th> </CheckboxTable.Th>
-                          <CheckboxTable.Th> </CheckboxTable.Th>
-                          <CheckboxTable.Th> </CheckboxTable.Th>
-                          <CheckboxTable.Th> </CheckboxTable.Th>
-                          <CheckboxTable.Th>전체</CheckboxTable.Th>
-                          <CheckboxTable.Th>사용</CheckboxTable.Th>
-                          <CheckboxTable.Th>잔여</CheckboxTable.Th>
-                        </CheckboxTable.Tr>
-                      </CheckboxTable.Thead>
-                      <CheckboxTable.Tbody>
-                        {tableTestData.map((item) => (
-                          <CheckboxTable.Tr key={item.id} id={item.id}>
-                            <CheckboxTable.CheckboxTd item={item} />
-                            <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.address}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.age}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.age}</CheckboxTable.Td>
-                          </CheckboxTable.Tr>
-                        ))}
-                      </CheckboxTable.Tbody>
-                    </CheckboxTable>
-                  </TableBox.Inner>
-                </TableBox>
-              </div>
-              <GrayBox style={{ flexShrink: 0, padding: "8px 16px" }}>
-                <BasicButton sx={{ marginLeft: "auto" }}>새로고침</BasicButton>
-              </GrayBox>
-            </Stack>
-            <Stack
-              width={"3%"}
-              bgcolor={"white"}
-              justifyContent={"space-between"}
-              justifyItems={"center"}
-            >
-              <BasicButton
-                sx={{
-                  backgroundColor: "primary.A100",
-                  height: "200px",
-                  width: "5px",
-                }}
-              >
-                <BiChevronLeft size={"24px"} />
-              </BasicButton>
-              <BasicButton
-                sx={{
-                  backgroundColor: "primary.A100",
-                  height: "200px",
-                  width: "5px",
-                }}
-              >
-                <BiChevronLeft size={"24px"} />
-              </BasicButton>
-            </Stack>
-            {/* 사용자 미허가 솔루션 테이블 */}
-            <Stack
-              width={"30%"}
-              height="100%"
-              style={{ display: "flex", flexDirection: "column" }}
-            >
-              <GrayBox style={{ flexShrink: 0, padding: "8px 16px" }}>
-                <Typography fontWeight={"bold"}>
-                  사용자 미허가 솔루션
-                </Typography>
-              </GrayBox>
-              <div style={{ flex: 1, overflow: "auto" }}>
-                <TableBox>
-                  <TableBox.Inner>
-                    <CheckboxTable
-                      data={tableTestData}
-                      selectedRows={unauthorizedSelectedRows}
-                      toggleRowsSelection={toggleUnauthorizedRowsSelection}
-                    >
-                      <CheckboxTable.Thead>
-                        <CheckboxTable.Tr>
-                          <CheckboxTable.CheckboxTh />
-                          <CheckboxTable.Th>솔루션ID</CheckboxTable.Th>
-                          <CheckboxTable.Th>솔루션이름</CheckboxTable.Th>
-                          <CheckboxTable.Th>구분</CheckboxTable.Th>
-                        </CheckboxTable.Tr>
-                      </CheckboxTable.Thead>
+                      ))}
+                    </CheckboxTable.Tbody>
+                  </CheckboxTable>
+                </TableBox.Inner>
+                <GrayBox>
+                  <BasicButton sx={{ marginLeft: "auto" }}>새로고침</BasicButton>
+                </GrayBox>
+              </Stack>
+              <Stack width={"2%"} bgcolor={"white"} justifyContent={"space-between"}>
+                <BasicButton
+                  sx={{
+                    backgroundColor: "primary.A100",
+                    height: "150px",
+                    width: "100%",
+                    padding: "0",
+                    margin: "0",
+                    minWidth: "unset", // 기본 minWidth 해제
+                  }}
+                >
+                  <BiChevronLeft size={"24px"} />
+                </BasicButton>
+                <BasicButton
+                  sx={{
+                    backgroundColor: "primary.A100",
+                    height: "150px",
+                    width: "100%",
+                    padding: "0",
+                    margin: "0",
+                    minWidth: "unset", // 기본 minWidth 해제
+                  }}
+                >
+                  <BiChevronLeft size={"24px"} />
+                </BasicButton>
+              </Stack>
+              <Stack width={"29%"} height={"100%"} gap={1}>
+                <GrayBox>
+                  <Typography fontWeight={"bold"}>사용자 미허가 솔루션</Typography>
+                </GrayBox>
+                <TableBox.Inner>
+                  <CheckboxTable
+                    data={tableTestData}
+                    selectedRows={unauthorizedSelectedRows}
+                    toggleRowsSelection={toggleUnauthorizedRowsSelection}
+                  >
+                    <CheckboxTable.Thead>
+                      <CheckboxTable.Tr>
+                        <CheckboxTable.CheckboxTh />
+                        <CheckboxTable.Th>솔루션ID</CheckboxTable.Th>
+                        <CheckboxTable.Th>솔루션이름</CheckboxTable.Th>
+                        <CheckboxTable.Th>구분</CheckboxTable.Th>
+                      </CheckboxTable.Tr>
+                    </CheckboxTable.Thead>
 
-                      <CheckboxTable.Tbody>
-                        {tableTestData.map((item) => (
-                          <CheckboxTable.Tr key={item.id} id={item.id}>
-                            <CheckboxTable.CheckboxTd item={item} />
-                            <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
-                          </CheckboxTable.Tr>
-                        ))}
-                      </CheckboxTable.Tbody>
-                    </CheckboxTable>
-                  </TableBox.Inner>
-                </TableBox>
-              </div>
-              <GrayBox style={{ flexShrink: 0, padding: "8px 16px" }}>
-                <BasicButton sx={{ marginLeft: "auto" }}>새로고침</BasicButton>
-              </GrayBox>
-            </Stack>
+                    <CheckboxTable.Tbody>
+                      {tableTestData.map((item) => (
+                        <CheckboxTable.Tr key={item.id} id={item.id}>
+                          <CheckboxTable.CheckboxTd item={item} />
+                          <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
+                          <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
+                          <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
+                        </CheckboxTable.Tr>
+                      ))}
+                    </CheckboxTable.Tbody>
+                  </CheckboxTable>
+                </TableBox.Inner>
+                <GrayBox>
+                  <BasicButton sx={{ marginLeft: "auto" }}>새로고침</BasicButton>
+                </GrayBox>
+              </Stack>
+            </TableBox>
           </Stack>
         </Stack>
       </Stack>
