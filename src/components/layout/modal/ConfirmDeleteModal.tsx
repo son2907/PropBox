@@ -12,8 +12,8 @@ export const ConfirmDeleteModal = ({
 }) => {
     return (
         <CustomAlert onClose={onClose}>
-            <CustomAlert.Title>공지사항 삭제</CustomAlert.Title>
-            <CustomAlert.Content>공지사항을 삭제하시겠습니까?</CustomAlert.Content>
+            <CustomAlert.Title>데이터 삭제</CustomAlert.Title>
+            <CustomAlert.Content>선택한 데이터를 삭제하시겠습니까?</CustomAlert.Content>
             <CustomAlert.ButtonZone>
                 <BlackButton onClick={onSubmit} variant="outlined">
                     예

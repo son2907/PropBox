@@ -14,6 +14,7 @@ import * as SolutionMenuDetail from "./solutionMenuDetail";
 import * as SolutionMenuUpdate from "./solutionMenuUpdate";
 import * as SolutionMenuInsert from "./solutionMenuInsert";
 import * as UserList from "./userList";
+import * as MemberList from "./memberList";
 
 
 
@@ -34,4 +35,5 @@ export default {
   SolutionMenuUpdate,
   SolutionMenuInsert,
   UserList,
+  MemberList,
 };
