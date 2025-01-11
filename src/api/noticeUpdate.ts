@@ -15,9 +15,9 @@ export type updateNoticeType = {
 const API = {
     //updateNotice: async (requstData : { body: updateNoticeType }) => await instance.put('/api/notice', requstData.body),
     updateNotice: async (requestData: { body: updateNoticeType }) => {
-        console.log("API 요청 데이터:", requestData); // 요청 데이터 로깅
+        //console.log("API 요청 데이터:", requestData); // 요청 데이터 로깅
         const response = await instance.put('/api/notice', requestData.body);
-        console.log("API 응답 데이터:", response.data); // 응답 데이터 로깅
+        //console.log("API 응답 데이터:", response.data); // 응답 데이터 로깅
         return response;
     },
 };
