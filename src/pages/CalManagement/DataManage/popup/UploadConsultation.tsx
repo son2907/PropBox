@@ -28,7 +28,12 @@ export default function UploadConsultation() {
       </GrayBox>
       <TableBox gap={1}>
         <TableBox.Inner width="40%">
-          <RowDragTable data={data} setData={setData} checkbox={false}>
+          <RowDragTable
+            data={data}
+            setData={setData}
+            checkbox={false}
+            keyName="id"
+          >
             <RowDragTable.Th>엑셀 항목</RowDragTable.Th>
             <RowDragTable.Th>Position</RowDragTable.Th>
             <RowDragTable.Tbody>
