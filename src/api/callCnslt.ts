@@ -6,6 +6,7 @@ import {
   CnsltInfoRequestType,
   CnsltItemListResponseType,
   AreaListItemListResponseType,
+  DetailListResponseType,
   MemoRequestBody,
 } from "../types/callCnslt";
 
@@ -71,7 +72,7 @@ const API = {
     let url = `/api/sptcnslt/itemdet/list/${spt}/${itemNo}`;
     if (detailNm) url += `&detailNm=${detailNm}`;
     if (useYn) url += `&useYn=${useYn}`;
-    return await instance.get(url);
+    return await instance.get<DetailListResponseType>(url);
   },
   // 관리지역 목록
   getAreaList: async () => {

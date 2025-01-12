@@ -87,6 +87,7 @@ export interface CnsltItemListResponseType extends ApiResponseType {
   contents: CnsltItem[];
 }
 
+// 지역
 export type AreaListItem = {
   sptNo: string | null;
   areaNo: string | null;
@@ -99,4 +100,20 @@ export type AreaListItem = {
 
 export interface AreaListItemListResponseType extends ApiResponseType {
   contents: AreaListItem[];
+}
+
+// 상세 항목
+export type DetailItem = {
+  sptNo: string | null;
+  detailNo: string;
+  itemNo: string;
+  detailNm: string;
+  lnupOrd: string;
+  useYn: string;
+  delYn: string | null;
+  userId: string | null;
+};
+
+export interface DetailListResponseType extends ApiResponseType {
+  contents: DetailItem[];
 }
