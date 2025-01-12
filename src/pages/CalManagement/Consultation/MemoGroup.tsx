@@ -36,12 +36,6 @@ export default function MemoGroup() {
 
   const memoRef = useRef<HTMLTextAreaElement>(null); // memo Ref
   const { mutate: postMemo } = usePostMemo();
-  const testData = {
-    sptNo: getItemByStorageOne("selectedSite").sptNo,
-    userNo: userNo || "",
-    memo: memoRef.current?.value || "",
-    userId: loginId || "",
-  };
 
   const userData = filterDataByValues({
     data: histListData?.data.contents,
@@ -59,9 +53,15 @@ export default function MemoGroup() {
   }, [histListData]);
 
   const postMemoFn = () => {
+    const body = {
+      sptNo: getItemByStorageOne("selectedSite").sptNo,
+      userNo: userNo,
+      memo: memoRef.current?.value || "",
+      userId: loginId,
+    };
     postMemo(
       {
-        body: testData,
+        body: body,
       },
       {
         onSuccess: (res) => {

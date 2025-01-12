@@ -4,45 +4,42 @@ interface TextAreaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   resize?: "none" | "both" | "horizontal" | "vertical";
   height?: string;
-  maxBytes?: number; // maxBytes 속성
+  maxBytes?: number;
   value?: string;
+  onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
 const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
-  ({ resize = "both", height, maxBytes, value, ...rest }, ref) => {
+  ({ resize = "both", height, maxBytes, value, onChange, ...rest }, ref) => {
     const [currentBytes, setCurrentBytes] = useState(0);
-    const [text, setText] = useState(value ?? ""); // 현재 텍스트 상태 관리
 
-    // 초기값 및 바이트 계산
+    // 바이트 계산 및 상태 관리
     useEffect(() => {
-      const initialText = value ?? ""; // 초기값 처리
-      setText(initialText);
-      setCurrentBytes(new Blob([initialText]).size); // 초기 바이트 계산
+      const initialText = value ?? "";
+      setCurrentBytes(new Blob([initialText]).size);
     }, [value]);
 
     const handleInputChange = (
       event: React.ChangeEvent<HTMLTextAreaElement>
     ) => {
       const inputText = event.target.value;
-      const byteSize = new Blob([inputText]).size; // 입력 값의 바이트 크기 계산
+      const byteSize = new Blob([inputText]).size;
 
       if (!maxBytes || byteSize <= maxBytes) {
-        // 바이트 제한 이내면 그대로 입력
-        setText(inputText);
         setCurrentBytes(byteSize);
-        if (rest.onChange) {
-          rest.onChange(event);
-        }
-      } else if (maxBytes) {
-        // 초과한 경우 텍스트를 잘라서 상태에 반영
+      } else {
         const truncatedText = truncateText(inputText, maxBytes);
-        setText(truncatedText);
         setCurrentBytes(new Blob([truncatedText]).size);
         event.preventDefault();
+        if (onChange) {
+          onChange({
+            ...event,
+            target: { ...event.target, value: truncatedText },
+          });
+        }
       }
     };
 
-    // 텍스트를 바이트 단위로 자르는 함수
     const truncateText = (input: string, maxBytes: number) => {
       let byteSize = 0;
       let result = "";
@@ -67,7 +64,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       >
         <textarea
           ref={ref}
-          value={text} // 관리된 텍스트 상태를 textarea에 연결
+          value={value} // 상위에서 value가 전달됨
           {...rest}
           style={{
             width: "100%",
@@ -79,10 +76,10 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
             borderColor: "lightgray",
             borderRadius: "5px",
             outline: "none",
-            paddingBottom: "20px", // 하단 공간 확보
+            paddingBottom: "20px",
             boxSizing: "border-box",
           }}
-          onChange={handleInputChange} // 입력 변경 이벤트 처리
+          onChange={handleInputChange} // onChange는 내부에서 처리됨
         />
         <div
           style={{
