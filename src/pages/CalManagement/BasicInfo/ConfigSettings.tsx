@@ -4,15 +4,21 @@ import SearchInput from "../../../components/Input/SearchInput";
 import TableBox from "../../../components/Box/TableBox";
 import RowDragTable from "../../../components/Table/RowDragTable";
 import { useEffect, useState } from "react";
-import { tableDataType } from "../../../types";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { BasicButton } from "../../../components/Button";
-import { useCnsltItemList } from "../../../api/callCnslt";
-import { CnsltItem } from "../../../types/callCnslt";
+import { useCnsltItemList, useItemDetList } from "../../../api/callCnslt";
+import { CnsltItem, DetailItem } from "../../../types/callCnslt";
+import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
 
 export default function ConfigSetting() {
   const [cnsltList, setCnsltList] = useState<CnsltItem[]>([]);
-  const [data2, setData2] = useState<tableDataType[]>([]);
+  const [detList, setDetList] = useState<DetailItem[]>([]);
+  const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택
+
+  // 선택한 상담 항목 목록에 대한 상세항목 api
+  const { data: itemDetList } = useItemDetList({
+    itemNo: Array.from(selectedRow)[0] ?? "",
+  });
 
   const { data: cnsltListApi } = useCnsltItemList();
   console.log(cnsltListApi);
@@ -22,6 +28,12 @@ export default function ConfigSetting() {
       setCnsltList(cnsltListApi?.data.contents);
     }
   }, [cnsltListApi]);
+
+  useEffect(() => {
+    if (itemDetList) {
+      setDetList(itemDetList?.data.contents);
+    }
+  }, [itemDetList]);
 
   return (
     <>
@@ -39,6 +51,8 @@ export default function ConfigSetting() {
               data={cnsltList}
               checkbox={false}
               setData={setCnsltList}
+              selectedRows={selectedRow}
+              toggleRowsSelection={toggleRowSelection}
             >
               <RowDragTable.Th>상담항목</RowDragTable.Th>
               <RowDragTable.Th>사용</RowDragTable.Th>
@@ -46,7 +60,12 @@ export default function ConfigSetting() {
 
               <RowDragTable.Tbody>
                 {cnsltList.map((item) => (
-                  <RowDragTable.Tr key={item.itemNo} id={item.itemNo}>
+                  <RowDragTable.Tr
+                    key={item.itemNo}
+                    id={item.itemNo ?? ""}
+                    isClicked={selectedRow.has(item.itemNo ?? "")}
+                    onClick={() => toggleRowSelection(item.itemNo ?? "")}
+                  >
                     <RowDragTable.Td>{item.itemNm}</RowDragTable.Td>
                     <RowDragTable.Td>{item.useYn}</RowDragTable.Td>
                     <RowDragTable.Td>
@@ -75,16 +94,21 @@ export default function ConfigSetting() {
         </GrayBox>
         <TableBox>
           <TableBox.Inner>
-            <RowDragTable data={data2} checkbox={false} setData={setData2}>
+            <RowDragTable
+              data={detList}
+              checkbox={false}
+              setData={setDetList}
+              keyName="detailNo"
+            >
               <RowDragTable.Th>상담항목</RowDragTable.Th>
               <RowDragTable.Th>사용</RowDragTable.Th>
               <RowDragTable.Th>삭제</RowDragTable.Th>
 
               <RowDragTable.Tbody>
-                {data2.map((item) => (
-                  <RowDragTable.Tr key={item.id} id={item.id}>
-                    <RowDragTable.Td>{item.name}</RowDragTable.Td>
-                    <RowDragTable.Td>{item.name}</RowDragTable.Td>
+                {detList.map((item) => (
+                  <RowDragTable.Tr key={item.detailNo} id={item.detailNo}>
+                    <RowDragTable.Td>{item.detailNm}</RowDragTable.Td>
+                    <RowDragTable.Td>{item.useYn}</RowDragTable.Td>
                     <RowDragTable.Td>
                       <IconButton>
                         <RiDeleteBinLine color="#f4475f" />
