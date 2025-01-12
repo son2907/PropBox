@@ -184,7 +184,12 @@ export default function CreateConsultation() {
 
       <TableBox marginBottom={1} gap={2}>
         <TableBox.Inner width={"50%"}>
-          <RowDragTable data={data} checkbox={false} setData={setData}>
+          <RowDragTable
+            data={data}
+            checkbox={false}
+            setData={setData}
+            keyName="id"
+          >
             <RowDragTable.Th>이름</RowDragTable.Th>
             <RowDragTable.Th>휴대전화</RowDragTable.Th>
             <RowDragTable.Th>일반전화</RowDragTable.Th>

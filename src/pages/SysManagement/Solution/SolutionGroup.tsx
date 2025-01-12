@@ -606,6 +606,7 @@ export default function SolutionGroup() {
             checkbox={false}
             data={data}
             setData={setData} // 데이터를 업데이트할 함수를 전달
+            keyName="id"
           >
             <RowDragTable.Th>솔루션ID</RowDragTable.Th>
             <RowDragTable.Th>솔루션이름</RowDragTable.Th>
@@ -713,7 +714,9 @@ export default function SolutionGroup() {
                   windowFeatures: OpenPopup.windowFeatures,
                 });
               }}
-            >추가</BasicButton>
+            >
+              추가
+            </BasicButton>
             <BasicButton
               onClick={() => {
                 openPopup({
@@ -722,7 +725,9 @@ export default function SolutionGroup() {
                   windowFeatures: OpenPopupfaq.windowFeatures,
                 });
               }}
-            >저장</BasicButton>
+            >
+              저장
+            </BasicButton>
             <BasicButton>삭제</BasicButton>
           </GrayBox>
         </Stack>

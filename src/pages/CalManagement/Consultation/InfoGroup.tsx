@@ -423,7 +423,7 @@ export default function InfoGroup({ tabType }: TabType) {
             height={"100%"}
             overflow="auto"
           >
-            <BasicTable data={itemDetList?.data.contents}>
+            <BasicTable data={itemDetList?.data.contents ?? []}>
               <BasicTable.Th>
                 <Box
                   display="flex"

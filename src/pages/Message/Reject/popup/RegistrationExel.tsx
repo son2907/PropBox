@@ -38,6 +38,7 @@ export default function RegistrationExel() {
       <TableBox gap={1} padding={1}>
         <TableBox.Inner width="30%">
           <RowDragTable
+            keyName="id"
             checkbox={false}
             data={data}
             setData={setData} // 데이터를 업데이트할 함수를 전달
