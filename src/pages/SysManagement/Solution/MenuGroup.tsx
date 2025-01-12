@@ -589,6 +589,7 @@ export default function MenuGroup() {
             checkbox={false}
             data={data}
             setData={setData} // 데이터를 업데이트할 함수를 전달
+            keyName="id"
           >
             <RowDragTable.Th>메뉴ID</RowDragTable.Th>
             <RowDragTable.Th>메뉴이름</RowDragTable.Th>
