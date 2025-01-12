@@ -12,7 +12,9 @@ import * as SolutionUpdate from "./solutionUpdate";
 import * as SolutionInsert from "./solutionInsert";
 import * as SolutionMenuDetail from "./solutionMenuDetail";
 import * as SolutionMenuUpdate from "./solutionMenuUpdate";
-import * as SolutionMenuInsert from "./solutionMenuInsert"
+import * as SolutionMenuInsert from "./solutionMenuInsert";
+import * as UserList from "./userList";
+import * as MemberList from "./memberList";
 
 
 
@@ -32,4 +34,6 @@ export default {
   SolutionMenuDetail,
   SolutionMenuUpdate,
   SolutionMenuInsert,
+  UserList,
+  MemberList,
 };

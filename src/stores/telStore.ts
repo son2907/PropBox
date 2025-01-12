@@ -12,15 +12,13 @@ type TelStoreType = {
 export const useTelStore = create<TelStoreType>()(
   persist(
     (set) => ({
+      telId: "",
+      telno: "",
       setTelInfo: (telId, telno) => set({ telId, telno }),
-      clear: () =>
-        set(() => ({
-          telId: "",
-          telno: "",
-        })),
+      clear: () => set(() => ({ telId: "", telno: "" })),
     }),
     {
-      name: "selected-tel",
+      name: "selectedTel",
       storage: createJSONStorage(() => localStorage),
     }
   )

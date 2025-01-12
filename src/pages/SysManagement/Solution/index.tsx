@@ -15,19 +15,31 @@ import { BasicButton, ToggleButton } from "../../../components/Button";
 import useToggleButtton from "../../../hooks/useToggleButton";
 import api from "../../../api";
 import { SolutionListType, useSolutionList } from "../../../api/solutionList";
-import { SolutionMenuListType, useSolutionMenuList } from "../../../api/solutionMenuList";
+import {
+  SolutionMenuListType,
+  useSolutionMenuList,
+} from "../../../api/solutionMenuList";
 import { licenseMethodType } from "../../../api/licenseMethod";
-import { solutionDetailType, useSolutionDetail } from "../../../api/solutionDetail";
+import {
+  solutionDetailType,
+  useSolutionDetail,
+} from "../../../api/solutionDetail";
 import { useAuthStore } from "../../../stores/authStore";
 import { updateSolution } from "../../../api/solutionUpdate";
 import useModal from "../../../hooks/useModal";
 import { insertSolution } from "../../../api/solutionInsert";
 import { InsertCompletedModal } from "../../../components/layout/modal/InsertCompletedModal";
 import { UpdateCompletedModal } from "../../../components/layout/modal/UpdateCompletedModal";
-import { deleteSolution, deleteSolutionType } from "../../../api/solutionDelete";
+import {
+  deleteSolution,
+  deleteSolutionType,
+} from "../../../api/solutionDelete";
 import { ConfirmDeleteModal } from "../../../components/layout/modal/ConfirmDeleteModal";
 import { DeleteCompletedModal } from "../../../components/layout/modal/DeleteCompletedModal";
-import { solutionMenuDetailType, useMenuDetail } from "../../../api/solutionMenuDetail";
+import {
+  solutionMenuDetailType,
+  useMenuDetail,
+} from "../../../api/solutionMenuDetail";
 import { insertMenu } from "../../../api/solutionMenuInsert";
 import { updateMenu } from "../../../api/solutionMenuUpdate";
 import { deleteMenu } from "../../../api/solutionMenuDelete";
@@ -35,7 +47,6 @@ import { EmptySelectModal } from "../../../components/layout/modal/EmptySelectMo
 import { EmptyDataModal } from "../../../components/layout/modal/EmptyDataModal";
 
 export default function SolutionManagement() {
-
   //api를 호출하기위해 userID 불러오기
   const { loginId } = useAuthStore(["loginId"]);
 
@@ -49,13 +60,16 @@ export default function SolutionManagement() {
 
   // 솔루션 데이터
   const [solutionList, setSolutionList] = useState<SolutionListType[]>([]);
-  const { data: solutionData, isLoading: isLoadingSolutions } = useSolutionList();
+  const { data: solutionData, isLoading: isLoadingSolutions } =
+    useSolutionList();
   const [selectedSolutionId, setSelectedSolutionId] = useState<string>("");
 
   // 솔루션 상세 데이터
-  const [solutionDetail, setSolutionDetail] = useState<solutionDetailType | null>(null);
+  const [solutionDetail, setSolutionDetail] =
+    useState<solutionDetailType | null>(null);
   const [selectMenuID, setSelectMenuID] = useState<string>("");
-  const { data: solutionDetailData, isSuccess: isSolutionDetailSuccess } = useSolutionDetail(selectedSolutionId);
+  const { data: solutionDetailData, isSuccess: isSolutionDetailSuccess } =
+    useSolutionDetail(selectedSolutionId);
   //솔루션 데이터 상세
   const [solutionID, setSolutionID] = useState("");
   const [solutionName, setSolutionName] = useState("");
@@ -67,12 +81,18 @@ export default function SolutionManagement() {
   const [solutionUseYn, setSolutionUseYn] = useState(true);
 
   // 메뉴 데이터
-  const [solutionMenuList, setSolutionMenuList] = useState<SolutionMenuListType[]>([]);
-  const { data: menuData, isLoading: isLoadingMenus } = useSolutionMenuList(selectedSolutionId);
+  const [solutionMenuList, setSolutionMenuList] = useState<
+    SolutionMenuListType[]
+  >([]);
+  const { data: menuData, isLoading: isLoadingMenus } =
+    useSolutionMenuList(selectedSolutionId);
 
   // 메뉴 데이터 상세
-  const { data: menuDetailData, isSuccess: isMenuDetailSuccess } = useMenuDetail(selectMenuID);
-  const [menuDetail, setMenuDetail] = useState<solutionMenuDetailType | null>(null);
+  const { data: menuDetailData, isSuccess: isMenuDetailSuccess } =
+    useMenuDetail(selectMenuID);
+  const [menuDetail, setMenuDetail] = useState<solutionMenuDetailType | null>(
+    null
+  );
   const [menuID, setMuneID] = useState("");
   const [menuName, setMenuName] = useState("");
   const [menuLicenseCheck, setMenuLicenseCheck] = useState("");
@@ -83,7 +103,9 @@ export default function SolutionManagement() {
 
   //라이선스 방식 데이터
   const { isSuccess, data } = api.LicenseMethod.useLicenseMethod();
-  const [licenseMethodData, setLicenseMethodData] = useState<licenseMethodType[]>([]);
+  const [licenseMethodData, setLicenseMethodData] = useState<
+    licenseMethodType[]
+  >([]);
 
   const selectData = [
     { value: "Y", data: "사용" },
@@ -93,7 +115,7 @@ export default function SolutionManagement() {
   const { selectListData, selectValue, handleChange } = useSelect(
     licenseMethodData,
     "cd", // 현장 번호
-    "cdNm", // 현장명    
+    "cdNm" // 현장명
   );
 
   const {
@@ -107,9 +129,10 @@ export default function SolutionManagement() {
     handleChange: o_1,
   } = useSelect(selectData, "value", "data");
 
-  const { toggle: solutionIsUse, onChange: solutionIsUseToggle } = useToggleButtton({
-    defaultValue: true,
-  });
+  const { toggle: solutionIsUse, onChange: solutionIsUseToggle } =
+    useToggleButtton({
+      defaultValue: true,
+    });
 
   const { toggle: menuIsUse, onChange: menuIsUseToggle } = useToggleButtton({
     defaultValue: true,
@@ -126,7 +149,7 @@ export default function SolutionManagement() {
     if (solutionData?.data.contents) {
       setSolutionList(solutionData.data.contents);
     }
-    console.log("")
+    console.log("");
   }, [solutionData]);
 
   //모달
@@ -138,7 +161,7 @@ export default function SolutionManagement() {
       onClose: () => closeModal,
       onSubmit: () => {
         window.location.reload();
-      }
+      },
     });
   };
 
@@ -150,31 +173,31 @@ export default function SolutionManagement() {
       onClose: () => closeModal,
       onSubmit: () => {
         window.location.reload();
-      }
-    })
+      },
+    });
   };
 
   //삭제할것인지 묻는 모달
   const SolutionconfirmDeleteModal = () => {
     openModal(ConfirmDeleteModal, {
       modalId: "noticeDelete",
-      stack: false,  //단일 모달 모드
+      stack: false, //단일 모달 모드
       onClose: () => closeModal,
       onSubmit: () => {
         handleDelete();
-      }
-    })
+      },
+    });
   };
 
   const MenuconfirmDeleteModal = () => {
     openModal(ConfirmDeleteModal, {
       modalId: "noticeDelete",
-      stack: false,  //단일 모달 모드
+      stack: false, //단일 모달 모드
       onClose: () => closeModal,
       onSubmit: () => {
         handleMenuDelete();
-      }
-    })
+      },
+    });
   };
 
   //삭제 완료 모달
@@ -185,9 +208,9 @@ export default function SolutionManagement() {
       onClose: () => closeModal,
       onSubmit: () => {
         window.close();
-      }
-    })
-  }
+      },
+    });
+  };
 
   //선택된 값이 없을때
   const emptySelectionModal = () => {
@@ -197,7 +220,7 @@ export default function SolutionManagement() {
       onClose: () => closeModal,
       onSubmit: () => {
         window.close();
-      }
+      },
     });
   };
 
@@ -209,13 +232,9 @@ export default function SolutionManagement() {
       onClose: () => closeModal,
       onSubmit: () => {
         window.close();
-      }
+      },
     });
   };
-
-
-
-
 
   useEffect(() => {
     console.log("선택한 솔루션 아이디", selectedSolutionId);
@@ -253,7 +272,7 @@ export default function SolutionManagement() {
   }, [solutionDetail]);
 
   useEffect(() => {
-    console.log("메뉴 상세정보", menuDetail)
+    console.log("메뉴 상세정보", menuDetail);
     if (menuDetail) {
       setMuneID(menuDetail.slutnId);
       setMenuName(menuDetail.slutnNm);
@@ -265,8 +284,6 @@ export default function SolutionManagement() {
     }
   }, [menuDetail]);
 
-
-
   // 메뉴 데이터 로드 후 상태 업데이트
   useEffect(() => {
     if (menuData?.data.contents) {
@@ -274,19 +291,13 @@ export default function SolutionManagement() {
     }
   }, [menuData]);
 
-
-
-
-
   //라이선스방식 api 호출
   useEffect(() => {
     if (data?.data?.contents) {
       setLicenseMethodData(data.data.contents);
-      console.log("라이선스방식 리스트 출력", data.data.contents)
+      console.log("라이선스방식 리스트 출력", data.data.contents);
     }
   }, [data, isSuccess]);
-
-
 
   //솔루션 리스트에서 선택
   const handleRowClick = (id: string) => {
@@ -305,8 +316,7 @@ export default function SolutionManagement() {
       console.log("선택한 메뉴 아이디:", newId); // 선택된 ID를 콘솔에 출력
       return newId;
     });
-  }
-
+  };
 
   //솔루션 상세 수정
   const solutionUpdateReqData = {
@@ -321,7 +331,7 @@ export default function SolutionManagement() {
       authorNthgUrl: solutionUnUseUrl,
       lnupOrd: "",
       rmk: solutionRmk,
-    }
+    },
   };
 
   //솔루션 등록을 위한 데이터
@@ -336,8 +346,8 @@ export default function SolutionManagement() {
       useYn: solutionIsUse ? "Y" : "N",
       lnupOrd: "0",
       rmk: solutionRmk,
-      userId: loginId
-    }
+      userId: loginId,
+    },
   };
 
   // 메뉴 상세 수정
@@ -353,7 +363,7 @@ export default function SolutionManagement() {
       authorNthgUrl: "",
       lnupOrd: "",
       rmk: menuRmk,
-    }
+    },
   };
 
   //메뉴 등록을 위한 데이터
@@ -370,12 +380,14 @@ export default function SolutionManagement() {
       lnupOrd: "0",
       rmk: menuRmk,
       userId: loginId,
-    }
-  }
+    },
+  };
 
   //api 호출
   // 솔루션 수정 API
-  const { mutate: updateSolutionDetailAPI } = updateSolution(solutionUpdateReqData);
+  const { mutate: updateSolutionDetailAPI } = updateSolution(
+    solutionUpdateReqData
+  );
   // 솔루션 추가 API
   const { mutate: insertSolutionAPI } = insertSolution(solutionInsertReqData);
   // 메뉴 수정 API
@@ -383,10 +395,8 @@ export default function SolutionManagement() {
   // 메뉴 추가 API
   const { mutate: insertMenuAPI } = insertMenu(menuInsertReqData);
 
-
   //수정버튼 클릭시
   const handleSave = () => {
-
     console.log("수정인지 추가인지", isUpdate);
     if (isUpdate) {
       console.log("데이터 확인", solutionUpdateReqData);
@@ -397,15 +407,14 @@ export default function SolutionManagement() {
             if (response.data.result === "SUCCESS") {
               console.log("수정완");
               updateCompletedModal();
-            }
-            else {
+            } else {
               console.warn("result가 SUCCESS가 아닙니다.");
             }
           },
           onError: (error) => {
             console.error("솔루션 수정 실패:", error);
-          }
-        })
+          },
+        });
       } else {
         console.log("솔루션 아이디가 비워져있음");
         emptySelectionModal();
@@ -421,21 +430,23 @@ export default function SolutionManagement() {
               console.log("수정완");
               insertCompletedModal();
             }
-          }
-        })
-      }
-      else {
+          },
+        });
+      } else {
         console.log("솔루션 아이디가 비워져있음");
         emptyDataModal();
-        return
+        return;
       }
     }
   };
 
   //메뉴 추가 및 수정
   const handleMenuSave = () => {
-    console.log("상위 솔루션 번호가 뭔가요 : ", selectedSolutionId)
-    console.log("메뉴 추가인지 수정인지 false면 추가 true면 수정 : ", isMenuUpdate);
+    console.log("상위 솔루션 번호가 뭔가요 : ", selectedSolutionId);
+    console.log(
+      "메뉴 추가인지 수정인지 false면 추가 true면 수정 : ",
+      isMenuUpdate
+    );
     if (isMenuUpdate) {
       console.log("메뉴 수정을 위한 데이터 확인", menuUpdateReqData);
       if (menuUpdateReqData.body.slutnId) {
@@ -444,20 +455,18 @@ export default function SolutionManagement() {
             if (response.data.result === "SUCCESS") {
               console.log("수정완");
               updateCompletedModal();
-            }
-            else {
+            } else {
               console.warn("result가 SUCCESS가 아닙니다.");
             }
           },
           onError: (error) => {
             console.error("메뉴 수정 실패:", error);
-          }
+          },
         });
       } else {
         emptySelectionModal();
         return;
       }
-
     } else {
       console.log("메뉴 추가를 위한 데이터 확인", menuInsertReqData);
       if (menuInsertReqData.body.slutnId) {
@@ -467,15 +476,14 @@ export default function SolutionManagement() {
               console.log("메뉴 추가 성공");
               insertCompletedModal();
             }
-          }
-        })
+          },
+        });
       } else {
         emptyDataModal();
         return;
       }
     }
   };
-
 
   //추가
   const handleAdd = () => {
@@ -501,9 +509,7 @@ export default function SolutionManagement() {
     setIconUrl("");
     setMenuRmk("");
     setMenuUseYn(true);
-  }
-
-
+  };
 
   const handleDelete = () => {
     if (!solutionID) {
@@ -529,8 +535,8 @@ export default function SolutionManagement() {
         rmk: "",
         regrId: "",
         updrId: loginId,
-      }
-    }
+      },
+    };
 
     console.log("삭제 요청 데이터: ", deleteSolutionData);
 
@@ -540,8 +546,7 @@ export default function SolutionManagement() {
         if (response.data.result === "SUCCESS") {
           deleteCompletedModal();
           window.location.reload();
-        }
-        else {
+        } else {
           console.warn("result가 SUCCESS가 아닙니다.");
         }
       },
@@ -575,8 +580,8 @@ export default function SolutionManagement() {
         rmk: "",
         regrId: "",
         updrId: loginId,
-      }
-    }
+      },
+    };
 
     console.log("삭제 메뉴 데이터 : ", deleteMenuReqData);
 
@@ -586,16 +591,15 @@ export default function SolutionManagement() {
         if (response.data.result === "SUCCESS") {
           deleteCompletedModal();
           window.location.reload();
-        }
-        else {
+        } else {
           console.warn("result가 SUCCESS가 아닙니다.");
         }
       },
       onError: (error) => {
         console.error("삭제 실패:", error);
       },
-    })
-  }
+    });
+  };
 
   return (
     <>
@@ -604,9 +608,12 @@ export default function SolutionManagement() {
           <Stack width={"50%"} height={"100%"} gap={1}>
             <Stack width={"100%"} height={"60%"} overflow={"auto"}>
               <RowDragTable
-
+                keyName="slutnId"
                 checkbox={false}
-                data={solutionList.map((item) => ({ ...item, id: item.slutnId }))}
+                data={solutionList.map((item) => ({
+                  ...item,
+                  id: item.slutnId,
+                }))}
                 setData={setSolutionList}
               >
                 <RowDragTable.Th>솔루션ID</RowDragTable.Th>
@@ -631,12 +638,27 @@ export default function SolutionManagement() {
             </Stack>
             <GrayBox width={"100%"} height={"40%"}>
               <Stack width={"100%"} height={"100%"} gap={1}>
-                <Stack width={"100%"} height={"10%"} marginTop={2} marginBottom={2}>
-                  <Typography color="primary.dark" fontWeight={"bold"} fontSize={"22px"}>
+                <Stack
+                  width={"100%"}
+                  height={"10%"}
+                  marginTop={2}
+                  marginBottom={2}
+                >
+                  <Typography
+                    color="primary.dark"
+                    fontWeight={"bold"}
+                    fontSize={"22px"}
+                  >
                     솔루션 상세정보
                   </Typography>
                 </Stack>
-                <Stack width={"100%"} height={"80%"} overflow={"auto"} gap={1} paddingBottom={1}>
+                <Stack
+                  width={"100%"}
+                  height={"80%"}
+                  overflow={"auto"}
+                  gap={1}
+                  paddingBottom={1}
+                >
                   <Stack gap={1}>
                     <Typography fontSize={"18px"}>솔루션 ID</Typography>
                     <BasicInput
@@ -661,18 +683,22 @@ export default function SolutionManagement() {
                       value={selectValue}
                       onChange={(e) => {
                         const newValue = e.target.value; // 선택된 값 (cdNm)
-                        const selectedOption = licenseMethodData.find((item) => item.cdNm === newValue); // 선택된 옵션 객체
+                        const selectedOption = licenseMethodData.find(
+                          (item) => item.cdNm === newValue
+                        ); // 선택된 옵션 객체
 
                         if (selectedOption) {
-                          console.log(`라이선스 체크 변경: ${selectedOption.cdNm}`); // cdNm 콘솔 출력
-                          console.log(`라이선스 키 변경: ${selectedOption.cd}`);    // cd 콘솔 출력
-                          setSolutionLicenseMethodName(selectedOption.cdNm);        // cdNm 상태 저장
-                          setSolutionLicenseKey(selectedOption.cd);                 // cd 상태 저장 (필요시 추가)
+                          console.log(
+                            `라이선스 체크 변경: ${selectedOption.cdNm}`
+                          ); // cdNm 콘솔 출력
+                          console.log(`라이선스 키 변경: ${selectedOption.cd}`); // cd 콘솔 출력
+                          setSolutionLicenseMethodName(selectedOption.cdNm); // cdNm 상태 저장
+                          setSolutionLicenseKey(selectedOption.cd); // cd 상태 저장 (필요시 추가)
                         }
                       }}
                       selectData={licenseMethodData.map((item) => ({
                         value: item.cdNm, // 표시될 이름
-                        data: item.cdNm,  // 선택될 값
+                        data: item.cdNm, // 선택될 값
                       }))}
                       sx={{ width: "400px" }}
                       placeholder={solutionLicenseName}
@@ -709,10 +735,18 @@ export default function SolutionManagement() {
                     ></BasicInput>
                   </Stack>
                 </Stack>
-                <Stack width={"100%"} height={"10%"} gap={1} justifyContent={"flex-end"} direction={"row"}>
+                <Stack
+                  width={"100%"}
+                  height={"10%"}
+                  gap={1}
+                  justifyContent={"flex-end"}
+                  direction={"row"}
+                >
                   <BasicButton onClick={handleAdd}>추가</BasicButton>
                   <BasicButton onClick={handleSave}>저장</BasicButton>
-                  <BasicButton onClick={SolutionconfirmDeleteModal}>삭제</BasicButton>
+                  <BasicButton onClick={SolutionconfirmDeleteModal}>
+                    삭제
+                  </BasicButton>
                 </Stack>
               </Stack>
             </GrayBox>
@@ -721,8 +755,12 @@ export default function SolutionManagement() {
             <Stack width={"100%"} height={"60%"} gap={1} overflow={"auto"}>
               <RowDragTable
                 checkbox={false}
-                data={solutionMenuList.map((item) => ({ ...item, id: item.slutnId }))}
+                data={solutionMenuList.map((item) => ({
+                  ...item,
+                  id: item.slutnId,
+                }))}
                 setData={setSolutionMenuList}
+                keyName="slutnId"
               >
                 <RowDragTable.Th>메뉴ID</RowDragTable.Th>
                 <RowDragTable.Th>메뉴이름</RowDragTable.Th>
@@ -739,7 +777,9 @@ export default function SolutionManagement() {
                     >
                       <RowDragTable.Td>{item.slutnId}</RowDragTable.Td>
                       <RowDragTable.Td>{item.slutnNm}</RowDragTable.Td>
-                      <RowDragTable.Td>{item.lisneCnfirmYn === "Y" ? "사용" : "미사용"}</RowDragTable.Td>
+                      <RowDragTable.Td>
+                        {item.lisneCnfirmYn === "Y" ? "사용" : "미사용"}
+                      </RowDragTable.Td>
                       <RowDragTable.Td>{item.useYn}</RowDragTable.Td>
                     </RowDragTable.Tr>
                   ))}
@@ -748,14 +788,29 @@ export default function SolutionManagement() {
             </Stack>
             <GrayBox width={"100%"} height={"40%"}>
               <Stack width={"100%"} height={"100%"} gap={1}>
-                <Stack width={"100%"} height={"10%"} marginTop={2} marginBottom={2}>
-                  <Typography color="primary.dark" fontWeight={"bold"} fontSize={"22px"}>
+                <Stack
+                  width={"100%"}
+                  height={"10%"}
+                  marginTop={2}
+                  marginBottom={2}
+                >
+                  <Typography
+                    color="primary.dark"
+                    fontWeight={"bold"}
+                    fontSize={"22px"}
+                  >
                     메뉴 상세정보
                   </Typography>
                 </Stack>
-                <Stack width={"100%"} height={"80%"} overflow={"auto"} gap={1} paddingBottom={1}>
+                <Stack
+                  width={"100%"}
+                  height={"80%"}
+                  overflow={"auto"}
+                  gap={1}
+                  paddingBottom={1}
+                >
                   <Stack gap={1}>
-                    <Typography fontSize={"18px"}>메뉸 ID</Typography>
+                    <Typography fontSize={"18px"}>메뉴 ID</Typography>
                     <BasicInput
                       placeholder="메뉴 ID"
                       sx={{ width: "40%", height: "40px" }}
@@ -808,7 +863,8 @@ export default function SolutionManagement() {
                         const newValue = e.target.checked; // ToggleButton의 값 변화
                         console.log("ToggleButton 값 변경:", newValue); // 콘솔에 변경 값 출력
                         setMenuUseYn(newValue); // 상태 업데이트
-                      }} label=""
+                      }}
+                      label=""
                     />
                   </Stack>
                   <Stack gap={1} marginRight={1}>
@@ -821,10 +877,18 @@ export default function SolutionManagement() {
                     ></BasicInput>
                   </Stack>
                 </Stack>
-                <Stack width={"100%"} height={"10%"} gap={1} justifyContent={"flex-end"} direction={"row"}>
+                <Stack
+                  width={"100%"}
+                  height={"10%"}
+                  gap={1}
+                  justifyContent={"flex-end"}
+                  direction={"row"}
+                >
                   <BasicButton onClick={handleMenuAdd}>추가</BasicButton>
                   <BasicButton onClick={handleMenuSave}>저장</BasicButton>
-                  <BasicButton onClick={MenuconfirmDeleteModal}>삭제</BasicButton>
+                  <BasicButton onClick={MenuconfirmDeleteModal}>
+                    삭제
+                  </BasicButton>
                 </Stack>
               </Stack>
             </GrayBox>

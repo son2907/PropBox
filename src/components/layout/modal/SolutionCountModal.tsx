@@ -1,8 +1,7 @@
 import CustomAlert from "../../Alert/CustomAlert";
 import BlackButton from "../../Button/BlackButton";
-import { BasicButton } from "../../Button";
 
-export const ConfirmDeleteModal = ({
+export const solutionCountModal = ({
     onClose,
     onSubmit,
 }: {
@@ -10,17 +9,14 @@ export const ConfirmDeleteModal = ({
     onSubmit: () => void;
     modalId: string;
 }) => {
-    return (
+    return(
         <CustomAlert onClose={onClose}>
-            <CustomAlert.Title>데이터 삭제</CustomAlert.Title>
-            <CustomAlert.Content>선택한 데이터를 삭제하시겠습니까?</CustomAlert.Content>
+            <CustomAlert.Title>잔여 수량보다 적은 수량은 수정 불가합니다</CustomAlert.Title>
+            <CustomAlert.Content></CustomAlert.Content>
             <CustomAlert.ButtonZone>
                 <BlackButton onClick={onSubmit} variant="outlined">
                     예
                 </BlackButton>
-                <BasicButton onClick={onClose} variant="contained">
-                    아니오
-                </BasicButton>
             </CustomAlert.ButtonZone>
         </CustomAlert>
     )

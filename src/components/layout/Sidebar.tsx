@@ -44,8 +44,8 @@ const Sidebar = memo(function Sidebar() {
 
   useEffect(() => {
     if (isSuccess && accessToken) {
-      // const result = transformMenuData(data?.data.contents, IconList);
-      // setAllMenuData(result);
+      const result = transformMenuData(data?.data.contents, IconList);
+      setAllMenuData(result);
     }
   }, [accessToken, isSuccess]);
 

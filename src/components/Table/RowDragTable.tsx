@@ -16,18 +16,22 @@ import { CSS } from "@dnd-kit/utilities";
 import { arrayMove } from "@dnd-kit/sortable";
 import useTableContext from "../../hooks/useTableContext";
 import TableProvider from "./context/TableProvider";
+import { LuArrowDownUp } from "react-icons/lu";
+import { VscThreeBars } from "react-icons/vsc";
 
 interface TableProps {
   checkbox?: boolean;
   selectedRows?: Set<string>;
   toggleRowsSelection?: (id: string) => void;
-  data: { id: string; [key: string]: any }[];
+  data: { [key: string]: any }[];
   setData: React.Dispatch<React.SetStateAction<any[]>>;
+  keyName: string;
   children: ReactNode;
 }
 
 interface CheckboxTdProps {
-  item: { id: string }; // item 객체의 id 속성 타입
+  item: { [key: string]: any };
+  keyName: string;
 }
 
 const Th: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -38,15 +42,16 @@ const Th: React.FC<{ children: ReactNode }> = ({ children }) => {
   );
 };
 
-const CheckboxTd = ({ item }: CheckboxTdProps) => {
+const CheckboxTd = ({ item, keyName }: CheckboxTdProps) => {
   const { selectedRows, toggleRowsSelection } = useTableContext();
+  const itemId = item[keyName];
 
   return (
     <Td>
       <input
         type="checkbox"
-        checked={selectedRows.has(item.id)}
-        onChange={() => toggleRowsSelection(item.id)}
+        checked={selectedRows.has(itemId)}
+        onChange={() => toggleRowsSelection(itemId)}
       />
     </Td>
   );
@@ -113,7 +118,7 @@ const SortableRow = ({
       {...rest}
     >
       <td style={{ cursor: "grab" }} {...listeners}>
-        =
+        <VscThreeBars />
       </td>
       {children}
     </tr>
@@ -175,6 +180,7 @@ const RowDragTable: React.FC<TableProps> & {
   toggleRowsSelection,
   data,
   setData,
+  keyName,
   children,
 }) => {
   const sensors = useSensors(
@@ -188,8 +194,12 @@ const RowDragTable: React.FC<TableProps> & {
 
     if (active.id !== over?.id) {
       setData((prevData) => {
-        const oldIndex = prevData.findIndex((item) => item.id === active.id);
-        const newIndex = prevData.findIndex((item) => item.id === over?.id);
+        const oldIndex = prevData.findIndex(
+          (item) => item[keyName] === active.id
+        );
+        const newIndex = prevData.findIndex(
+          (item) => item[keyName] === over?.id
+        );
 
         return arrayMove(prevData, oldIndex, newIndex);
       });
@@ -197,7 +207,7 @@ const RowDragTable: React.FC<TableProps> & {
   };
 
   const TableWrapper: React.FC<{ children: ReactNode }> = ({ children }) => {
-    return checkbox && selectedRows && toggleRowsSelection ? (
+    return selectedRows && toggleRowsSelection ? (
       <TableProvider
         selectedRows={selectedRows}
         toggleRowsSelection={toggleRowsSelection}
@@ -225,7 +235,9 @@ const RowDragTable: React.FC<TableProps> & {
             <table className="table-auto w-full border-gray-300 border-collapse">
               <thead>
                 <tr>
-                  <Th> </Th>
+                  <Th>
+                    <LuArrowDownUp />
+                  </Th>
                   {React.Children.map(children, (child) => {
                     if (
                       (child as React.ReactElement<any>).type ===
@@ -240,7 +252,7 @@ const RowDragTable: React.FC<TableProps> & {
                 </tr>
               </thead>
               <SortableContext
-                items={data.map((item) => item.id)}
+                items={data.map((item) => item[keyName])} // keyName으로 동적 참조
                 strategy={verticalListSortingStrategy}
               >
                 {React.Children.map(children, (child) => {

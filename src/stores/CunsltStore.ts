@@ -3,13 +3,20 @@ import { create } from "zustand";
 type CunsltStoreType = {
   cstmrNo?: string; // 고객번호
   cnsltNo?: string; // 상담번호
-  type?: string; // 통화콜, 부재콜 등 클릭한 탭 타입
-  setTelInfo: (cstmrNo: string, cnsltNo: string, type?: string) => void;
+  callYn?: string; // 전화 걸기, 받기
+  trsmYn?: string; // 통화콜, 부재콜, 대기
+  setTelInfo: (
+    cstmrNo: string,
+    cnsltNo: string,
+    callYn?: string,
+    trsmYn?: string
+  ) => void;
   clear: () => void;
 };
 
 export const useCnsltStore = create<CunsltStoreType>()((set) => ({
-  setTelInfo: (cstmrNo, cnsltNo, type) => set({ cstmrNo, cnsltNo, type }),
+  setTelInfo: (cstmrNo, cnsltNo, callYn, trsmYn) =>
+    set({ cstmrNo, cnsltNo, callYn, trsmYn }),
   clear: () =>
     set(() => ({
       cstmrNo: "",
