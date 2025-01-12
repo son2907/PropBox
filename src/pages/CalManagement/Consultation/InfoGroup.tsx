@@ -153,7 +153,7 @@ export default function InfoGroup({ tabType }: TabType) {
   // <========================= POST =========================>
 
   const { mutate: postInfo } = usePostCnsltInfo();
-  console.log("디테일:", detailInfo);
+
   const onSubmit = (data: any) => {
     const data_1 = cunsltDetailList?.data.contents;
     const telCnsltCnList = detailInfo
@@ -164,7 +164,7 @@ export default function InfoGroup({ tabType }: TabType) {
     const body: CnsltInfoRequestType = {
       sptNo: data_1.sptNo,
       cstmrNo: data_1.cstmrNo,
-      cnsltNo: data_1.cnsltNo,
+      cnsltNo: isToday(selectedDate) ? data_1.cnsltNo : "",
       cnsltnt: data_1.cnsltnt,
       cnsltDt: getFormattedDate(selectedDate),
       telId: data_1.telId,
