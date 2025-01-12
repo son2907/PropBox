@@ -23,6 +23,7 @@ import {
   useCnsltDetail,
   useItemDetList,
   usePostCnsltInfo,
+  useTelCnsltList,
 } from "../../../api/callCnslt";
 import { useCnsltStore } from "../../../stores/CunsltStore";
 import { CnsltInfoRequestType } from "../../../types/callCnslt";
@@ -30,13 +31,18 @@ import { useForm } from "react-hook-form";
 import { getFormattedDate } from "../../../utils/getFormattedDate";
 import { useAuthStore } from "../../../stores/authStore";
 import useDidMountEffect from "../../../hooks/useDidMountEffect";
+import getItemByStorageOne from "../../../utils/getItemByStorageOne";
+import { useStorageStore } from "../../../hooks/useStorageStore";
+import { useTelStore } from "../../../stores/telStore";
 
 export default function InfoGroup({ tabType }: TabType) {
   // 로그인 아이디
   const { loginId } = useAuthStore(["loginId"]);
-
+  // telId값
+  const telStore = useStorageStore(useTelStore, "selectedTel");
   // 검색 조건 (왼쪽 테이블에서 선택한 한 행)
   const { cstmrNo, cnsltNo, callYn, trsmYn } = useCnsltStore();
+  console.log("trsmYn:", trsmYn);
 
   // 상담 일자
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -50,12 +56,15 @@ export default function InfoGroup({ tabType }: TabType) {
   const { data: areaList } = useAreaList();
 
   // 전체 데이터 (상담 전화~상담항목 목록) api
-  const { data: cunsltDetailList } = useCnsltDetail(cstmrNo, cnsltNo);
+  const { data: cunsltDetailList } = useCnsltDetail(cstmrNo, cnsltNo, trsmYn);
 
   // 선택한 상담 항목 목록에 대한 상세항목 api
   const { data: itemDetList, refetch: itemDetListRefetch } = useItemDetList({
     itemNo: selectDetailItem ?? "",
   });
+
+  const { refetch: cnsltReftech } = useTelCnsltList(callYn, trsmYn);
+
   // 선택한 세부 사항
   const [detailInfo, setDetailInfo] = useState<any[]>([{}]);
 
@@ -162,18 +171,18 @@ export default function InfoGroup({ tabType }: TabType) {
 
   const onSubmit = (data: any) => {
     const data_1 = cunsltDetailList?.data.contents;
+    const spt = getItemByStorageOne("selectedSite")?.sptNo;
     const telCnsltCnList = detailInfo
       .filter((item) => Object.keys(item).length > 0) // 빈 객체가 아닌 경우만 필터링
       .map(({ itemNo, detailNo }) => ({ itemNo, detailNo }));
 
-    // console.log("잠만:", telCnsltCnList);
     const body: CnsltInfoRequestType = {
-      sptNo: data_1.sptNo,
-      cstmrNo: data_1.cstmrNo,
-      cnsltNo: isToday(selectedDate) ? data_1.cnsltNo : "",
-      cnsltnt: data_1.cnsltnt,
+      sptNo: trsmYn == "W" ? spt : data_1.sptNo,
+      cstmrNo: trsmYn == "W" ? "" : data_1.cstmrNo,
+      cnsltNo: !isToday(selectedDate) || trsmYn == "W" ? "" : data_1.cnsltNo,
+      cnsltnt: trsmYn == "W" ? "" : data_1.cnsltnt,
       cnsltDt: getFormattedDate(selectedDate),
-      telId: data_1.telId,
+      telId: trsmYn == "W" ? telStore.telId : data_1.telId,
       cnsltTelno: data.cnsltTelno,
       cstmrNm: data.cstmrNm,
       mbtlNo: data.mbtlNo,
@@ -182,12 +191,12 @@ export default function InfoGroup({ tabType }: TabType) {
       addr: data.addr,
       areaNo: selectValue,
       spcmnt: data.spcmnt,
-      callYn: callYn,
-      trsmYn: trsmYn,
+      callYn: callYn || "",
+      trsmYn: trsmYn || "",
       legacySlutnId: trsmYn == "W" ? "CS0001" : "TM0001",
-      userId: loginId,
+      userId: loginId || "",
       telCnsltCnList: telCnsltCnList,
-      ...(data_1.waitCstmrNo && { waitCstmrNo: data_1.waitCstmrNo }),
+      ...(trsmYn == "W" && { waitCstmrNo: cnsltNo }),
     };
 
     console.log("보낼 데이터:", body);
@@ -199,6 +208,8 @@ export default function InfoGroup({ tabType }: TabType) {
       {
         onSuccess: (res) => {
           console.log("유저 정보 저장 성공:", res);
+          cnsltReftech();
+          // window.location.reload();
         },
         onError: (res) => {
           console.log("유저 정보 저장 에러", res);

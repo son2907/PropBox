@@ -175,6 +175,7 @@ export default function CallTable({ tabType, tabChange }: TabType) {
                     <BasicTable.Th>주제</BasicTable.Th>
                     <BasicTable.Tbody>
                       {cnsltData?.data.contents.map((item, index) => {
+                        console.log("대기 고객 테이터::", item);
                         return (
                           <BasicTable.Tr
                             key={index}
