@@ -82,10 +82,10 @@ export default function InfoGroup({ tabType }: TabType) {
 
   // 관리지역 select
   const { selectListData, selectValue, handleChange } = useSelect(
-    areaList?.data.contents,
+    areaList?.data.contents || [],
     "areaNo", // 현장 번호
     "areaNm", // 현장명
-    cunsltDetailList?.data.contents.areaNo
+    cunsltDetailList?.data?.contents?.areaNo ?? ""
   );
 
   // <========================= Popup =========================>
@@ -141,6 +141,12 @@ export default function InfoGroup({ tabType }: TabType) {
 
   // api 재호출 또는 항목 선택 해제 시 데이터 비움
   useDidMountEffect(() => {
+    if (trsmYn == "W") {
+      reset({
+        cstmrNm: cnsltNo,
+      });
+      return;
+    }
     if (cunsltDetailList?.data?.contents) {
       reset({ ...cunsltDetailList.data.contents });
     } else {
@@ -148,7 +154,7 @@ export default function InfoGroup({ tabType }: TabType) {
       setDetailItem("");
       setDetailInfo([{}]);
     }
-  }, [cunsltDetailList]);
+  }, [cunsltDetailList, cnsltNo]);
 
   // <========================= POST =========================>
 
@@ -388,7 +394,7 @@ export default function InfoGroup({ tabType }: TabType) {
             gap={1}
             overflow="auto"
           >
-            {cunsltDetailList?.data.contents.itemList == undefined ? (
+            {!cunsltDetailList?.data?.contents?.itemList?.length ? (
               <Typography>
                 조회할 정보가 없습니다. 왼쪽 테이블에서 조회할 항목을
                 선택해주세요.

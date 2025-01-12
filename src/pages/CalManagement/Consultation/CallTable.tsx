@@ -75,21 +75,34 @@ export default function CallTable({ tabType, tabChange }: TabType) {
 
   useEffect(() => {
     if (selectedRow.size > 0 && cnsltData?.data?.contents) {
-      const data = filterDataByValues({
-        data: cnsltData.data.contents,
-        key: "cnsltNo",
-        values: Array.from(selectedRow),
-      });
+      const selectedValues = Array.from(selectedRow);
+      const { contents } = cnsltData.data;
 
-      if (data.length > 0) {
-        setTelInfo(data[0].cstmrNo, data[0].cnsltNo, callYn, trsmYn);
+      const processData = (key: string, cstmrKey: string, cnsltKey: string) => {
+        const data = filterDataByValues({
+          data: contents,
+          key,
+          values: selectedValues,
+        });
+        if (data.length > 0) {
+          setTelInfo(data[0][cstmrKey], data[0][cnsltKey], callYn, trsmYn);
+        }
+      };
+
+      switch (trsmYn) {
+        case "W":
+          processData("waitCstmrNo", "waitCstmrNo", "cstmrNm");
+          break;
+        default:
+          processData("cnsltNo", "cstmrNo", "cnsltNo");
+          break;
       }
     }
 
     if (selectedRow.size === 0) {
       clear();
     }
-  }, [selectedRow]);
+  }, [selectedRow, cnsltData, callYn, trsmYn]);
 
   return (
     <>
@@ -162,12 +175,11 @@ export default function CallTable({ tabType, tabChange }: TabType) {
                     <BasicTable.Th>주제</BasicTable.Th>
                     <BasicTable.Tbody>
                       {cnsltData?.data.contents.map((item, index) => {
-                        console.log("대기:", item);
                         return (
                           <BasicTable.Tr
                             key={index}
-                            isClicked={selectedRow.has(item.cnsltNo)}
-                            onClick={() => toggleRowSelection(item.cnsltNo)}
+                            isClicked={selectedRow.has(item.waitCstmrNo)}
+                            onClick={() => toggleRowSelection(item.waitCstmrNo)}
                           >
                             <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
                             <BasicTable.Td>{item.themaNm}</BasicTable.Td>
@@ -185,7 +197,6 @@ export default function CallTable({ tabType, tabChange }: TabType) {
                   <BasicTable.Th>상담일시</BasicTable.Th>
                   <BasicTable.Tbody>
                     {cnsltData?.data.contents.map((item: any, index: any) => {
-                      console.log("통화 또는 부재:", item);
                       return (
                         <BasicTable.Tr
                           key={index}
