@@ -167,6 +167,7 @@ export default function InfoGroup({ tabType }: TabType) {
 
   // <========================= POST =========================>
 
+  console.log("#######cnsltNo########:", cstmrNo);
   const { mutate: postInfo } = usePostCnsltInfo();
 
   const onSubmit = (data: any) => {
@@ -182,7 +183,7 @@ export default function InfoGroup({ tabType }: TabType) {
       cnsltNo: !isToday(selectedDate) || trsmYn == "W" ? "" : data_1.cnsltNo,
       cnsltnt: trsmYn == "W" ? "" : data_1.cnsltnt,
       cnsltDt: getFormattedDate(selectedDate),
-      telId: trsmYn == "W" ? telStore.telId : data_1.telId,
+      telId: trsmYn == "W" ? (telStore.telId ?? "0") : data_1.telId,
       cnsltTelno: data.cnsltTelno,
       cstmrNm: data.cstmrNm,
       mbtlNo: data.mbtlNo,
@@ -196,7 +197,7 @@ export default function InfoGroup({ tabType }: TabType) {
       legacySlutnId: trsmYn == "W" ? "CS0001" : "TM0001",
       userId: loginId || "",
       telCnsltCnList: telCnsltCnList,
-      ...(trsmYn == "W" && { waitCstmrNo: cnsltNo }),
+      ...(trsmYn == "W" && { waitCstmrNo: cstmrNo }),
     };
 
     console.log("보낼 데이터:", body);
@@ -209,7 +210,6 @@ export default function InfoGroup({ tabType }: TabType) {
         onSuccess: (res) => {
           console.log("유저 정보 저장 성공:", res);
           cnsltReftech();
-          // window.location.reload();
         },
         onError: (res) => {
           console.log("유저 정보 저장 에러", res);
