@@ -140,7 +140,7 @@ const CheckboxTable: React.FC<TableProps> & {
 } = ({ data, selectedRows, toggleRowsSelection, children }) => {
   return (
     <>
-      {data.length === 0 ? (
+      {!data ? (
         <EmptyTable /> // data가 없을 경우 EmptyTable 렌더링
       ) : (
         <TableProvider
