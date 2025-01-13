@@ -75,7 +75,7 @@ export interface CnsltInfoRequestType {
 }
 
 export type CnsltItem = {
-  itemNo: string | null;
+  itemNo: string;
   sptNo: string | null;
   itemNm: string | null;
   lnupOrd: string | null;

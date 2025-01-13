@@ -34,6 +34,7 @@ import useDidMountEffect from "../../../hooks/useDidMountEffect";
 import getItemByStorageOne from "../../../utils/getItemByStorageOne";
 import { useStorageStore } from "../../../hooks/useStorageStore";
 import { useTelStore } from "../../../stores/telStore";
+import { useApiRes } from "../../../utils/useApiRes";
 
 export default function InfoGroup({ tabType }: TabType) {
   // 로그인 아이디
@@ -169,6 +170,7 @@ export default function InfoGroup({ tabType }: TabType) {
 
   console.log("#######cnsltNo########:", cstmrNo);
   const { mutate: postInfo } = usePostCnsltInfo();
+  const checkApiFail = useApiRes();
 
   const onSubmit = (data: any) => {
     const data_1 = cunsltDetailList?.data.contents;
@@ -208,11 +210,9 @@ export default function InfoGroup({ tabType }: TabType) {
       },
       {
         onSuccess: (res) => {
-          console.log("유저 정보 저장 성공:", res);
+          const result = checkApiFail(res);
+          console.log("성공:", result);
           cnsltReftech();
-        },
-        onError: (res) => {
-          console.log("유저 정보 저장 에러", res);
         },
       }
     );
@@ -263,7 +263,13 @@ export default function InfoGroup({ tabType }: TabType) {
               >
                 상담현황
               </BasicButton>
-              <BasicButton type="submit">추가</BasicButton>
+              <BasicButton
+                onClick={() => {
+                  window.location.reload();
+                }}
+              >
+                추가
+              </BasicButton>
               <BasicButton>삭제</BasicButton>
               <BasicButton
                 onClick={() => {
@@ -476,7 +482,7 @@ export default function InfoGroup({ tabType }: TabType) {
         </GrayBox>
         <TextArea height="140px" {...register("spcmnt")} />
         <GrayBox height={"40px"} marginTop={1} justifyContent={"flex-end"}>
-          <BasicButton>저장</BasicButton>
+          <BasicButton type="submit">저장</BasicButton>
         </GrayBox>
       </form>
     </>

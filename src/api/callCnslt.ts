@@ -1,3 +1,4 @@
+// 전화 관리 > 전화상담
 import { useMutation, useQuery } from "@tanstack/react-query";
 import instance from "../utils/axiosInstance";
 import getItemByStorageOne from "../utils/getItemByStorageOne";
@@ -25,9 +26,9 @@ const API = {
   ) => {
     // 쿼리 파라미터를 동적으로 생성
     const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
-    const date = getFormattedDate(); // 상담 일자는 반드시 금일
+    // const date = getFormattedDate(); // 상담 일자는 반드시 금일
     // ======================================테스트 날짜======================================
-    // const date = 20241223;
+    const date = 20241223;
     // const date = 20250120;
     const url = `/api/tel/cnslt?sptNo=${spt}&cnsltDt=${date}&callYn=${absnceYn}&trsmYn=${trsmYn}`;
     return await instance.get(url);
