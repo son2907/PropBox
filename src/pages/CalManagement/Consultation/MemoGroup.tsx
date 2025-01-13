@@ -28,10 +28,9 @@ export default function MemoGroup() {
   const { selectedRow, toggleRowSelection, resetSelection } =
     useSingleRowSelection();
 
-  const { cstmrNo } = useCnsltStore();
+  const { cstmrNo, trsmYn } = useCnsltStore();
   const { userNo, loginId } = useAuthStore(["userNo", "loginId"]);
-
-  const { data: histListData } = useCnslHist(cstmrNo);
+  const { data: histListData } = useCnslHist(cstmrNo, trsmYn);
   const { data: memoData } = useCnsltMemo(userNo);
 
   const memoRef = useRef<HTMLTextAreaElement>(null); // memo Ref
@@ -136,7 +135,11 @@ export default function MemoGroup() {
               marginBottom={3}
             >
               <LabelTypo> 특기사항 </LabelTypo>
-              <TextArea readOnly value={cnsltItemList?.data.contents.spcmnt} />
+              <TextArea
+                readOnly
+                key={cnsltItemList?.data.contents.spcmnt}
+                value={cnsltItemList?.data.contents.spcmnt}
+              />
             </Box>
             {cnsltItemList?.data.contents.itemList.map(
               (item: any, index: any) => {
