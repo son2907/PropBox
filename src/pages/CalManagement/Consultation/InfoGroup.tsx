@@ -8,7 +8,7 @@ import { IoSearchOutline } from "react-icons/io5";
 import IconSquareButton from "../../../components/Button/IconSquareButton";
 import Calendar from "../../../components/Calendar/Calendar";
 import { MdInfoOutline } from "react-icons/md";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Select } from "../../../components/Select";
 import useSelect from "../../../hooks/useSelect";
 import { TabType } from "../../../types/menu";
@@ -43,7 +43,6 @@ export default function InfoGroup({ tabType }: TabType) {
   const telStore = useStorageStore(useTelStore, "selectedTel");
   // 검색 조건 (왼쪽 테이블에서 선택한 한 행)
   const { cstmrNo, cnsltNo, callYn, trsmYn } = useCnsltStore();
-  console.log("trsmYn:", trsmYn);
 
   // 상담 일자
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -97,6 +96,23 @@ export default function InfoGroup({ tabType }: TabType) {
     "areaNm", // 현장명
     cunsltDetailList?.data?.contents?.areaNo ?? ""
   );
+
+  const [message, setMessage] = useState({});
+  useEffect(() => {
+    const handleMessage = (event) => {
+      setMessage(event.data); // 자식 창에서 받은 데이터를 상태에 저장
+    };
+
+    window.addEventListener("message", handleMessage);
+
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, []);
+
+  useEffect(() => {
+    reset({ ...message });
+  }, [message]); // message가 변경될 때만 실행
 
   // <========================= Popup =========================>
 
@@ -168,7 +184,6 @@ export default function InfoGroup({ tabType }: TabType) {
 
   // <========================= POST =========================>
 
-  console.log("#######cnsltNo########:", cstmrNo);
   const { mutate: postInfo } = usePostCnsltInfo();
   const checkApiFail = useApiRes();
 

@@ -26,9 +26,9 @@ const API = {
   ) => {
     // 쿼리 파라미터를 동적으로 생성
     const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
-    // const date = getFormattedDate(); // 상담 일자는 반드시 금일
+    const date = getFormattedDate(); // 상담 일자는 반드시 금일
     // ======================================테스트 날짜======================================
-    const date = 20241223;
+    // const date = 20241223;
     // const date = 20250120;
     const url = `/api/tel/cnslt?sptNo=${spt}&cnsltDt=${date}&callYn=${absnceYn}&trsmYn=${trsmYn}`;
     return await instance.get(url);
@@ -98,6 +98,20 @@ const API = {
     const url = `/api/tel/cnslt`;
     return await instance.post(url, requestData.body);
   },
+  //고객 이름, 전화번호 검색
+  getFindCustom: async ({
+    telno,
+    cstmrNm,
+  }: {
+    telno?: string;
+    cstmrNm?: string;
+  }) => {
+    const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
+    let url = `/api/tel/cnslt/findCustom?sptNo=${spt}`;
+    if (telno) url += `&telno=${telno}`;
+    if (cstmrNm) url += `&cstmrNm=${cstmrNm}`;
+    return await instance.get(url);
+  },
 };
 
 const KEY = {
@@ -131,6 +145,29 @@ const KEY = {
   }) => ["/api/sptcnslt/itemdet/list", itemNo, detailNm, useYn],
   getAreaList: () => ["/api/sptcnslt/area/list"],
   postCnsltInfo: () => ["/api/tel/cnslt"],
+  getFindCustom: ({ telno, cstmrNm }: { telno?: string; cstmrNm?: string }) => [
+    "/api/tel/cnslt/findCustom",
+    telno,
+    cstmrNm,
+  ],
+};
+
+// 전화번호 또는 고객명으로 검색
+export const useFindCustom = ({
+  telno,
+  cstmrNm,
+}: {
+  telno?: string;
+  cstmrNm?: string;
+}) => {
+  return useQuery({
+    queryKey: KEY.getFindCustom({ telno, cstmrNm }),
+    queryFn: async () => {
+      return await API.getFindCustom({ telno, cstmrNm });
+    },
+    enabled: !!telno || !!cstmrNm,
+    gcTime: 0,
+  });
 };
 
 export const useCnsltItemList = () => {
