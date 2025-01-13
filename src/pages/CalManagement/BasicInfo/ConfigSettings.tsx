@@ -9,39 +9,275 @@ import { BasicButton } from "../../../components/Button";
 import { useCnsltItemList, useItemDetList } from "../../../api/callCnslt";
 import { CnsltItem, DetailItem } from "../../../types/callCnslt";
 import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
+import { filterDataByValues } from "../../../utils/filterDataByValues";
+import {
+  useDeleteBasicItem,
+  useDeleteBasicItemDet,
+  usePostBasicItem,
+  usePostBasicItemDet,
+  usePutBasicItem,
+  usePutBasicItemDet,
+} from "../../../api/calllBasic";
+import getItemByStorageOne from "../../../utils/getItemByStorageOne";
+import { useAuthStore } from "../../../stores/authStore";
+import { useApiRes } from "../../../utils/useApiRes";
+import useModal from "../../../hooks/useModal";
+import { BasicDeleteConfirmModal } from "../../../components/layout/modal/BasicDeleteConfirmModal";
 
 export default function ConfigSetting() {
   const [cnsltList, setCnsltList] = useState<CnsltItem[]>([]);
   const [detList, setDetList] = useState<DetailItem[]>([]);
-  const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택
+
+  const {
+    selectedRow: selectedCnslt,
+    toggleRowSelection: toggleCnslt,
+    resetSelection: resetSelectedCnslt,
+  } = useSingleRowSelection();
+
+  const {
+    selectedRow: selectedDet,
+    toggleRowSelection: toggleDet,
+    resetSelection: resetSelectedDet,
+  } = useSingleRowSelection();
+
+  const [cnsltInput, setCnsltInput] = useState<any>();
+  const [detInput, setDetInput] = useState<any>();
+  const { loginId } = useAuthStore(["loginId"]);
+
+  const { data: cnsltListApi, refetch: refetchCnslt } = useCnsltItemList();
 
   // 선택한 상담 항목 목록에 대한 상세항목 api
-  const { data: itemDetList } = useItemDetList({
-    itemNo: Array.from(selectedRow)[0] ?? "",
+  const { data: itemDetList, refetch: refetchDet } = useItemDetList({
+    itemNo: Array.from(selectedCnslt)[0] ?? "",
   });
-
-  const { data: cnsltListApi } = useCnsltItemList();
-  console.log(cnsltListApi);
 
   useEffect(() => {
     if (cnsltListApi) {
       setCnsltList(cnsltListApi?.data.contents);
+      resetSelectedCnslt();
     }
   }, [cnsltListApi]);
 
   useEffect(() => {
     if (itemDetList) {
       setDetList(itemDetList?.data.contents);
+      resetSelectedDet();
     }
   }, [itemDetList]);
+
+  useEffect(() => {
+    const data = filterDataByValues({
+      data: cnsltList,
+      key: "itemNo",
+      values: Array.from(selectedCnslt),
+    });
+    setCnsltInput(data[0]);
+  }, [selectedCnslt]);
+
+  useEffect(() => {
+    const data = filterDataByValues({
+      data: detList,
+      key: "detailNo",
+      values: Array.from(selectedDet),
+    });
+    setDetInput(data[0]);
+  }, [selectedDet]);
+
+  const clearCnsltInput = () => {
+    setCnsltInput([]);
+    resetSelectedCnslt();
+  };
+
+  const clearDetInput = () => {
+    setDetInput([]);
+    resetSelectedDet();
+  };
+
+  // ---------------------- API ----------------------
+  const { mutate: postCnslt } = usePostBasicItem(); // 상담 항목 등록
+  const { mutate: putCnslt } = usePutBasicItem(); // 상담 항목 수정
+  const { mutate: deleteCnslt } = useDeleteBasicItem(); // 상담 항목 삭제
+
+  const { mutate: postDet } = usePostBasicItemDet(); // 상세 항목 등록
+  const { mutate: putDet } = usePutBasicItemDet(); // 상세 항목 수정
+  const { mutate: deleteDet } = useDeleteBasicItemDet(); // 상세 항목 삭제
+
+  const checkApiFail = useApiRes();
+
+  //모달
+  const { openModal, closeModal } = useModal();
+
+  const onDeleteCnslt = (item: CnsltItem) => {
+    openModal(BasicDeleteConfirmModal, {
+      modalId: "deleteCnslt",
+      stack: false, //단일 모달 모드
+      onClose: () => closeModal,
+      onSubmit: () => {
+        deleteCnslt(
+          {
+            body: {
+              itemNo: item.itemNo,
+              sptNo: getItemByStorageOne("selectedSite")?.sptNo,
+              userId: loginId || "",
+              detailNo: "",
+            },
+          },
+          {
+            onSuccess: (res) => {
+              console.log("삭제 응답:", res);
+              checkApiFail(res);
+              refetchCnslt();
+            },
+          }
+        );
+      },
+    });
+  };
+
+  // 상세 삭제
+  const onDeleteDet = (item: DetailItem) => {
+    openModal(BasicDeleteConfirmModal, {
+      modalId: "deleteDet",
+      stack: false, //단일 모달 모드
+      onClose: () => closeModal,
+      onSubmit: () => {
+        deleteDet(
+          {
+            body: {
+              itemNo: item.itemNo,
+              sptNo: getItemByStorageOne("selectedSite")?.sptNo,
+              userId: loginId || "",
+              detailNo: item.detailNo,
+            },
+          },
+          {
+            onSuccess: (res) => {
+              console.log("삭제 응답:", res);
+              checkApiFail(res);
+              refetchDet();
+            },
+          }
+        );
+      },
+    });
+  };
+
+  const defaultCnsltInput = {
+    sptNo: getItemByStorageOne("selectedSite")?.sptNo,
+    userId: loginId || "",
+  };
+
+  const onAddCnslt = () => {
+    const existingItem = cnsltInput.itemNo
+      ? true
+      : cnsltList.find((item) => item.itemNm === cnsltInput.itemNm);
+
+    console.log("existingItem:", existingItem);
+    console.log("보낼 값:", { ...defaultCnsltInput, ...cnsltInput });
+
+    if (existingItem) {
+      // 수정 API 호출 (PUT)
+      putCnslt(
+        {
+          body: {
+            ...cnsltInput,
+            ...defaultCnsltInput,
+          },
+        },
+        {
+          onSuccess: (res) => {
+            console.log("수정 응답:", res);
+            checkApiFail(res);
+            refetchCnslt();
+          },
+        }
+      );
+    } else {
+      // 등록 API 호출 (POST)
+      postCnslt(
+        {
+          body: {
+            ...cnsltInput,
+            ...defaultCnsltInput,
+            useYn: cnsltInput.useYn || "N",
+          },
+        },
+        {
+          onSuccess: (res) => {
+            console.log("등록 응답:", res);
+            checkApiFail(res);
+            refetchCnslt();
+          },
+        }
+      );
+    }
+  };
+
+  const onAddDet = () => {
+    const existingItem = detInput.detailNm
+      ? true
+      : detList.find((item) => item.detailNm === detInput.detailNm);
+
+    console.log("existingItem:", existingItem);
+    console.log("보낼 값:", { ...defaultCnsltInput, ...detInput });
+    if (existingItem) {
+      // 수정 API 호출 (PUT)
+      putDet(
+        { body: { ...detInput, ...defaultCnsltInput } },
+        {
+          onSuccess: (res) => {
+            console.log("수정 응답:", res);
+            checkApiFail(res);
+            refetchDet();
+          },
+        }
+      );
+    } else {
+      // 등록 API 호출 (POST)
+      postDet(
+        {
+          body: {
+            ...detInput,
+            ...defaultCnsltInput,
+            useYn: cnsltInput.useYn || "N",
+          },
+        },
+        {
+          onSuccess: (res) => {
+            console.log("등록 응답:", res);
+            checkApiFail(res);
+            refetchDet();
+          },
+        }
+      );
+    }
+  };
 
   return (
     <>
       <Stack width={"50%"} minWidth={"400px"} height={"100%"} gap={1}>
         <GrayBox gap={1}>
           <Typography>상담항목</Typography>
-          <SearchInput />
-          <input type="checkbox" />
+          <SearchInput
+            placeholder="입력창"
+            value={cnsltInput?.itemNm || ""}
+            onChange={(e) =>
+              setCnsltInput({
+                ...cnsltInput,
+                itemNm: e.target.value,
+              })
+            }
+          />
+          <input
+            type="checkbox"
+            checked={cnsltInput?.useYn === "Y" ? true : false}
+            onChange={(e) =>
+              setCnsltInput({
+                ...cnsltInput,
+                useYn: e.target.checked ? "Y" : "N",
+              })
+            }
+          />
           <Typography>사용</Typography>
         </GrayBox>
         <TableBox>
@@ -51,25 +287,32 @@ export default function ConfigSetting() {
               data={cnsltList}
               checkbox={false}
               setData={setCnsltList}
-              selectedRows={selectedRow}
-              toggleRowsSelection={toggleRowSelection}
+              selectedRows={selectedCnslt}
+              toggleRowsSelection={toggleCnslt}
             >
               <RowDragTable.Th>상담항목</RowDragTable.Th>
               <RowDragTable.Th>사용</RowDragTable.Th>
               <RowDragTable.Th>삭제</RowDragTable.Th>
 
               <RowDragTable.Tbody>
-                {cnsltList.map((item) => (
+                {cnsltList?.map((item) => (
                   <RowDragTable.Tr
                     key={item.itemNo}
                     id={item.itemNo ?? ""}
-                    isClicked={selectedRow.has(item.itemNo ?? "")}
-                    onClick={() => toggleRowSelection(item.itemNo ?? "")}
+                    isClicked={selectedCnslt.has(item.itemNo ?? "")}
+                    onClick={() => {
+                      toggleCnslt(item.itemNo ?? "");
+                    }}
                   >
                     <RowDragTable.Td>{item.itemNm}</RowDragTable.Td>
                     <RowDragTable.Td>{item.useYn}</RowDragTable.Td>
                     <RowDragTable.Td>
-                      <IconButton>
+                      <IconButton
+                        onClick={(e) => {
+                          onDeleteCnslt(item);
+                          e.stopPropagation();
+                        }}
+                      >
                         <RiDeleteBinLine color="#f4475f" />
                       </IconButton>
                     </RowDragTable.Td>
@@ -81,15 +324,35 @@ export default function ConfigSetting() {
         </TableBox>
         <GrayBox gap={1}>
           <Typography>상담항목</Typography>
-          <BasicButton sx={{ marginLeft: "auto" }}>추가</BasicButton>
-          <BasicButton>저장</BasicButton>
+          <BasicButton sx={{ marginLeft: "auto" }} onClick={clearCnsltInput}>
+            추가
+          </BasicButton>
+          <BasicButton onClick={onAddCnslt}>저장</BasicButton>
         </GrayBox>
       </Stack>
       <Stack width={"50%"} minWidth={"400px"} height={"100%"} gap={1}>
         <GrayBox gap={1}>
           <Typography>상담항목</Typography>
-          <SearchInput />
-          <input type="checkbox" />
+          <SearchInput
+            placeholder="입력창"
+            value={detInput?.detailNm || ""}
+            onChange={(e) =>
+              setDetInput({
+                ...detInput,
+                detailNm: e.target.value,
+              })
+            }
+          />
+          <input
+            type="checkbox"
+            checked={detInput?.useYn === "Y" ? true : false}
+            onChange={(e) =>
+              setDetInput({
+                ...detInput,
+                useYn: e.target.checked ? "Y" : "N",
+              })
+            }
+          />
           <Typography>사용</Typography>
         </GrayBox>
         <TableBox>
@@ -99,18 +362,32 @@ export default function ConfigSetting() {
               checkbox={false}
               setData={setDetList}
               keyName="detailNo"
+              selectedRows={selectedDet}
+              toggleRowsSelection={toggleDet}
             >
               <RowDragTable.Th>상담항목</RowDragTable.Th>
               <RowDragTable.Th>사용</RowDragTable.Th>
               <RowDragTable.Th>삭제</RowDragTable.Th>
 
               <RowDragTable.Tbody>
-                {detList.map((item) => (
-                  <RowDragTable.Tr key={item.detailNo} id={item.detailNo}>
+                {detList?.map((item) => (
+                  <RowDragTable.Tr
+                    key={item.detailNo}
+                    id={item.detailNo}
+                    isClicked={selectedDet.has(item.detailNo ?? "")}
+                    onClick={() => {
+                      toggleDet(item.detailNo ?? "");
+                    }}
+                  >
                     <RowDragTable.Td>{item.detailNm}</RowDragTable.Td>
                     <RowDragTable.Td>{item.useYn}</RowDragTable.Td>
                     <RowDragTable.Td>
-                      <IconButton>
+                      <IconButton
+                        onClick={(e) => {
+                          onDeleteDet(item);
+                          e.stopPropagation();
+                        }}
+                      >
                         <RiDeleteBinLine color="#f4475f" />
                       </IconButton>
                     </RowDragTable.Td>
@@ -122,8 +399,10 @@ export default function ConfigSetting() {
         </TableBox>
         <GrayBox gap={1}>
           <Typography>상담세부항목</Typography>
-          <BasicButton sx={{ marginLeft: "auto" }}>추가</BasicButton>
-          <BasicButton>저장</BasicButton>
+          <BasicButton sx={{ marginLeft: "auto" }} onClick={clearDetInput}>
+            추가
+          </BasicButton>
+          <BasicButton onClick={onAddDet}>저장</BasicButton>
         </GrayBox>
       </Stack>
     </>

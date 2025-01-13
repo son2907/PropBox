@@ -1,3 +1,4 @@
+// 전화 관리 > 전화상담
 import { useMutation, useQuery } from "@tanstack/react-query";
 import instance from "../utils/axiosInstance";
 import getItemByStorageOne from "../utils/getItemByStorageOne";
@@ -148,12 +149,6 @@ export const useTelCnsltList = (
 ) => {
   return useQuery({
     queryKey: KEY.getTelCnsltList(absnceYn, trsmYn), // KEY에 매개변수 전달
-    // ==================로딩 컴포넌트 테스트 코드==================
-    // queryFn: async () => {
-    //   // 1초 딜레이 추가
-    //   await new Promise((resolve) => setTimeout(resolve, 1000)); // 1초 대기
-    //   return await API.getTelCnsltList(absnceYn, trsmYn); // 실제 API 호출
-    // },
     queryFn: async () => {
       return await API.getTelCnsltList(absnceYn, trsmYn);
     },
@@ -163,27 +158,31 @@ export const useTelCnsltList = (
 // 오른쪽 상담 상세 목록
 export const useCnsltDetail = (
   cstmrNo?: string, // 고객번호
-  cnsltNo?: string // 상담번호
+  cnsltNo?: string, // 상담번호
+  trsmYn?: string //대기 테이블일 경우 조회하지 않도록 처리함
 ) => {
   return useQuery({
     queryKey: KEY.getCnsltDetail(cstmrNo, cnsltNo),
     queryFn: async () => {
       return await API.getCnsltDetail(cstmrNo, cnsltNo);
     },
-    enabled: !!cstmrNo && !!cnsltNo,
+    enabled: !!cstmrNo && !!cnsltNo && trsmYn !== "W", // trsmYn이 'W'일 경우 쿼리 실행 안함
+    gcTime: 0,
   });
 };
 
 // 오른쪽 위 상담 이력 테이블
 export const useCnslHist = (
-  cstmrNo?: string // 고객번호
+  cstmrNo?: string, // 고객번호
+  trsmYn?: string //대기 테이블일 경우 조회하지 않도록 처리함
 ) => {
   return useQuery({
     queryKey: KEY.getCnsltHistList(cstmrNo),
     queryFn: async () => {
       return await API.getCnsltHistList(cstmrNo);
     },
-    enabled: !!cstmrNo,
+    enabled: !!cstmrNo && trsmYn !== "W",
+    gcTime: 0,
   });
 };
 

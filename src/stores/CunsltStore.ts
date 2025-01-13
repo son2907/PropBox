@@ -1,8 +1,8 @@
 import { create } from "zustand";
 
 type CunsltStoreType = {
-  cstmrNo?: string; // 고객번호
-  cnsltNo?: string; // 상담번호
+  cstmrNo?: string; // 고객번호, 대기일때는 waitCstmrNo
+  cnsltNo?: string; // 상담번호, 대기일때는 cnsltNm
   callYn?: string; // 전화 걸기, 받기
   trsmYn?: string; // 통화콜, 부재콜, 대기
   setTelInfo: (
