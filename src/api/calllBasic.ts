@@ -8,6 +8,8 @@ import {
   BasicDetItemRequestType,
   BasicItemDeleteRequestType,
   BasicItemRequestType,
+  BasicItemReorderRequestType,
+  BasicDetItemReorderRequestType,
 } from "../types/callBasic";
 
 const API = {
@@ -19,6 +21,13 @@ const API = {
   //상담항목 수정
   putBasicItem: async (requestData: { body: BasicItemRequestType }) => {
     const url = `/api/sptcnslt/item`;
+    return await instance.put(url, requestData.body);
+  },
+  //상담항목 순서 변경
+  reorderBasicItem: async (requestData: {
+    body: BasicItemReorderRequestType;
+  }) => {
+    const url = `/api/sptcnslt/item/lnupord`;
     return await instance.put(url, requestData.body);
   },
   //상담항목 삭제
@@ -36,6 +45,13 @@ const API = {
   //상담 상세항목 수정
   putBasicItemDet: async (requestData: { body: BasicDetItemRequestType }) => {
     const url = `/api/sptcnslt/itemdet`;
+    return await instance.put(url, requestData.body);
+  },
+  //상담 상세항목 순서 변경
+  reorderBasicItemDet: async (requestData: {
+    body: BasicDetItemReorderRequestType;
+  }) => {
+    const url = `/api/sptcnslt/itemdet/lnupord`;
     return await instance.put(url, requestData.body);
   },
   //상담 상세항목 삭제
@@ -74,6 +90,8 @@ const KEY = {
   deleteBasicItem: () => ["/api/sptcnslt/item/remove"],
   deleteBasicItemDet: () => ["/api/sptcnslt/itemdet/remove"],
   deleteBasicArea: () => ["/api/sptcnslt/area/remove"],
+  reorderBasicItem: () => ["/api/sptcnslt/item/lnupord", "put"],
+  reorderBasicItemDet: () => ["/api/sptcnslt/itemdet/lnupord", "put"],
 };
 
 // 상담 항목 등록
@@ -90,6 +108,14 @@ export const usePutBasicItem = () => {
     mutationFn: (requstData: { body: BasicItemRequestType }) =>
       API.putBasicItem(requstData),
     mutationKey: KEY.putBasicItem(),
+  });
+};
+// 상담 항목 순서 변경
+export const useReorderBasicItem = () => {
+  return useMutation({
+    mutationFn: (requstData: { body: BasicItemReorderRequestType }) =>
+      API.reorderBasicItem(requstData),
+    mutationKey: KEY.reorderBasicItem(),
   });
 };
 // 상담 항목 삭제
@@ -115,6 +141,14 @@ export const usePutBasicItemDet = () => {
     mutationFn: (requstData: { body: BasicDetItemRequestType }) =>
       API.putBasicItemDet(requstData),
     mutationKey: KEY.putBasicItemDet(),
+  });
+};
+// 상담 상세 항목 순서 변경
+export const useReorderBasicItemDet = () => {
+  return useMutation({
+    mutationFn: (requstData: { body: BasicDetItemReorderRequestType }) =>
+      API.reorderBasicItemDet(requstData),
+    mutationKey: KEY.reorderBasicItemDet(),
   });
 };
 // 상담 상세 항목 삭제
