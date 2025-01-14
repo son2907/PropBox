@@ -73,6 +73,7 @@ export const useCrtfcCheck = ({ cid, eno }: CrtfcCheckRequestType) => {
     queryFn: async () => {
       return await API.getCrtfcCheck({ cid, eno });
     },
+    enabled: false,
   });
 };
 // 인증 요청

@@ -16,7 +16,12 @@ import { useRadioGroup } from "../../../../hooks/useRadioGroup";
 import BasicInput from "../../../../components/Input/BasicInput";
 import { MdInfoOutline } from "react-icons/md";
 import useCountdownTimer from "../../../../hooks/useCountdownTimer ";
-import { useCrtfcList, usePostCrtfc } from "../../../../api/crtfc";
+import {
+  useCrtfcCheck,
+  useCrtfcList,
+  usePostCrtfc,
+} from "../../../../api/crtfc";
+import { useEffect, useRef } from "react";
 
 export default function RegisterSenerNumber() {
   const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
@@ -25,7 +30,8 @@ export default function RegisterSenerNumber() {
 
   const { selectedValue: rv2, handleRadioChange: srv2 } = useRadioGroup("ars");
 
-  const { timeRemaining, startTimer, formatTime } = useCountdownTimer(600); // 10분(600초)로 타이머 설정
+  const { timeRemaining, startTimer, resetTimer, formatTime } =
+    useCountdownTimer(600); // 10분(600초)로 타이머 설정
 
   const cid = (() => {
     try {
@@ -47,7 +53,15 @@ export default function RegisterSenerNumber() {
     window.location.reload();
   };
 
+  const enoRef = useRef<HTMLInputElement>(null);
+  const cidRef = useRef<HTMLInputElement>(null);
+
+  // 인증 요청
   const { mutate: postCrtfc } = usePostCrtfc();
+  const { data: checkCrtfc, refetch } = useCrtfcCheck({
+    eno: enoRef.current?.value,
+    cid: cid || cidRef.current?.value,
+  });
 
   const reqRfc = () => {
     startTimer();
@@ -75,6 +89,19 @@ export default function RegisterSenerNumber() {
       }
     );
   };
+
+  const checkCrtfcBtn = () => {
+    refetch();
+  };
+
+  useEffect(() => {
+    if (checkCrtfc?.data.message == "SUCCESS") {
+      console.log("인증 성공");
+      resetTimer();
+    }
+  }, [checkCrtfc]);
+
+  console.log("인증 확인:::", checkCrtfc);
 
   return (
     <Stack width={"100%"} height={"100%"}>
@@ -155,20 +182,22 @@ export default function RegisterSenerNumber() {
           />
           <Typography>발신번호</Typography>
           <CenteredBox gap={3}>
-            <BasicInput type="number" />
+            <BasicInput type="number" ref={cidRef} />
             <BasicButton onClick={reqRfc}>인증요청</BasicButton>
           </CenteredBox>
 
           <Typography>인증번호</Typography>
           <CenteredBox gap={3}>
-            <BasicInput type="number" />
-            <BasicButton>인증확인</BasicButton>
+            <BasicInput type="number" ref={enoRef} />
+            <BasicButton onClick={checkCrtfcBtn}>인증확인</BasicButton>
           </CenteredBox>
 
           <CenteredBox gap={3}>
             <Typography>유효시간</Typography>
             <Typography color="primary.main">
-              {formatTime(timeRemaining)}
+              {checkCrtfc?.data.result === "SUCCESS"
+                ? "인증이 완료되었습니다."
+                : formatTime(timeRemaining)}
             </Typography>
           </CenteredBox>
         </Stack>
