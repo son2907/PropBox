@@ -61,6 +61,7 @@ import NetworkSetup from "../pages/NetworkSetup";
 import PasswordCheck from "../pages/Mypage/popup/PasswordCheck";
 import UserInfoPopup from "../pages/Mypage";
 import AdminInfoPopup from "../pages/Mypage/AdminInfo";
+import RegisterSenerNumber from "../pages/CalManagement/Consultation/popup/RegisterSenerNumber";
 
 export const routes: RouteObject[] = [
   {
@@ -210,6 +211,10 @@ export const routes: RouteObject[] = [
     element: <SMSSending />,
   },
   {
+    path: PathConstants.Call.RegisterSenderNumber,
+    element: <RegisterSenerNumber />,
+  },
+  {
     path: PathConstants.Call.CallLog,
     element: <CallLog />,
   },
@@ -336,5 +341,5 @@ export const routes: RouteObject[] = [
   {
     path: PathConstants.MyPage.AdminInfoPopup,
     element: <AdminInfoPopup />,
-  }
+  },
 ];

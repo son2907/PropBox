@@ -51,6 +51,19 @@ type TelCnsltCn = {
   detailNo: string;
 };
 
+// 전화상담 > 상담현황 api 응답
+type ReportListItem = {
+  sptNo: string | null;
+  tmzonNm: string;
+  callN: number;
+  callY: number;
+  callTot: number;
+};
+
+export interface ReportListResponseType extends ApiResponseType {
+  contents: ReportListItem[];
+}
+
 export interface CnsltInfoRequestType {
   sptNo: string; // 지원 번호
   cstmrNo: string; // 고객 번호
@@ -83,6 +96,7 @@ export type CnsltItem = {
   delYn: string | null;
   userId: string | null;
 };
+
 export interface CnsltItemListResponseType extends ApiResponseType {
   contents: CnsltItem[];
 }

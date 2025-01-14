@@ -173,7 +173,7 @@ export default function MemberMenuPermission() {
                   >
                     <CheckboxTable.Thead>
                       <CheckboxTable.Tr>
-                        <CheckboxTable.CheckboxTh />
+                        <CheckboxTable.CheckboxTh keyName="id" />
                         <CheckboxTable.Th>솔루션ID</CheckboxTable.Th>
                         <CheckboxTable.Th>솔루션이름</CheckboxTable.Th>
                         <CheckboxTable.Th>메뉴ID</CheckboxTable.Th>
@@ -183,7 +183,7 @@ export default function MemberMenuPermission() {
                     <CheckboxTable.Tbody>
                       {tableTestData.map((item) => (
                         <CheckboxTable.Tr key={item.id} id={item.id}>
-                          <CheckboxTable.CheckboxTd item={item} />
+                          <CheckboxTable.CheckboxTd item={item} keyName="id" />
                           <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
                           <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
                           <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
@@ -240,7 +240,7 @@ export default function MemberMenuPermission() {
                   >
                     <CheckboxTable.Thead>
                       <CheckboxTable.Tr>
-                        <CheckboxTable.CheckboxTh />
+                        <CheckboxTable.CheckboxTh keyName="id" />
                         <CheckboxTable.Th>솔루션ID</CheckboxTable.Th>
                         <CheckboxTable.Th>솔루션이름</CheckboxTable.Th>
                         <CheckboxTable.Th>메뉴ID</CheckboxTable.Th>
@@ -251,7 +251,7 @@ export default function MemberMenuPermission() {
                     <CheckboxTable.Tbody>
                       {tableTestData.map((item) => (
                         <CheckboxTable.Tr key={item.id} id={item.id}>
-                          <CheckboxTable.CheckboxTd item={item} />
+                          <CheckboxTable.CheckboxTd item={item} keyName="id" />
                           <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
                           <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
                           <CheckboxTable.Td>{item.job}</CheckboxTable.Td>

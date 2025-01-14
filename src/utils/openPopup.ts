@@ -40,4 +40,5 @@ export const openPopup = ({
   newWindow.onbeforeunload = () => {
     removePopup(newWindow);
   };
+  return newWindow;
 };

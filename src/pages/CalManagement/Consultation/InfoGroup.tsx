@@ -123,6 +123,7 @@ export default function InfoGroup({ tabType }: TabType) {
 
   const statusPopupInfo = {
     url: PathConstants.Call.ConsultationStatus,
+    windowFeatures: "width=600px,height=468px,scrollbars=yes,resizable=yes",
     windowName: "상담 현황",
   };
 
@@ -270,10 +271,7 @@ export default function InfoGroup({ tabType }: TabType) {
             <Box display="flex" gap={1} marginLeft="auto">
               <BasicButton
                 onClick={() => {
-                  openPopup({
-                    url: statusPopupInfo.url,
-                    windowName: statusPopupInfo.windowName,
-                  });
+                  openPopup(statusPopupInfo);
                 }}
               >
                 상담현황
@@ -288,11 +286,7 @@ export default function InfoGroup({ tabType }: TabType) {
               <BasicButton>삭제</BasicButton>
               <BasicButton
                 onClick={() => {
-                  openPopup({
-                    url: smsPopupInfo.url,
-                    windowFeatures: smsPopupInfo.windowFeatures,
-                    windowName: smsPopupInfo.windowName,
-                  });
+                  openPopup(smsPopupInfo);
                 }}
               >
                 문자
@@ -310,10 +304,7 @@ export default function InfoGroup({ tabType }: TabType) {
                 <BasicInput {...register("cnsltTelno")} />
                 <IconSquareButton
                   onClick={() => {
-                    openPopup({
-                      url: searchPopupInfo.url,
-                      windowName: searchPopupInfo.windowName,
-                    });
+                    openPopup(searchPopupInfo);
                   }}
                 >
                   <IoSearchOutline size={"1em"} />

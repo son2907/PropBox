@@ -9,6 +9,7 @@ import {
   AreaListItemListResponseType,
   DetailListResponseType,
   MemoRequestBody,
+  ReportListResponseType,
 } from "../types/callCnslt";
 
 const API = {
@@ -112,6 +113,12 @@ const API = {
     if (cstmrNm) url += `&cstmrNm=${cstmrNm}`;
     return await instance.get(url);
   },
+  // 상담현황 팝업 조회
+  getReportList: async () => {
+    const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
+    const url = `/api/tel/cnslt/reportlist?sptNo=${spt}`;
+    return await instance.get<ReportListResponseType>(url);
+  },
 };
 
 const KEY = {
@@ -150,6 +157,7 @@ const KEY = {
     telno,
     cstmrNm,
   ],
+  getReportList: () => ["/api/tel/cnslt/reportlist"],
 };
 
 // 전화번호 또는 고객명으로 검색
@@ -167,6 +175,16 @@ export const useFindCustom = ({
     },
     enabled: !!telno || !!cstmrNm,
     gcTime: 0,
+  });
+};
+
+// 전화 상담의 상담 현황 팝업
+export const useReportList = () => {
+  return useQuery({
+    queryKey: KEY.getReportList(),
+    queryFn: async () => {
+      return await API.getReportList();
+    },
   });
 };
 
