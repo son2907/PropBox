@@ -39,8 +39,6 @@ export default function RegionRegistration() {
     }
   }, [areaListApi]);
 
-  console.log("api:", areaList);
-
   useEffect(() => {
     const data = filterDataByValues({
       data: areaList,
@@ -49,8 +47,6 @@ export default function RegionRegistration() {
     });
     setAreaInput(data[0]);
   }, [selectedRow]);
-
-  console.log("데이터:", areaInput);
 
   // ---------------------- API ----------------------
   const { mutate: postArea } = usePostBasicArea(); // 지역 등록
@@ -63,15 +59,34 @@ export default function RegionRegistration() {
     userId: loginId || "",
   };
 
+  // 순서 정렬. 추후 배열을 받는 새 api로 교체
+  useEffect(() => {
+    if (areaListApi?.data.contents == areaList) return;
+
+    const updatedData = areaList.map((item, index) => ({
+      ...item,
+      ...defaultCnsltInput,
+      lnupOrd: (index + 1).toString(),
+    }));
+
+    updatedData.map((item) => {
+      putArea(
+        { body: item },
+        {
+          onSuccess: (res) => {
+            console.log("정렬 응답:", res);
+            checkApiFail(res);
+            areaListRefetch();
+          },
+        }
+      );
+    });
+  }, [areaList]);
+
   const onSaveArea = () => {
     const existingItem = areaInput.areaNo
       ? true
       : areaList.find((item) => item.areaNm === areaInput.areaNm);
-
-    console.log("저장 보낼 데이터::", existingItem, {
-      ...areaInput,
-      ...defaultCnsltInput,
-    });
 
     if (existingItem) {
       // 수정 API 호출 (PUT)
@@ -117,7 +132,7 @@ export default function RegionRegistration() {
             onSuccess: (res) => {
               console.log("삭제 응답:", res);
               checkApiFail(res);
-              // 리패치
+              areaListRefetch();
             },
           }
         );

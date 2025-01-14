@@ -17,14 +17,18 @@ import {
   usePostBasicItemDet,
   usePutBasicItem,
   usePutBasicItemDet,
+  useReorderBasicItem,
+  useReorderBasicItemDet,
 } from "../../../api/calllBasic";
 import getItemByStorageOne from "../../../utils/getItemByStorageOne";
 import { useAuthStore } from "../../../stores/authStore";
 import { useApiRes } from "../../../utils/useApiRes";
 import useModal from "../../../hooks/useModal";
 import { BasicDeleteConfirmModal } from "../../../components/layout/modal/BasicDeleteConfirmModal";
+import useDidMountEffect from "../../../hooks/useDidMountEffect";
 
 export default function ConfigSetting() {
+  const sptNo = getItemByStorageOne("selectedSite")?.sptNo;
   const [cnsltList, setCnsltList] = useState<CnsltItem[]>([]);
   const [detList, setDetList] = useState<DetailItem[]>([]);
 
@@ -66,6 +70,11 @@ export default function ConfigSetting() {
   }, [itemDetList]);
 
   useEffect(() => {
+    if (selectedCnslt.size == 0) {
+      setDetList([]);
+      setCnsltInput({});
+      return;
+    }
     const data = filterDataByValues({
       data: cnsltList,
       key: "itemNo",
@@ -84,28 +93,80 @@ export default function ConfigSetting() {
   }, [selectedDet]);
 
   const clearCnsltInput = () => {
-    setCnsltInput([]);
+    setCnsltInput({});
     resetSelectedCnslt();
   };
 
   const clearDetInput = () => {
-    setDetInput([]);
+    setDetInput({});
     resetSelectedDet();
   };
 
   // ---------------------- API ----------------------
   const { mutate: postCnslt } = usePostBasicItem(); // 상담 항목 등록
   const { mutate: putCnslt } = usePutBasicItem(); // 상담 항목 수정
+  const { mutate: reorderCnslt } = useReorderBasicItem(); // 상담 항목 순서 변경
   const { mutate: deleteCnslt } = useDeleteBasicItem(); // 상담 항목 삭제
 
   const { mutate: postDet } = usePostBasicItemDet(); // 상세 항목 등록
   const { mutate: putDet } = usePutBasicItemDet(); // 상세 항목 수정
+  const { mutate: reorderDet } = useReorderBasicItemDet();
   const { mutate: deleteDet } = useDeleteBasicItemDet(); // 상세 항목 삭제
 
   const checkApiFail = useApiRes();
 
   //모달
   const { openModal, closeModal } = useModal();
+
+  // 상담항목 - 드래그 앤 드롭 시 순서 변경 api 전송
+  useDidMountEffect(() => {
+    // lnupOrd를 배열 번호 + 1로 업데이트
+    if (cnsltListApi?.data.contents == cnsltList) return;
+    const updatedData = cnsltList.map((item, index) => ({
+      sptNo: sptNo || "",
+      itemNo: item.itemNo,
+      lnupOrd: (index + 1).toString(),
+      userId: loginId || "",
+    }));
+    reorderCnslt(
+      { body: updatedData },
+      {
+        onSuccess: (res) => {
+          console.log("항목 정렬 응답:", res);
+          checkApiFail(res);
+          refetchCnslt();
+        },
+      }
+    );
+  }, [cnsltList]);
+
+  // 상세항목 - 드래그 앤 드롭 시 순서 변경 api 전송
+  useDidMountEffect(() => {
+    if (
+      !detList?.length || // detList가 비었거나
+      !itemDetList || // itemDetList가 FALSY
+      itemDetList.data.contents === detList // 둘의 데이터가 같을 경우 (최초 로드)
+    )
+      return;
+
+    const updatedData = detList.map((item, index) => ({
+      sptNo: sptNo || "",
+      detailNo: item.detailNo,
+      itemNo: item.itemNo,
+      lnupOrd: (index + 1).toString(),
+      userId: loginId || "",
+    }));
+    reorderDet(
+      { body: updatedData },
+      {
+        onSuccess: (res) => {
+          console.log("상세 정렬 응답:", res);
+          checkApiFail(res);
+          refetchDet();
+        },
+      }
+    );
+  }, [detList]);
 
   const onDeleteCnslt = (item: CnsltItem) => {
     openModal(BasicDeleteConfirmModal, {
@@ -117,7 +178,7 @@ export default function ConfigSetting() {
           {
             body: {
               itemNo: item.itemNo,
-              sptNo: getItemByStorageOne("selectedSite")?.sptNo,
+              sptNo: sptNo,
               userId: loginId || "",
               detailNo: "",
             },
@@ -145,7 +206,7 @@ export default function ConfigSetting() {
           {
             body: {
               itemNo: item.itemNo,
-              sptNo: getItemByStorageOne("selectedSite")?.sptNo,
+              sptNo: sptNo,
               userId: loginId || "",
               detailNo: item.detailNo,
             },
@@ -163,7 +224,7 @@ export default function ConfigSetting() {
   };
 
   const defaultCnsltInput = {
-    sptNo: getItemByStorageOne("selectedSite")?.sptNo,
+    sptNo: sptNo,
     userId: loginId || "",
   };
 
@@ -171,9 +232,6 @@ export default function ConfigSetting() {
     const existingItem = cnsltInput.itemNo
       ? true
       : cnsltList.find((item) => item.itemNm === cnsltInput.itemNm);
-
-    console.log("existingItem:", existingItem);
-    console.log("보낼 값:", { ...defaultCnsltInput, ...cnsltInput });
 
     if (existingItem) {
       // 수정 API 호출 (PUT)
@@ -214,16 +272,23 @@ export default function ConfigSetting() {
   };
 
   const onAddDet = () => {
-    const existingItem = detInput.detailNm
+    const existingItem = detInput.detailNo
       ? true
       : detList.find((item) => item.detailNm === detInput.detailNm);
 
-    console.log("existingItem:", existingItem);
-    console.log("보낼 값:", { ...defaultCnsltInput, ...detInput });
+    const { itemNm, ...filteredData } = {
+      ...cnsltInput,
+      ...detInput,
+      ...defaultCnsltInput,
+      useYn: detInput.useYn || "N",
+    };
+
+    console.log(filteredData);
+
     if (existingItem) {
       // 수정 API 호출 (PUT)
       putDet(
-        { body: { ...detInput, ...defaultCnsltInput } },
+        { body: filteredData },
         {
           onSuccess: (res) => {
             console.log("수정 응답:", res);
@@ -236,11 +301,7 @@ export default function ConfigSetting() {
       // 등록 API 호출 (POST)
       postDet(
         {
-          body: {
-            ...detInput,
-            ...defaultCnsltInput,
-            useYn: cnsltInput.useYn || "N",
-          },
+          body: filteredData,
         },
         {
           onSuccess: (res) => {
