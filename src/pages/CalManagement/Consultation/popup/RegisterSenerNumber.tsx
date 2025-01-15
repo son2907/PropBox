@@ -28,6 +28,8 @@ import useDidMountEffect from "../../../../hooks/useDidMountEffect";
 import { useApiRes } from "../../../../utils/useApiRes";
 import getItemByStorageOne from "../../../../utils/getItemByStorageOne";
 import { filterDataByValues } from "../../../../utils/filterDataByValues";
+import useModal from "../../../../hooks/useModal";
+import { ConfirmMultipleDeletionModal } from "../../../../components/layout/modal/ConfirmMultipleDeletionModal";
 
 interface FormData {
   eno: string;
@@ -111,6 +113,8 @@ export default function RegisterSenerNumber() {
     );
   };
 
+  const { openModal, closeModal } = useModal();
+
   // TODO 현재 삭제 api에 이상 있어 수정 필요함
   const onDeleteCrtfcs = () => {
     const data = filterDataByValues({
@@ -118,7 +122,19 @@ export default function RegisterSenerNumber() {
       key: "cid",
       values: Array.from(selectedRows),
     });
+    const itemCount = data.length;
+    openModal(ConfirmMultipleDeletionModal, {
+      modalId: "deleteCids",
+      stack: false,
+      itemCount,
+      onClose: () => closeModal,
+      onSubmit: () => {
+        handleDelete(data);
+      },
+    });
+  };
 
+  const handleDelete = (data) => {
     data.map((item) => {
       deleteCrtfc(
         {
