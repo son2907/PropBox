@@ -27,10 +27,10 @@ const API = {
   ) => {
     // 쿼리 파라미터를 동적으로 생성
     const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
-    const date = getFormattedDate(); // 상담 일자는 반드시 금일
+    // const date = getFormattedDate(); // 상담 일자는 반드시 금일
     // ======================================테스트 날짜======================================
-    // const date = 20241223;
-    // const date = 20250120;
+    const date = 20241223;
+    // const date = 20250116;
     const url = `/api/tel/cnslt?sptNo=${spt}&cnsltDt=${date}&callYn=${absnceYn}&trsmYn=${trsmYn}`;
     return await instance.get(url);
   },
@@ -185,6 +185,7 @@ export const useReportList = () => {
     queryFn: async () => {
       return await API.getReportList();
     },
+    gcTime: 0,
   });
 };
 
@@ -194,6 +195,7 @@ export const useCnsltItemList = () => {
     queryFn: async () => {
       return await API.getCnsltItemList();
     },
+    gcTime: 0,
   });
 };
 
@@ -207,6 +209,7 @@ export const useTelCnsltList = (
     queryFn: async () => {
       return await API.getTelCnsltList(absnceYn, trsmYn);
     },
+    gcTime: 0,
   });
 };
 
@@ -252,6 +255,7 @@ export const useCnsltItem = (
       return await API.getCnsltItem(cstmrNo, cnsltNo);
     },
     enabled: !!cstmrNo && !!cnsltNo,
+    gcTime: 0,
   });
 };
 
@@ -271,6 +275,7 @@ export const useItemDetList = ({
       return await API.getItemDetList({ itemNo, detailNm, useYn });
     },
     enabled: !!itemNo,
+    gcTime: 0,
   });
 };
 
