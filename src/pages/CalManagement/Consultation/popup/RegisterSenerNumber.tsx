@@ -19,189 +19,240 @@ import useCountdownTimer from "../../../../hooks/useCountdownTimer ";
 import {
   useCrtfcCheck,
   useCrtfcList,
+  useDeleteCrtfc,
   usePostCrtfc,
+  useSaveCrtfc,
 } from "../../../../api/crtfc";
-import { useEffect, useRef } from "react";
+import { useForm } from "react-hook-form";
+import useDidMountEffect from "../../../../hooks/useDidMountEffect";
+import { useApiRes } from "../../../../utils/useApiRes";
+import getItemByStorageOne from "../../../../utils/getItemByStorageOne";
+import { filterDataByValues } from "../../../../utils/filterDataByValues";
+
+interface FormData {
+  eno: string;
+  cid: string;
+  sj: string;
+}
 
 export default function RegisterSenerNumber() {
   const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
 
-  const { selectedValue: rv, handleRadioChange: srv } = useRadioGroup("onlyMe");
-
-  const { selectedValue: rv2, handleRadioChange: srv2 } = useRadioGroup("ars");
+  const { selectedValue: rv, handleRadioChange: srv } = useRadioGroup("Y");
+  const { selectedValue: rv2, handleRadioChange: srv2 } = useRadioGroup("S");
+  const { register, handleSubmit, getValues, reset } = useForm<FormData>();
+  const checkApiFail = useApiRes();
 
   const { timeRemaining, startTimer, resetTimer, formatTime } =
     useCountdownTimer(600); // 10분(600초)로 타이머 설정
 
-  const cid = (() => {
-    try {
-      return (
-        JSON.parse(document.getElementById("cidValue")?.textContent || "{}")
-          .cid || ""
-      );
-    } catch (e) {
-      return "";
-    }
-  })();
-
-  console.log("cid:", cid);
-  const { data: crtfcListAPi } = useCrtfcList({ cid });
-  console.log("데이터:", crtfcListAPi);
-  console.log("선택:", selectedRows);
+  const cid =
+    JSON.parse(document.getElementById("cidValue")?.textContent || "{}")?.cid ||
+    "";
 
   const onRerefresh = () => {
-    window.location.reload();
+    reset();
   };
 
-  const enoRef = useRef<HTMLInputElement>(null);
-  const cidRef = useRef<HTMLInputElement>(null);
+  const { data: crtfcListAPi, refetch: refetchCrtfc } = useCrtfcList({ cid }); // 테이블 리스트
+  const { mutate: postCrtfc } = usePostCrtfc(); // 인증 요청
+  const { mutate: saveCrtfc } = useSaveCrtfc(); // 발신번호 저장
+  const { mutate: deleteCrtfc } = useDeleteCrtfc(); // 발신번호 삭제
+  const { data: checkCrtfc, refetch } = useCrtfcCheck({
+    eno: getValues("eno"),
+    cid: getValues("cid"),
+  }); // 인증번호 확인
 
   // 인증 요청
-  const { mutate: postCrtfc } = usePostCrtfc();
-  const { data: checkCrtfc, refetch } = useCrtfcCheck({
-    eno: enoRef.current?.value,
-    cid: cid || cidRef.current?.value,
-  });
-
-  const reqRfc = () => {
+  const onPostCrtfc = (data: FormData) => {
     startTimer();
-
     postCrtfc(
       {
         body: {
-          cid: "01056393818",
-          userNo: "1",
-          commUseYn: "Y",
-          sj: "제목",
-          seCd: "S",
-          eno: "",
-          uid: "",
-          callId: "sysmaster",
-          resultCode: "",
+          cid: data.cid,
+          commUseYn: rv,
+          sj: data.sj,
+          seCd: rv2,
         },
       },
       {
         onSuccess: (res) => {
           console.log("등록 응답:", res);
-          // checkApiFail(res);
-          // refetchDet();
+          checkApiFail(res);
         },
       }
     );
   };
 
+  // 인증번호 확인
   const checkCrtfcBtn = () => {
     refetch();
   };
 
-  useEffect(() => {
+  // 발신 번호 저장
+  const onSaveCrtfc = (data: FormData) => {
+    saveCrtfc(
+      {
+        body: {
+          sptNo: getItemByStorageOne("selectedSite")?.sptNo,
+          cid: data.cid,
+          sj: data.sj,
+          eno: data.sj,
+          commUseYn: rv,
+        },
+      },
+      {
+        onSuccess: (res) => {
+          console.log("저장 응답:", res);
+          checkApiFail(res);
+          refetchCrtfc();
+        },
+      }
+    );
+  };
+
+  // TODO 현재 삭제 api에 이상 있어 수정 필요함
+  const onDeleteCrtfcs = () => {
+    const data = filterDataByValues({
+      data: crtfcListAPi?.data.contents,
+      key: "cid",
+      values: Array.from(selectedRows),
+    });
+
+    data.map((item) => {
+      deleteCrtfc(
+        {
+          body: {
+            sptNo: getItemByStorageOne("selectedSite")?.sptNo,
+            cid: item.cid,
+            sj: item.sj,
+            eno: item.eno,
+          },
+        },
+        {
+          onSuccess: (res) => {
+            console.log("삭제 응답:", res);
+            checkApiFail(res);
+            refetchCrtfc();
+          },
+        }
+      );
+    });
+  };
+
+  useDidMountEffect(() => {
     if (checkCrtfc?.data.message == "SUCCESS") {
-      console.log("인증 성공");
       resetTimer();
     }
   }, [checkCrtfc]);
 
-  console.log("인증 확인:::", checkCrtfc);
-
   return (
     <Stack width={"100%"} height={"100%"}>
-      <div className="hidden" id="cidValue"></div>
-      <GrayBox gap={1}>
-        <BasicButton sx={{ marginRight: "auto" }}>본인인증</BasicButton>
-        <BasicButton onClick={onRerefresh}>새로고침</BasicButton>
-        <BasicButton>저장</BasicButton>
-        <BasicButton>삭제</BasicButton>
-      </GrayBox>
-      <Box width="100%" height="100%" overflow={"hidden"} display={"flex"}>
-        <TableBox width="50%">
-          <TableBox.Inner>
-            <CheckboxTable
-              data={crtfcListAPi?.data.contents || []}
-              selectedRows={selectedRows}
-              toggleRowsSelection={toggleRowsSelection}
-            >
-              <CheckboxTable.Thead>
-                <CheckboxTable.Tr>
-                  <CheckboxTable.CheckboxTh keyName="eno" />
-                  <CheckboxTable.Th>제목</CheckboxTable.Th>
-                  <CheckboxTable.Th>발신번호</CheckboxTable.Th>
-                  <CheckboxTable.Th>등록일</CheckboxTable.Th>
-                </CheckboxTable.Tr>
-              </CheckboxTable.Thead>
-              <CheckboxTable.Tbody>
-                {crtfcListAPi?.data.contents.map((item) => (
-                  <CheckboxTable.Tr key={item.cid} id={item.cid}>
-                    <CheckboxTable.CheckboxTd item={item} keyName="eno" />
-                    <CheckboxTable.Td>{item.sj}</CheckboxTable.Td>
-                    <CheckboxTable.Td>{item.cid}</CheckboxTable.Td>
-                    <CheckboxTable.Td>{item.regDtm}</CheckboxTable.Td>
+      <form>
+        <div className="hidden" id="cidValue"></div>
+        <GrayBox gap={1}>
+          <BasicButton sx={{ marginRight: "auto" }}>본인인증</BasicButton>
+          <BasicButton onClick={onRerefresh}>새로고침</BasicButton>
+          <BasicButton type="button" onClick={handleSubmit(onSaveCrtfc)}>
+            저장
+          </BasicButton>
+          <BasicButton onClick={onDeleteCrtfcs}>삭제</BasicButton>
+        </GrayBox>
+        <Box width="100%" height="100%" overflow={"hidden"} display={"flex"}>
+          <TableBox width="50%">
+            <TableBox.Inner>
+              <CheckboxTable
+                data={crtfcListAPi?.data.contents || []}
+                selectedRows={selectedRows}
+                toggleRowsSelection={toggleRowsSelection}
+              >
+                <CheckboxTable.Thead>
+                  <CheckboxTable.Tr>
+                    <CheckboxTable.CheckboxTh keyName="cid" />
+                    <CheckboxTable.Th>제목</CheckboxTable.Th>
+                    <CheckboxTable.Th>발신번호</CheckboxTable.Th>
+                    <CheckboxTable.Th>등록일</CheckboxTable.Th>
                   </CheckboxTable.Tr>
-                ))}
-              </CheckboxTable.Tbody>
-            </CheckboxTable>
-          </TableBox.Inner>
-        </TableBox>
-        <Stack width={"50%"} bgcolor={"white"} padding={2} gap={1}>
-          <CenteredBox width={"100%"} gap={2}>
-            <Typography>공유</Typography>
-            <RadioGroup value={rv} onChange={srv} row>
-              <FormControlLabel
-                value="everyone"
-                control={<Radio size="small" />}
-                label="공유"
-              />
-              <FormControlLabel
-                value="onlyMe"
-                control={<Radio size="small" />}
-                label="나만사용"
-              />
-            </RadioGroup>
-          </CenteredBox>
-          <Typography>제목</Typography>
-          <BasicInput />
-          <CenteredBox width={"100%"} gap={2}>
-            <Typography>인증방식</Typography>
-            <RadioGroup value={rv2} onChange={srv2} row>
-              <FormControlLabel
-                value="sms"
-                control={<Radio size="small" />}
-                label="SMS인증"
-              />
-              <FormControlLabel
-                value="ars"
-                control={<Radio size="small" />}
-                label="ARS인증"
-              />
-            </RadioGroup>
-          </CenteredBox>
-          <BasicInput
-            disabled
-            startAdornment={<MdInfoOutline />}
-            value={`  '-'와 지역 번호를 제외하고 입력하세요.`}
-            sx={{ bgcolor: "#EEF2F5" }}
-          />
-          <Typography>발신번호</Typography>
-          <CenteredBox gap={3}>
-            <BasicInput type="number" ref={cidRef} />
-            <BasicButton onClick={reqRfc}>인증요청</BasicButton>
-          </CenteredBox>
+                </CheckboxTable.Thead>
+                <CheckboxTable.Tbody>
+                  {crtfcListAPi?.data.contents.map((item) => (
+                    <CheckboxTable.Tr key={item.cid} id={item.cid}>
+                      <CheckboxTable.CheckboxTd item={item} keyName="cid" />
+                      <CheckboxTable.Td>{item.sj}</CheckboxTable.Td>
+                      <CheckboxTable.Td>{item.cid}</CheckboxTable.Td>
+                      <CheckboxTable.Td>{item.regDtm}</CheckboxTable.Td>
+                    </CheckboxTable.Tr>
+                  ))}
+                </CheckboxTable.Tbody>
+              </CheckboxTable>
+            </TableBox.Inner>
+          </TableBox>
+          <Stack width={"50%"} bgcolor={"white"} padding={2} gap={1}>
+            <CenteredBox width={"100%"} gap={2}>
+              <Typography>공유</Typography>
+              <RadioGroup value={rv} onChange={srv} row>
+                <FormControlLabel
+                  value="Y"
+                  control={<Radio size="small" />}
+                  label="공유"
+                />
+                <FormControlLabel
+                  value="N"
+                  control={<Radio size="small" />}
+                  label="나만사용"
+                />
+              </RadioGroup>
+            </CenteredBox>
+            <Typography>제목</Typography>
+            <BasicInput {...register("sj")} />
+            <CenteredBox width={"100%"} gap={2}>
+              <Typography>인증방식</Typography>
+              <RadioGroup value={rv2} onChange={srv2} row>
+                <FormControlLabel
+                  value="S"
+                  control={<Radio size="small" />}
+                  label="SMS인증"
+                />
+                <FormControlLabel
+                  value="A"
+                  control={<Radio size="small" />}
+                  label="ARS인증"
+                />
+              </RadioGroup>
+            </CenteredBox>
+            <BasicInput
+              disabled
+              startAdornment={<MdInfoOutline />}
+              value={`  '-'와 지역 번호를 제외하고 입력하세요.`}
+              sx={{ bgcolor: "#EEF2F5" }}
+            />
+            <Typography>발신번호</Typography>
+            <CenteredBox gap={3}>
+              <BasicInput type="number" {...register("cid")} />
+              <BasicButton type="button" onClick={handleSubmit(onPostCrtfc)}>
+                인증요청
+              </BasicButton>
+            </CenteredBox>
 
-          <Typography>인증번호</Typography>
-          <CenteredBox gap={3}>
-            <BasicInput type="number" ref={enoRef} />
-            <BasicButton onClick={checkCrtfcBtn}>인증확인</BasicButton>
-          </CenteredBox>
+            <Typography>인증번호</Typography>
+            <CenteredBox gap={3}>
+              <BasicInput type="number" {...register("eno")} />
+              <BasicButton type="button" onClick={handleSubmit(checkCrtfcBtn)}>
+                인증확인
+              </BasicButton>
+            </CenteredBox>
 
-          <CenteredBox gap={3}>
-            <Typography>유효시간</Typography>
-            <Typography color="primary.main">
-              {checkCrtfc?.data.result === "SUCCESS"
-                ? "인증이 완료되었습니다."
-                : formatTime(timeRemaining)}
-            </Typography>
-          </CenteredBox>
-        </Stack>
-      </Box>
+            <CenteredBox gap={3}>
+              <Typography>유효시간</Typography>
+              <Typography color="primary.main">
+                {checkCrtfc?.data.result === "SUCCESS"
+                  ? "인증이 완료되었습니다."
+                  : formatTime(timeRemaining)}
+              </Typography>
+            </CenteredBox>
+          </Stack>
+        </Box>
+      </form>
     </Stack>
   );
 }
