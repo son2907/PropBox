@@ -12,7 +12,7 @@ import CenteredBox from "../../../../components/Box/CenteredBox";
 import { useMultiRowSelection } from "../../../../hooks/useMultiRowSelection";
 import MultiSelect from "../../../../components/Select/MultiSelect";
 import { useMultiSelect } from "../../../../hooks/useMultiSselect";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import RowDragTable from "../../../../components/Table/RowDragTable";
 import { openPopup } from "../../../../utils/openPopup";
 import PathConstants from "../../../../routers/path";
@@ -24,6 +24,7 @@ import LabelTypo from "../../../../components/Typography/LabelTypo";
 import Calendar from "../../../../components/Calendar/Calendar";
 import useToggleButtton from "../../../../hooks/useToggleButton";
 import PasswordInput from "../../../../components/Input/PasswordInput";
+import { UserSingleDetailType, useUserSingleDetail } from "../../../../api/userSingleDetail";
 
 interface Data {
   id: string;
@@ -31,6 +32,27 @@ interface Data {
 }
 
 export default function UserUpload() {
+
+  //팝업 페이지에서 id를 가져오려면 window.location.search를 사용하여 파라미터를 파싱
+  const queryParams = new URLSearchParams(window.location.search);
+  const id = queryParams.get("id");
+  console.log("id : ", id);
+
+  // 사용자 상세 조회
+  const { isSuccess, data } = useUserSingleDetail(id);
+  const [userSingleDetail, setUserSingleDetail] = useState<UserSingleDetailType>();
+  const [userID, setUserID] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordCheck, setPasswordCheck] = useState("");
+  const [userName, setUserName] = useState("");
+  const [phoneNum, setPhoneNum] = useState("");
+  const [prefix, setPrefix] = useState("");
+  const [companyName, setCompanyName] = useState("");
+  const [address, setAddress] = useState("");
+  const [rmk, setRmk] = useState("");
+  const [companyNum, setCompanyNum] = useState("");
+
+  const [isUpdate, setIsUpdate] = useState(false);  //수정을 눌러서 들어온건지 추가를 눌러서 들어온건지 확인 필요
   const {
     selectListData: sd_0,
     selectValue: s_0,
@@ -38,7 +60,7 @@ export default function UserUpload() {
   } = useSelect(selectTestData, "value", "data");
 
   const { selectedValues, handleSelectChange } = useMultiSelect<number>();
-  const [data, setData] = useState<Data[]>(tableTestData);
+  //const [data, setData] = useState<Data[]>(tableTestData);
 
   const { selectedRows: s_1, toggleRowsSelection: t_1 } =
     useMultiRowSelection();
@@ -65,6 +87,26 @@ export default function UserUpload() {
     "data"
   );
 
+  useEffect(() => {
+    console.log("data확인", data);
+    if (data?.data.contents) {
+      setUserSingleDetail(data.data.contents);
+    }
+  }, [data, isSuccess]);
+
+  useEffect(() => {
+    if (userSingleDetail) {
+      setUserID(userSingleDetail.userId);
+      setUserName(userSingleDetail.userNm);
+      setPhoneNum(userSingleDetail.mbtlNo);
+      setPrefix(userSingleDetail.loginIdPrefix);
+      setCompanyName(userSingleDetail.encptUserNm);
+      setAddress(userSingleDetail.encptUserNm);
+      setRmk(userSingleDetail.rmk);
+      setCompanyNum(userSingleDetail.encptMbtlNo);
+    }
+  })
+
   return (
     <Stack
       width={"100%"}
@@ -83,7 +125,11 @@ export default function UserUpload() {
           justifyContent={"space-between"}
         >
           <Typography>사용자아이디</Typography>
-          <BasicInput sx={{ width: "80%" }}></BasicInput>
+          <BasicInput
+            sx={{ width: "80%" }}
+            value={userID}
+            onChange={(e) => setUserID(e.target.value)}
+          ></BasicInput>
         </Stack>
         <Stack
           direction={"row"}
@@ -180,11 +226,9 @@ export default function UserUpload() {
           <BasicInput sx={{ width: "80%" }}></BasicInput>
         </Stack>
       </Stack>
-      <GrayBox width={"100%"}>
-        <Box sx={{ marginLeft: "auto" }}>
-          <BasicButton>확인</BasicButton>
-          <BasicButton>취소</BasicButton>
-        </Box>
+      <GrayBox width={"100%"} gap={1} justifyContent={"end"}>
+        <BasicButton>확인</BasicButton>
+        <BasicButton>취소</BasicButton>
       </GrayBox>
     </Stack>
   );

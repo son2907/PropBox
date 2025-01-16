@@ -47,4 +47,4 @@ export const useUserSingleDetail = (id: string | null) => {
             return result;
         }
     })
-}
+};
