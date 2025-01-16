@@ -13,7 +13,7 @@ import { useRef, useState } from "react";
 import BasicInput from "../../../../components/Input/BasicInput";
 import TextArea from "../../../../components/TextArea/TextArea";
 import { Select } from "../../../../components/Select";
-import { selectTestData, tableTestData } from "../../../../utils/testData";
+import { tableTestData } from "../../../../utils/testData";
 import useSelect from "../../../../hooks/useSelect";
 import CenteredBox from "../../../../components/Box/CenteredBox";
 import { IoSettingsOutline } from "react-icons/io5";
@@ -21,14 +21,19 @@ import Calendar from "../../../../components/Calendar/Calendar";
 import CheckboxTable from "../../../../components/Table/CheckboxTable";
 import { useMultiRowSelection } from "../../../../hooks/useMultiRowSelection";
 import { useRadioGroup } from "../../../../hooks/useRadioGroup";
+import { openPopup } from "../../../../utils/openPopup";
+import PathConstants from "../../../../routers/path";
+import { useCrtfcList } from "../../../../api/crtfc";
 
 export default function SMSSending() {
+  const { data: crtfcListAPi } = useCrtfcList({});
+  console.log("발신번호:", crtfcListAPi);
+
   const inputRef = useRef<HTMLInputElement>(null);
   const { selectListData, selectValue, handleChange } = useSelect(
-    selectTestData,
-    "value",
-    "data",
-    "1"
+    crtfcListAPi?.data.contents,
+    "cid",
+    "cid"
   );
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
@@ -41,6 +46,7 @@ export default function SMSSending() {
   const { selectedValue: radioValue2, handleRadioChange: setRadioValue2 } =
     useRadioGroup(""); // 초기값은 빈 문자열
 
+  console.log("선택한 값:", selectValue);
   return (
     <Box padding={2} bgcolor={"white"} height={"100%"} width={"100%"}>
       <GrayBox height="40px">
@@ -93,7 +99,17 @@ export default function SMSSending() {
                 onChange={handleChange}
                 sx={{ width: "250px" }}
               />
-              <IconButton>
+              <IconButton
+                onClick={() => {
+                  openPopup({
+                    url: PathConstants.Call.RegisterSenderNumber,
+                    windowName: "발신번호 등록",
+                    windowFeatures:
+                      "width=830,height=480,scrollbars=yes,resizable=yes",
+                  });
+                }}
+                color="primary"
+              >
                 <IoSettingsOutline />
               </IconButton>
             </CenteredBox>

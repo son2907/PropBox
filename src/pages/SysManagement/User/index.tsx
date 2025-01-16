@@ -25,14 +25,19 @@ import api from "../../../api";
 import { UserListType } from "../../../api/userList";
 import { useAuthStore } from "../../../stores/authStore";
 import useModal from "../../../hooks/useModal";
-import { UserPermitSolutionType, useUserPermitSolution } from "../../../api/userPermissionSolution";
+import {
+  UserPermitSolutionType,
+  useUserPermitSolution,
+} from "../../../api/userPermissionSolution";
 import { userSolutionCount } from "../../../api/userSolutionCount";
-import { UserNonPermissionSolutionType, useUserNonPermissionSolution } from "../../../api/UserNonpermitSolution";
+import {
+  UserNonPermissionSolutionType,
+  useUserNonPermissionSolution,
+} from "../../../api/UserNonpermitSolution";
 import { userPermissionRegistration } from "../../../api/userPermissionRegistration";
 import { userNonPermissionRegistration } from "../../../api/userNonPermissionRegistration";
 
 export default function Registration() {
-
   const [searchQuery, setSearchQuery] = useState(""); // 검색어 상태 관리
   const [searchInput, setSearchInput] = useState(""); // 검색 입력값 상태 관리
 
@@ -41,22 +46,31 @@ export default function Registration() {
   const [userList, setUserList] = useState<UserListType[]>([]);
 
   //사용자 허가 솔루션 목록 가져오기
-  const [userSelectRow, setSelectRow] = useState("");  //사용자 허가 솔루션을 가져오기위한 id
-  const [userPermitSolution, setUserPermitSolution] = useState<UserPermitSolutionType[]>([]);
-  const { data: userPermitSolutionData, isLoading: isLoadingPermitSolution } = useUserPermitSolution(userSelectRow);
-  const [solutionCounts, setSolutionCounts] = useState<Record<string, string>>({}); // 각 행의 solutionCount 관리
+  const [userSelectRow, setSelectRow] = useState(""); //사용자 허가 솔루션을 가져오기위한 id
+  const [userPermitSolution, setUserPermitSolution] = useState<
+    UserPermitSolutionType[]
+  >([]);
+  const { data: userPermitSolutionData, isLoading: isLoadingPermitSolution } =
+    useUserPermitSolution(userSelectRow);
+  const [solutionCounts, setSolutionCounts] = useState<Record<string, string>>(
+    {}
+  ); // 각 행의 solutionCount 관리
   const [userNo, setUserNo] = useState("");
   const [solutionId, setSolutionId] = useState("");
   const [userId, setUserId] = useState("");
   const [solutionTotalCount, setSolutionTotalCount] = useState("");
 
   //사용자 미허가 솔루션 목록 가져오기
-  const [userNonPermitSolution, setUserNonPermitSolution] = useState<UserNonPermissionSolutionType[]>([]);
-  const { data: userNonPermitSolutionData, isLoading: isLoadingNonPermitSolution } = useUserNonPermissionSolution(userSelectRow);
+  const [userNonPermitSolution, setUserNonPermitSolution] = useState<
+    UserNonPermissionSolutionType[]
+  >([]);
+  const {
+    data: userNonPermitSolutionData,
+    isLoading: isLoadingNonPermitSolution,
+  } = useUserNonPermissionSolution(userSelectRow);
 
   const permissionRegistration = userPermissionRegistration();
   const nonPermissionRegistration = userNonPermissionRegistration();
-
 
   //데이터 정리
   const userListData = userList.map((item) => ({
@@ -75,25 +89,25 @@ export default function Registration() {
   }));
 
   const formatNonPermissionList = userNonPermitSolution.map((item) => ({
-    id: item.slutnId,               // ID
-    slutnId: item.slutnId,          // 솔루션 ID
-    slutnNm: item.slutnNm,          // 솔루션 이름
-    lisneSeCd: item.lisneSeCd,      // 라이센스 코드
-    lisneSeNm: item.lisneSeNm,      // 라이센스 이름
-    userNo: item.userNo,            // 사용자 번호
-    isOk: item.isOk,                // 사용 여부
+    id: item.slutnId, // ID
+    slutnId: item.slutnId, // 솔루션 ID
+    slutnNm: item.slutnNm, // 솔루션 이름
+    lisneSeCd: item.lisneSeCd, // 라이센스 코드
+    lisneSeNm: item.lisneSeNm, // 라이센스 이름
+    userNo: item.userNo, // 사용자 번호
+    isOk: item.isOk, // 사용 여부
   }));
 
   const formatPermissionList = userPermitSolution.map((item) => ({
-    id: item.slutnId,               // ID
-    slutnId: item.slutnId,          // 솔루션 ID
-    slutnNm: item.slutnNm,          // 솔루션 이름
-    lisneSeCd: item.lisneSeCd,      // 라이센스 코드
-    lisneSeNm: item.lisneSeNm,      // 라이센스 이름
-    userNo: item.userNo,            // 사용자 번호
-    chrgcnt: item.chrgcnt,                // 사용 여부
-    sptlisneCnt: item.sptlisneCnt,                // 사용 여부
-    userlisneCnt: item.userlisneCnt,                // 사용 여부
+    id: item.slutnId, // ID
+    slutnId: item.slutnId, // 솔루션 ID
+    slutnNm: item.slutnNm, // 솔루션 이름
+    lisneSeCd: item.lisneSeCd, // 라이센스 코드
+    lisneSeNm: item.lisneSeNm, // 라이센스 이름
+    userNo: item.userNo, // 사용자 번호
+    chrgcnt: item.chrgcnt, // 사용 여부
+    sptlisneCnt: item.sptlisneCnt, // 사용 여부
+    userlisneCnt: item.userlisneCnt, // 사용 여부
   }));
 
   //솔루션 전체 갯수를 수정할 경우 필요한 데이터
@@ -103,7 +117,7 @@ export default function Registration() {
       slutnId: solutionId,
       userlisneCnt: solutionTotalCount,
       userId: userId,
-    }
+    },
   };
 
   //api 호출을 위한 id호출
@@ -112,8 +126,6 @@ export default function Registration() {
 
   //모달
   const { openModal, closeModal } = useModal();
-
-
 
   const { selectListData, selectValue, handleChange } = useSelect(
     selectTestData,
@@ -164,7 +176,6 @@ export default function Registration() {
   };
 
   useEffect(() => {
-
     if (userPermitSolutionData?.data.contents) {
       setUserPermitSolution(userPermitSolutionData.data.contents);
 
@@ -222,7 +233,7 @@ export default function Registration() {
             // 성공 처리 로직
             if (response.data.message === "SUCCESS") {
               //window.location.reload();
-              console.log("response", response.data)
+              console.log("response", response.data);
             }
           },
           onError: (error) => {
@@ -237,15 +248,17 @@ export default function Registration() {
   const handleSubmit = () => {
     // 선택된 데이터 추출 및 변환
     const userList = Array.from(unauthorizedSelectedRows).map((rowId) => {
-      const selectedItem = userNonPermitSolution.find(item => item.slutnId === rowId);
+      const selectedItem = userNonPermitSolution.find(
+        (item) => item.slutnId === rowId
+      );
       return {
-        slutnId: selectedItem?.slutnId || '',
+        slutnId: selectedItem?.slutnId || "",
         userNo: userSelectRow, // 필요한 경우 API에서 userNo 데이터 확인
         lisneCnt: "1",
         useYn: "",
         delYn: "",
         rmk: "",
-        userId: ""
+        userId: "",
       };
     });
 
@@ -256,7 +269,7 @@ export default function Registration() {
     };
 
     // 생성된 데이터 콘솔 출력
-    console.log('API 호출 전에 생성된 데이터:', requestData);
+    console.log("API 호출 전에 생성된 데이터:", requestData);
 
     // API 호출
     permissionRegistration.mutate(
@@ -273,20 +286,22 @@ export default function Registration() {
           console.error("이동 실패:", error);
         },
       }
-    )
+    );
   };
 
   const handleNonPerSubmit = () => {
     const userList = Array.from(authorizedSelectedRows).map((rowId) => {
-      const selectedItem = userPermitSolution.find(item => item.slutnId === rowId);
+      const selectedItem = userPermitSolution.find(
+        (item) => item.slutnId === rowId
+      );
       return {
-        slutnId: selectedItem?.slutnId || '',
+        slutnId: selectedItem?.slutnId || "",
         userNo: userSelectRow, // 필요한 경우 API에서 userNo 데이터 확인
         lisneCnt: "1",
         useYn: "",
         delYn: "",
         rmk: "",
-        userId: ""
+        userId: "",
       };
     });
 
@@ -297,7 +312,7 @@ export default function Registration() {
     };
 
     // 생성된 데이터 콘솔 출력
-    console.log('API 호출 전에 생성된 데이터:', requestData);
+    console.log("API 호출 전에 생성된 데이터:", requestData);
 
     // API 호출
     nonPermissionRegistration.mutate(
@@ -314,9 +329,8 @@ export default function Registration() {
           console.error("이동 실패:", error);
         },
       }
-    )
+    );
   };
-
 
   return (
     <>
@@ -414,7 +428,9 @@ export default function Registration() {
             <TableBox gap={1}>
               <Stack width={"69%"} height={"100%"} gap={1}>
                 <GrayBox>
-                  <Typography fontWeight={"bold"}>사용자 허가 솔루션</Typography>
+                  <Typography fontWeight={"bold"}>
+                    사용자 허가 솔루션
+                  </Typography>
                 </GrayBox>
                 <TableBox.Inner>
                   <CheckboxTable
@@ -454,11 +470,16 @@ export default function Registration() {
                               placeholder={item.userlisneCnt}
                               value={solutionCounts[item.slutnId] || ""} // 현재 행의 입력값
                               onChange={(e) =>
-                                handleSolutionCountChange(item.slutnId, e.target.value)
+                                handleSolutionCountChange(
+                                  item.slutnId,
+                                  e.target.value
+                                )
                               } // 각 행의 상태 업데이트
                             />
                           </CheckboxTable.Td>
-                          <CheckboxTable.Td>{item.sptlisneCnt}</CheckboxTable.Td>
+                          <CheckboxTable.Td>
+                            {item.sptlisneCnt}
+                          </CheckboxTable.Td>
                           <CheckboxTable.Td>{item.chrgcnt}</CheckboxTable.Td>
                         </CheckboxTable.Tr>
                       ))}
@@ -466,11 +487,17 @@ export default function Registration() {
                   </CheckboxTable>
                 </TableBox.Inner>
                 <GrayBox justifyContent={"end"} gap={1}>
-                  <BasicButton onClick={handleCheckSolutionData}>적용</BasicButton>
+                  <BasicButton onClick={handleCheckSolutionData}>
+                    적용
+                  </BasicButton>
                   <BasicButton>새로고침</BasicButton>
                 </GrayBox>
               </Stack>
-              <Stack width={"2%"} bgcolor={"white"} justifyContent={"space-between"}>
+              <Stack
+                width={"2%"}
+                bgcolor={"white"}
+                justifyContent={"space-between"}
+              >
                 <BasicButton
                   sx={{
                     backgroundColor: "primary.A100",
@@ -500,7 +527,9 @@ export default function Registration() {
               </Stack>
               <Stack width={"29%"} height={"100%"} gap={1}>
                 <GrayBox>
-                  <Typography fontWeight={"bold"}>사용자 미허가 솔루션</Typography>
+                  <Typography fontWeight={"bold"}>
+                    사용자 미허가 솔루션
+                  </Typography>
                 </GrayBox>
                 <TableBox.Inner>
                   <CheckboxTable
@@ -532,7 +561,9 @@ export default function Registration() {
                   </CheckboxTable>
                 </TableBox.Inner>
                 <GrayBox>
-                  <BasicButton sx={{ marginLeft: "auto" }}>새로고침</BasicButton>
+                  <BasicButton sx={{ marginLeft: "auto" }}>
+                    새로고침
+                  </BasicButton>
                 </GrayBox>
               </Stack>
             </TableBox>

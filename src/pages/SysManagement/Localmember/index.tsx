@@ -166,7 +166,7 @@ export default function LocalmemberManagement() {
                     >
                       <CheckboxTable.Thead>
                         <CheckboxTable.Tr>
-                          <CheckboxTable.CheckboxTh />
+                          <CheckboxTable.CheckboxTh keyName="id" />
                           <CheckboxTable.Th>구성원ID</CheckboxTable.Th>
                           <CheckboxTable.Th>구성원이름</CheckboxTable.Th>
                           <CheckboxTable.Th>직책</CheckboxTable.Th>
@@ -175,7 +175,10 @@ export default function LocalmemberManagement() {
                       <CheckboxTable.Tbody>
                         {tableTestData.map((item) => (
                           <CheckboxTable.Tr key={item.id} id={item.id}>
-                            <CheckboxTable.CheckboxTd item={item} />
+                            <CheckboxTable.CheckboxTd
+                              item={item}
+                              keyName="id"
+                            />
                             <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
                             <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
                             <CheckboxTable.Td>
@@ -241,7 +244,7 @@ export default function LocalmemberManagement() {
                     >
                       <CheckboxTable.Thead>
                         <CheckboxTable.Tr>
-                          <CheckboxTable.CheckboxTh />
+                          <CheckboxTable.CheckboxTh keyName="id" />
                           <CheckboxTable.Th>구성원ID</CheckboxTable.Th>
                           <CheckboxTable.Th>구성원이름</CheckboxTable.Th>
                         </CheckboxTable.Tr>
@@ -250,7 +253,10 @@ export default function LocalmemberManagement() {
                       <CheckboxTable.Tbody>
                         {tableTestData.map((item) => (
                           <CheckboxTable.Tr key={item.id} id={item.id}>
-                            <CheckboxTable.CheckboxTd item={item} />
+                            <CheckboxTable.CheckboxTd
+                              item={item}
+                              keyName="id"
+                            />
                             <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
                             <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
                           </CheckboxTable.Tr>

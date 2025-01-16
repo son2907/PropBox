@@ -51,6 +51,19 @@ type TelCnsltCn = {
   detailNo: string;
 };
 
+// 전화상담 > 상담현황 api 응답
+type ReportListItem = {
+  sptNo: string | null;
+  tmzonNm: string;
+  callN: number;
+  callY: number;
+  callTot: number;
+};
+
+export interface ReportListResponseType extends ApiResponseType {
+  contents: ReportListItem[];
+}
+
 export interface CnsltInfoRequestType {
   sptNo: string; // 지원 번호
   cstmrNo: string; // 고객 번호
@@ -83,6 +96,7 @@ export type CnsltItem = {
   delYn: string | null;
   userId: string | null;
 };
+
 export interface CnsltItemListResponseType extends ApiResponseType {
   contents: CnsltItem[];
 }
@@ -117,3 +131,47 @@ export type DetailItem = {
 export interface DetailListResponseType extends ApiResponseType {
   contents: DetailItem[];
 }
+
+// <--------------문자 팝업--------------->
+
+// 발신번호 목록 응답
+export type GetCidItem = {
+  cidSj: string;
+  cid: string;
+};
+
+export interface GetCidListResponseType extends ApiResponseType {
+  contents: GetCidItem[];
+}
+
+// 수신 거부 한 개 조회
+export interface GetRejectMsgResponseType extends ApiResponseType {
+  contents: string;
+}
+
+// 메세지 목록 조회
+export type MsgSaveItem = {
+  saveNo: string;
+  sptNo: string;
+  userNo: string;
+  mssage: string;
+};
+
+export interface GetMsgsaveListResponseType extends ApiResponseType {
+  contents: MsgSaveItem[];
+}
+
+// 한개의 문자에 대한 상세 정보
+export type MsgGetOneRequestType = {
+  saveNo: string; // 메세지 번호
+};
+
+// 메세지 저장 및 수정
+export type MsgSaveRequestType = {
+  saveNo: string;
+  sptNo: string;
+  userNo: string;
+  commUseYn: string;
+  mssage: string;
+  userId: string;
+};

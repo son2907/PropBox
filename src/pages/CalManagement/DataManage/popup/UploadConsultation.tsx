@@ -54,7 +54,7 @@ export default function UploadConsultation() {
           >
             <CheckboxTable.Thead>
               <CheckboxTable.Tr>
-                <CheckboxTable.CheckboxTh />
+                <CheckboxTable.CheckboxTh keyName="id" />
                 <CheckboxTable.Th>1번 항목</CheckboxTable.Th>
                 <CheckboxTable.Th>2번 항목</CheckboxTable.Th>
                 <CheckboxTable.Th>3번 항목</CheckboxTable.Th>
@@ -67,7 +67,7 @@ export default function UploadConsultation() {
             <CheckboxTable.Tbody>
               {tableTestData.map((item) => (
                 <CheckboxTable.Tr key={item.id} id={item.id}>
-                  <CheckboxTable.CheckboxTd item={item} />
+                  <CheckboxTable.CheckboxTd item={item} keyName="id" />
                   <CheckboxTable.Td>데이터</CheckboxTable.Td>
                   <CheckboxTable.Td>데이터</CheckboxTable.Td>
                   <CheckboxTable.Td>데이터</CheckboxTable.Td>

@@ -19,11 +19,8 @@ import { deleteNotice } from "../../api/noticeDelete";
 import { DeleteCompletedModal } from "../../components/layout/modal/DeleteCompletedModal";
 import { EmptySelectModal } from "../../components/layout/modal/EmptySelectModal";
 
-
-
 export default function NoticeList() {
-
-  // 구성원 1002015, 사용자 1002010, 시스템관리자 1002005 
+  // 구성원 1002015, 사용자 1002010, 시스템관리자 1002005
   // 시스템 관리자일경우 구분
   const { userConstntSeCd } = useAuthStore(["userConstntSeCd"]);
 
@@ -59,9 +56,9 @@ export default function NoticeList() {
   const formatNoticeList = noticeList.map((item) => ({
     id: item.noticeNo,
     noticeNo: item.noticeNo,
-    noticeSj: item.noticeSj,  //제목
-    noticeCn: item.regDe,    //등록일
-  }))
+    noticeSj: item.noticeSj, //제목
+    noticeCn: item.regDe, //등록일
+  }));
 
   // 여러개선택
   const {
@@ -72,30 +69,35 @@ export default function NoticeList() {
   // 선택된 항목 감지 및 로그 출력
   useEffect(() => {
     // Set을 배열로 변환
-    const selectedData = Array.from(useSelectedRows).map((selectedId: string) => {
-      // formatNoticeList에서 선택된 ID에 해당하는 항목 찾기
-      const selectedItem = formatNoticeList.find((item) => item.id === selectedId);
-      return {
-        id: selectedItem?.id || "",
-        noticeNo: selectedItem?.noticeNo || "",
-        noticeSj: selectedItem?.noticeSj || "",
-        noticeCn: selectedItem?.noticeCn, // 로그인 정보 추가
-      };
-    });
+    const selectedData = Array.from(useSelectedRows).map(
+      (selectedId: string) => {
+        // formatNoticeList에서 선택된 ID에 해당하는 항목 찾기
+        const selectedItem = formatNoticeList.find(
+          (item) => item.id === selectedId
+        );
+        return {
+          id: selectedItem?.id || "",
+          noticeNo: selectedItem?.noticeNo || "",
+          noticeSj: selectedItem?.noticeSj || "",
+          noticeCn: selectedItem?.noticeCn, // 로그인 정보 추가
+        };
+      }
+    );
 
     // 선택된 데이터를 콘솔에 출력
     console.log("선택된 항목 데이터:", selectedData);
   }, [useSelectedRows, formatNoticeList, loginId]);
 
-
-
-
   //여러개 삭제시 모달
   const confirmMultipleDeletionModal = () => {
-    const selectedData = Array.from(useSelectedRows).map((selectedId: string) => {
-      const selectedItem = formatNoticeList.find((item) => item.id === selectedId);
-      return selectedItem;
-    });
+    const selectedData = Array.from(useSelectedRows).map(
+      (selectedId: string) => {
+        const selectedItem = formatNoticeList.find(
+          (item) => item.id === selectedId
+        );
+        return selectedItem;
+      }
+    );
 
     const itemCount = selectedData.length;
 
@@ -109,8 +111,8 @@ export default function NoticeList() {
         onClose: () => closeModal,
         onSubmit: () => {
           handleDelete();
-        }
-      })
+        },
+      });
     } else {
       emptySelectionModal();
     }
@@ -124,7 +126,7 @@ export default function NoticeList() {
       onClose: () => closeModal,
       onSubmit: () => {
         //window.close();
-      }
+      },
     });
   };
 
@@ -135,24 +137,28 @@ export default function NoticeList() {
       onClose: () => closeModal,
       onSubmit: () => {
         //window.close();
-      }
+      },
     });
-  }
+  };
 
   const handleDelete = () => {
-    const selectedData = Array.from(useSelectedRows).map((selectedId: string) => {
-      const selectedItem = formatNoticeList.find((item) => item.id === selectedId);
-      return {
-        noticeNo: selectedItem?.id || "",
-        noticeSj: selectedItem?.noticeSj || "",
-        noticeCn: selectedItem?.noticeCn || "",
-        popupYn: "",
-        popupBgnde: "",
-        popupEndde: "",
-        regDe: "",
-        userId: loginId,
-      };
-    });
+    const selectedData = Array.from(useSelectedRows).map(
+      (selectedId: string) => {
+        const selectedItem = formatNoticeList.find(
+          (item) => item.id === selectedId
+        );
+        return {
+          noticeNo: selectedItem?.id || "",
+          noticeSj: selectedItem?.noticeSj || "",
+          noticeCn: selectedItem?.noticeCn || "",
+          popupYn: "",
+          popupBgnde: "",
+          popupEndde: "",
+          regDe: "",
+          userId: loginId,
+        };
+      }
+    );
 
     deleteFAQMutation.mutate(
       { body: selectedData },
@@ -161,7 +167,12 @@ export default function NoticeList() {
           console.log("삭제 성공");
           deleteCompletedModal();
           setNoticeList((prevNoticeList) =>
-            prevNoticeList.filter((notice) => !selectedData.some((delItem) => delItem.noticeNo === notice.noticeNo))
+            prevNoticeList.filter(
+              (notice) =>
+                !selectedData.some(
+                  (delItem) => delItem.noticeNo === notice.noticeNo
+                )
+            )
           );
         },
         onError: (error) => {
@@ -170,10 +181,6 @@ export default function NoticeList() {
       }
     );
   };
-
-
-
-
 
   const NoticeList = {
     url: PathConstants.Notice.NoticeList,
@@ -210,7 +217,13 @@ export default function NoticeList() {
   return (
     <>
       <Stack bgcolor={"white"} width={"100%"} height={"100%"}>
-        <Stack direction={"row"} padding={1} justifyContent={"space-between"} width={"100%"} height={"10%"}>
+        <Stack
+          direction={"row"}
+          padding={1}
+          justifyContent={"space-between"}
+          width={"100%"}
+          height={"10%"}
+        >
           <Box>
             <SearchInput
               placeholder="공지사항 검색"
@@ -226,9 +239,18 @@ export default function NoticeList() {
           <Box>
             {userConstntSeCd === "1002005" && (
               <>
-                <BasicButton sx={{ color: "primary.main", borderColor: "primary.main" }} onClick={confirmMultipleDeletionModal}>선택삭제</BasicButton>
                 <BasicButton
-                  sx={{ marginLeft: 1, color: "primary.main", borderColor: "primary.main" }}
+                  sx={{ color: "primary.main", borderColor: "primary.main" }}
+                  onClick={confirmMultipleDeletionModal}
+                >
+                  선택삭제
+                </BasicButton>
+                <BasicButton
+                  sx={{
+                    marginLeft: 1,
+                    color: "primary.main",
+                    borderColor: "primary.main",
+                  }}
                   onClick={() => {
                     openPopup({
                       url: NoticeAdd.url,
@@ -237,7 +259,12 @@ export default function NoticeList() {
                     });
                   }}
                 >
-                  <Stack alignItems={"center"} justifyContent={"center"} direction={"row"} gap={1}>
+                  <Stack
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                    direction={"row"}
+                    gap={1}
+                  >
                     <Typography color="primary.main">글쓰기</Typography>
                     <IoIosAddCircleOutline size={"24px"} />
                   </Stack>
@@ -245,7 +272,6 @@ export default function NoticeList() {
               </>
             )}
           </Box>
-
         </Stack>
         <Box width={"100%"} height={"90%"}>
           <TableBox>
@@ -257,17 +283,20 @@ export default function NoticeList() {
               >
                 <CheckboxTable.Thead>
                   <CheckboxTable.Tr>
-                    <CheckboxTable.CheckboxTh />
+                    <CheckboxTable.CheckboxTh keyName="noticeNo" />
                     <CheckboxTable.Th>제목</CheckboxTable.Th>
                     <CheckboxTable.Th>작성일</CheckboxTable.Th>
-                    <CheckboxTable.Th >상세보기</CheckboxTable.Th>
+                    <CheckboxTable.Th>상세보기</CheckboxTable.Th>
                   </CheckboxTable.Tr>
                 </CheckboxTable.Thead>
 
                 <CheckboxTable.Tbody>
                   {formatNoticeList.map((item) => (
                     <CheckboxTable.Tr key={item.id} id={item.id}>
-                      <CheckboxTable.CheckboxTd item={item} />
+                      <CheckboxTable.CheckboxTd
+                        item={item}
+                        keyName="noticeNo"
+                      />
                       <CheckboxTable.Td>{item.noticeSj}</CheckboxTable.Td>
                       <CheckboxTable.Td>{item.noticeSj}</CheckboxTable.Td>
                       <CheckboxTable.Td>
@@ -287,9 +316,10 @@ export default function NoticeList() {
                               });
                             }
                           }}
-                        >상세보기</BasicButton>
+                        >
+                          상세보기
+                        </BasicButton>
                       </CheckboxTable.Td>
-
                     </CheckboxTable.Tr>
                   ))}
                 </CheckboxTable.Tbody>
