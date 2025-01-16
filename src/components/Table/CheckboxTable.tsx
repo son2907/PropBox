@@ -3,7 +3,7 @@ import TableProvider from "./context/TableProvider";
 import useTableContext from "../../hooks/useTableContext";
 
 interface TableProps {
-  data: { [key: string]: any }[]; // Table data
+  data: { [key: string]: any }[] | undefined; // Table data
   selectedRows: Set<string>;
   toggleRowsSelection: (id: string) => void;
   children: ReactNode;
