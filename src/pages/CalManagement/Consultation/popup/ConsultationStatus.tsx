@@ -9,7 +9,7 @@ export default function ConsultationStatus() {
   return (
     <TableBox>
       <TableBox.Inner>
-        <BasicTable data={reportListApi?.data.contents || []}>
+        <BasicTable data={reportListApi?.data.contents}>
           <BasicTable.Th>시간</BasicTable.Th>
           <BasicTable.Th>받기</BasicTable.Th>
           <BasicTable.Th>걸기</BasicTable.Th>

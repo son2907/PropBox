@@ -560,23 +560,21 @@ export default function InfoGroup({ tabType }: TabType) {
                 </Box>
               </BasicTable.Th>
               <BasicTable.Tbody>
-                {(itemDetList?.data?.contents || []).map(
-                  (item: any, index: any) => {
-                    return (
-                      <BasicTable.Tr
-                        key={index}
-                        isClicked={
-                          detailInfo[item.itemNo]?.detailNo === item.detailNo
-                        }
-                        onClick={() => {
-                          selectDetItem(item);
-                        }}
-                      >
-                        <BasicTable.Td>{item.detailNm}</BasicTable.Td>
-                      </BasicTable.Tr>
-                    );
-                  }
-                )}
+                {itemDetList?.data?.contents.map((item: any, index: any) => {
+                  return (
+                    <BasicTable.Tr
+                      key={index}
+                      isClicked={
+                        detailInfo[item.itemNo]?.detailNo === item.detailNo
+                      }
+                      onClick={() => {
+                        selectDetItem(item);
+                      }}
+                    >
+                      <BasicTable.Td>{item.detailNm}</BasicTable.Td>
+                    </BasicTable.Tr>
+                  );
+                })}
               </BasicTable.Tbody>
             </BasicTable>
           </Box>
