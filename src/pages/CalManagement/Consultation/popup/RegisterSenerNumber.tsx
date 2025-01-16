@@ -176,7 +176,7 @@ export default function RegisterSenerNumber() {
           <TableBox width="50%">
             <TableBox.Inner>
               <CheckboxTable
-                data={crtfcListAPi?.data.contents || []}
+                data={crtfcListAPi?.data.contents}
                 selectedRows={selectedRows}
                 toggleRowsSelection={toggleRowsSelection}
               >

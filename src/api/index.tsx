@@ -15,8 +15,7 @@ import * as SolutionMenuUpdate from "./solutionMenuUpdate";
 import * as SolutionMenuInsert from "./solutionMenuInsert";
 import * as UserList from "./userList";
 import * as MemberList from "./memberList";
-
-
+import * as Crtfc from "./crtfc";
 
 export default {
   AdminAccount,
@@ -36,4 +35,5 @@ export default {
   SolutionMenuInsert,
   UserList,
   MemberList,
+  Crtfc,
 };
