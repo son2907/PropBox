@@ -576,7 +576,7 @@ export const testMenuList = [
     subMenu: [
       { label: "자동문자", url: "/message/auto" },
       { label: "대량문자", url: "/message/bulk" },
-      { label: "방통위신고", url: "/message/declartion" },
+      { label: "방통위신고", url: "/message/declaration" },
       { label: "수신거부", url: "/message/reject" },
     ],
   },
@@ -596,7 +596,10 @@ export const testMenuList = [
       { label: "현장 별 구성원 관리", url: "/system/localmember" },
       { label: "현장 구성원 권한 관리", url: "/system/auth" },
 
-      { label: "통신환경설정", url: "/system/NetworkSettings" },
+      { label: "통신환경설정", url: "/system/networksetup" },
+      { label: "인증번호관리", url: "/system/authCode" },
+      { label: "수신거부번호관리", url: "/system/receivingNumber" },
+      { label: "전화기관리", url: "/system/phone" },
     ],
   },
 ];
