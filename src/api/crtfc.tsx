@@ -6,7 +6,8 @@ import {
   CrtfcCheckResponseType,
   CrtfcListRequestType,
   CrtfcCheckRequestType,
-  CrtfcDeleteSaveRequestType,
+  CrtfcSaveRequestType,
+  CrtfcDeleteRequestType,
   CtrfcRequestType,
 } from "../types/crtfc";
 
@@ -30,12 +31,12 @@ const API = {
     return await instance.post(url, requestData.body);
   },
   // 발신번호 저장
-  saveCrtfc: async (requestData: { body: CrtfcDeleteSaveRequestType }) => {
+  saveCrtfc: async (requestData: { body: CrtfcSaveRequestType }) => {
     const url = `/api/crtfc/cidno/save`;
     return await instance.post(url, requestData.body);
   },
   // 발신번호 삭제
-  deleteCrtfc: async (requestData: { body: CrtfcDeleteSaveRequestType }) => {
+  deleteCrtfc: async (requestData: { body: CrtfcDeleteRequestType }) => {
     const url = `/api/crtfc/cidno/remove`;
     return await instance.post(url, requestData.body);
   },
@@ -87,7 +88,7 @@ export const usePostCrtfc = () => {
 // 발신번호 저장
 export const useSaveCrtfc = () => {
   return useMutation({
-    mutationFn: (requstData: { body: CrtfcDeleteSaveRequestType }) =>
+    mutationFn: (requstData: { body: CrtfcSaveRequestType }) =>
       API.saveCrtfc(requstData),
     mutationKey: KEY.saveCrtfc(),
   });
@@ -96,7 +97,7 @@ export const useSaveCrtfc = () => {
 // 발신번호 삭제
 export const useDeleteCrtfc = () => {
   return useMutation({
-    mutationFn: (requstData: { body: CrtfcDeleteSaveRequestType }) =>
+    mutationFn: (requstData: { body: CrtfcDeleteRequestType }) =>
       API.deleteCrtfc(requstData),
     mutationKey: KEY.deleteCrtfc(),
   });

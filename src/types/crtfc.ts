@@ -39,12 +39,18 @@ export interface CrtfcCheckResponseType extends ApiResponseType {
 }
 
 // 발신번호 저장 및 삭제
-export type CrtfcDeleteSaveRequestType = {
+export type CrtfcSaveRequestType = {
   sptNo?: string | null;
   cid?: string | null; // 발신번호
   sj?: string | null; // 제목
   eno?: string; // 인증번호
   commUseYn?: string | null; // 공용여부
+};
+
+// 발신번호 삭제
+export type CrtfcDeleteRequestType = {
+  sptNo?: string | null;
+  cid?: string | null; // 발신번호
 };
 
 // 인증 요청

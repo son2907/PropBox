@@ -141,8 +141,6 @@ export default function RegisterSenerNumber() {
           body: {
             sptNo: getItemByStorageOne("selectedSite")?.sptNo,
             cid: item.cid,
-            sj: item.sj,
-            eno: item.eno,
           },
         },
         {

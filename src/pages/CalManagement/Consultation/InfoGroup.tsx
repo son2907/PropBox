@@ -12,7 +12,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Select } from "../../../components/Select";
 import useSelect from "../../../hooks/useSelect";
 import { TabType } from "../../../types/menu";
-import { TbBookmark } from "react-icons/tb";
+import { MdPhoneAndroid } from "react-icons/md";
 import { IoCallOutline } from "react-icons/io5";
 import TextArea from "../../../components/TextArea/TextArea";
 import { openPopup } from "../../../utils/openPopup";
@@ -47,6 +47,16 @@ export default function InfoGroup({ tabType }: TabType) {
   // 검색 조건 (왼쪽 테이블에서 선택한 한 행)
   const { cstmrNo, cnsltNo, callYn, trsmYn } = useCnsltStore();
 
+  console.log(
+    "검색 조건 cstmrNo :",
+    cstmrNo,
+    "cnsltNo",
+    cnsltNo,
+    "callYn",
+    callYn,
+    "trsmYn",
+    trsmYn
+  );
   // 상담 일자
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
@@ -92,7 +102,7 @@ export default function InfoGroup({ tabType }: TabType) {
   );
 
   // input 할당 useForm
-  const { register, handleSubmit, reset } = useForm({
+  const { register, handleSubmit, reset, getValues } = useForm({
     defaultValues: defaultValue,
   });
 
@@ -106,7 +116,7 @@ export default function InfoGroup({ tabType }: TabType) {
 
   // <======================= 검색 팝업창에서 데이터 수신 =======================>
 
-  const [message, setMessage] = useState({});
+  const [message, setMessage] = useState<object>();
 
   const handleMessage = useCallback(
     (event) => {
@@ -131,11 +141,11 @@ export default function InfoGroup({ tabType }: TabType) {
   }, [handleMessage]);
 
   useEffect(() => {
-    if (Object.keys(message).length > 0) {
+    if (message && Object.keys(message).length > 0) {
       console.log("Received message:", message);
       reset({ ...message });
     }
-  }, [message]);
+  }, [message, reset]);
 
   // <========================= Popup Constance =========================>
 
@@ -191,6 +201,13 @@ export default function InfoGroup({ tabType }: TabType) {
     setDetailInfo([{}]);
   }, [selectDetailItem, itemDetListRefetch, cnsltDetailRefetch]);
 
+  // phone / 전화 버튼
+  const onCall = ({ type }: { type: string }) => {
+    reset({
+      cnsltTelno: type == "Mbt" ? getValues("mbtlNo") : getValues("telNo"),
+    });
+  };
+
   // api 재호출 또는 항목 선택 해제 시 데이터 비움
   useDidMountEffect(() => {
     if (trsmYn == "W") {
@@ -224,17 +241,15 @@ export default function InfoGroup({ tabType }: TabType) {
         .filter((item) => item && Object.keys(item).length > 0)
         .map(({ itemNo, detailNo }) => ({ itemNo, detailNo }));
 
+      const isWorUn = trsmYn == "W" || !data_1 ? true : false; // 대기 고객이거나 신규 고객
+
       const body: CnsltInfoRequestType = {
-        sptNo: trsmYn === "W" || !trsmYn ? spt : data_1.sptNo,
-        cstmrNo: trsmYn == "W" || !trsmYn ? "" : data_1.cstmrNo,
-        cnsltNo:
-          !isToday(selectedDate) || trsmYn == "W" || !trsmYn
-            ? ""
-            : data_1.cnsltNo,
-        cnsltnt: trsmYn == "W" || !trsmYn ? "" : data_1.cnsltnt,
+        sptNo: spt,
+        cstmrNo: isWorUn ? "" : data_1.cstmrNo,
+        cnsltNo: !isToday(selectedDate) || isWorUn ? "" : data_1.cnsltNo,
+        cnsltnt: isWorUn ? "" : data_1.cnsltnt,
         cnsltDt: getFormattedDate(selectedDate),
-        telId:
-          trsmYn == "W" || !trsmYn ? (telStore.telId ?? "0") : data_1.telId,
+        telId: isWorUn ? (telStore.telId ?? "0") : data_1.telId,
         cnsltTelno: data.cnsltTelno,
         cstmrNm: data.cstmrNm,
         mbtlNo: data.mbtlNo,
@@ -245,14 +260,11 @@ export default function InfoGroup({ tabType }: TabType) {
         spcmnt: data.spcmnt,
         callYn: callYn || "",
         trsmYn: trsmYn || "",
-        legacySlutnId: trsmYn == "W" ? "CS0001" : "TM0001",
+        legacySlutnId: isWorUn ? "CS0001" : "TM0001",
         userId: loginId || "",
         telCnsltCnList: telCnsltCnList,
         ...(trsmYn == "W" && { waitCstmrNo: cstmrNo }),
       };
-
-      console.log("보낼 데이터:", body);
-
       postInfo(
         {
           body: body,
@@ -261,6 +273,7 @@ export default function InfoGroup({ tabType }: TabType) {
           onSuccess: (res) => {
             const result = checkApiFail(res);
             if (result.data.message === "SUCCESS") {
+              console.log("저장 또는 수정 성공:", res);
               openModal(BasicCompletedModl, {
                 modalId: "complete",
                 stack: false,
@@ -409,14 +422,22 @@ export default function InfoGroup({ tabType }: TabType) {
                 <LabelTypo>휴대전화</LabelTypo>
                 <BasicInput {...register("mbtlNo")} />
                 {tabType ? (
-                  <IconSquareButton>
-                    <TbBookmark size={"1rem"} />
+                  <IconSquareButton
+                    onClick={() => {
+                      onCall({ type: "Mbt" });
+                    }}
+                  >
+                    <MdPhoneAndroid size={"1rem"} />
                   </IconSquareButton>
                 ) : null}
                 <LabelTypo marginLeft={2}>일반전화</LabelTypo>
                 <BasicInput {...register("telNo")} />
                 {tabType ? (
-                  <IconSquareButton>
+                  <IconSquareButton
+                    onClick={() => {
+                      onCall({ type: "tel" });
+                    }}
+                  >
                     <IoCallOutline size={"1rem"} />
                   </IconSquareButton>
                 ) : null}

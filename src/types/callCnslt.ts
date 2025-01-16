@@ -131,3 +131,47 @@ export type DetailItem = {
 export interface DetailListResponseType extends ApiResponseType {
   contents: DetailItem[];
 }
+
+// <--------------문자 팝업--------------->
+
+// 발신번호 목록 응답
+export type GetCidItem = {
+  cidSj: string;
+  cid: string;
+};
+
+export interface GetCidListResponseType extends ApiResponseType {
+  contents: GetCidItem[];
+}
+
+// 수신 거부 한 개 조회
+export interface GetRejectMsgResponseType extends ApiResponseType {
+  contents: string;
+}
+
+// 메세지 목록 조회
+export type MsgSaveItem = {
+  saveNo: string;
+  sptNo: string;
+  userNo: string;
+  mssage: string;
+};
+
+export interface GetMsgsaveListResponseType extends ApiResponseType {
+  contents: MsgSaveItem[];
+}
+
+// 한개의 문자에 대한 상세 정보
+export type MsgGetOneRequestType = {
+  saveNo: string; // 메세지 번호
+};
+
+// 메세지 저장 및 수정
+export type MsgSaveRequestType = {
+  saveNo: string;
+  sptNo: string;
+  userNo: string;
+  commUseYn: string;
+  mssage: string;
+  userId: string;
+};

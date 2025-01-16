@@ -24,7 +24,6 @@ import { useRadioGroup } from "../../../../hooks/useRadioGroup";
 import { openPopup } from "../../../../utils/openPopup";
 import PathConstants from "../../../../routers/path";
 import { useCrtfcList } from "../../../../api/crtfc";
-import { filterDataByValues } from "../../../../utils/filterDataByValues";
 
 export default function SMSSending() {
   const { data: crtfcListAPi } = useCrtfcList({});
@@ -102,26 +101,12 @@ export default function SMSSending() {
               />
               <IconButton
                 onClick={() => {
-                  const window = openPopup({
+                  openPopup({
                     url: PathConstants.Call.RegisterSenderNumber,
                     windowName: "발신번호 등록",
                     windowFeatures:
                       "width=830,height=480,scrollbars=yes,resizable=yes",
                   });
-                  const data = filterDataByValues({
-                    data: crtfcListAPi?.data.contents,
-                    key: "cid",
-                    values: [selectValue],
-                  });
-                  if (window) {
-                    window.onload = () => {
-                      if (window.document) {
-                        window.document.getElementById(
-                          "cidValue"
-                        )!.textContent = JSON.stringify(data[0]);
-                      }
-                    };
-                  }
                 }}
                 color="primary"
               >
