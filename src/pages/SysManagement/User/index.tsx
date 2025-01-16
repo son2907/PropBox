@@ -440,7 +440,7 @@ export default function Registration() {
                   >
                     <CheckboxTable.Thead>
                       <CheckboxTable.Tr>
-                        <CheckboxTable.CheckboxTh />
+                        <CheckboxTable.CheckboxTh keyName="slutnId" />
                         <CheckboxTable.Th>솔루션ID</CheckboxTable.Th>
                         <CheckboxTable.Th>솔루션명</CheckboxTable.Th>
                         <CheckboxTable.Th>구분</CheckboxTable.Th>
@@ -461,7 +461,10 @@ export default function Registration() {
                     <CheckboxTable.Tbody>
                       {formatPermissionList.map((item) => (
                         <CheckboxTable.Tr key={item.slutnId} id={item.slutnId}>
-                          <CheckboxTable.CheckboxTd item={item} />
+                          <CheckboxTable.CheckboxTd
+                            item={item}
+                            keyName="slutnId"
+                          />
                           <CheckboxTable.Td>{item.slutnId}</CheckboxTable.Td>
                           <CheckboxTable.Td>{item.slutnNm}</CheckboxTable.Td>
                           <CheckboxTable.Td>{item.lisneSeNm}</CheckboxTable.Td>
@@ -539,7 +542,7 @@ export default function Registration() {
                   >
                     <CheckboxTable.Thead>
                       <CheckboxTable.Tr>
-                        <CheckboxTable.CheckboxTh />
+                        <CheckboxTable.CheckboxTh keyName="slutnId" />
                         <CheckboxTable.Th>솔루션ID</CheckboxTable.Th>
                         <CheckboxTable.Th>솔루션이름</CheckboxTable.Th>
                         <CheckboxTable.Th>구분</CheckboxTable.Th>
@@ -550,7 +553,10 @@ export default function Registration() {
                     <CheckboxTable.Tbody>
                       {formatNonPermissionList.map((item) => (
                         <CheckboxTable.Tr key={item.slutnId} id={item.slutnId}>
-                          <CheckboxTable.CheckboxTd item={item} />
+                          <CheckboxTable.CheckboxTd
+                            item={item}
+                            keyName="slutnId"
+                          />
                           <CheckboxTable.Td>{item.slutnId}</CheckboxTable.Td>
                           <CheckboxTable.Td>{item.slutnNm}</CheckboxTable.Td>
                           <CheckboxTable.Td>{item.lisneSeNm}</CheckboxTable.Td>
