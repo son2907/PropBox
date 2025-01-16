@@ -21,22 +21,22 @@ export interface NoticeListResponse {
 };
 
 const API = {
-    getNoticeList: async (requsetData : string) => {
-        const url = requsetData ? `/api/notice/list?noticeSj=${requsetData}` : '/api/notice/list';
+    getNoticeList: async (requestData : string) => {
+        const url = requestData ? `/api/notice/list?noticeSj=${requestData}` : '/api/notice/list';
         return await instance.get<NoticeListResponse>(url);
     }
 };
 
 const KEY = {
-    getNoticeList: (requsetData : string) => [`/api/notice/list?noticeSj=${requsetData}`],
+    getNoticeList: (requestData : string) => [`/api/notice/list?noticeSj=${requestData}`],
 };
 
-export const useNoticeList = (requsetData : string) => {
-    console.log("실행됨",requsetData);
+export const useNoticeList = (requestData : string) => {
+    console.log("실행됨",requestData);
     return useQuery({
-        queryKey : KEY.getNoticeList(requsetData),
+        queryKey : KEY.getNoticeList(requestData),
         queryFn : async () => {
-            return await API.getNoticeList(requsetData);
+            return await API.getNoticeList(requestData);
         }
     });
 }

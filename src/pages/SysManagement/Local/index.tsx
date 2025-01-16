@@ -9,7 +9,7 @@ import { Select } from "../../../components/Select";
 import { selectTestData, tableTestData } from "../../../utils/testData";
 import useSelect from "../../../hooks/useSelect";
 import CustomerInfo from "../../CustomerManagement/Registration/CustomerInfo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PathConstants from "../../../routers/path";
 import { openPopup } from "../../../utils/openPopup";
 import TableBox from "../../../components/Box/TableBox";
@@ -22,13 +22,90 @@ import CheckboxTable from "../../../components/Table/CheckboxTable";
 import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
 import { BiChevronLeft } from "react-icons/bi";
 import Calendar from "../../../components/Calendar/Calendar";
+import useModal from "../../../hooks/useModal";
+import { UserListType } from "../../../api/userList";
+import api from "../../../api";
+import { useLocalList, useNonPermissionLocalList, usePermissionLocalList } from "../../../api/localManagement";
+import { LocalListType, LocalPermissionListType } from "../../../types/localManagementType";
 
 export default function LocalManagement() {
-  const { selectListData, selectValue, handleChange } = useSelect(
-    selectTestData,
-    "value",
-    "data"
-  );
+
+  //모달
+  const { openModal, closeModal } = useModal();
+
+  const [searchQuery, setSearchQuery] = useState(""); // 검색어 상태 관리 - 사용자 검색
+  const [searchInput, setSearchInput] = useState(""); // 검색 입력값 상태 관리
+  const [localSearchQuery, setLocalSearchQuery] = useState("");
+  const [localSearchInput, setLocalSearchInput] = useState("");
+
+  //사용자 리스트
+  //const { data: userListData, isLoading: isLoadingUserList } = useUserList(searchQuery);
+  const { isSuccess, data } = api.UserList.useUserList(searchQuery);
+  const [userList, setUserList] = useState<UserListType[]>([]);
+  const [selectUserNo, setSelectUserNo] = useState("");
+
+  //현장리스트
+  const [localListReqData, setLocalListReqData] = useState(
+    { sptNm: "", progrsSeCd: "", userNo: "", cntrctBgnde: "", cntrctEndde: "" });
+  const { data: localListData, isSuccess: isLocalListData } = useLocalList(localListReqData);
+  const [localList, setLocalList] = useState<LocalListType[]>([]);
+  const [selectLocalNo, setSelectLocalNo] = useState("");
+
+  //현장 허가 솔루션
+  const { data: localPermissionData, isSuccess: isLocalPermissionData } = usePermissionLocalList(selectLocalNo);
+  const [localPermission, setLocalPermission] = useState<LocalPermissionListType[]>([]);
+
+  //현장 미허가 솔루션
+  const {data : localNonPermissionData, isSuccess: isLocalNonPermissionData} = useNonPermissionLocalList();
+
+  const userListTableData = userList.map((item) => ({
+    userNo: item.userNo,
+    userNm: item.userNm,
+    attlistMbtlNo: item.attlistMbtlNo,
+    loginIdPrefix: item.loginIdPrefix,
+    loginId: item.loginId,
+    cmpnm: item.cmpnm,
+    bizrno: item.bizrno,
+    rprsntvNm: item.rprsntvNm,
+    adres1: item.adres1,
+    adres2: item.adres2,
+    reprsntTelno: item.reprsntTelno,
+    useYn: item.useYn,
+  }));
+
+  const localListTableData = localList.map((item) => ({
+    sptNo: item.sptNo,
+    userNo: item.userNo,
+    sptNm: item.sptNm,
+    progrsSeCd: item.progrsSeCd,
+    useYn: item.useYn,
+    cntrctBgnde: item.cntrctBgnde,
+    cntrctEndde: item.cntrctEndde,
+  }));
+
+  const localPermissionTableData = localPermission.map((item) => ({
+    id : item.sptNo,
+    sptNo: item.sptNo,
+    slutnId: item.slutnId,
+    slutnNm: item.slutnNm,
+    lisneSeCd: item.lisneSeCd,
+    lisneSeNm: item.lisneSeNm,
+    userlisneCnt: item.userlisneCnt,
+    sptlisneCnt: item.sptlisneCnt,
+    chrgcnt: item.chrgcnt,
+    userId: item.userId
+  }));
+
+  const selectData = [
+    { value: "1003005", data: "진행" },
+    { value: "1003099", data: "종료" },
+  ];
+
+  const {
+    selectListData: sd_1,
+    selectValue: s_1,
+    handleChange: o_1,
+  } = useSelect(selectData, "value", "data");
 
   const [selectedAge, setSelectedAge] = useState<number | null>(null);
 
@@ -70,24 +147,97 @@ export default function LocalManagement() {
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(new Date());
 
+  useEffect(() => {
+    if (data?.data.contents) {
+      setUserList(data.data.contents);
+    }
+  }, [data, isSuccess, searchQuery]);
+
+  useEffect(() => {
+    // selectUserNo가 변경될 때 localListReqData를 업데이트하고 useLocalList 호출 트리거
+    setLocalListReqData((prev) => ({
+      ...prev,
+      userNo: selectUserNo, // selectUserNo 값을 userNo에 반영
+    }));
+  }, [selectUserNo]);
+
+  useEffect(() => {
+    if (localListData?.data.contents) {
+      setLocalList(localListData.data.contents);
+    }
+  }, [localListData, localListReqData]);
+
+  //현장선택하면 허가현장
+  useEffect(() => {
+    if (localPermissionData?.data.contents) {
+      setLocalPermission(localPermissionData.data.contents);
+    }
+  }, [localPermissionData, selectLocalNo]);
+
+  const handleSearch = () => {
+    setSearchQuery(searchInput); // 검색어 업데이트
+    //console.log("검색 실행:", searchQuery);
+    // 검색 로직 추가 (API 호출)
+  };
+
+  const handleLocalSearch = () => {
+    setLocalSearchQuery(localSearchInput); // 검색어 업데이트
+    setLocalListReqData((prev) => ({
+      ...prev,
+      sptNm: localSearchInput, // 선택한 값으로 isUse 업데이트
+    }));
+  };
+
+  const handleIsUseChange = (value) => {
+    setLocalListReqData((prev) => ({
+      ...prev,
+      progrsSeCd: value, // 선택한 값으로 isUse 업데이트
+    }));
+    console.log("선택값은? :", value)
+  };
+
   return (
     <>
       {/* 사용자 리스트 테이블 - 상단 테이블 */}
-      <Stack width={"100%"} height={"100%"} gap={1} marginBottom={1}>
-        <GrayBox gap={2} justifyContent="space-between">
-          <Stack direction="row" gap={1} width={"80%"}>
-            <SearchInput placeholder="사용자이름 검색" />
-            <SearchInput placeholder="현장 검색" />
+      <Stack width={"100%"} height={"100%"} gap={1}>
+        <GrayBox gap={1} width={"100%"} justifyContent={"space-between"}>
+          <Stack direction={"row"} gap={1}>
+            <SearchInput
+              placeholder="사용자이름 검색"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)} // 검색어 입력값 업데이트
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  handleSearch(); // 검색 실행 함수 호출
+                }
+              }}
+            />
+            <SearchInput
+              placeholder="현장 검색"
+              value={localSearchInput}
+              onChange={(e) => setLocalSearchInput(e.target.value)} // 검색어 입력값 업데이트
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  handleLocalSearch(); // 검색 실행 함수 호출
+                }
+              }}
+            />
             <Select
-              value={selectValue}
-              onChange={handleChange}
-              selectData={selectTestData}
+              value={s_1}
+              onChange={(event) => {
+                const selectedValue = event.target.value;
+                o_1(event); // 기존의 handleChange 호출
+                handleIsUseChange(selectedValue); // isUse 값 업데이트
+              }}
+              selectData={sd_1}
               sx={{ width: "204px" }}
               placeholder="종료 구분 선택"
+              defaultValue={""}
             />
             <Box width={"200px"}>
               <Calendar selectedDate={endDate} setSelectedDate={setEndDate} />
             </Box>
+            <Typography>~</Typography>
             <Box width={"200px"}>
               <Calendar
                 selectedDate={startDate}
@@ -95,169 +245,147 @@ export default function LocalManagement() {
               />
             </Box>
           </Stack>
-          <Stack direction="row" gap={1}>
-            <BasicButton
-              onClick={() => {
-                openPopup({
-                  url: localRegistration.url,
-                  windowName: localRegistration.windowName,
-                  windowFeatures: localRegistration.windowFeatures,
-                });
-              }}
-            >
-              추가
-            </BasicButton>
+          <Stack>
+            <BasicButton>추가</BasicButton>
           </Stack>
         </GrayBox>
-        <Stack width={"100%"} spacing={1} height={"100%"}>
-          <Stack direction={"row"} height={"50%"}>
-            {/* 사용자 정보 리스트 */}
-            <Stack bgcolor={"white"} marginLeft={1} width={"30%"}>
-              <TableBox>
-                <TableBox.Inner>
-                  <BasicTable data={tableTestData}>
-                    <BasicTable.Th>사용자ID</BasicTable.Th>
-                    <BasicTable.Th>사용자이름</BasicTable.Th>
-                    <BasicTable.Tbody>
-                      {tableTestData.map((item, index) => {
-                        return (
-                          <BasicTable.Tr
-                            key={index}
-                            isClicked={userSelectedRow.has(item.id)}
-                            onClick={() => toggleUserRowSelection(item.id)}
-                          >
-                            <BasicTable.Td>{item.phone}</BasicTable.Td>
-                            <BasicTable.Td>{item.name}</BasicTable.Td>
-                          </BasicTable.Tr>
-                        );
-                      })}
-                    </BasicTable.Tbody>
-                  </BasicTable>
-                </TableBox.Inner>
-              </TableBox>
+        <Stack width={"100%"} height={"95%"} gap={1}>
+          <TableBox gap={1} height={"50%"}>
+            <Stack width={"35%"} height={"100%"}>
+              <TableBox.Inner>
+                <BasicTable data={userListTableData}>
+                  <BasicTable.Th>사용자ID</BasicTable.Th>
+                  <BasicTable.Th>사용자이름</BasicTable.Th>
+                  <BasicTable.Tbody>
+                    {userListTableData.map((item, index) => {
+                      return (
+                        <BasicTable.Tr
+                          key={index}
+                          isClicked={selectUserNo === item.userNo}
+                          onClick={() => {
+                            if (selectUserNo === item.userNo) {
+                              setSelectUserNo("");
+                            } else {
+                              setSelectUserNo(item.userNo);
+                            }
+                          }}
+                        >
+                          <BasicTable.Td>{item.loginId}</BasicTable.Td>
+                          <BasicTable.Td>{item.userNm}</BasicTable.Td>
+                        </BasicTable.Tr>
+                      );
+                    })}
+                  </BasicTable.Tbody>
+                </BasicTable>
+              </TableBox.Inner>
             </Stack>
-            <Stack bgcolor={"white"} marginLeft={1} width={"70%"}>
-              <TableBox>
-                <TableBox.Inner>
-                  <BasicTable data={tableTestData}>
-                    <BasicTable.Th>현장번호</BasicTable.Th>
-                    <BasicTable.Th>현장이름</BasicTable.Th>
-                    <BasicTable.Th>사용기간</BasicTable.Th>
-                    <BasicTable.Th>구분</BasicTable.Th>
-                    <BasicTable.Th>수정</BasicTable.Th>
-                    <BasicTable.Tbody>
-                      {tableTestData.map((item, index) => {
-                        return (
-                          <BasicTable.Tr
-                            key={index}
-                            isClicked={localSelectedRow.has(item.id)}
-                            onClick={() => toggleLocalRowSelection(item.id)}
-                          >
-                            <BasicTable.Td>{item.phone}</BasicTable.Td>
-                            <BasicTable.Td>{item.name}</BasicTable.Td>
-                            <BasicTable.Td>{item.hireDate}</BasicTable.Td>
-                            <BasicTable.Td>{item.age}</BasicTable.Td>
-                            <BasicTable.Td>
-                              <BasicButton
-                                onClick={() => {
-                                  openPopup({
-                                    url: localRegistration.url,
-                                    windowName: localRegistration.windowName,
-                                    windowFeatures:
-                                      localRegistration.windowFeatures,
-                                  });
-                                }}
-                              >
-                                수정
-                              </BasicButton>
-                            </BasicTable.Td>
-                          </BasicTable.Tr>
-                        );
-                      })}
-                    </BasicTable.Tbody>
-                  </BasicTable>
-                </TableBox.Inner>
-              </TableBox>
+            <Stack width={"65%"} height={"100%"}>
+              <TableBox.Inner>
+                <BasicTable data={localListTableData}>
+                  <BasicTable.Th>현장번호</BasicTable.Th>
+                  <BasicTable.Th>현장이름</BasicTable.Th>
+                  <BasicTable.Th>사용기간</BasicTable.Th>
+                  <BasicTable.Th>구분</BasicTable.Th>
+                  <BasicTable.Th>수정</BasicTable.Th>
+                  <BasicTable.Tbody>
+                    {localListTableData.map((item, index) => {
+                      return (
+                        <BasicTable.Tr
+                          key={index}
+                          isClicked={selectLocalNo === item.sptNo}
+                          onClick={() => {
+                            if (selectLocalNo === item.sptNo) {
+                              setSelectLocalNo("");
+                            } else {
+                              setSelectLocalNo(item.sptNo);
+                            }
+                          }}
+                        >
+                          <BasicTable.Td>{item.sptNm}</BasicTable.Td>
+                          <BasicTable.Td>{item.sptNo}</BasicTable.Td>
+                          <BasicTable.Td>{item.cntrctBgnde} ~ {item.cntrctEndde}</BasicTable.Td>
+                          <BasicTable.Td>{item.progrsSeCd}</BasicTable.Td>
+                          <BasicTable.Td>
+                            <BasicButton
+                              onClick={() => {
+                                openPopup({
+                                  url: localRegistration.url,
+                                  windowName: localRegistration.windowName,
+                                  windowFeatures:
+                                    localRegistration.windowFeatures,
+                                });
+                              }}
+                            >
+                              수정
+                            </BasicButton>
+                          </BasicTable.Td>
+                        </BasicTable.Tr>
+                      );
+                    })}
+                  </BasicTable.Tbody>
+                </BasicTable>
+              </TableBox.Inner>
             </Stack>
-          </Stack>
-
-          <Stack
-            gap={1}
-            width={"100%"}
-            bgcolor={"white"}
-            direction="row"
-            height={"45%"} // 화면 크기에 맞추기
-            overflow="hidden"
-          >
-            {/* 사용자 허가 솔루션 테이블 */}
-            <Stack
-              width={"70%"}
-              height="100%"
-              style={{ display: "flex", flexDirection: "column" }}
-            >
-              <GrayBox style={{ flexShrink: 0, padding: "8px 16px" }}>
-                <Typography fontWeight={"bold"}>사용자 허가 솔루션</Typography>
+          </TableBox>
+          <TableBox width={"100%"} height={"50%"} gap={1}>
+            <Stack gap={1} width={"64%"} height={"100%"}>
+              <GrayBox>
+                <Typography>현장 허가 솔루션</Typography>
               </GrayBox>
-              <div style={{ flex: 1, overflow: "auto" }}>
-                <TableBox>
-                  <TableBox.Inner>
-                    <CheckboxTable
-                      data={tableTestData}
-                      selectedRows={localUseSelectedRows}
-                      toggleRowsSelection={toggleLocalUseRowsSelection}
-                    >
-                      <CheckboxTable.Thead>
-                        <CheckboxTable.Tr>
-                          <CheckboxTable.CheckboxTh />
-                          <CheckboxTable.Th>ID</CheckboxTable.Th>
-                          <CheckboxTable.Th>솔루션이름</CheckboxTable.Th>
-                          <CheckboxTable.Th>구분</CheckboxTable.Th>
-                          <CheckboxTable.Th colSpan={3}>
-                            라이선스
-                          </CheckboxTable.Th>
-                        </CheckboxTable.Tr>
-                        <CheckboxTable.Tr>
-                          <CheckboxTable.Th> </CheckboxTable.Th>
-                          <CheckboxTable.Th> </CheckboxTable.Th>
-                          <CheckboxTable.Th> </CheckboxTable.Th>
-                          <CheckboxTable.Th> </CheckboxTable.Th>
-                          <CheckboxTable.Th>전체</CheckboxTable.Th>
-                          <CheckboxTable.Th>사용</CheckboxTable.Th>
-                          <CheckboxTable.Th>잔여</CheckboxTable.Th>
-                        </CheckboxTable.Tr>
-                      </CheckboxTable.Thead>
-                      <CheckboxTable.Tbody>
-                        {tableTestData.map((item) => (
-                          <CheckboxTable.Tr key={item.id} id={item.id}>
-                            <CheckboxTable.CheckboxTd item={item} />
-                            <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.address}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.age}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.age}</CheckboxTable.Td>
-                          </CheckboxTable.Tr>
-                        ))}
-                      </CheckboxTable.Tbody>
-                    </CheckboxTable>
-                  </TableBox.Inner>
-                </TableBox>
-              </div>
-              <GrayBox style={{ flexShrink: 0, padding: "8px 16px" }}>
-                <BasicButton sx={{ marginLeft: "auto" }}>새로고침</BasicButton>
+              <TableBox.Inner>
+                <CheckboxTable
+                  data={localPermissionTableData}
+                  selectedRows={localUseSelectedRows}
+                  toggleRowsSelection={toggleLocalUseRowsSelection}
+                >
+                  <CheckboxTable.Thead>
+                    <CheckboxTable.Tr>
+                      <CheckboxTable.CheckboxTh />
+                      <CheckboxTable.Th>ID</CheckboxTable.Th>
+                      <CheckboxTable.Th>솔루션이름</CheckboxTable.Th>
+                      <CheckboxTable.Th>구분</CheckboxTable.Th>
+                      <CheckboxTable.Th colSpan={3}>
+                        라이선스
+                      </CheckboxTable.Th>
+                    </CheckboxTable.Tr>
+                    <CheckboxTable.Tr>
+                      <CheckboxTable.Th> </CheckboxTable.Th>
+                      <CheckboxTable.Th> </CheckboxTable.Th>
+                      <CheckboxTable.Th> </CheckboxTable.Th>
+                      <CheckboxTable.Th> </CheckboxTable.Th>
+                      <CheckboxTable.Th>전체</CheckboxTable.Th>
+                      <CheckboxTable.Th>사용</CheckboxTable.Th>
+                      <CheckboxTable.Th>잔여</CheckboxTable.Th>
+                    </CheckboxTable.Tr>
+                  </CheckboxTable.Thead>
+                  <CheckboxTable.Tbody>
+                    {localPermissionTableData.map((item) => (
+                      <CheckboxTable.Tr key={item.slutnId} id={item.slutnId}>
+                        <CheckboxTable.CheckboxTd item={item} />
+                        <CheckboxTable.Td>{item.slutnId}</CheckboxTable.Td>
+                        <CheckboxTable.Td>{item.slutnNm}</CheckboxTable.Td>
+                        <CheckboxTable.Td>{item.lisneSeNm}</CheckboxTable.Td>
+                        <CheckboxTable.Td>{item.userlisneCnt}</CheckboxTable.Td>
+                        <CheckboxTable.Td>{item.sptlisneCnt}</CheckboxTable.Td>
+                        <CheckboxTable.Td>{item.chrgcnt}</CheckboxTable.Td>
+                      </CheckboxTable.Tr>
+                    ))}
+                  </CheckboxTable.Tbody>
+                </CheckboxTable>
+              </TableBox.Inner>
+              <GrayBox>
+                <BasicButton>새로고침</BasicButton>
               </GrayBox>
             </Stack>
-            <Stack
-              width={"3%"}
-              bgcolor={"white"}
-              justifyContent={"space-between"}
-              justifyItems={"center"}
-            >
+            <Stack width={"2%"} bgcolor={"white"} justifyContent={"space-between"}>
               <BasicButton
                 sx={{
                   backgroundColor: "primary.A100",
-                  height: "200px",
-                  width: "5px",
+                  height: "150px",
+                  width: "100%",
+                  padding: "0",
+                  margin: "0",
+                  minWidth: "unset", // 기본 minWidth 해제
                 }}
               >
                 <BiChevronLeft size={"24px"} />
@@ -265,60 +393,52 @@ export default function LocalManagement() {
               <BasicButton
                 sx={{
                   backgroundColor: "primary.A100",
-                  height: "200px",
-                  width: "5px",
+                  height: "150px",
+                  width: "100%",
+                  padding: "0",
+                  margin: "0",
+                  minWidth: "unset", // 기본 minWidth 해제
                 }}
               >
                 <BiChevronLeft size={"24px"} />
               </BasicButton>
             </Stack>
-            {/* 사용자 미허가 솔루션 테이블 */}
-            <Stack
-              width={"30%"}
-              height="100%"
-              style={{ display: "flex", flexDirection: "column" }}
-            >
-              <GrayBox style={{ flexShrink: 0, padding: "8px 16px" }}>
-                <Typography fontWeight={"bold"}>
-                  사용자 미허가 솔루션
-                </Typography>
+            <Stack width={"34%"} height={"100%"} gap={1}>
+              <GrayBox>
+                <Typography>현장 미허가 솔루션</Typography>
               </GrayBox>
-              <div style={{ flex: 1, overflow: "auto" }}>
-                <TableBox>
-                  <TableBox.Inner>
-                    <CheckboxTable
-                      data={tableTestData}
-                      selectedRows={localUnuseSelectedRows}
-                      toggleRowsSelection={toggleLocalUnuseRowsSelection}
-                    >
-                      <CheckboxTable.Thead>
-                        <CheckboxTable.Tr>
-                          <CheckboxTable.CheckboxTh />
-                          <CheckboxTable.Th>솔루션ID</CheckboxTable.Th>
-                          <CheckboxTable.Th>솔루션이름</CheckboxTable.Th>
-                          <CheckboxTable.Th>구분</CheckboxTable.Th>
-                        </CheckboxTable.Tr>
-                      </CheckboxTable.Thead>
+              <TableBox.Inner>
+                <CheckboxTable
+                  data={tableTestData}
+                  selectedRows={localUnuseSelectedRows}
+                  toggleRowsSelection={toggleLocalUnuseRowsSelection}
+                >
+                  <CheckboxTable.Thead>
+                    <CheckboxTable.Tr>
+                      <CheckboxTable.CheckboxTh />
+                      <CheckboxTable.Th>솔루션ID</CheckboxTable.Th>
+                      <CheckboxTable.Th>솔루션이름</CheckboxTable.Th>
+                      <CheckboxTable.Th>구분</CheckboxTable.Th>
+                    </CheckboxTable.Tr>
+                  </CheckboxTable.Thead>
 
-                      <CheckboxTable.Tbody>
-                        {tableTestData.map((item) => (
-                          <CheckboxTable.Tr key={item.id} id={item.id}>
-                            <CheckboxTable.CheckboxTd item={item} />
-                            <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
-                          </CheckboxTable.Tr>
-                        ))}
-                      </CheckboxTable.Tbody>
-                    </CheckboxTable>
-                  </TableBox.Inner>
-                </TableBox>
-              </div>
-              <GrayBox style={{ flexShrink: 0, padding: "8px 16px" }}>
-                <BasicButton sx={{ marginLeft: "auto" }}>새로고침</BasicButton>
+                  <CheckboxTable.Tbody>
+                    {tableTestData.map((item) => (
+                      <CheckboxTable.Tr key={item.id} id={item.id}>
+                        <CheckboxTable.CheckboxTd item={item} />
+                        <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
+                        <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
+                        <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
+                      </CheckboxTable.Tr>
+                    ))}
+                  </CheckboxTable.Tbody>
+                </CheckboxTable>
+              </TableBox.Inner>
+              <GrayBox>
+                <BasicButton>새로고침</BasicButton>
               </GrayBox>
             </Stack>
-          </Stack>
+          </TableBox>
         </Stack>
       </Stack>
     </>
