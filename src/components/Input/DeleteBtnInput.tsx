@@ -8,10 +8,11 @@ import {
 interface InputProps extends OutlinedInputProps {
   placeholder?: string;
   children?: ReactNode;
+  btnfn?: () => void;
 }
 
 const DeleteBtnInput = forwardRef<HTMLInputElement, InputProps>(
-  ({ placeholder = "검색", children, ...rest }, ref) => {
+  ({ placeholder = "검색", btnfn, children, ...rest }, ref) => {
     const handleClear = () => {
       if (ref && typeof ref !== "string") {
         const input = (ref as React.RefObject<HTMLInputElement>).current; // 전달받은 ref 사용
@@ -31,7 +32,7 @@ const DeleteBtnInput = forwardRef<HTMLInputElement, InputProps>(
           endAdornment={
             <InputAdornment position="end">
               <button
-                onClick={handleClear}
+                onClick={btnfn ? btnfn : handleClear}
                 style={{
                   border: "none",
                   background: "transparent",
