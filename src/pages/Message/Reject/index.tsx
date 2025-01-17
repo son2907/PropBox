@@ -17,6 +17,8 @@ import PathConstants from "../../../routers/path";
 import useModal from "../../../hooks/useModal";
 // import BasicAlert from "../../../components/Alert/BasicAlert";
 import CustomAlert from "../../../components/Alert/CustomAlert";
+import { useRejectList } from "../../../api/messageReject";
+import { useTableSelect } from "../../../hooks/useTableSelect";
 
 // const AlertComponent1 = ({
 //   onClose,
@@ -69,9 +71,11 @@ const AlertComponent2 = ({
 };
 
 export default function RejectMessage() {
+  const { countValues, selectValue, handleChange } = useTableSelect();
   const { selectedRows: ts_1, toggleRowsSelection: tt_1 } =
     useMultiRowSelection();
   const { currentPage, onChangePage } = usePagination();
+  console.log("currentPage::", currentPage);
 
   const popupInfo = {
     url: PathConstants.Message.RegistrationExel,
@@ -88,6 +92,8 @@ export default function RejectMessage() {
       onSubmit: () => console.log("확인"),
     });
   };
+
+  // const {data:rejectList} = useRejectList();
 
   return (
     <Stack width={"100%"} height={"100%"} gap={2}>
@@ -132,7 +138,12 @@ export default function RejectMessage() {
           </TableBox.Inner>
           <CenteredBox justifyContent={"space-between"} padding={1}>
             <Pagination count={25} page={currentPage} onChange={onChangePage} />
-            <TableSelect total={100} />
+            <TableSelect
+              total={100}
+              countValues={countValues}
+              selectValue={selectValue}
+              handleChange={handleChange}
+            />
           </CenteredBox>
         </Stack>
         <Stack width={"700px"} height={"300px"} marginRight={1}>

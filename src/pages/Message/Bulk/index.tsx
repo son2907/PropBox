@@ -39,6 +39,7 @@ import { RiDeleteBinLine } from "react-icons/ri";
 import { MdInfoOutline } from "react-icons/md";
 import PathConstants from "../../../routers/path";
 import { openPopup } from "../../../utils/openPopup";
+import { useTableSelect } from "../../../hooks/useTableSelect";
 
 export default function BulkMessage() {
   // BasicTable에 연결할 한 행만 선택 가능하게 하는거(BasicTable 수정을 해야겐네요..)
@@ -74,6 +75,8 @@ export default function BulkMessage() {
     url: PathConstants.Message.Preview,
     windowName: "전송대상 미리보기",
   };
+
+  const { countValues, selectValue, handleChange } = useTableSelect();
 
   return (
     <Stack width={"100%"} height={"100%"} gap={1}>
@@ -333,7 +336,12 @@ export default function BulkMessage() {
             justifyContent={"space-between"}
           >
             <Pagination count={25} page={currentPage} onChange={onChangePage} />
-            <TableSelect total={100} />
+            <TableSelect
+              total={100}
+              countValues={countValues}
+              selectValue={selectValue}
+              handleChange={handleChange}
+            />
           </CenteredBox>
         </Stack>
       </TableBox>

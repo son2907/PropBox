@@ -14,6 +14,7 @@ import TableSelect from "../../../components/Select/TableSelect";
 import CenteredBox from "../../../components/Box/CenteredBox";
 import { openPopup } from "../../../utils/openPopup";
 import PathConstants from "../../../routers/path";
+import { useTableSelect } from "../../../hooks/useTableSelect";
 
 export default function ConsultationData() {
   const {
@@ -30,6 +31,8 @@ export default function ConsultationData() {
     windowName: "상담등록",
     windowFeatures: "width=1200,height=500,scrollbars=yes,resizable=yes",
   };
+
+  const { countValues, selectValue, handleChange } = useTableSelect();
 
   return (
     <Stack width={"100%"} height={"100%"} gap={1}>
@@ -87,7 +90,12 @@ export default function ConsultationData() {
       </TableBox>
       <CenteredBox padding={2} justifyContent={"space-between"}>
         <Pagination count={25} page={currentPage} onChange={onChangePage} />
-        <TableSelect total={100} />
+        <TableSelect
+          total={100}
+          countValues={countValues}
+          selectValue={selectValue}
+          handleChange={handleChange}
+        />
       </CenteredBox>
     </Stack>
   );

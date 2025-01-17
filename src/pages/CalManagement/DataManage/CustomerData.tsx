@@ -12,6 +12,7 @@ import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
 import { usePagination } from "../../../hooks/usePagination";
 import { openPopup } from "../../../utils/openPopup";
 import PathConstants from "../../../routers/path";
+import { useTableSelect } from "../../../hooks/useTableSelect";
 
 export default function CustomerData() {
   const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
@@ -22,6 +23,8 @@ export default function CustomerData() {
     windowName: "상담생성",
     windowFeatures: "width=1066,height=1000,scrollbars=yes,resizable=yes",
   };
+
+  const { countValues, selectValue, handleChange } = useTableSelect();
 
   return (
     <Stack width={"100%"} height={"100%"} gap={1}>
@@ -71,7 +74,12 @@ export default function CustomerData() {
       </TableBox>
       <CenteredBox padding={2} justifyContent={"space-between"}>
         <Pagination count={25} page={currentPage} onChange={onChangePage} />
-        <TableSelect total={100} />
+        <TableSelect
+          total={100}
+          countValues={countValues}
+          selectValue={selectValue}
+          handleChange={handleChange}
+        />
       </CenteredBox>
     </Stack>
   );
