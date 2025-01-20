@@ -44,10 +44,12 @@ const KEY = {
 };
 
 export const useUserPermitSolution = (requsetData: string) => {
+    console.log("데이터 넘어오는지 확인 : ", requsetData);
     return useQuery({
         queryKey: KEY.getUserPermitSolution(requsetData),
         queryFn: async () => {
             const result = await API.getUserPermitSolution(requsetData);
+            console.log("결과 : ", result)
             return result;
         }
     })
