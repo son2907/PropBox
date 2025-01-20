@@ -162,24 +162,29 @@ export default function LocalManagement() {
   }, [data, isSuccess, searchQuery]);
 
   useEffect(() => {
-    // selectUserNo가 변경될 때 localListReqData를 업데이트하고 useLocalList 호출 트리거
-    setLocalListReqData((prev) => ({
-      ...prev,
-      userNo: selectUserNo, // selectUserNo 값을 userNo에 반영
-    }));
+    if (selectUserNo !== "") {
+      // selectUserNo가 변경될 때 localListReqData를 업데이트하고 useLocalList 호출 트리거
+      setLocalListReqData((prev) => ({
+        ...prev,
+        userNo: selectUserNo, // selectUserNo 값을 userNo에 반영
+      }));
+    } else return;
   }, [selectUserNo]);
 
   useEffect(() => {
-    if (localListData?.data.contents) {
-      setLocalList(localListData.data.contents);
+    if(selectUserNo !== "") {
+      if (localListData?.data.contents) {
+        setLocalList(localListData.data.contents);
+      }
     }
+    
   }, [localListData, localListReqData]);
 
   //현장 미허가
   useEffect(() => {
-    if (selectUserNo) {
-      console.log("여기오나?");
-      console.log("값은? : ",localNonPermissionData?.data.contents);
+    if (selectUserNo !== "") {
+      //console.log("여기오나?");
+      //console.log("값은? : ", localNonPermissionData?.data.contents);
       if (localNonPermissionData?.data.contents) {
         setLocalNonPermission(localNonPermissionData.data.contents);
       }
@@ -189,12 +194,14 @@ export default function LocalManagement() {
 
   //현장선택하면 허가현장
   useEffect(() => {
-    if (localPermissionData?.data.contents) {
-      setLocalPermission(localPermissionData.data.contents);
+    if (selectUserNo !== "") {
+      if (localPermissionData?.data.contents) {
+        setLocalPermission(localPermissionData.data.contents);
+      }
     }
   }, [localPermissionData, selectLocalNo]);
 
-  
+
   const handleSearch = () => {
     setSearchQuery(searchInput); // 검색어 업데이트
     //console.log("검색 실행:", searchQuery);
@@ -384,9 +391,9 @@ export default function LocalManagement() {
                     {localPermissionTableData.map((item) => (
                       <CheckboxTable.Tr key={item.slutnId} id={item.slutnId}>
                         <CheckboxTable.CheckboxTd
-                              item={item}
-                              keyName="id"
-                            />
+                          item={item}
+                          keyName="id"
+                        />
                         <CheckboxTable.Td>{item.slutnId}</CheckboxTable.Td>
                         <CheckboxTable.Td>{item.slutnNm}</CheckboxTable.Td>
                         <CheckboxTable.Td>{item.lisneSeNm}</CheckboxTable.Td>
@@ -451,9 +458,9 @@ export default function LocalManagement() {
                     {localNonPermissionTableData.map((item) => (
                       <CheckboxTable.Tr key={item.slutnId} id={item.slutnId}>
                         <CheckboxTable.CheckboxTd
-                              item={item}
-                              keyName="id"
-                            />
+                          item={item}
+                          keyName="id"
+                        />
                         <CheckboxTable.Td>{item.slutnId}</CheckboxTable.Td>
                         <CheckboxTable.Td>{item.slutnNm}</CheckboxTable.Td>
                         <CheckboxTable.Td>{item.lisneSeNm}</CheckboxTable.Td>

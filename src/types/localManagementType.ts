@@ -1,5 +1,6 @@
 import { ApiResponseType } from "./apiResponse";
 
+//현장리스트
 export type LocalListType = {
     sptNo: string,
     userNo: string,
@@ -9,7 +10,6 @@ export type LocalListType = {
     cntrctEndde: string,
     useYn: string
 };
-
 export interface LocalListResponseType extends ApiResponseType {
     code: number;
     result: string;
@@ -22,6 +22,7 @@ export interface LocalListResponseType extends ApiResponseType {
     refreshToken: null;
 };
 
+//현장 허가솔루션
 export type LocalPermissionListType = {
     id: string
     sptNo: string,
@@ -34,18 +35,17 @@ export type LocalPermissionListType = {
     chrgcnt: string,
     userId: string
 };
-
 export interface LocalPermissionListResponseType extends ApiResponseType {
     contents: LocalPermissionListType[];
 };
 
+//현장 미허가 솔루션
 export type LocalNonPermissionType = {
     slutnId: string,
     slutnNm: string,
     lisneSeCd: string,
     lisneSeNm: string,
 };
-
 export interface LocalNonPermissionResponseType extends ApiResponseType {
     code: number;
     result: string;
@@ -56,7 +56,92 @@ export interface LocalNonPermissionResponseType extends ApiResponseType {
     errorCode: null;
     accessToken: null;
     refreshToken: null;
-}
+};
+
+//현장 구성원 리스트
+export type localMemberListType = {
+    sptNo: string,
+    userNo: string,
+    userNm: string,
+    constntUserNo: string,
+    userConstntSeCd: string,
+    rspofcCd: string,
+    rspofcNm: string,
+    rmk: string
+};
+export interface LocalMemberResponseType extends ApiResponseType {
+    code: number;
+    result: string;
+    message: string;
+    totalCnt: number | null;
+    contents: localMemberListType[];
+    params: null;
+    errorCode: null;
+    accessToken: null;
+    refreshToken: null;
+};
+
+//구성원 직책
+export type MemberPositionType = {
+    cd: string,
+    upCd: string,
+    cdNm: string,
+    othrSysCd: string,
+    chartrRef1: null,
+    chartrRef2: null,
+    chartrRef3: null,
+    chartrRef4: null,
+    chartrRef5: null,
+    numRef1: null,
+    numRef2: null,
+    numRef3: null,
+    numRef4: null,
+    numRef5: null,
+    useYn: string,
+    delYn: string,
+    lnupOrd: string,
+    updPsblYn: string,
+    rmk: string,
+};
+export interface MemberPositionResponseType extends ApiResponseType {
+    code: number;
+    result: string;
+    message: string;
+    totalCnt: number | null;
+    contents: MemberPositionType[];
+    params: null;
+    errorCode: null;
+    accessToken: null;
+    refreshToken: null;
+};
+
+//구성원 리스트
+export type MemeberList = {
+    userNo: string,
+    userNm: string,
+    attlistMbtlNo: string,
+    loginIdPrefix: string,
+    loginId: string,
+    cmpnm: string,
+    bizrno: string,
+    rprsntvNm: string,
+    adres1: string,
+    adres2: string,
+    reprsntTelno: string,
+    useYn: string,
+};
+export interface MemberListResponseType extends ApiResponseType {
+    code: number;
+    result: string;
+    message: string;
+    totalCnt: number | null;
+    contents: MemeberList[];
+    params: null;
+    errorCode: null;
+    accessToken: null;
+    refreshToken: null;
+};
+
 
 
 // export type SptList = {
