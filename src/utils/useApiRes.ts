@@ -5,7 +5,7 @@ export const useApiRes = () => {
   const { openModal, closeModal } = useModal();
 
   return (res) => {
-    if (res.data.result === "FAIL") {
+    if (res.data.result === "FAIL" || res.data.result === "ALERT") {
       openModal(FailModal, {
         modalId: "apiFail",
         stack: false,

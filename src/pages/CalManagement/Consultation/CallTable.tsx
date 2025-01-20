@@ -66,7 +66,7 @@ export default function CallTable({ tabType, tabChange }: TabType) {
   }
 
   const { data: cnsltData } = useTelCnsltList(callYn, trsmYn);
-  const { setTelInfo, clear } = useCnsltStore();
+  const { setCnsltInfo, clear } = useCnsltStore();
 
   useEffect(() => {
     clear();
@@ -85,7 +85,12 @@ export default function CallTable({ tabType, tabChange }: TabType) {
           values: selectedValues,
         });
         if (data.length > 0) {
-          setTelInfo(data[0][cstmrKey], data[0][cnsltKey], callYn, trsmYn);
+          setCnsltInfo({
+            cstmrNo: data[0][cstmrKey],
+            cnsltNo: data[0][cnsltKey],
+            callYn: callYn,
+            trsmYn: trsmYn,
+          });
         }
       };
 

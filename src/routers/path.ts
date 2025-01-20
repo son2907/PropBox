@@ -10,6 +10,7 @@ const PathConstants = {
     ConsultationStatus: "/call/consultation/consultation-status",
     CallLog: "/call/consultation/call-log",
     SmsSending: "/call/consultation/sms-sending",
+    RegisterSenderNumber: "/call/consultation/register-sender-number",
     Analysis: "/call/analysis",
     UploadConsultation: "/call/analysis/upload-consultation",
     CreateConsultation: "/call/analysis/create-consultation",
@@ -57,23 +58,23 @@ const PathConstants = {
   Err: {
     Err404: "/err-not-page-404",
   },
-  Notice : {
-    NoticeList : "/notice/noticeList",
-    NoticeAdd : "/notice/noticeAdd",
-    NoticeDetail : "/notice/noticeDetail",
-    NoticeModify : "/notice/noticeModify",
+  Notice: {
+    NoticeList: "/notice/noticeList",
+    NoticeAdd: "/notice/noticeAdd",
+    NoticeDetail: "/notice/noticeDetail",
+    NoticeModify: "/notice/noticeModify",
   },
-  FAQ : {
-    FAQList : "/faq/faqList",
-    FAQAdd : "/faq/faqAdd",
-    FAQDetail : "/faq/faqDetail",
-    FAQModify : "/faq/faqModify",
+  FAQ: {
+    FAQList: "/faq/faqList",
+    FAQAdd: "/faq/faqAdd",
+    FAQDetail: "/faq/faqDetail",
+    FAQModify: "/faq/faqModify",
   },
-  MyPage:{
-    PasswordCheck : "/mypage/passwordCheck",
-    UserInfoPopup : "/mypage/userInfo",
-    AdminInfoPopup : "/mypage/adminInfo",
-  }
+  MyPage: {
+    PasswordCheck: "/mypage/passwordCheck",
+    UserInfoPopup: "/mypage/userInfo",
+    AdminInfoPopup: "/mypage/adminInfo",
+  },
 };
 
 export default PathConstants;

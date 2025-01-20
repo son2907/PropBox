@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 
 interface TableProps {
-  data: { id: string; [key: string]: any }[]; // Table data
+  data: { id: string; [key: string]: any }[] | undefined; // Table data
   children: ReactNode;
 }
 
@@ -128,7 +128,7 @@ const MultipleCheckboxTable: React.FC<TableProps> & {
 } = ({ data, children }) => {
   return (
     <>
-      {data.length === 0 ? (
+      {!data || data.length === 0 ? (
         <EmptyTable /> // data가 없을 경우 EmptyTable 렌더링
       ) : (
         <table className="table-auto w-full border-gray-300 border-collapse">

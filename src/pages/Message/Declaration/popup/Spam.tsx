@@ -67,7 +67,7 @@ export default function Spam() {
             >
               <CheckboxTable.Thead>
                 <CheckboxTable.Tr>
-                  <CheckboxTable.CheckboxTh />
+                  <CheckboxTable.CheckboxTh keyName="id" />
                   <CheckboxTable.Th>이름</CheckboxTable.Th>
                   <CheckboxTable.Th>휴대전화</CheckboxTable.Th>
                   <CheckboxTable.Th>집전화</CheckboxTable.Th>
@@ -76,7 +76,7 @@ export default function Spam() {
               <CheckboxTable.Tbody>
                 {tableTestData.map((item) => (
                   <CheckboxTable.Tr key={item.id} id={item.id}>
-                    <CheckboxTable.CheckboxTd item={item} />
+                    <CheckboxTable.CheckboxTd item={item} keyName="id" />
                     <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
                     <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
                     <CheckboxTable.Td>{item.name}</CheckboxTable.Td>

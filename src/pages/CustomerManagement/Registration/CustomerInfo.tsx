@@ -26,7 +26,6 @@ export default function CustomerInfo({ selectedAge }: CustomerInfoProps) {
   // usePagination에
   const { currentPage, onChangePage } = usePagination();
 
-
   return (
     <>
       <TabPanel value={value} index={0}>
@@ -35,7 +34,7 @@ export default function CustomerInfo({ selectedAge }: CustomerInfoProps) {
             <Box
               sx={{
                 width: "100%",
-                height: 'calc(100vh - 280px)',
+                height: "calc(100vh - 280px)",
                 overflow: "auto",
                 marginBottom: 1,
                 flexGrow: 1,
@@ -48,7 +47,7 @@ export default function CustomerInfo({ selectedAge }: CustomerInfoProps) {
               >
                 <CheckboxTable.Thead>
                   <CheckboxTable.Tr>
-                    <CheckboxTable.CheckboxTh />
+                    <CheckboxTable.CheckboxTh keyName="id" />
                     <CheckboxTable.Th>이름</CheckboxTable.Th>
                     <CheckboxTable.Th>휴대전화</CheckboxTable.Th>
                     <CheckboxTable.Th>일반전화</CheckboxTable.Th>
@@ -60,7 +59,7 @@ export default function CustomerInfo({ selectedAge }: CustomerInfoProps) {
                 <CheckboxTable.Tbody>
                   {tableTestData.map((item) => (
                     <CheckboxTable.Tr key={item.id} id={item.id}>
-                      <CheckboxTable.CheckboxTd item={item} />
+                      <CheckboxTable.CheckboxTd item={item} keyName="id" />
                       <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
                       <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
                       <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
@@ -72,7 +71,11 @@ export default function CustomerInfo({ selectedAge }: CustomerInfoProps) {
               </CheckboxTable>
             </Box>
             <GrayBox gap={1} justifyContent={"space-between"}>
-              <Pagination count={25} page={currentPage} onChange={onChangePage} />
+              <Pagination
+                count={25}
+                page={currentPage}
+                onChange={onChangePage}
+              />
               <TableSelect total={100} />
             </GrayBox>
           </TableBox.Inner>

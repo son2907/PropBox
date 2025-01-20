@@ -125,7 +125,10 @@ export default function NetworkSetup() {
           <Stack width={"80%"} height={"100%"} gap={1}>
             <TableBox width={"100%"} height={"50%"} gap={1}>
               <Stack width={"20%"} height={"100%"} gap={1}>
-                <SearchInput placeholder="회사이름 검색" sx={{ width: "200px", height: "40px" }}></SearchInput>
+                <SearchInput
+                  placeholder="회사이름 검색"
+                  sx={{ width: "200px", height: "40px" }}
+                ></SearchInput>
                 <TableBox.Inner>
                   <BasicTable data={tableTestData}>
                     <BasicTable.Th>회사이름</BasicTable.Th>
@@ -151,7 +154,13 @@ export default function NetworkSetup() {
               </Stack>
               <TableBox width={"80%"} height={"100%"} gap={1}>
                 <Stack width={"50%"} height={"100%"}>
-                  <GrayBox width={"100%"} height={"40px"} sx={{ direction: "row" }} gap={1} padding={1}>
+                  <GrayBox
+                    width={"100%"}
+                    height={"40px"}
+                    sx={{ direction: "row" }}
+                    gap={1}
+                    padding={1}
+                  >
                     <Box width={"200px"}>
                       <Calendar selectedDate={date} setSelectedDate={setDate} />
                     </Box>
@@ -177,7 +186,7 @@ export default function NetworkSetup() {
                       >
                         <CheckboxTable.Thead>
                           <CheckboxTable.Tr>
-                            <CheckboxTable.CheckboxTh />
+                            <CheckboxTable.CheckboxTh keyName="id" />
                             <CheckboxTable.Th>구분</CheckboxTable.Th>
                             <CheckboxTable.Th>전화번호</CheckboxTable.Th>
                             <CheckboxTable.Th>시작일</CheckboxTable.Th>
@@ -189,7 +198,10 @@ export default function NetworkSetup() {
                         <CheckboxTable.Tbody>
                           {tableTestData.map((item) => (
                             <CheckboxTable.Tr key={item.id} id={item.id}>
-                              <CheckboxTable.CheckboxTd item={item} />
+                              <CheckboxTable.CheckboxTd
+                                item={item}
+                                keyName="id"
+                              />
                               <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
                               <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
                               <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
@@ -207,7 +219,11 @@ export default function NetworkSetup() {
                     <SearchResult total={100} />
                   </Stack>
                 </Stack>
-                <Stack width={"2%"} bgcolor={"white"} justifyContent={"space-between"}>
+                <Stack
+                  width={"2%"}
+                  bgcolor={"white"}
+                  justifyContent={"space-between"}
+                >
                   <BasicButton
                     sx={{
                       backgroundColor: "primary.A100",
@@ -253,7 +269,7 @@ export default function NetworkSetup() {
                     >
                       <CheckboxTable.Thead>
                         <CheckboxTable.Tr>
-                          <CheckboxTable.CheckboxTh />
+                          <CheckboxTable.CheckboxTh keyName="id" />
                           <CheckboxTable.Th>구분</CheckboxTable.Th>
                           <CheckboxTable.Th>전화번호</CheckboxTable.Th>
                           <CheckboxTable.Th>할당여부</CheckboxTable.Th>
@@ -264,7 +280,10 @@ export default function NetworkSetup() {
                       <CheckboxTable.Tbody>
                         {tableTestData.map((item) => (
                           <CheckboxTable.Tr key={item.id} id={item.id}>
-                            <CheckboxTable.CheckboxTd item={item} />
+                            <CheckboxTable.CheckboxTd
+                              item={item}
+                              keyName="id"
+                            />
                             <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
                             <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
                             <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
@@ -280,7 +299,10 @@ export default function NetworkSetup() {
             </TableBox>
             <TableBox width={"100%"} height={"50%"} gap={1}>
               <Stack width={"20%"} height={"100%"} gap={1}>
-                <SearchInput placeholder="회사이름 검색" sx={{ width: "200px", height: "40px" }}></SearchInput>
+                <SearchInput
+                  placeholder="회사이름 검색"
+                  sx={{ width: "200px", height: "40px" }}
+                ></SearchInput>
                 <TableBox.Inner>
                   <BasicTable data={tableTestData}>
                     <BasicTable.Th>회사이름</BasicTable.Th>
@@ -306,7 +328,13 @@ export default function NetworkSetup() {
               </Stack>
               <TableBox width={"80%"} height={"100%"} gap={1}>
                 <Stack width={"50%"} height={"100%"}>
-                  <GrayBox width={"100%"} height={"40px"} sx={{ direction: "row" }} gap={1} padding={1}>
+                  <GrayBox
+                    width={"100%"}
+                    height={"40px"}
+                    sx={{ direction: "row" }}
+                    gap={1}
+                    padding={1}
+                  >
                     <Box width={"200px"}>
                       <Calendar selectedDate={date} setSelectedDate={setDate} />
                     </Box>
@@ -331,7 +359,7 @@ export default function NetworkSetup() {
                     >
                       <CheckboxTable.Thead>
                         <CheckboxTable.Tr>
-                          <CheckboxTable.CheckboxTh />
+                          <CheckboxTable.CheckboxTh keyName="id" />
                           <CheckboxTable.Th>구분</CheckboxTable.Th>
                           <CheckboxTable.Th>전화번호</CheckboxTable.Th>
                           <CheckboxTable.Th>할당여부</CheckboxTable.Th>
@@ -342,7 +370,10 @@ export default function NetworkSetup() {
                       <CheckboxTable.Tbody>
                         {tableTestData.map((item) => (
                           <CheckboxTable.Tr key={item.id} id={item.id}>
-                            <CheckboxTable.CheckboxTd item={item} />
+                            <CheckboxTable.CheckboxTd
+                              item={item}
+                              keyName="id"
+                            />
                             <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
                             <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
                             <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
@@ -353,7 +384,11 @@ export default function NetworkSetup() {
                     </CheckboxTable>
                   </TableBox.Inner>
                 </Stack>
-                <Stack width={"2%"} bgcolor={"white"} justifyContent={"space-between"}>
+                <Stack
+                  width={"2%"}
+                  bgcolor={"white"}
+                  justifyContent={"space-between"}
+                >
                   <BasicButton
                     sx={{
                       backgroundColor: "primary.A100",

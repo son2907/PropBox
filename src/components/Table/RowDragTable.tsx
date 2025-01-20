@@ -23,7 +23,7 @@ interface TableProps {
   checkbox?: boolean;
   selectedRows?: Set<string>;
   toggleRowsSelection?: (id: string) => void;
-  data: { [key: string]: any }[];
+  data: { [key: string]: any }[] | undefined;
   setData: React.Dispatch<React.SetStateAction<any[]>>;
   keyName: string;
   children: ReactNode;
@@ -223,7 +223,7 @@ const RowDragTable: React.FC<TableProps> & {
 
   return (
     <>
-      {data.length === 0 ? (
+      {!data || data.length === 0 ? (
         <EmptyTable />
       ) : (
         <TableWrapper>

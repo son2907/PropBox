@@ -9,6 +9,7 @@ import {
   AreaListItemListResponseType,
   DetailListResponseType,
   MemoRequestBody,
+  ReportListResponseType,
 } from "../types/callCnslt";
 
 const API = {
@@ -29,7 +30,7 @@ const API = {
     const date = getFormattedDate(); // 상담 일자는 반드시 금일
     // ======================================테스트 날짜======================================
     // const date = 20241223;
-    // const date = 20250120;
+    // const date = 20250116;
     const url = `/api/tel/cnslt?sptNo=${spt}&cnsltDt=${date}&callYn=${absnceYn}&trsmYn=${trsmYn}`;
     return await instance.get(url);
   },
@@ -112,6 +113,12 @@ const API = {
     if (cstmrNm) url += `&cstmrNm=${cstmrNm}`;
     return await instance.get(url);
   },
+  // 상담현황 팝업 조회
+  getReportList: async () => {
+    const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
+    const url = `/api/tel/cnslt/reportlist?sptNo=${spt}`;
+    return await instance.get<ReportListResponseType>(url);
+  },
 };
 
 const KEY = {
@@ -150,6 +157,7 @@ const KEY = {
     telno,
     cstmrNm,
   ],
+  getReportList: () => ["/api/tel/cnslt/reportlist"],
 };
 
 // 전화번호 또는 고객명으로 검색
@@ -170,12 +178,24 @@ export const useFindCustom = ({
   });
 };
 
+// 전화 상담의 상담 현황 팝업
+export const useReportList = () => {
+  return useQuery({
+    queryKey: KEY.getReportList(),
+    queryFn: async () => {
+      return await API.getReportList();
+    },
+    gcTime: 0,
+  });
+};
+
 export const useCnsltItemList = () => {
   return useQuery({
     queryKey: KEY.getCnsltItemList(),
     queryFn: async () => {
       return await API.getCnsltItemList();
     },
+    gcTime: 0,
   });
 };
 
@@ -189,6 +209,7 @@ export const useTelCnsltList = (
     queryFn: async () => {
       return await API.getTelCnsltList(absnceYn, trsmYn);
     },
+    gcTime: 0,
   });
 };
 
@@ -234,6 +255,7 @@ export const useCnsltItem = (
       return await API.getCnsltItem(cstmrNo, cnsltNo);
     },
     enabled: !!cstmrNo && !!cnsltNo,
+    gcTime: 0,
   });
 };
 
@@ -253,6 +275,7 @@ export const useItemDetList = ({
       return await API.getItemDetList({ itemNo, detailNm, useYn });
     },
     enabled: !!itemNo,
+    gcTime: 0,
   });
 };
 

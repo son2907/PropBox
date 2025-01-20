@@ -80,7 +80,7 @@ export default function DeclarationMessage() {
             >
               <CheckboxTable.Thead>
                 <CheckboxTable.Tr>
-                  <CheckboxTable.CheckboxTh />
+                  <CheckboxTable.CheckboxTh keyName="id" />
                   <CheckboxTable.Th>그룹</CheckboxTable.Th>
                   <CheckboxTable.Th>신고전화번호</CheckboxTable.Th>
                   <CheckboxTable.Th>휴대전화</CheckboxTable.Th>
@@ -90,7 +90,7 @@ export default function DeclarationMessage() {
               <CheckboxTable.Tbody>
                 {tableTestData.map((item) => (
                   <CheckboxTable.Tr key={item.id} id={item.id}>
-                    <CheckboxTable.CheckboxTd item={item} />
+                    <CheckboxTable.CheckboxTd item={item} keyName="id" />
                     <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
                     <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
                     <CheckboxTable.Td>{item.name}</CheckboxTable.Td>

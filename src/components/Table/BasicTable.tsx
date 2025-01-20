@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 
 interface TableProps {
-  data: { [key: string]: any }[]; // Table data
+  data: { [key: string]: any }[] | undefined; // Table data
   children: ReactNode;
 }
 

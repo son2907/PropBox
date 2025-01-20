@@ -3,7 +3,7 @@ import TableProvider from "./context/TableProvider";
 import useTableContext from "../../hooks/useTableContext";
 
 interface TableProps {
-  data: { id: string; [key: string]: any }[]; // Table data
+  data: { [key: string]: any }[] | undefined; // Table data
   selectedRows: Set<string>;
   toggleRowsSelection: (id: string) => void;
   children: ReactNode;
@@ -15,7 +15,8 @@ interface TableItemProps {
 }
 
 interface CheckboxTdProps {
-  item: { id: string }; // item 객체의 id 속성 타입
+  item: { [key: string]: any }; // item 객체의 id 속성 타입
+  keyName: string;
 }
 
 const Th: React.FC<TableItemProps> = ({ children, ...rest }) => {
@@ -29,7 +30,7 @@ const Th: React.FC<TableItemProps> = ({ children, ...rest }) => {
   );
 };
 
-const CheckboxTh = () => {
+const CheckboxTh = ({ keyName }: { keyName: string }) => {
   const { data, selectedRows, toggleRowsSelection } = useTableContext();
 
   // 전체 선택 상태 관리
@@ -38,11 +39,11 @@ const CheckboxTh = () => {
   // 전체 선택/해제 핸들러
   const handleSelectAllChange = () => {
     data.forEach((row: any) => {
-      const isSelected = selectedRows.has(row.id);
+      const isSelected = selectedRows.has(row[keyName]);
       if (allSelected && isSelected) {
-        toggleRowsSelection(row.id); // 이미 선택된 행 해제
+        toggleRowsSelection(row[keyName]); // 이미 선택된 행 해제
       } else if (!allSelected && !isSelected) {
-        toggleRowsSelection(row.id); // 선택되지 않은 행 선택
+        toggleRowsSelection(row[keyName]); // 선택되지 않은 행 선택
       }
     });
   };
@@ -109,15 +110,15 @@ const EmptyTable = () => {
   );
 };
 
-const CheckboxTd = ({ item }: CheckboxTdProps) => {
+const CheckboxTd = ({ item, keyName }: CheckboxTdProps) => {
   const { selectedRows, toggleRowsSelection } = useTableContext();
 
   return (
     <Td>
       <input
         type="checkbox"
-        checked={selectedRows.has(item.id)}
-        onChange={() => toggleRowsSelection(item.id)}
+        checked={selectedRows.has(item[keyName])}
+        onChange={() => toggleRowsSelection(item[keyName])}
       />
     </Td>
   );
