@@ -38,6 +38,7 @@ import { useApiRes } from "../../../utils/useApiRes";
 import useModal from "../../../hooks/useModal";
 import { FailModal } from "../../../components/layout/modal/FailModal";
 import { BasicCompletedModl } from "../../../components/layout/modal/BasicCompletedModl";
+import { testInfoGroupdata } from "../../../utils/testData";
 
 export default function InfoGroup({ tabType }: TabType) {
   // 로그인 아이디
@@ -242,11 +243,12 @@ export default function InfoGroup({ tabType }: TabType) {
         .map(({ itemNo, detailNo }) => ({ itemNo, detailNo }));
 
       const isWorUn = trsmYn == "W" || !data_1 ? true : false; // 대기 고객이거나 신규 고객
-
+      console.log("ISWORUN:::", isWorUn);
+      console.log("telStore::::", telStore);
       const body: CnsltInfoRequestType = {
         sptNo: spt,
-        cstmrNo: isWorUn ? "" : data_1.cstmrNo,
-        cnsltNo: !isToday(selectedDate) || isWorUn ? "" : data_1.cnsltNo,
+        cstmrNo: isWorUn ? "0" : data_1.cstmrNo,
+        cnsltNo: !isToday(selectedDate) || isWorUn ? "0" : data_1.cnsltNo,
         cnsltnt: isWorUn ? "" : data_1.cnsltnt,
         cnsltDt: getFormattedDate(selectedDate),
         telId: isWorUn ? (telStore.telId ?? "0") : data_1.telId,
@@ -265,12 +267,15 @@ export default function InfoGroup({ tabType }: TabType) {
         telCnsltCnList: telCnsltCnList,
         ...(trsmYn == "W" && { waitCstmrNo: cstmrNo }),
       };
+
+      console.log("보내는 정보:", body);
       postInfo(
         {
           body: body,
         },
         {
           onSuccess: (res) => {
+            console.log("onSuccess:", res);
             const result = checkApiFail(res);
             if (result.data.message === "SUCCESS") {
               console.log("저장 또는 수정 성공:", res);
@@ -513,7 +518,7 @@ export default function InfoGroup({ tabType }: TabType) {
             gap={1}
             overflow="auto"
           >
-            {!cunsltDetailList?.data?.contents?.itemList?.length ? (
+            {/* {!cunsltDetailList?.data?.contents?.itemList?.length ? (
               <Typography>
                 조회할 정보가 없습니다. 왼쪽 테이블에서 조회할 항목을
                 선택해주세요.
@@ -540,7 +545,28 @@ export default function InfoGroup({ tabType }: TabType) {
                   />
                 </Box>
               ))
-            )}
+            )} */}
+            {testInfoGroupdata.map((item: any, index: any) => (
+              <Box
+                key={index}
+                display="flex"
+                alignItems="center" // 수직 중앙 정렬
+                flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
+                onClick={() => {
+                  setDetailItem(item.itemNo);
+                }}
+                sx={{
+                  cursor: "pointer",
+                }}
+              >
+                <Typography width={150}>{item.itemNm}</Typography>
+                <BasicInput
+                  sx={{ minHeight: "24px" }}
+                  value={detailInfo[item.itemNo]?.detailNm ?? item.detailNm}
+                  readOnly
+                />
+              </Box>
+            ))}
           </GrayBox>
           <Box
             flexDirection={"column"}
@@ -560,21 +586,23 @@ export default function InfoGroup({ tabType }: TabType) {
                 </Box>
               </BasicTable.Th>
               <BasicTable.Tbody>
-                {itemDetList?.data?.contents.map((item: any, index: any) => {
-                  return (
-                    <BasicTable.Tr
-                      key={index}
-                      isClicked={
-                        detailInfo[item.itemNo]?.detailNo === item.detailNo
-                      }
-                      onClick={() => {
-                        selectDetItem(item);
-                      }}
-                    >
-                      <BasicTable.Td>{item.detailNm}</BasicTable.Td>
-                    </BasicTable.Tr>
-                  );
-                })}
+                {(itemDetList?.data?.contents || []).map(
+                  (item: any, index: any) => {
+                    return (
+                      <BasicTable.Tr
+                        key={index}
+                        isClicked={
+                          detailInfo[item.itemNo]?.detailNo === item.detailNo
+                        }
+                        onClick={() => {
+                          selectDetItem(item);
+                        }}
+                      >
+                        <BasicTable.Td>{item.detailNm}</BasicTable.Td>
+                      </BasicTable.Tr>
+                    );
+                  }
+                )}
               </BasicTable.Tbody>
             </BasicTable>
           </Box>
