@@ -109,6 +109,39 @@ export default function CallTable({ tabType, tabChange }: TabType) {
     }
   }, [selectedRow, cnsltData, callYn, trsmYn]);
 
+  // Tab change 시에도 useCnsltStore에 값 저장
+  useEffect(() => {
+    if (tabType === 0) {
+      // 전화받기 탭
+      const trsmYn = takeValue === 0 ? "Y" : "N"; // 통화콜 또는 부재콜
+      setCnsltInfo({
+        callYn: "N", // 전화받기
+        trsmYn,
+      });
+    } else {
+      // 전화걸기 탭
+      let trsmYn: string;
+      switch (callOptionValue) {
+        case 2:
+          trsmYn = "Y"; // 통화콜
+          break;
+        case 1:
+          trsmYn = "N"; // 부재
+          break;
+        case 0:
+          trsmYn = "W"; // 대기
+          break;
+        default:
+          trsmYn = "W"; // 대기
+          break;
+      }
+      setCnsltInfo({
+        callYn: "Y", // 전화걸기
+        trsmYn,
+      });
+    }
+  }, [tabType, takeValue, callOptionValue, setCnsltInfo]);
+
   return (
     <>
       <TabMenus value={tabType} handleChange={tabChange}>
