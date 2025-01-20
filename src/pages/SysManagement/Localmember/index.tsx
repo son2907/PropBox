@@ -51,7 +51,7 @@ export default function LocalmemberManagement() {
   const [localListReqData, setLocalListReqData] = useState({ sptNm: "", progrsSeCd: "", userNo: "", cntrctBgnde: "", cntrctEndde: "" });
   const { data: localListData, isSuccess: isLocalListData } = useLocalList(localListReqData);
   const [selectLocalNo, setSelectLocalNo] = useState("");
-  const [localList, setLocalList] = useState<LocalListType[]>([])
+  const [localList, setLocalList] = useState<LocalListType[]>([]);
 
   //현장 구성원 리스트
   const [localMemberReqData, setLocalMemberReqData] = useState({sptNo:"",userNm:"",rspofcNm:""});
