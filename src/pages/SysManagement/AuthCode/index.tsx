@@ -41,13 +41,11 @@ export default function AuthCode() {
     // 검색 로직 추가 (API 호출)
   };
 
-  useDidMountEffect(() => {
-    if(searchQuery){
-      setAuthCodeReqData((prev) => ({
-        ...prev,
-        cid : searchQuery
-      }))
-    }
+  useEffect(() => {
+    setAuthCodeReqData((prev) => ({
+      ...prev,
+      cid : searchQuery
+    }))
   },[searchQuery]);
   useEffect(() => {
     if(authCodeListData?.data.contents){
