@@ -26,7 +26,7 @@ import useModal from "../../../hooks/useModal";
 import { UserListType } from "../../../api/userList";
 import api from "../../../api";
 import { useLocalList, useNonPermissionLocalList, usePermissionLocalList } from "../../../api/localManagement";
-import { LocalListType, LocalPermissionListType } from "../../../types/localManagementType";
+import { LocalListType, LocalNonPermissionType, LocalPermissionListType } from "../../../types/localManagementType";
 
 export default function LocalManagement() {
 
@@ -45,8 +45,7 @@ export default function LocalManagement() {
   const [selectUserNo, setSelectUserNo] = useState("");
 
   //현장리스트
-  const [localListReqData, setLocalListReqData] = useState(
-    { sptNm: "", progrsSeCd: "", userNo: "", cntrctBgnde: "", cntrctEndde: "" });
+  const [localListReqData, setLocalListReqData] = useState({ sptNm: "", progrsSeCd: "", userNo: "", cntrctBgnde: "", cntrctEndde: "" });
   const { data: localListData, isSuccess: isLocalListData } = useLocalList(localListReqData);
   const [localList, setLocalList] = useState<LocalListType[]>([]);
   const [selectLocalNo, setSelectLocalNo] = useState("");
@@ -56,7 +55,8 @@ export default function LocalManagement() {
   const [localPermission, setLocalPermission] = useState<LocalPermissionListType[]>([]);
 
   //현장 미허가 솔루션
-  const {data : localNonPermissionData, isSuccess: isLocalNonPermissionData} = useNonPermissionLocalList();
+  const { data: localNonPermissionData, isSuccess: isLocalNonPermissionData } = useNonPermissionLocalList(selectUserNo);
+  const [localNonPermission, setLocalNonPermission] = useState<LocalNonPermissionType[]>([]);
 
   const userListTableData = userList.map((item) => ({
     userNo: item.userNo,
@@ -84,7 +84,7 @@ export default function LocalManagement() {
   }));
 
   const localPermissionTableData = localPermission.map((item) => ({
-    id : item.sptNo,
+    id: item.sptNo,
     sptNo: item.sptNo,
     slutnId: item.slutnId,
     slutnNm: item.slutnNm,
@@ -95,6 +95,14 @@ export default function LocalManagement() {
     chrgcnt: item.chrgcnt,
     userId: item.userId
   }));
+
+  const localNonPermissionTableData = localNonPermission.map((item) => ({
+    id: item.slutnId,
+    slutnId: item.slutnId,
+    slutnNm: item.slutnNm,
+    lisneSeCd: item.lisneSeCd,
+    lisneSeNm: item.lisneSeNm,
+  }))
 
   const selectData = [
     { value: "1003005", data: "진행" },
@@ -167,6 +175,18 @@ export default function LocalManagement() {
     }
   }, [localListData, localListReqData]);
 
+  //현장 미허가
+  useEffect(() => {
+    if (selectUserNo) {
+      console.log("여기오나?");
+      console.log("값은? : ",localNonPermissionData?.data.contents);
+      if (localNonPermissionData?.data.contents) {
+        setLocalNonPermission(localNonPermissionData.data.contents);
+      }
+    }
+
+  }, [localNonPermissionData, selectUserNo]);
+
   //현장선택하면 허가현장
   useEffect(() => {
     if (localPermissionData?.data.contents) {
@@ -174,6 +194,7 @@ export default function LocalManagement() {
     }
   }, [localPermissionData, selectLocalNo]);
 
+  
   const handleSearch = () => {
     setSearchQuery(searchInput); // 검색어 업데이트
     //console.log("검색 실행:", searchQuery);
@@ -185,6 +206,7 @@ export default function LocalManagement() {
     setLocalListReqData((prev) => ({
       ...prev,
       sptNm: localSearchInput, // 선택한 값으로 isUse 업데이트
+      userNo: selectUserNo
     }));
   };
 
@@ -409,7 +431,7 @@ export default function LocalManagement() {
               </GrayBox>
               <TableBox.Inner>
                 <CheckboxTable
-                  data={tableTestData}
+                  data={localNonPermissionTableData}
                   selectedRows={localUnuseSelectedRows}
                   toggleRowsSelection={toggleLocalUnuseRowsSelection}
                 >
@@ -423,12 +445,12 @@ export default function LocalManagement() {
                   </CheckboxTable.Thead>
 
                   <CheckboxTable.Tbody>
-                    {tableTestData.map((item) => (
-                      <CheckboxTable.Tr key={item.id} id={item.id}>
+                    {localNonPermissionTableData.map((item) => (
+                      <CheckboxTable.Tr key={item.slutnId} id={item.slutnId}>
                         <CheckboxTable.CheckboxTd item={item} />
-                        <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                        <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
-                        <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
+                        <CheckboxTable.Td>{item.slutnId}</CheckboxTable.Td>
+                        <CheckboxTable.Td>{item.slutnNm}</CheckboxTable.Td>
+                        <CheckboxTable.Td>{item.lisneSeNm}</CheckboxTable.Td>
                       </CheckboxTable.Tr>
                     ))}
                   </CheckboxTable.Tbody>

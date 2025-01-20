@@ -47,8 +47,17 @@ export type LocalNonPermissionType = {
 };
 
 export interface LocalNonPermissionResponseType extends ApiResponseType {
+    code: number;
+    result: string;
+    message: string;
+    totalCnt: number | null;
     contents: LocalNonPermissionType[];
+    params: null;
+    errorCode: null;
+    accessToken: null;
+    refreshToken: null;
 }
+
 
 // export type SptList = {
 //     slutnId: string,
