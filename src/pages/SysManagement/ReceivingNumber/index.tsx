@@ -153,7 +153,7 @@ export default function ReceivingNumber() {
                         isClicked={selectedRow.has(item.rejectNo)}
                         onClick={() => toggleRowSelection(item.rejectNo)}
                       >
-                        <BasicTable.Td>{item.rejectNo}</BasicTable.Td>
+                        <BasicTable.Td>{item.rejectTelNo}</BasicTable.Td>
                         <BasicTable.Td>{item.tel070No}</BasicTable.Td>
                         <BasicTable.Td>{item.rejectCd}</BasicTable.Td>
                         <BasicTable.Td>{item.useYn}</BasicTable.Td>
