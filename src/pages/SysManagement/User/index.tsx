@@ -22,7 +22,7 @@ import CheckboxTable from "../../../components/Table/CheckboxTable";
 import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import api from "../../../api";
-import { UserListType } from "../../../api/userList";
+import { deleteUser, UserListType } from "../../../api/userList";
 import { useAuthStore } from "../../../stores/authStore";
 import useModal from "../../../hooks/useModal";
 import { UserPermitSolutionType, useUserPermitSolution } from "../../../api/userPermissionSolution";
@@ -30,11 +30,15 @@ import { userSolutionCount } from "../../../api/userSolutionCount";
 import { UserNonPermissionSolutionType, useUserNonPermissionSolution } from "../../../api/UserNonpermitSolution";
 import { userPermissionRegistration } from "../../../api/userPermissionRegistration";
 import { userNonPermissionRegistration } from "../../../api/userNonPermissionRegistration";
+import { ConfirmDeleteModal } from "../../../components/layout/modal/ConfirmDeleteModal";
+import { DeleteCompletedModal } from "../../../components/layout/modal/DeleteCompletedModal";
 
 export default function Registration() {
 
   const [searchQuery, setSearchQuery] = useState(""); // 검색어 상태 관리
   const [searchInput, setSearchInput] = useState(""); // 검색 입력값 상태 관리
+
+  const [state, setState] = useState("insert");
 
   //사용자 목록 가져오기
   const { isSuccess, data } = api.UserList.useUserList(searchQuery);
@@ -56,6 +60,7 @@ export default function Registration() {
 
   const permissionRegistration = userPermissionRegistration();
   const nonPermissionRegistration = userNonPermissionRegistration();
+  
 
 
   //데이터 정리
@@ -106,15 +111,34 @@ export default function Registration() {
     }
   };
 
+  //사용자 삭제를 위한 데이터
+  const userDeleteData = {
+    body: {
+      userNo: userSelectRow,
+      userNm: "",
+      loginId: "",
+      constntUserNo: "",
+      pwdNo: "",
+      mbtlNo: "",
+      cmpnm: "",
+      bizrno: "",
+      rprsntvNm: "",
+      adres1: "",
+      adres2: "",
+      reprsntTelno: "",
+      userId: "",
+    }
+  }
+
   //api 호출을 위한 id호출
   const { loginId } = useAuthStore(["loginId"]);
   const { mutate: userSolutionCountAPI } = userSolutionCount(solutionTotalData);
 
+  const userDelete = deleteUser(userDeleteData);
+  const { mutate: userDeleteAPI } = deleteUser(userDeleteData);
+
   //모달
   const { openModal, closeModal } = useModal();
-
-
-
   const { selectListData, selectValue, handleChange } = useSelect(
     selectTestData,
     "value",
@@ -147,6 +171,29 @@ export default function Registration() {
     windowName: "사용자 등록 및 수정",
     windowFeatures: "width=700,height=700,scrollbars=yes,resizable=yes",
   };
+
+  //모달
+  const confirmDeleteModal = () => {
+    openModal(ConfirmDeleteModal, {
+      modalId : "noticeDelete",
+      stack: false,  //단일 모달 모드
+      onClose: () => closeModal,
+      onSubmit: () => {
+        handleDeleteUser();
+      }
+    })
+  };
+
+  const deleteCompletedModal = () => {
+    openModal(DeleteCompletedModal, {
+      modalId: "deleteCompleted",
+      stack: false,
+      onClose: () => closeModal,
+      onSubmit: () => {
+        window.close();
+      }
+    })
+  }
 
   //이벤트 발생시 동작
 
@@ -316,6 +363,22 @@ export default function Registration() {
       }
     )
   };
+  
+  const handleDeleteUser = () => {
+    userDeleteAPI(userDeleteData, {
+      onSuccess:(response) => {
+        if (response.data.message === "SUCCESS") {
+          deleteCompletedModal();
+          console.log("response", response.data);
+          //window.location.reload();
+        }
+      },
+      onError: (error) => {
+        console.error("API 호출 실패:", error);
+        // 에러 처리 로직 추가
+      },
+    })
+  }
 
 
   return (
@@ -367,6 +430,7 @@ export default function Registration() {
                         key={index}
                         isClicked={userSelectRow === item.userNo}
                         onClick={() => {
+                          setState("update");
                           if (userSelectRow === item.userNo) {
                             // 동일 행을 클릭하면 선택 해제
                             setSelectRow("");
@@ -386,7 +450,7 @@ export default function Registration() {
                         <BasicTable.Td>{item.bizrno}</BasicTable.Td>
                         <BasicTable.Td>{item.useYn}</BasicTable.Td>
                         <BasicTable.Td>
-                          <IconButton>
+                          <IconButton onClick={confirmDeleteModal}>
                             <RiDeleteBinLine color="#f4475f" />
                           </IconButton>
                         </BasicTable.Td>
