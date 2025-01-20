@@ -79,7 +79,7 @@ export const useNonPermissionLocalList = (userNo : string) => {
         queryKey: KEY.getNonPermissionLocalList(userNo),
         queryFn: async () => {
             const result = await API.getLocalNonPermissionList(userNo);
-            console.log("결과는 :", result); // 쿼리 결과 로그 추가
+            //console.log("결과는 :", result); // 쿼리 결과 로그 추가
             return result;
         }
     })
@@ -90,7 +90,7 @@ export const useLocalMemberList = (requestData: { sptNo : string, userNm: string
         queryKey: KEY.getLocalMemberList(requestData),
         queryFn: async () => {
             const result = await API.getLocalMemberList(requestData);
-            console.log("결과는 :", result); // 쿼리 결과 로그 추가
+            //console.log("결과는 :", result); // 쿼리 결과 로그 추가
             return result;
         }
     })
