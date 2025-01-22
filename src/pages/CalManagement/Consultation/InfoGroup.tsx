@@ -39,7 +39,6 @@ import { useApiRes } from "../../../utils/useApiRes";
 import useModal from "../../../hooks/useModal";
 import { FailModal } from "../../../components/layout/modal/FailModal";
 import { BasicCompletedModl } from "../../../components/layout/modal/BasicCompletedModl";
-import { testInfoGroupdata } from "../../../utils/testData";
 
 export default function InfoGroup({ tabType }: TabType) {
   // 로그인 아이디
@@ -48,17 +47,6 @@ export default function InfoGroup({ tabType }: TabType) {
   const telStore = useStorageStore(useTelStore, "selectedTel");
   // 검색 조건 (왼쪽 테이블에서 선택한 한 행)
   const { cstmrNo, cnsltNo, callYn, trsmYn } = useCnsltStore();
-
-  console.log(
-    "검색 조건 cstmrNo :",
-    cstmrNo,
-    "cnsltNo",
-    cnsltNo,
-    "callYn",
-    callYn,
-    "trsmYn",
-    trsmYn
-  );
 
   // 상담 일자
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -81,8 +69,9 @@ export default function InfoGroup({ tabType }: TabType) {
   });
 
   //상담항목 조회
-  const { data: cnsltItemData, refetch: cnsltItemRefetch } = useCnsltItem("0", "0");
-
+  // cstmrNo?: string, // 고객번호
+  // cnsltNo?: string // 상담번호
+  const { data: cnsltItemData } = useCnsltItem("0", "0");
   const { refetch: cnsltReftech } = useTelCnsltList(callYn, trsmYn);
 
   // 선택한 세부 사항
@@ -152,11 +141,6 @@ export default function InfoGroup({ tabType }: TabType) {
       reset({ ...message });
     }
   }, [message, reset]);
-
-  //왼쪽테이블 선택안해도 보여야해서 추가
-  useEffect(() => {
-    cnsltItemRefetch(); // 강제로 API 호출
-  }, [cnsltItemRefetch]);
 
   // <========================= Popup Constance =========================>
 
@@ -228,13 +212,28 @@ export default function InfoGroup({ tabType }: TabType) {
       return;
     }
     if (cunsltDetailList?.data?.contents) {
+      const transformedData = cnsltItemData?.data.contents.reduce(
+        (acc, item) => {
+          // itemNm을 키로 사용하고 detailNm을 값으로 할당
+          acc[item.itemNm] = item.detailNm || ""; // detailNm이 null인 경우 빈 문자열
+          return acc;
+        },
+        {}
+      );
+
+      // defaultValue와 병합
+      const mergedData = {
+        ...cunsltDetailList.data.contents,
+        ...transformedData,
+      };
+
       reset({ ...cunsltDetailList.data.contents });
     } else {
       reset(defaultValue);
       setDetailItem("");
       setDetailInfo([{}]);
     }
-  }, [cunsltDetailList, cnsltNo]);
+  }, [cunsltDetailList, cnsltNo, cnsltItemData]);
 
   // 모달 hook
   const { openModal, closeModal } = useModal();
@@ -246,7 +245,6 @@ export default function InfoGroup({ tabType }: TabType) {
 
   const onSubmit = useCallback(
     (data: any) => {
-      console.log("상담 아이템 데이터:", callYn, trsmYn);
       const data_1 = cunsltDetailList?.data.contents;
       const spt = getItemByStorageOne("selectedSite")?.sptNo;
       const telCnsltCnList = detailInfo
@@ -254,15 +252,18 @@ export default function InfoGroup({ tabType }: TabType) {
         .map(({ itemNo, detailNo }) => ({ itemNo, detailNo }));
 
       const isWorUn = trsmYn == "W" || !data_1 ? true : false; // 대기 고객이거나 신규 고객 trsmYn:통화여부(Y:통화, N:부재, W:대기)
-      console.log("ISWORUN:::", isWorUn);
-      console.log("telStore::::", telStore);
+
       const body: CnsltInfoRequestType = {
         sptNo: spt,
         cstmrNo: isWorUn ? "0" : data_1.cstmrNo,
         cnsltNo: !isToday(selectedDate) || isWorUn ? "0" : data_1.cnsltNo,
         cnsltnt: isWorUn ? "" : data_1.cnsltnt,
         cnsltDt: getFormattedDate(selectedDate),
-        telId: isWorUn ? (telStore.telId || "0") : (data_1.telId !=="" ? data_1.telId : "0"),
+        telId: isWorUn
+          ? telStore.telId || "0"
+          : data_1.telId !== ""
+            ? data_1.telId
+            : "0",
         cnsltTelno: data.cnsltTelno,
         cstmrNm: data.cstmrNm,
         mbtlNo: data.mbtlNo,
@@ -319,7 +320,7 @@ export default function InfoGroup({ tabType }: TabType) {
       loginId,
       selectValue,
       selectedDate,
-      telStore.telId,
+      telStore,
       postInfo,
       checkApiFail,
       openModal,
@@ -331,8 +332,6 @@ export default function InfoGroup({ tabType }: TabType) {
       isToday,
     ]
   );
-
-  
 
   return (
     <>
@@ -531,54 +530,9 @@ export default function InfoGroup({ tabType }: TabType) {
             gap={1}
             overflow="auto"
           >
-            {!cunsltDetailList?.data?.contents?.itemList?.length ? (
-              cnsltItemData?.data.contents.map((item: any) => (
-                <Box
-                  key={item.itemNo}
-                  display="flex"
-                  alignItems="center" // 수직 중앙 정렬
-                  flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
-                  onClick={() => {
-                    setDetailItem(item.itemNo);
-                  }}
-                  sx={{
-                    cursor: "pointer",
-                  }}
-                >
-                  <Typography width={150}>{item.itemNm}</Typography>
-                  <BasicInput
-                    sx={{ minHeight: "24px" }}
-                    value={detailInfo[item.itemNo]?.detailNm ?? item.detailNm}
-                    readOnly
-                  />
-                </Box>
-              ))
-            ) : (
-              cunsltDetailList?.data.contents.itemList.map((item: any) => (
-                <Box
-                  key={item.itemNo}
-                  display="flex"
-                  alignItems="center" // 수직 중앙 정렬
-                  flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
-                  onClick={() => {
-                    setDetailItem(item.itemNo);
-                  }}
-                  sx={{
-                    cursor: "pointer",
-                  }}
-                >
-                  <Typography width={150}>{item.itemNm}</Typography>
-                  <BasicInput
-                    sx={{ minHeight: "24px" }}
-                    value={detailInfo[item.itemNo]?.detailNm ?? item.detailNm}
-                    readOnly
-                  />
-                </Box>
-              ))
-            )}
-            {/* {cnsltItemData?.data.contents.map((item: any, index: any) => (
+            {cnsltItemData?.data.contents.map((item: any, index: number) => (
               <Box
-                key={index}
+                key={item.itemNo}
                 display="flex"
                 alignItems="center" // 수직 중앙 정렬
                 flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
@@ -592,11 +546,16 @@ export default function InfoGroup({ tabType }: TabType) {
                 <Typography width={150}>{item.itemNm}</Typography>
                 <BasicInput
                   sx={{ minHeight: "24px" }}
-                  value={detailInfo[item.itemNo]?.detailNm ?? item.detailNm}
+                  value={
+                    detailInfo[item.itemNo]?.detailNm ??
+                    cunsltDetailList?.data?.contents?.itemList?.[index]
+                      ?.detailNm ??
+                    "" // 기본값 설정
+                  }
                   readOnly
                 />
               </Box>
-            ))} */}
+            ))}
           </GrayBox>
           <Box
             flexDirection={"column"}
@@ -604,7 +563,7 @@ export default function InfoGroup({ tabType }: TabType) {
             height={"100%"}
             overflow="auto"
           >
-            <BasicTable data={itemDetList?.data.contents ?? []}>
+            <BasicTable data={itemDetList?.data.contents}>
               <BasicTable.Th>
                 <Box
                   display="flex"

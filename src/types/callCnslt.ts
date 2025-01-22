@@ -24,6 +24,20 @@ export interface TelApiResponseType extends ApiResponseType {
   contents: TelDataType;
 }
 
+// 전화 상담 - 상담 항목
+
+// 개별 아이템의 타입
+type CItemType = {
+  itemNo: string;
+  itemNm: string;
+  detailNo: string | null;
+  detailNm: string | null;
+};
+
+export interface CnsltItemDataResponseType extends ApiResponseType {
+  contents: CItemType[];
+}
+
 // 전화받기, 전화걸기의 응답 데이터
 export type TelCnsltType = {
   cnsltDttm: string;
