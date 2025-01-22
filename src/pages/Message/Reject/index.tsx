@@ -93,7 +93,12 @@ export default function RejectMessage() {
     });
   };
 
-  // const {data:rejectList} = useRejectList();
+  const { data: rejectList } = useRejectList({
+    page: currentPage,
+    limit: selectValue,
+  });
+
+  console.log(currentPage, selectValue, rejectList);
 
   return (
     <Stack width={"100%"} height={"100%"} gap={2}>
