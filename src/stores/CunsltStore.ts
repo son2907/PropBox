@@ -3,11 +3,15 @@ import { create } from "zustand";
 type CunsltStoreType = {
   cstmrNo?: string; // 고객번호, 대기일때는 waitCstmrNo
   cnsltNo?: string; // 상담번호, 대기일때는 cnsltNm
+  cnsltTelno?: string; // 상담전화번호
+  cstmrNm?: string; // 상담자 이름
   callYn?: string; // 전화 걸기, 받기
   trsmYn?: string; // 통화콜, 부재콜, 대기
   setCnsltInfo: (info: {
     cstmrNo?: string;
     cnsltNo?: string;
+    cnsltTelno?: string;
+    cstmrNm?: string;
     callYn?: string;
     trsmYn?: string;
   }) => void;
@@ -15,11 +19,12 @@ type CunsltStoreType = {
 };
 
 export const useCnsltStore = create<CunsltStoreType>()((set) => ({
-  setCnsltInfo: (info) => set(info), // 객체를 받아서 상태 업데이트
+  setCnsltInfo: (info) => set(info),
   clear: () =>
     set(() => ({
       cstmrNo: "",
       cnsltNo: "",
-      type: "",
+      cnsltTelno: "",
+      cstmrNm: "",
     })),
 }));

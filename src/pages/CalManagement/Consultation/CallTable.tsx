@@ -67,6 +67,7 @@ export default function CallTable({ tabType, tabChange }: TabType) {
 
   const { data: cnsltData } = useTelCnsltList(callYn, trsmYn);
   const { setCnsltInfo, clear } = useCnsltStore();
+  console.log("############# 테이블 데이터:", cnsltData);
 
   useEffect(() => {
     clear();
