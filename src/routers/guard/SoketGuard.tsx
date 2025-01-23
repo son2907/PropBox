@@ -67,10 +67,10 @@ export default function SoketGuard({ children }: PropsWithChildren) {
       console.log("메세지 수신::", event.data);
       const messageType = JSON.parse(event.data).messageType;
 
-      // 추후 고객 이름과 고객 정보도 등록해줘야 함
+      // 추후 웹소켓에서 보내준 고객 이름과 고객 정보를 등록해줘야 함
       if (messageType == "RINGING") {
         setToastContent({
-          name: "이름",
+          name: "홍길동",
           telNo: JSON.parse(event.data).counterpart,
           info: "고객정보",
         });
@@ -82,9 +82,8 @@ export default function SoketGuard({ children }: PropsWithChildren) {
           cnsltTelno: JSON.parse(event.data).counterpart,
         });
       }
-      if (messageType == "MISSED") {
+      if (messageType === "MISSED" || messageType === "HANGUP") {
         setToastContent({ name: "", telNo: "", info: "" });
-        // clear();
         toastClose();
       }
 
