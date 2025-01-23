@@ -11,7 +11,7 @@ export const sendMessage = ({
     webSocket.current.send(JSON.stringify(message));
     console.log("메시지 전송: ", JSON.stringify(message));
   } else {
-    console.log("웹소켓 연결이 열려있지 않습니다.");
+    console.log("웹소켓 연결이 불가합니다.");
   }
 };
 
@@ -20,7 +20,7 @@ export const useWebSocket = (
 ) => {
   const context = useContext(WebSocketContext);
   if (!context) {
-    throw new Error("useWebSocket must be used within a SoketGuard");
+    console.log("웹소켓 객체가 존재하지 않습니다.");
   }
   return context;
 };
