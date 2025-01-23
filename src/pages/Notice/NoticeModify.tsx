@@ -12,13 +12,14 @@ import TextArea from "../../components/TextArea/TextArea";
 import { useEffect, useRef, useState } from "react";
 import BasicInput from "../../components/Input/BasicInput";
 import Calendar from "../../components/Calendar/Calendar";
-import { noticeDetailType, useNoticeDetail } from "../../api/noticeDetail";
 import { useAuthStore } from "../../stores/authStore";
-import { updateNotice } from "../../api/noticeUpdate";
-import { deleteNotice, deleteNoticeType } from "../../api/noticeDelete";
 import { ConfirmDeleteModal } from "../../components/layout/modal/ConfirmDeleteModal";
 import useModal from "../../hooks/useModal";
 import { DeleteCompletedModal } from "../../components/layout/modal/DeleteCompletedModal";
+import { deleteNotice, updateNotice, useNoticeDetail } from "../../api/noticeList";
+import { deleteNoticeType, noticeDetailType } from "../../types/notice";
+import { EmptyDataModal } from "../../components/layout/modal/EmptyDataModal";
+import { UpdateCompletedModal } from "../../components/layout/modal/UpdateCompletedModal";
 
 
 
@@ -29,13 +30,16 @@ export default function NoticeModify() {
     windowName: "공지사항 수정",
   };
 
+  //모달
+  const { openModal, closeModal } = useModal();
+
   //팝업 페이지에서 id를 가져오려면 window.location.search를 사용하여 파라미터를 파싱
   const queryParams = new URLSearchParams(window.location.search);
   const id = queryParams.get("id");
   console.log("id : ", id);
 
   // 이 ref를 통해 textArea에 입력된 값에 접근할 수 있음
-  const tRef1 = useRef<HTMLTextAreaElement>(null); // textArea에 연결해 줄 ref
+  const noticeRef = useRef<HTMLTextAreaElement>(null); // textArea에 연결해 줄 ref
 
   // useMutation 훅을 컴포넌트 최상위에서 호출
   const { mutate: deleteNoticeAPI } = deleteNotice();
@@ -50,8 +54,6 @@ export default function NoticeModify() {
   const [isReadOnly, setIsReadOnly] = useState(false);
   //api를 호출하기위해 userID 불러오기
   const { loginId } = useAuthStore(["loginId"]);
-  //모달
-  const { openModal, closeModal } = useModal();
 
   const formatDate = (date: Date) => {
     const year = date.getFullYear();
@@ -63,13 +65,41 @@ export default function NoticeModify() {
   //모달
   const confirmDeleteModal = () => {
     openModal(ConfirmDeleteModal, {
-      modalId : "noticeDelete",
+      modalId: "noticeDelete",
       stack: false,  //단일 모달 모드
       onClose: () => closeModal,
       onSubmit: () => {
         handleDelete();
       }
     })
+  };
+
+  //입력한 값이 없을때
+  const emptyDataModal = () => {
+    openModal(EmptyDataModal, {
+      modalId: "emptyDataModal",
+      stack: false,
+      onClose: () => closeModal,
+      onSubmit: () => {
+        //window.close();
+      }
+    });
+  };
+
+  //수정 완료 모달
+  const updateCompletedModal = () => {
+    openModal(UpdateCompletedModal, {
+      modalId: "UpdateCompletedModal",
+      stack: false,
+      onClose: () => closeModal,
+      onSubmit: () => {
+        window.close();
+        // 이전 창 새로 고침
+        if (window.opener) {
+          window.opener.location.reload();
+        }
+      }
+    });
   };
 
   const deleteCompletedModal = () => {
@@ -85,7 +115,6 @@ export default function NoticeModify() {
 
   //------------공지사항 상세 가져옴-------------//
   const { isSuccess, data } = useNoticeDetail(id);
-  const [noticeDetail, setNoticeDetail] = useState<noticeDetailType | null>(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
@@ -93,13 +122,12 @@ export default function NoticeModify() {
   useEffect(() => {
     console.log("data확인", data);
     if (data?.data.contents) {
-      setNoticeDetail(data.data.contents);
-      if (noticeDetail) {
-        const currentDetail = noticeDetail;
+      if (data.data.contents) {
+        const currentDetail = data.data.contents;
         //제목 및 내용 설정
-        const textArea = tRef1.current;
+        const textArea = noticeRef.current;
         if (textArea) {
-          textArea.value = noticeDetail.noticeCn; //내용 설정
+          textArea.value = data.data.contents.noticeCn; //내용 설정
         }
       }
     }
@@ -107,8 +135,8 @@ export default function NoticeModify() {
 
   //공지사항 상세를 불러와서 기간설정 출력
   useEffect(() => {
-    if (noticeDetail) {
-      if (noticeDetail?.popupBgnde && noticeDetail.popupEndde) {
+    if (data?.data.contents) {
+      if (data.data.contents?.popupBgnde && data.data.contents.popupEndde) {
         const parseDate = (dateString: string) => {
           const year = parseInt(dateString.slice(0, 4), 10);
           const month = parseInt(dateString.slice(4, 6), 10) - 1; // JavaScript의 월은 0부터 시작
@@ -119,19 +147,19 @@ export default function NoticeModify() {
         };
 
         // 변환된 값을 startDate와 endDate에 설정
-        setStartDate(parseDate(noticeDetail.popupBgnde));
-        setEndDate(parseDate(noticeDetail.popupEndde));
+        setStartDate(parseDate(data.data.contents.popupBgnde));
+        setEndDate(parseDate(data.data.contents.popupEndde));
       }
 
 
       // 내용 설정
-      setContent(noticeDetail.noticeCn || "");
-      setTitle(noticeDetail.noticeSj || "")
+      setContent(data.data.contents.noticeCn || "");
+      setTitle(data.data.contents.noticeSj || "")
       // popupYn이 'Y'일 경우 체크박스 상태를 true로 설정
-      setIsPopupChecked(noticeDetail.popupYn === "Y");
+      setIsPopupChecked(data.data.contents.popupYn === "Y");
     }
-    console.log("textArea", tRef1);
-  }, [noticeDetail]);
+    console.log("textArea", noticeRef);
+  }, [data?.data.contents]);
 
   useEffect(() => {
     const today = new Date();
@@ -170,25 +198,26 @@ export default function NoticeModify() {
   const handleUpdate = () => {
     console.log("데이터 확인", noticeData);
     // API 호출 실행
-    updateNoticeAPI(noticeData, {
-      onSuccess: (response) => {
-        console.log("공지사항 수정 성공!");
-        // 추가 동작: 팝업 닫기 또는 알림 표시 등
-        if (response.data.result === "SUCCESS") {
-          console.log("수정완");
-          window.close();
-          // 이전 창 새로 고침
-          if (window.opener) {
-            window.opener.location.reload();
+    if (noticeData.body.noticeSj && noticeData.body.noticeCn) {
+      updateNoticeAPI(noticeData, {
+        onSuccess: (response) => {
+          console.log("공지사항 수정 성공!");
+          // 추가 동작: 팝업 닫기 또는 알림 표시 등
+          if (response.data.result === "SUCCESS") {
+            console.log("수정완");
+            updateCompletedModal();
+          } else {
+            console.warn("result가 SUCCESS가 아닙니다.");
           }
-        } else {
-          console.warn("result가 SUCCESS가 아닙니다.");
-        }
-      },
-      onError: (error) => {
-        console.error("공지사항 수정 실패:", error);
-      },
-    });
+        },
+        onError: (error) => {
+          console.error("공지사항 수정 실패:", error);
+        },
+      });
+    } else {
+      emptyDataModal();
+    }
+
   };
 
   //----------삭제---------------
@@ -233,8 +262,6 @@ export default function NoticeModify() {
     );
   };
 
-  
-
   return (
     <>
       <Stack bgcolor={"white"} width={"100%"} height={"100%"}>
@@ -252,9 +279,15 @@ export default function NoticeModify() {
           <TextArea
             height="400px"
             resize="none"
-            ref={tRef1}
-            value={content} // content 상태 바인딩
-            onChange={(e) => setContent(e.target.value)} // 사용자 입력 반영
+            ref={noticeRef}
+            onChange={(e) => {
+              setContent(e.target.value); // 상태 업데이트
+            }}
+            onBlur={() => {
+              const currentValue = noticeRef.current?.value || ""; // ref 값 가져오기
+              setContent(currentValue); // 상태 업데이트
+              console.log("포커스 잃음, ref 값:", currentValue); // 콘솔 출력
+            }}
           />
         </Box>
         <Stack justifyContent={"space-between"} width={"100%"} direction={"row"} alignItems={"center"}>

@@ -1,29 +1,22 @@
 import { Box, Select, Stack, Typography } from "@mui/material";
-import useTabs from "../../../hooks/useTabs";
 import GrayBox from "../../../components/Box/GrayBox";
 import SearchInput from "../../../components/Input/SearchInput";
 import TableBox from "../../../components/Box/TableBox";
 import BasicTable from "../../../components/Table/BasicTable";
 import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
-import { tableTestData } from "../../../utils/testData";
 import LabelTypo from "../../../components/Typography/LabelTypo";
 import BasicInput from "../../../components/Input/BasicInput";
 import { BasicButton, ToggleButton } from "../../../components/Button";
 import useToggleButtton from "../../../hooks/useToggleButton";
 import { useEffect, useState } from "react";
-import { UserListType, useUserList } from "../../../api/userList";
-import { MemberListType, useMemberList } from "../../../api/memberList";
+import { deleteMember, insertMember, updateMember, useMemberDetail, useMemberList } from "../../../api/memberList";
 import api from "../../../api";
-import { memeberDetailType, useMemberDetail } from "../../../api/memberDetail";
 import { useAuthStore } from "../../../stores/authStore";
-import { updateMember } from "../../../api/memberUpdate";
-import { insertMember } from "../../../api/memberInsert";
 import { EmptyDataModal } from "../../../components/layout/modal/EmptyDataModal";
 import { InsertCompletedModal } from "../../../components/layout/modal/InsertCompletedModal";
 import { UpdateCompletedModal } from "../../../components/layout/modal/UpdateCompletedModal";
 import useModal from "../../../hooks/useModal";
 import { EmptySelectModal } from "../../../components/layout/modal/EmptySelectModal";
-import { deleteMember } from "../../../api/membeDelete";
 import { DeleteCompletedModal } from "../../../components/layout/modal/DeleteCompletedModal";
 import { ConfirmDeleteModal } from "../../../components/layout/modal/ConfirmDeleteModal";
 
@@ -42,54 +35,20 @@ export default function MemberManagement() {
   //사용자 리스트
   //const { data: userListData, isLoading: isLoadingUserList } = useUserList(searchQuery);
   const { isSuccess, data } = api.UserList.useUserList(searchQuery);
-  const [userList, setUserList] = useState<UserListType[]>([]);
   const [selectUserNo, setSelectUserNo] = useState("");
   const [selectMemberNo, setSelectMemberNo] = useState("");
   const [userId, setUserID] = useState("")
 
   //구성원 리스트
-  const [memberList, setMember] = useState<MemberListType[]>([]);
   const { data: memberListData, isLoading: isLoadingMemeber } = useMemberList(selectUserNo);
 
   //구성원 상세
-  const [memberDeatil, setMemberDetail] = useState<memeberDetailType | null>(null);
   const { data: memberDetailData, isSuccess: isMemberDetailData } = useMemberDetail(selectMemberNo);
   const [memberId, setMemberId] = useState("");
   const [memberPassword, setMemberPassword] = useState("")
   const [memberName, setMemberName] = useState("");
   const [isMemberUse, setIsMemberUse] = useState(true);
   const [memberRmk, setMemberRmk] = useState("");
-
-  const userListTableData = userList.map((item) => ({
-    userNo: item.userNo,
-    userNm: item.userNm,
-    attlistMbtlNo: item.attlistMbtlNo,
-    loginIdPrefix: item.loginIdPrefix,
-    loginId: item.loginId,
-    cmpnm: item.cmpnm,
-    bizrno: item.bizrno,
-    rprsntvNm: item.rprsntvNm,
-    adres1: item.adres1,
-    adres2: item.adres2,
-    reprsntTelno: item.reprsntTelno,
-    useYn: item.useYn,
-  }));
-
-  const memberListTableData = memberList.map((item) => ({
-    id: item.userNo,
-    userNo: item.userNo,
-    userNm: item.userNm,
-    attlistMbtlNo: item.attlistMbtlNo,
-    loginIdPrefix: item.loginIdPrefix,
-    loginId: item.loginId,
-    cmpnm: item.cmpnm,
-    bizrno: item.attlistMbtlNo,
-    rprsntvNm: item.reprsntTelno,
-    adres1: item.adres1,
-    adres2: item.adres2,
-    reprsntTelno: item.reprsntTelno,
-    useYn: item.useYn,
-  }));
 
   //수정
   const memberUpdateReqData = {
@@ -121,9 +80,6 @@ export default function MemberManagement() {
       userId: ""              //등록 및 수정자
     }
   }
-
-
-
 
   const { mutate: updateMemberAPI } = updateMember(memberUpdateReqData); //수정
   const { mutate: insertMemberAPI } = insertMember(memberInsertReqData); //추가
@@ -186,6 +142,7 @@ export default function MemberManagement() {
     openModal(EmptySelectModal, {
       modalId: "emptySelectModal",
       stack: false,
+
       onClose: () => closeModal,
       onSubmit: () => {
         window.close();
@@ -231,7 +188,7 @@ export default function MemberManagement() {
 
   //삭제를 묻는 모달
   const confirmDeletionModal = () => {
-    if(selectMemberNo) {
+    if (selectMemberNo) {
       openModal(ConfirmDeleteModal, {
         modalId: "deleteModal",
         stack: false,
@@ -243,36 +200,30 @@ export default function MemberManagement() {
     } else {
       emptySelectionModal();
     }
-    
+
   };
 
-  useEffect(() => {
-    if (memberListData?.data.contents) {
-      setMember(memberListData.data.contents);
-    }
-  }, [selectUserNo, memberListData]);
+  // useEffect(() => {
+  //   if (data?.data.contents) {
+  //     setUserList(data.data.contents);
+  //   }
+  // }, [data, isSuccess, searchQuery]);
+
+  // useEffect(() => {
+  //   if (memberDetailData?.data.contents) {
+  //     setMemberDetail(memberDetailData.data.contents);
+  //     console.log("memberDetailData", memberDetailData.data.contents)
+  //   }
+  // }, [memberDetailData, selectMemberNo]);
 
   useEffect(() => {
-    if (data?.data.contents) {
-      setUserList(data.data.contents);
-    }
-  }, [data, isSuccess, searchQuery]);
-
-  useEffect(() => {
-    if (memberDetailData?.data.contents) {
-      setMemberDetail(memberDetailData.data.contents);
-      console.log("memberDetailData", memberDetailData.data.contents)
+    if (memberDetailData?.data?.contents) {
+      setMemberId(memberDetailData?.data?.contents.loginId);
+      setMemberName(memberDetailData?.data?.contents.userNm);
+      setIsMemberUse(memberDetailData?.data?.contents.useYn === "Y" ? true : false);
+      setMemberRmk(memberDetailData?.data?.contents.rmk);
     }
   }, [memberDetailData, selectMemberNo]);
-
-  useEffect(() => {
-    if (memberDeatil) {
-      setMemberId(memberDeatil.loginId);
-      setMemberName(memberDeatil.userNm);
-      setIsMemberUse(memberDeatil.useYn === "Y" ? true : false);
-      setMemberRmk(memberDeatil.rmk);
-    }
-  }, [memberDeatil]);
 
   const handleMemberDetail = () => {
     console.log("상위 구성원 번호가 뭔가요 : ", selectMemberNo);
@@ -305,7 +256,10 @@ export default function MemberManagement() {
             }
           }
         })
-      } else {
+      } else if (selectUserNo == "") {
+        emptySelectionModal();
+      } 
+      else {
         emptyDataModal();
         return;
       }
@@ -330,8 +284,8 @@ export default function MemberManagement() {
 
   return (
     <>
-      <Stack width={"100%"}>
-        <GrayBox width={"100%"} height={"4%"}>
+      <Stack width={"100%"} height={"100%"} gap={1}>
+        <GrayBox>
           <SearchInput
             placeholder="사용자이름 검색"
             value={searchInput}
@@ -343,51 +297,50 @@ export default function MemberManagement() {
             }}
           ></SearchInput>
         </GrayBox>
-        <Stack direction={"row"} height={"96%"}>
-          <Stack width={"50%"} minWidth={"800px"} bgcolor={"white"} overflow={"auto"} marginBottom={1}>
-            <TableBox>
-              <TableBox.Inner>
-                <BasicTable data={userListTableData}>
-                  <BasicTable.Th>사용자ID</BasicTable.Th>
-                  <BasicTable.Th>사용자이름</BasicTable.Th>
-                  <BasicTable.Th>PREFIX</BasicTable.Th>
-                  <BasicTable.Th>사용여부</BasicTable.Th>
-                  <BasicTable.Tbody>
-                    {userListTableData.map((item, index) => {
-                      return (
-                        <BasicTable.Tr
-                          key={index}
-                          isClicked={selectUserNo === item.userNo}
-                          onClick={() => {
-                            if (selectUserNo === item.userNo) {
-                              setSelectUserNo("");
-                            } else {
-                              setSelectUserNo(item.userNo);
-                            }
-                          }}
-                        >
-                          <BasicTable.Td>{item.loginId}</BasicTable.Td>
-                          <BasicTable.Td>{item.userNm}</BasicTable.Td>
-                          <BasicTable.Td>{item.loginIdPrefix}</BasicTable.Td>
-                          <BasicTable.Td>{item.useYn}</BasicTable.Td>
-                        </BasicTable.Tr>
-                      );
-                    })}
-                  </BasicTable.Tbody>
-                </BasicTable>
-              </TableBox.Inner>
-            </TableBox>
+        <TableBox gap={1}>
+          <Stack width={"50%"} overflow={"auto"}>
+            <TableBox.Inner>
+              <BasicTable data={data?.data?.contents || []}>
+                <BasicTable.Th>사용자ID</BasicTable.Th>
+                <BasicTable.Th>사용자이름</BasicTable.Th>
+                <BasicTable.Th>PREFIX</BasicTable.Th>
+                <BasicTable.Th>사용여부</BasicTable.Th>
+                <BasicTable.Tbody>
+                  {(data?.data?.contents || []).map((item, index) => {
+                    return (
+                      <BasicTable.Tr
+                        key={index}
+                        isClicked={selectUserNo === item.userNo}
+                        onClick={() => {
+                          if (selectUserNo === item.userNo) {
+                            setSelectUserNo("");
+                          } else {
+                            setSelectUserNo(item.userNo);
+                          }
+                        }}
+                      >
+                        <BasicTable.Td>{item.loginId}</BasicTable.Td>
+                        <BasicTable.Td>{item.userNm}</BasicTable.Td>
+                        <BasicTable.Td>{item.loginIdPrefix}</BasicTable.Td>
+                        <BasicTable.Td>{item.useYn}</BasicTable.Td>
+                      </BasicTable.Tr>
+                    );
+                  })}
+                </BasicTable.Tbody>
+              </BasicTable>
+            </TableBox.Inner>
+
           </Stack>
-          <Stack width={"50%"} minWidth={"800px"} bgcolor={"white"} marginLeft={1}>
-            <TableBox>
+          <Stack width={"50%"}>
+            <Stack width={"100%"} height={"70%"}>
               <TableBox.Inner>
-                <BasicTable data={memberListTableData}>
+                <BasicTable data={memberListData?.data?.contents || []}>
                   <BasicTable.Th>구성원ID</BasicTable.Th>
                   <BasicTable.Th>구성원 번호</BasicTable.Th>
                   <BasicTable.Th>구성원이름</BasicTable.Th>
                   <BasicTable.Th>사용여부</BasicTable.Th>
                   <BasicTable.Tbody>
-                    {memberListTableData.map((item, index) => {
+                    {(memberListData?.data?.contents || []).map((item, index) => {
                       return (
                         <BasicTable.Tr
                           key={index}
@@ -404,7 +357,7 @@ export default function MemberManagement() {
                   </BasicTable.Tbody>
                 </BasicTable>
               </TableBox.Inner>
-            </TableBox>
+            </Stack>
             <GrayBox
               flexDirection={"column"}
               width={"100%"}
@@ -483,7 +436,7 @@ export default function MemberManagement() {
                   sx={{ minHeight: "24px", width: "100%" }}
                   value={memberRmk}
                   onChange={(e) => setMemberRmk(e.target.value)}
-                  placeholder={memberRmk ? memberRmk : "구성원이름"}
+                  placeholder={memberRmk ? memberRmk : "비고"}
                 />
               </Box>
             </GrayBox>
@@ -492,8 +445,9 @@ export default function MemberManagement() {
               <BasicButton onClick={handleMemberDetail}>저장</BasicButton>
               <BasicButton onClick={confirmDeletionModal}>삭제</BasicButton>
             </GrayBox>
+
           </Stack>
-        </Stack>
+        </TableBox>
       </Stack>
     </>
   );

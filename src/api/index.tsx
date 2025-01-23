@@ -4,7 +4,6 @@ import * as SiteList from "./siteList";
 import * as TelList from "./telList";
 import * as CallCnslt from "./callCnslt";
 import * as NoticeList from "./noticeList";
-import * as PopupNoticeList from "./popupNotice";
 import * as SolutionList from "./solutionList";
 import * as LicenseMethod from "./licenseMethod";
 import * as SolutionDetail from "./solutionDetail";
@@ -16,6 +15,7 @@ import * as SolutionMenuInsert from "./solutionMenuInsert";
 import * as UserList from "./userList";
 import * as MemberList from "./memberList";
 import * as Crtfc from "./crtfc";
+import * as FAQ from "./faq";
 
 export default {
   AdminAccount,
@@ -24,7 +24,7 @@ export default {
   TelList,
   CallCnslt,
   NoticeList,
-  PopupNoticeList,
+  FAQ,
   SolutionList,
   LicenseMethod,
   SolutionDetail,

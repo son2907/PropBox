@@ -8,10 +8,33 @@ import { tableTestData } from "../../utils/testData";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { useMultiRowSelection } from "../../hooks/useMultiRowSelection";
 import PathConstants from "../../routers/path";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { openPopup } from "../../utils/openPopup";
+import { useAuthStore } from "../../stores/authStore";
+import api from "../../api";
+import useModal from "../../hooks/useModal";
 
 export default function FAQList() {
+  // 구성원 1002015, 사용자 1002010, 시스템관리자 1002005
+  // 시스템 관리자일경우 구분
+  const { userConstntSeCd } = useAuthStore(["userConstntSeCd"]);
+
+  const [searchQuery, setSearchQuery] = useState(""); // 검색어 상태 관리
+  const [searchInput, setSearchInput] = useState(""); // 검색 입력값 상태 관리
+
+  //faq 목록 가져오기
+  const { isSuccess, data } = api.FAQ.useFaqList(searchQuery);
+
+  //api 호출을 위한 id호출
+  const { loginId } = useAuthStore(["loginId"]);
+
+  // 제목과 내용 관리
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+
+  //모달
+  const { openModal, closeModal } = useModal();
+
   // 여러개선택
   const {
     selectedRows: useSelectedRows,

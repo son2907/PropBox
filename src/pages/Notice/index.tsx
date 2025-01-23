@@ -11,13 +11,12 @@ import PathConstants from "../../routers/path";
 import { useEffect, useRef, useState } from "react";
 import { openPopup } from "../../utils/openPopup";
 import api from "../../api";
-import { NoticeListType } from "../../api/noticeList";
 import { useAuthStore } from "../../stores/authStore";
 import useModal from "../../hooks/useModal";
 import { ConfirmMultipleDeletionModal } from "../../components/layout/modal/ConfirmMultipleDeletionModal";
-import { deleteNotice } from "../../api/noticeDelete";
 import { DeleteCompletedModal } from "../../components/layout/modal/DeleteCompletedModal";
 import { EmptySelectModal } from "../../components/layout/modal/EmptySelectModal";
+import { deleteNotice } from "../../api/noticeList";
 
 export default function NoticeList() {
   // 구성원 1002015, 사용자 1002010, 시스템관리자 1002005
@@ -29,7 +28,6 @@ export default function NoticeList() {
 
   //공지사항 목록 가져오기
   const { isSuccess, data } = api.NoticeList.useNoticeList(searchQuery);
-  const [noticeList, setNoticeList] = useState<NoticeListType[]>([]);
 
   //api 호출을 위한 id호출
   const { loginId } = useAuthStore(["loginId"]);
@@ -45,20 +43,13 @@ export default function NoticeList() {
   const deleteFAQMutation = deleteNotice(); // Hook 호출
 
   //공지사항 api 호출
-  useEffect(() => {
-    if (data?.data?.contents) {
-      setNoticeList(data.data.contents);
-      const noticeCo = data.data.contents.map((item) => item.noticeNo);
-      console.log("상태", data.data.contents);
-    }
-  }, [data, isSuccess, searchQuery]);
-
-  const formatNoticeList = noticeList.map((item) => ({
-    id: item.noticeNo,
-    noticeNo: item.noticeNo,
-    noticeSj: item.noticeSj, //제목
-    noticeCn: item.regDe, //등록일
-  }));
+  // useEffect(() => {
+  //   if (data?.data?.contents) {
+  //     setNoticeList(data.data.contents);
+  //     const noticeCo = data.data.contents.map((item) => item.noticeNo);
+  //     console.log("상태", data.data.contents);
+  //   }
+  // }, [data, isSuccess, searchQuery]);
 
   // 여러개선택
   const {
@@ -72,28 +63,27 @@ export default function NoticeList() {
     const selectedData = Array.from(useSelectedRows).map(
       (selectedId: string) => {
         // formatNoticeList에서 선택된 ID에 해당하는 항목 찾기
-        const selectedItem = formatNoticeList.find(
-          (item) => item.id === selectedId
+        const selectedItem = data?.data?.contents.find(
+          (item) => item.noticeNo === selectedId
         );
         return {
-          id: selectedItem?.id || "",
           noticeNo: selectedItem?.noticeNo || "",
           noticeSj: selectedItem?.noticeSj || "",
-          noticeCn: selectedItem?.noticeCn, // 로그인 정보 추가
+          regDe: selectedItem?.regDe, // 로그인 정보 추가
         };
       }
     );
 
     // 선택된 데이터를 콘솔에 출력
     console.log("선택된 항목 데이터:", selectedData);
-  }, [useSelectedRows, formatNoticeList, loginId]);
+  }, [useSelectedRows, data?.data.contents, loginId]);
 
   //여러개 삭제시 모달
   const confirmMultipleDeletionModal = () => {
     const selectedData = Array.from(useSelectedRows).map(
       (selectedId: string) => {
-        const selectedItem = formatNoticeList.find(
-          (item) => item.id === selectedId
+        const selectedItem = data?.data.contents.find(
+          (item) => item.noticeNo === selectedId
         );
         return selectedItem;
       }
@@ -126,6 +116,7 @@ export default function NoticeList() {
       onClose: () => closeModal,
       onSubmit: () => {
         //window.close();
+        window.location.reload();
       },
     });
   };
@@ -136,7 +127,7 @@ export default function NoticeList() {
       stack: false,
       onClose: () => closeModal,
       onSubmit: () => {
-        //window.close();
+        window.close();
       },
     });
   };
@@ -144,13 +135,13 @@ export default function NoticeList() {
   const handleDelete = () => {
     const selectedData = Array.from(useSelectedRows).map(
       (selectedId: string) => {
-        const selectedItem = formatNoticeList.find(
-          (item) => item.id === selectedId
+        const selectedItem = data?.data?.contents.find(
+          (item) => item.noticeNo === selectedId
         );
         return {
-          noticeNo: selectedItem?.id || "",
+          noticeNo: selectedItem?.noticeNo || "",
           noticeSj: selectedItem?.noticeSj || "",
-          noticeCn: selectedItem?.noticeCn || "",
+          noticeCn: "",
           popupYn: "",
           popupBgnde: "",
           popupEndde: "",
@@ -166,14 +157,14 @@ export default function NoticeList() {
         onSuccess: () => {
           console.log("삭제 성공");
           deleteCompletedModal();
-          setNoticeList((prevNoticeList) =>
-            prevNoticeList.filter(
-              (notice) =>
-                !selectedData.some(
-                  (delItem) => delItem.noticeNo === notice.noticeNo
-                )
-            )
-          );
+          // setNoticeList((prevNoticeList) =>
+          //   prevNoticeList.filter(
+          //     (notice) =>
+          //       !selectedData.some(
+          //         (delItem) => delItem.noticeNo === notice.noticeNo
+          //       )
+          //   )
+          // );
         },
         onError: (error) => {
           console.error("삭제 실패:", error);
@@ -277,7 +268,7 @@ export default function NoticeList() {
           <TableBox>
             <TableBox.Inner>
               <CheckboxTable
-                data={formatNoticeList}
+                data={data?.data?.contents || []}
                 selectedRows={useSelectedRows}
                 toggleRowsSelection={toggleUseRowsSelection}
               >
@@ -291,8 +282,8 @@ export default function NoticeList() {
                 </CheckboxTable.Thead>
 
                 <CheckboxTable.Tbody>
-                  {formatNoticeList.map((item) => (
-                    <CheckboxTable.Tr key={item.id} id={item.id}>
+                  {(data?.data?.contents || []).map((item) => (
+                    <CheckboxTable.Tr key={item.noticeNo} id={item.noticeNo}>
                       <CheckboxTable.CheckboxTd
                         item={item}
                         keyName="noticeNo"
