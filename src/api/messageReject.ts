@@ -24,7 +24,7 @@ const API = {
     page,
     limit,
   }: GetRejectSptListRequestType) => {
-    let url = `/api/spt/reject/list?page=${page}&limit=${limit}`;
+    let url = `/api/spt/reject/sptlist?page=${page}&limit=${limit}`;
     if (userNm) url += `&userNm=${userNm}`;
     return await instance.get<GetRejectSptListResponseType>(url);
   },

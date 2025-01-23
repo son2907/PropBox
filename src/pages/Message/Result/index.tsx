@@ -19,6 +19,7 @@ import { usePagination } from "../../../hooks/usePagination";
 import RangeCalendar from "../../../components/Calendar/RangeCalendar";
 import PathConstants from "../../../routers/path";
 import { openPopup } from "../../../utils/openPopup";
+import { useTableSelect } from "../../../hooks/useTableSelect";
 
 export default function ResultMessage() {
   const [date, setDate] = useState<Date>(new Date());
@@ -43,6 +44,8 @@ export default function ResultMessage() {
   const onClickDetailBtn = () => {
     openPopup(popupInfo);
   };
+
+  const { countValues, selectValue, handleChange } = useTableSelect();
 
   return (
     <Stack width={"100%"} height={"100%"} gap={1}>
@@ -148,7 +151,12 @@ export default function ResultMessage() {
           </TableBox.Inner>
           <CenteredBox justifyContent={"space-between"} padding={1}>
             <Pagination count={25} page={c_1} onChange={cc_1} />
-            <TableSelect total={100} />
+            <TableSelect
+              total={100}
+              countValues={countValues}
+              selectValue={selectValue}
+              handleChange={handleChange}
+            />
           </CenteredBox>
         </Stack>
 
@@ -184,7 +192,12 @@ export default function ResultMessage() {
           </TableBox.Inner>
           <CenteredBox justifyContent={"space-between"} padding={1}>
             <Pagination count={25} page={c_2} onChange={cc_2} />
-            <TableSelect total={100} />
+            <TableSelect
+              total={100}
+              countValues={countValues}
+              selectValue={selectValue}
+              handleChange={handleChange}
+            />
           </CenteredBox>
         </Stack>
       </TableBox>

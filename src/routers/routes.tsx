@@ -62,12 +62,15 @@ import PasswordCheck from "../pages/Mypage/popup/PasswordCheck";
 import UserInfoPopup from "../pages/Mypage";
 import AdminInfoPopup from "../pages/Mypage/AdminInfo";
 import RegisterSenerNumber from "../pages/CalManagement/Consultation/popup/RegisterSenerNumber";
+import SoketGuard from "./guard/SoketGuard";
 
 export const routes: RouteObject[] = [
   {
     element: (
       <AuthGuard>
-        <DefaultLayout />
+        <SoketGuard>
+          <DefaultLayout />
+        </SoketGuard>
       </AuthGuard>
     ),
     // 에러 엘리먼트 추가 필요
