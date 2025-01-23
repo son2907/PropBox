@@ -21,22 +21,35 @@ import CenteredBox from "../../../components/Box/CenteredBox";
 import TableSelect from "../../../components/Select/TableSelect";
 import useDidMountEffect from "../../../hooks/useDidMountEffect";
 import { useRejectLocalList, useRejectNumber } from "../../../api/rejectNumber";
-import { RejectLocalListType, RejectNumberType } from "../../../types/rejectNumber";
+import {
+  RejectLocalListType,
+  RejectNumberType,
+} from "../../../types/rejectNumber";
+import { useTableSelect } from "../../../hooks/useTableSelect";
 
 export default function ReceivingNumber() {
-
   const [searchQuery, setSearchQuery] = useState(""); // 검색어 상태 관리
   const [searchInput, setSearchInput] = useState(""); // 검색 입력값 상태 관리
 
   //현장 목록 조회
-  const [localListReqData, setLocalListReqData] = useState({ userNm: "", page: "0", limit: "20" });
-  const { data: localListData, isSuccess: isLocalListData } = useRejectLocalList(localListReqData);
+  const [localListReqData, setLocalListReqData] = useState({
+    userNm: "",
+    page: "0",
+    limit: "20",
+  });
+  const { data: localListData, isSuccess: isLocalListData } =
+    useRejectLocalList(localListReqData);
   const [localList, setLocalList] = useState<RejectLocalListType[]>([]);
   const [selectLocalNo, setSelectLocalNo] = useState("");
 
   //수신거부 목록 조회
-  const [rejectNumReqData, setRejectNumReqData] = useState({ sptNo: "", page: "0", limit: "20" });
-  const {data: rejectNumberList, isSuccess:isRejectNumberList} = useRejectNumber(rejectNumReqData);
+  const [rejectNumReqData, setRejectNumReqData] = useState({
+    sptNo: "",
+    page: "0",
+    limit: "20",
+  });
+  const { data: rejectNumberList, isSuccess: isRejectNumberList } =
+    useRejectNumber(rejectNumReqData);
   const [rejectNumList, setRejectNumList] = useState<RejectNumberType[]>([]);
 
   const { selectedRow, toggleRowSelection } = useSingleRowSelection();
@@ -51,6 +64,12 @@ export default function ReceivingNumber() {
 
   const [selectedAge, setSelectedAge] = useState<number | null>(null);
 
+  const {
+    countValues,
+    selectValue: t_s,
+    handleChange: t_hc,
+  } = useTableSelect();
+
   // 이 ref를 통해 textArea에 입력된 값에 접근할 수 있음
   const tRef1 = useRef<HTMLTextAreaElement>(null); // textArea에 연결해 줄 ref
 
@@ -63,15 +82,15 @@ export default function ReceivingNumber() {
     if (searchQuery) {
       setLocalListReqData((prev) => ({
         ...prev,
-        userNm: searchQuery
-      }))
+        userNm: searchQuery,
+      }));
     }
   }, [searchQuery]);
-  useDidMountEffect(()=>{
-    if(localListData?.data.contents) {
+  useDidMountEffect(() => {
+    if (localListData?.data.contents) {
       setLocalList(localListData.data.contents);
     }
-  },[localListData]);
+  }, [localListData]);
   useEffect(() => {
     if (selectLocalNo !== "") {
       // selectUserNo가 변경될 때 localListReqData를 업데이트하고 useLocalList 호출 트리거
@@ -82,10 +101,10 @@ export default function ReceivingNumber() {
     } else return;
   }, [selectLocalNo]);
   useDidMountEffect(() => {
-    if(rejectNumberList?.data.contents) {
+    if (rejectNumberList?.data.contents) {
       setRejectNumList(rejectNumberList.data.contents);
     }
-  },[rejectNumberList])
+  }, [rejectNumberList]);
 
   const handleSearch = () => {
     setSearchQuery(searchInput); // 검색어 업데이트
@@ -119,13 +138,13 @@ export default function ReceivingNumber() {
                       <BasicTable.Tr
                         key={index}
                         isClicked={selectLocalNo === item.sptNo}
-                          onClick={() => {
-                            if (selectLocalNo === item.sptNo) {
-                              setSelectLocalNo("");
-                            } else {
-                              setSelectLocalNo(item.sptNo);
-                            }
-                          }}
+                        onClick={() => {
+                          if (selectLocalNo === item.sptNo) {
+                            setSelectLocalNo("");
+                          } else {
+                            setSelectLocalNo(item.sptNo);
+                          }
+                        }}
                       >
                         <BasicTable.Td>{item.sptNo}</BasicTable.Td>
                         <BasicTable.Td>{item.sptNm}</BasicTable.Td>
@@ -170,17 +189,22 @@ export default function ReceivingNumber() {
               marginRight={2}
               justifyContent={"space-between"}
             >
-              <Pagination count={25} page={currentPage} onChange={onChangePage} />
-              <TableSelect total={100} />
+              <Pagination
+                count={25}
+                page={currentPage}
+                onChange={onChangePage}
+              />
+              <TableSelect
+                total={100}
+                countValues={countValues}
+                selectValue={t_s}
+                handleChange={t_hc}
+              />
             </CenteredBox>
           </Stack>
           <Stack width={"20%"} height={"100%"} overflow={"auto"}>
             <Stack width={"100%"} height={"100%"} gap={1}>
-              <Stack
-                width={"100%"}
-                marginTop={2}
-                marginBottom={2}
-              >
+              <Stack width={"100%"} marginTop={2} marginBottom={2}>
                 <Typography
                   color="primary.dark"
                   fontWeight={"bold"}
@@ -189,12 +213,7 @@ export default function ReceivingNumber() {
                   상세정보
                 </Typography>
               </Stack>
-              <Stack
-                width={"100%"}
-                overflow={"auto"}
-                gap={1}
-                paddingBottom={1}
-              >
+              <Stack width={"100%"} overflow={"auto"} gap={1} paddingBottom={1}>
                 <Stack gap={1}>
                   <Typography>수신거부 번호</Typography>
                   <BasicInput
@@ -203,12 +222,7 @@ export default function ReceivingNumber() {
                   ></BasicInput>
                 </Stack>
               </Stack>
-              <Stack
-                width={"100%"}
-                overflow={"auto"}
-                gap={1}
-                paddingBottom={1}
-              >
+              <Stack width={"100%"} overflow={"auto"} gap={1} paddingBottom={1}>
                 <Stack gap={1}>
                   <Typography>070 번호</Typography>
                   <BasicInput
@@ -217,12 +231,7 @@ export default function ReceivingNumber() {
                   ></BasicInput>
                 </Stack>
               </Stack>
-              <Stack
-                width={"100%"}
-                overflow={"auto"}
-                gap={1}
-                paddingBottom={1}
-              >
+              <Stack width={"100%"} overflow={"auto"} gap={1} paddingBottom={1}>
                 <Stack gap={1}>
                   <Typography>사용여부</Typography>
                   <ToggleButton
@@ -232,12 +241,7 @@ export default function ReceivingNumber() {
                   />
                 </Stack>
               </Stack>
-              <Stack
-                width={"100%"}
-                overflow={"auto"}
-                gap={1}
-                paddingBottom={1}
-              >
+              <Stack width={"100%"} overflow={"auto"} gap={1} paddingBottom={1}>
                 <Stack gap={1}>
                   <Typography>비고</Typography>
                   <TextArea

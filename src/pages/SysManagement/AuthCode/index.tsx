@@ -14,11 +14,13 @@ import TableSelect from "../../../components/Select/TableSelect";
 import useDidMountEffect from "../../../hooks/useDidMountEffect";
 import { useAuthCodeList } from "../../../api/authCode";
 import { AuthCodeListType } from "../../../types/authCode";
+import { useTableSelect } from "../../../hooks/useTableSelect";
 
 export default function AuthCode() {
-
   const [searchQuery, setSearchQuery] = useState(""); // 검색어 상태 관리
   const [searchInput, setSearchInput] = useState(""); // 검색 입력값 상태 관리
+
+  const { countValues, selectValue, handleChange } = useTableSelect();
 
   // BasicTable에 연결할 한 행만 선택 가능하게 하는거(BasicTable 수정을 해야겐네요..)
   const { selectedRow, toggleRowSelection } = useSingleRowSelection();
@@ -31,8 +33,13 @@ export default function AuthCode() {
   };
 
   //인증번호 목록 조회
-  const [authCodeReqData, setAuthCodeReqData] = useState({ cid: "", page: "0", limit: "20" });
-  const {data: authCodeListData, isSuccess: isAuthCodeListData} = useAuthCodeList(authCodeReqData);
+  const [authCodeReqData, setAuthCodeReqData] = useState({
+    cid: "",
+    page: "0",
+    limit: "20",
+  });
+  const { data: authCodeListData, isSuccess: isAuthCodeListData } =
+    useAuthCodeList(authCodeReqData);
   const [authCodeList, setAuthCodeList] = useState<AuthCodeListType[]>([]);
 
   const handleSearch = () => {
@@ -44,14 +51,14 @@ export default function AuthCode() {
   useEffect(() => {
     setAuthCodeReqData((prev) => ({
       ...prev,
-      cid : searchQuery
-    }))
-  },[searchQuery]);
+      cid: searchQuery,
+    }));
+  }, [searchQuery]);
   useEffect(() => {
-    if(authCodeListData?.data.contents){
+    if (authCodeListData?.data.contents) {
       setAuthCodeList(authCodeListData.data.contents);
     }
-  },[authCodeListData]);
+  }, [authCodeListData]);
 
   return (
     <>
@@ -98,7 +105,12 @@ export default function AuthCode() {
             justifyContent={"space-between"}
           >
             <Pagination count={25} page={currentPage} onChange={onChangePage} />
-            <TableSelect total={100} />
+            <TableSelect
+              total={100}
+              countValues={countValues}
+              selectValue={selectValue}
+              handleChange={handleChange}
+            />
           </CenteredBox>
         </Stack>
       </Stack>
