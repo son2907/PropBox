@@ -16,8 +16,8 @@ export default function Toast({
   open,
   toastClose,
   duration,
-  vertical,
-  horizontal,
+  vertical = "bottom",
+  horizontal = "right",
   ...rest
 }: ToastType) {
   return createPortal(

@@ -11,6 +11,7 @@ import TableSelect from "../../../components/Select/TableSelect";
 import CheckboxTable from "../../../components/Table/CheckboxTable";
 import GrayBox from "../../../components/Box/GrayBox";
 import { useEffect } from "react";
+import { useTableSelect } from "../../../hooks/useTableSelect";
 
 interface Data {
   id: string;
@@ -24,30 +25,31 @@ interface GroupInfoProps {
 export default function GroupInfo({ onSelect }: GroupInfoProps) {
   const { value, handleChange: tabChange } = useTabs(0);
 
-  const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함 
+  const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함
 
   // usePagination에
   const { currentPage, onChangePage } = usePagination();
 
-
   //임시이기때문에 item.age의 값을 선택시 테이블 변경되도록 함...
   useEffect(() => {
-  console.log("Selected Row IDs:", Array.from(selectedRow)); // 선택된 Row ID 확인
+    console.log("Selected Row IDs:", Array.from(selectedRow)); // 선택된 Row ID 확인
 
-  if (selectedRow.size > 0) {
-    selectedRow.forEach((id) => {
-      const selectedItem = tableTestData.find((item) => item.id === id);
-      if (selectedItem) {
-        console.log("Selected Item:", selectedItem); // 선택된 아이템 전체 정보
-        console.log("Selected Age:", selectedItem.age); // 선택된 아이템의 age
-      } else {
-        console.log("No matching item found for ID:", id); // 매칭 실패
-      }
-    });
-  } else {
-    console.log("No rows selected");
-  }
-}, [selectedRow]); // selectedRow 변경 시 실행
+    if (selectedRow.size > 0) {
+      selectedRow.forEach((id) => {
+        const selectedItem = tableTestData.find((item) => item.id === id);
+        if (selectedItem) {
+          console.log("Selected Item:", selectedItem); // 선택된 아이템 전체 정보
+          console.log("Selected Age:", selectedItem.age); // 선택된 아이템의 age
+        } else {
+          console.log("No matching item found for ID:", id); // 매칭 실패
+        }
+      });
+    } else {
+      console.log("No rows selected");
+    }
+  }, [selectedRow]); // selectedRow 변경 시 실행
+
+  const { countValues, selectValue, handleChange } = useTableSelect();
 
   return (
     <>
@@ -57,7 +59,7 @@ export default function GroupInfo({ onSelect }: GroupInfoProps) {
             <Box
               sx={{
                 width: "100%",
-                height: 'calc(100vh - 280px)',
+                height: "calc(100vh - 280px)",
                 overflow: "auto",
                 marginBottom: 1,
                 flexGrow: 1,
@@ -83,11 +85,19 @@ export default function GroupInfo({ onSelect }: GroupInfoProps) {
                   })}
                 </BasicTable.Tbody>
               </BasicTable>
-              
             </Box>
             <GrayBox gap={1} justifyContent={"space-between"}>
-              <Pagination count={25} page={currentPage} onChange={onChangePage} />
-              <TableSelect total={100} />
+              <Pagination
+                count={25}
+                page={currentPage}
+                onChange={onChangePage}
+              />
+              <TableSelect
+                total={100}
+                countValues={countValues}
+                selectValue={selectValue}
+                handleChange={handleChange}
+              />
             </GrayBox>
           </TableBox.Inner>
         </TableBox>

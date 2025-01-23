@@ -1,38 +1,12 @@
 import { Box, Typography } from "@mui/material";
 import { Select } from ".";
-import useSelect from "../../hooks/useSelect";
 
-interface TableSelectProps {
-  total: number;
-}
-
-export default function TableSelect({ total }: TableSelectProps) {
-  const selectData = [
-    {
-      value: 10,
-      data: "10",
-    },
-    {
-      value: 20,
-      data: "20",
-    },
-    {
-      value: 40,
-      data: "40",
-    },
-    {
-      value: 50,
-      data: "50",
-    },
-  ];
-
-  const { selectValue, handleChange } = useSelect(
-    selectData,
-    "value",
-    "data",
-    "10"
-  );
-
+export default function TableSelect({
+  countValues,
+  selectValue,
+  handleChange,
+  total,
+}) {
   return (
     <Box
       sx={{
@@ -46,7 +20,7 @@ export default function TableSelect({ total }: TableSelectProps) {
       <Select
         value={selectValue}
         onChange={handleChange}
-        selectData={selectData}
+        selectData={countValues}
       ></Select>
       <Typography>전체:{total}</Typography>
     </Box>

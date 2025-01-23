@@ -16,6 +16,7 @@ import BasicTable from "../../../components/Table/BasicTable";
 import IconSquareButton from "../../../components/Button/IconSquareButton";
 import PathConstants from "../../../routers/path";
 import { openPopup } from "../../../utils/openPopup";
+import { useTableSelect } from "../../../hooks/useTableSelect";
 
 export default function DeclarationMessage() {
   const {
@@ -39,6 +40,8 @@ export default function DeclarationMessage() {
     url: PathConstants.Message.GroupCell,
     windowName: "방송통신위원회 그룹셀",
   };
+
+  const { countValues, selectValue, handleChange } = useTableSelect();
 
   return (
     <Stack width={"100%"} height={"100%"}>
@@ -101,7 +104,12 @@ export default function DeclarationMessage() {
           </TableBox.Inner>
           <CenteredBox margin={1} justifyContent={"space-between"}>
             <Pagination count={25} page={currentPage} onChange={onChangePage} />
-            <TableSelect total={100} />
+            <TableSelect
+              total={100}
+              countValues={countValues}
+              selectValue={selectValue}
+              handleChange={handleChange}
+            />
           </CenteredBox>
         </Stack>
 
@@ -131,7 +139,12 @@ export default function DeclarationMessage() {
           </TableBox.Inner>
           <CenteredBox margin={1} justifyContent={"space-between"}>
             <Pagination count={25} page={currentPage} onChange={onChangePage} />
-            <TableSelect total={100} />
+            <TableSelect
+              total={100}
+              countValues={countValues}
+              selectValue={selectValue}
+              handleChange={handleChange}
+            />
           </CenteredBox>
         </Stack>
       </TableBox>

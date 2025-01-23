@@ -157,6 +157,10 @@ export type MsgSaveItem = {
   mssage: string;
 };
 
+export interface GetMsgsaveOneResponseType extends ApiResponseType {
+  contents: MsgSaveItem;
+}
+
 export interface GetMsgsaveListResponseType extends ApiResponseType {
   contents: MsgSaveItem[];
 }

@@ -11,6 +11,7 @@ import TableSelect from "../../../components/Select/TableSelect";
 import CheckboxTable from "../../../components/Table/CheckboxTable";
 import GrayBox from "../../../components/Box/GrayBox";
 import { useEffect } from "react";
+import { useTableSelect } from "../../../hooks/useTableSelect";
 
 interface Data {
   id: string;
@@ -20,10 +21,12 @@ interface Data {
 export default function UserInfo() {
   const { value, handleChange: tabChange } = useTabs(0);
 
-  const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함 
+  const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함
 
   // usePagination에
   const { currentPage, onChangePage } = usePagination();
+
+  const { countValues, selectValue, handleChange } = useTableSelect();
 
   return (
     <>
@@ -33,7 +36,7 @@ export default function UserInfo() {
             <Box
               sx={{
                 width: "100%",
-                height: 'calc(100vh - 280px)',
+                height: "calc(100vh - 280px)",
                 overflow: "auto",
                 marginBottom: 1,
                 flexGrow: 1,
@@ -59,11 +62,19 @@ export default function UserInfo() {
                   })}
                 </BasicTable.Tbody>
               </BasicTable>
-              
             </Box>
             <GrayBox gap={1} justifyContent={"space-between"}>
-              <Pagination count={25} page={currentPage} onChange={onChangePage} />
-              <TableSelect total={100} />
+              <Pagination
+                count={25}
+                page={currentPage}
+                onChange={onChangePage}
+              />
+              <TableSelect
+                total={100}
+                countValues={countValues}
+                selectValue={selectValue}
+                handleChange={handleChange}
+              />
             </GrayBox>
           </TableBox.Inner>
         </TableBox>

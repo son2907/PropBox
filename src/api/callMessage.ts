@@ -7,7 +7,7 @@ import {
   GetCidListResponseType,
   GetRejectMsgResponseType,
   GetMsgsaveListResponseType,
-  MsgSaveItem,
+  GetMsgsaveOneResponseType,
   MsgGetOneRequestType,
   MsgSaveRequestType,
 } from "../types/callCnslt";
@@ -34,7 +34,7 @@ const API = {
   //메세지 상세 조회
   getMsgsaveOne: async ({ saveNo }: MsgGetOneRequestType) => {
     const url = `/api/spt/msgsave/${saveNo}`;
-    return await instance.get<MsgSaveItem>(url);
+    return await instance.get<GetMsgsaveOneResponseType>(url);
   },
   // 메세지 저장
   postMsg: async (requestData: { body: MsgSaveRequestType }) => {
@@ -81,12 +81,13 @@ export const useGetCidList = () => {
 };
 
 // 수신거부 한 개 조회
-export const useRejectOne = () => {
+export const useRejectAd = () => {
   return useQuery({
     queryKey: KEY.getRejectOne(),
     queryFn: async () => {
       return await API.getRejectOne();
     },
+    enabled: false,
   });
 };
 
@@ -107,6 +108,7 @@ export const useMsgOneList = ({ saveNo }: MsgGetOneRequestType) => {
     queryFn: async () => {
       return await API.getMsgsaveOne({ saveNo });
     },
+    enabled: !!saveNo,
   });
 };
 

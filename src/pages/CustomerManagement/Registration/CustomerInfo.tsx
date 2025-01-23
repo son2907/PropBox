@@ -8,6 +8,7 @@ import TableBox from "../../../components/Box/TableBox";
 import TableSelect from "../../../components/Select/TableSelect";
 import { usePagination } from "../../../hooks/usePagination";
 import CheckboxTable from "../../../components/Table/CheckboxTable";
+import { useTableSelect } from "../../../hooks/useTableSelect";
 
 // interface Data {
 //   id: string;
@@ -25,6 +26,8 @@ export default function CustomerInfo({ selectedAge }: CustomerInfoProps) {
 
   // usePagination에
   const { currentPage, onChangePage } = usePagination();
+
+  const { countValues, selectValue, handleChange } = useTableSelect();
 
   return (
     <>
@@ -76,7 +79,12 @@ export default function CustomerInfo({ selectedAge }: CustomerInfoProps) {
                 page={currentPage}
                 onChange={onChangePage}
               />
-              <TableSelect total={100} />
+              <TableSelect
+                total={100}
+                countValues={countValues}
+                selectValue={selectValue}
+                handleChange={handleChange}
+              />
             </GrayBox>
           </TableBox.Inner>
         </TableBox>
