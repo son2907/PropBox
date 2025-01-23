@@ -31,7 +31,7 @@ const API = {
     const date = getFormattedDate(); // 상담 일자는 반드시 금일
     // ======================================테스트 날짜======================================
     // const date = 20241223;
-    // const date = 20250116;
+    // const date = 20250121;
     const url = `/api/tel/cnslt?sptNo=${spt}&cnsltDt=${date}&callYn=${absnceYn}&trsmYn=${trsmYn}`;
     return await instance.get(url);
   },

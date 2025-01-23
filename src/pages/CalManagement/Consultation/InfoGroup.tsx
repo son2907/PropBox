@@ -39,14 +39,21 @@ import { useApiRes } from "../../../utils/useApiRes";
 import useModal from "../../../hooks/useModal";
 import { FailModal } from "../../../components/layout/modal/FailModal";
 import { BasicCompletedModl } from "../../../components/layout/modal/BasicCompletedModl";
+import { sendMessage, useWebSocket } from "../../../routers/guard/soketFn";
+import { WebSocketContext } from "../../../routers/guard/SoketGuard";
+import { getKoreanTime } from "../../../utils/getKoreanTime";
 
 export default function InfoGroup({ tabType }: TabType) {
+  // 웹소켓
+  const webSocket = useWebSocket(WebSocketContext);
+
   // 로그인 아이디
   const { loginId } = useAuthStore(["loginId"]);
   // telId값
   const telStore = useStorageStore(useTelStore, "selectedTel");
   // 검색 조건 (왼쪽 테이블에서 선택한 한 행)
-  const { cstmrNo, cnsltNo, callYn, trsmYn } = useCnsltStore();
+  const { cstmrNo, cnsltNo, cstmrNm, cnsltTelno, callYn, trsmYn } =
+    useCnsltStore();
 
   // 상담 일자
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -69,8 +76,6 @@ export default function InfoGroup({ tabType }: TabType) {
   });
 
   //상담항목 조회
-  // cstmrNo?: string, // 고객번호
-  // cnsltNo?: string // 상담번호
   const { data: cnsltItemData } = useCnsltItem("0", "0");
   const { refetch: cnsltReftech } = useTelCnsltList(callYn, trsmYn);
 
@@ -80,8 +85,8 @@ export default function InfoGroup({ tabType }: TabType) {
   // 초깃값
   const defaultValue = useMemo(
     () => ({
-      cnsltTelno: "",
-      cstmrNm: "",
+      cnsltTelno: cnsltTelno || "",
+      cstmrNm: cstmrNm || "",
       cstmrRmk: "",
       mbtlNo: "",
       telNo: "",
@@ -198,9 +203,31 @@ export default function InfoGroup({ tabType }: TabType) {
 
   // phone / 전화 버튼
   const onCall = ({ type }: { type: string }) => {
-    reset({
-      cnsltTelno: type == "Mbt" ? getValues("mbtlNo") : getValues("telNo"),
-    });
+    if (type == "Mbt") {
+      reset({ cnsltTelno: getValues("mbtlNo") });
+      const message = {
+        messageType: "DIAL",
+        timestampUTC: getKoreanTime(),
+        // counterpart: getValues("mbtlNo"),
+        counterpart: "07040342009",
+      };
+      sendMessage({
+        webSocket: { current: webSocket },
+        message: message,
+      });
+    } else {
+      reset({ cnsltTelno: getValues("telNo") });
+      const message = {
+        messageType: "DIAL",
+        timestampUTC: getKoreanTime(),
+        // counterpart: getValues("mbtlNo"),
+        counterpart: "07040342009",
+      };
+      sendMessage({
+        webSocket: { current: webSocket },
+        message: message,
+      });
+    }
   };
 
   // api 재호출 또는 항목 선택 해제 시 데이터 비움
@@ -212,21 +239,6 @@ export default function InfoGroup({ tabType }: TabType) {
       return;
     }
     if (cunsltDetailList?.data?.contents) {
-      const transformedData = cnsltItemData?.data.contents.reduce(
-        (acc, item) => {
-          // itemNm을 키로 사용하고 detailNm을 값으로 할당
-          acc[item.itemNm] = item.detailNm || ""; // detailNm이 null인 경우 빈 문자열
-          return acc;
-        },
-        {}
-      );
-
-      // defaultValue와 병합
-      const mergedData = {
-        ...cunsltDetailList.data.contents,
-        ...transformedData,
-      };
-
       reset({ ...cunsltDetailList.data.contents });
     } else {
       reset(defaultValue);
@@ -234,6 +246,14 @@ export default function InfoGroup({ tabType }: TabType) {
       setDetailInfo([{}]);
     }
   }, [cunsltDetailList, cnsltNo, cnsltItemData]);
+
+  // 웹소켓 반응에 따라 데이터 바인딩
+  useEffect(() => {
+    reset({
+      cstmrNm,
+      cnsltTelno,
+    });
+  }, [reset, cstmrNm, cnsltTelno]);
 
   // 모달 hook
   const { openModal, closeModal } = useModal();
