@@ -66,9 +66,18 @@ export default function SoketGuard({ children }: PropsWithChildren) {
     webSocket.current.onmessage = (event: MessageEvent) => {
       console.log("메세지 수신::", event.data);
       const messageType = JSON.parse(event.data).messageType;
+      console.log("########메세지 타입:", messageType);
 
-      // 추후 웹소켓에서 보내준 고객 이름과 고객 정보를 등록해줘야 함
+      if (messageType == "HEARTBEAT") {
+        const exampleMessage = {
+          messageType: "HEARTBEAT",
+        };
+
+        sendMessage({ webSocket, message: exampleMessage });
+        return;
+      }
       if (messageType == "RINGING") {
+        // 추후 웹소켓에서 보내준 고객 이름과 고객 정보를 등록해줘야 함
         setToastContent({
           name: "홍길동",
           telNo: JSON.parse(event.data).counterpart,
@@ -82,7 +91,11 @@ export default function SoketGuard({ children }: PropsWithChildren) {
           cnsltTelno: JSON.parse(event.data).counterpart,
         });
       }
-      if (messageType === "MISSED" || messageType === "HANGUP") {
+      if (
+        messageType === "MISSED" ||
+        messageType === "HANGUP" ||
+        messageType === "ANSWERED"
+      ) {
         setToastContent({ name: "", telNo: "", info: "" });
         toastClose();
       }
