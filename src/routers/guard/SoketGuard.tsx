@@ -110,33 +110,31 @@ export default function SoketGuard({ children }: PropsWithChildren) {
 
   return (
     <WebSocketContext.Provider value={webSocket.current}>
-      <div className="MuiBox-root css-1h1gi3g">
-        <Toast
-          open={openToast}
-          vertical={"bottom"}
-          horizontal={"right"}
-          toastClose={toastClose}
-          onClick={onClickToast}
-        >
-          <Toast.Row>
-            <Toast.InfoHeader>고객명</Toast.InfoHeader>
-            <Toast.InfoContent>{toastContent.name}</Toast.InfoContent>
-          </Toast.Row>
-          <Toast.Row>
-            <Toast.InfoHeader>전화번호</Toast.InfoHeader>
-            <Toast.InfoContent>{toastContent.telNo}</Toast.InfoContent>
-          </Toast.Row>
-          <Toast.Row>
-            <Toast.InfoHeader>고객정보</Toast.InfoHeader>
-            <Toast.InfoContent>
-              {toastContent.info}
-              홍길동님의 정보입니다.홍길동님의 정보입니다. 홍길동님의
-              정보입니다. 홍길동님의 정보입니다. 홍길동님의 정보입니다.
-            </Toast.InfoContent>
-          </Toast.Row>
-        </Toast>
-        {children}
-      </div>
+      <Toast
+        open={openToast}
+        vertical={"bottom"}
+        horizontal={"right"}
+        toastClose={toastClose}
+        onClick={onClickToast}
+      >
+        <Toast.Row>
+          <Toast.InfoHeader>고객명</Toast.InfoHeader>
+          <Toast.InfoContent>{toastContent.name}</Toast.InfoContent>
+        </Toast.Row>
+        <Toast.Row>
+          <Toast.InfoHeader>전화번호</Toast.InfoHeader>
+          <Toast.InfoContent>{toastContent.telNo}</Toast.InfoContent>
+        </Toast.Row>
+        <Toast.Row>
+          <Toast.InfoHeader>고객정보</Toast.InfoHeader>
+          <Toast.InfoContent>
+            {toastContent.info}
+            홍길동님의 정보입니다.홍길동님의 정보입니다. 홍길동님의 정보입니다.
+            홍길동님의 정보입니다. 홍길동님의 정보입니다.
+          </Toast.InfoContent>
+        </Toast.Row>
+      </Toast>
+      {children}
     </WebSocketContext.Provider>
   );
 }
