@@ -97,10 +97,10 @@ export default function CallTable({ tabType, tabChange }: TabType) {
 
       switch (trsmYn) {
         case "W":
-          processData("waitCstmrNo", "waitCstmrNo", "cstmrNm");
+          processData("seqNo", "waitCstmrNo", "cstmrNm");
           break;
         default:
-          processData("cnsltNo", "cstmrNo", "cnsltNo");
+          processData("seqNo", "cstmrNo", "cnsltNo");
           break;
       }
     }
@@ -169,8 +169,8 @@ export default function CallTable({ tabType, tabChange }: TabType) {
                     return (
                       <BasicTable.Tr
                         key={index}
-                        isClicked={selectedRow.has(item.cnsltNo)}
-                        onClick={() => toggleRowSelection(item.cnsltNo)}
+                        isClicked={selectedRow.has(item.seqNo)}
+                        onClick={() => toggleRowSelection(item.seqNo)}
                       >
                         <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
                         <BasicTable.Td>{item.cnsltTelno}</BasicTable.Td>
@@ -217,8 +217,8 @@ export default function CallTable({ tabType, tabChange }: TabType) {
                         return (
                           <BasicTable.Tr
                             key={index}
-                            isClicked={selectedRow.has(item.waitCstmrNo)}
-                            onClick={() => toggleRowSelection(item.waitCstmrNo)}
+                            isClicked={selectedRow.has(item.seqNo)}
+                            onClick={() => toggleRowSelection(item.seqNo)}
                           >
                             <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
                             <BasicTable.Td>{item.themaNm}</BasicTable.Td>
@@ -239,8 +239,8 @@ export default function CallTable({ tabType, tabChange }: TabType) {
                       return (
                         <BasicTable.Tr
                           key={index}
-                          isClicked={selectedRow.has(item.cnsltNo)}
-                          onClick={() => toggleRowSelection(item.cnsltNo)}
+                          isClicked={selectedRow.has(item.seqNo)}
+                          onClick={() => toggleRowSelection(item.seqNo)}
                         >
                           <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
                           <BasicTable.Td>{item.cnsltTelno}</BasicTable.Td>
