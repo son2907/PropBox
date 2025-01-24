@@ -10,6 +10,8 @@ import { openPopup } from "../../utils/openPopup";
 import PathConstants from "../../routers/path";
 import useModal from "../../hooks/useModal";
 import { LogoutModal } from "./modal/Logout";
+import { useWebSocket } from "../../routers/guard/soketFn";
+import { WebSocketContext } from "../../routers/guard/SoketGuard";
 
 export default function UserInfo() {
   const { userNm, mbtlNo } = useAuthStore(["userNm", "mbtlNo"]);
@@ -17,6 +19,7 @@ export default function UserInfo() {
   const clear = useAuthStore(["clear"]);
   const navigate = useNavigate();
   const { openModal, closeModal } = useModal();
+  const webSocket = useWebSocket(WebSocketContext);
 
   const onLogout = () => {
     openModal(LogoutModal, {
@@ -26,6 +29,7 @@ export default function UserInfo() {
       onSubmit: () => {
         clear.clear();
         localStorage.clear();
+        webSocket?.close(); // 웹소켓 닫음
         navigate("/login");
       },
     });

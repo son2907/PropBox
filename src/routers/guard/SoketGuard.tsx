@@ -11,6 +11,7 @@ import Toast from "../../components/Toast/Toast";
 import { useNavigate } from "react-router-dom";
 import PathConstants from "../path";
 import { useCnsltStore } from "../../stores/CunsltStore";
+import { useAuthStore } from "../../stores/authStore";
 
 export const WebSocketContext = createContext<WebSocket | null>(null);
 
@@ -26,7 +27,11 @@ export default function SoketGuard({ children }: PropsWithChildren) {
   const { setCnsltInfo } = useCnsltStore();
   const navigate = useNavigate();
 
+  const { accessToken } = useAuthStore(["accessToken"]);
+
   useEffect(() => {
+    if (!accessToken) return;
+
     webSocket.current = new WebSocket("ws://js-lab.iptime.org:23570");
     webSocket.current.onopen = () => {
       console.log("웹소켓 실행:", "ws://js-lab.iptime.org:23570");
@@ -106,7 +111,11 @@ export default function SoketGuard({ children }: PropsWithChildren) {
     return () => {
       webSocket.current?.close();
     };
-  }, []);
+  }, [accessToken]);
+
+  // useEffect(() => {
+  //   console.log("처가져와봐:", accessToken);
+  // }, [accessToken]);
 
   console.log("메세지에 저장된 내용:", messages);
 
