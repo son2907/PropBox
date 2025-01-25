@@ -204,24 +204,24 @@ export default function InfoGroup({ tabType }: TabType) {
   // phone / 전화 버튼
   const onCall = ({ type }: { type: string }) => {
     if (type == "Mbt") {
-      reset({ cnsltTelno: getValues("mbtlNo") });
+      const number = getValues("mbtlNo");
+      reset({ cnsltTelno: number });
       const message = {
         messageType: "DIAL",
         timestampUTC: getKoreanTime(),
-        // counterpart: getValues("mbtlNo"),
-        counterpart: "07040342009",
+        counterpart: number,
       };
       sendMessage({
         webSocket: { current: webSocket },
         message: message,
       });
     } else {
-      reset({ cnsltTelno: getValues("telNo") });
+      const number = getValues("telNo");
+      reset({ cnsltTelno: number });
       const message = {
         messageType: "DIAL",
         timestampUTC: getKoreanTime(),
-        // counterpart: getValues("mbtlNo"),
-        counterpart: "07040342009",
+        counterpart: number,
       };
       sendMessage({
         webSocket: { current: webSocket },

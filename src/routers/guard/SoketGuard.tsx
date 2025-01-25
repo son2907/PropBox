@@ -12,6 +12,8 @@ import { useNavigate } from "react-router-dom";
 import PathConstants from "../path";
 import { useCnsltStore } from "../../stores/CunsltStore";
 import { useAuthStore } from "../../stores/authStore";
+import useModal from "../../hooks/useModal";
+import { DisconnectedModal } from "./modal/DisconnectedModal";
 
 export const WebSocketContext = createContext<WebSocket | null>(null);
 
@@ -19,6 +21,7 @@ export default function SoketGuard({ children }: PropsWithChildren) {
   const webSocket = useRef<WebSocket | null>(null);
   const [messages, setMessages] = useState<string[]>([]);
   const { openToast, toastOpen, toastClose } = useToast();
+  const { openModal, closeModal } = useModal();
   const [toastContent, setToastContent] = useState({
     name: "",
     telNo: "",
@@ -81,6 +84,16 @@ export default function SoketGuard({ children }: PropsWithChildren) {
         sendMessage({ webSocket, message: exampleMessage });
         return;
       }
+
+      if (messageType == "DISCONNECTED") {
+        setMessages((prev) => [...prev, event.data]);
+        openModal(DisconnectedModal, {
+          modalId: "logOut",
+          stack: false, // 단일 모달 모드 = false,
+          onClose: () => closeModal,
+        });
+        return;
+      }
       if (messageType == "RINGING") {
         // 추후 웹소켓에서 보내준 고객 이름과 고객 정보를 등록해줘야 함
         setToastContent({
@@ -113,10 +126,6 @@ export default function SoketGuard({ children }: PropsWithChildren) {
       webSocket.current?.close();
     };
   }, [accessToken]);
-
-  // useEffect(() => {
-  //   console.log("처가져와봐:", accessToken);
-  // }, [accessToken]);
 
   console.log("메세지에 저장된 내용:", messages);
 

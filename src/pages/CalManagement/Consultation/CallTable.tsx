@@ -97,7 +97,7 @@ export default function CallTable({ tabType, tabChange }: TabType) {
 
       switch (trsmYn) {
         case "W":
-          processData("seqNo", "waitCstmrNo", "cstmrNm");
+          processData("waitCstmrNo", "waitCstmrNo", "cstmrNm");
           break;
         default:
           processData("seqNo", "cstmrNo", "cnsltNo");
@@ -217,8 +217,8 @@ export default function CallTable({ tabType, tabChange }: TabType) {
                         return (
                           <BasicTable.Tr
                             key={index}
-                            isClicked={selectedRow.has(item.seqNo)}
-                            onClick={() => toggleRowSelection(item.seqNo)}
+                            isClicked={selectedRow.has(item.waitCstmrNo)}
+                            onClick={() => toggleRowSelection(item.waitCstmrNo)}
                           >
                             <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
                             <BasicTable.Td>{item.themaNm}</BasicTable.Td>
