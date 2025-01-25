@@ -85,8 +85,8 @@ export default function InfoGroup({ tabType }: TabType) {
   // 초깃값
   const defaultValue = useMemo(
     () => ({
-      cnsltTelno: cnsltTelno || "",
-      cstmrNm: cstmrNm || "",
+      cnsltTelno: cnsltTelno,
+      cstmrNm: cstmrNm,
       cstmrRmk: "",
       mbtlNo: "",
       telNo: "",
@@ -98,7 +98,7 @@ export default function InfoGroup({ tabType }: TabType) {
       spcmnt: "",
       areaNo: "",
     }),
-    []
+    [cnsltTelno, cstmrNm]
   );
 
   // input 할당 useForm

@@ -24,7 +24,7 @@ export default function SoketGuard({ children }: PropsWithChildren) {
     telNo: "",
     info: "",
   });
-  const { setCnsltInfo } = useCnsltStore();
+  const { setCnsltInfo, clear } = useCnsltStore();
   const navigate = useNavigate();
 
   const { accessToken } = useAuthStore(["accessToken"]);
@@ -102,6 +102,7 @@ export default function SoketGuard({ children }: PropsWithChildren) {
         messageType === "ANSWERED"
       ) {
         setToastContent({ name: "", telNo: "", info: "" });
+        clear();
         toastClose();
       }
 
