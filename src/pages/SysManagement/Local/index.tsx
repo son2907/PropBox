@@ -41,68 +41,19 @@ export default function LocalManagement() {
   //사용자 리스트
   //const { data: userListData, isLoading: isLoadingUserList } = useUserList(searchQuery);
   const { isSuccess, data } = api.UserList.useUserList(searchQuery);
-  const [userList, setUserList] = useState<UserListType[]>([]);
   const [selectUserNo, setSelectUserNo] = useState("");
 
   //현장리스트
   const [localListReqData, setLocalListReqData] = useState({ sptNm: "", progrsSeCd: "", userNo: "", cntrctBgnde: "", cntrctEndde: "" });
   const { data: localListData, isSuccess: isLocalListData } = useLocalList(localListReqData);
-  const [localList, setLocalList] = useState<LocalListType[]>([]);
   const [selectLocalNo, setSelectLocalNo] = useState("");
 
   //현장 허가 솔루션
   const { data: localPermissionData, isSuccess: isLocalPermissionData } = usePermissionLocalList(selectLocalNo);
-  const [localPermission, setLocalPermission] = useState<LocalPermissionListType[]>([]);
 
   //현장 미허가 솔루션
   const { data: localNonPermissionData, isSuccess: isLocalNonPermissionData } = useNonPermissionLocalList(selectUserNo);
   const [localNonPermission, setLocalNonPermission] = useState<LocalNonPermissionType[]>([]);
-
-  const userListTableData = userList.map((item) => ({
-    userNo: item.userNo,
-    userNm: item.userNm,
-    attlistMbtlNo: item.attlistMbtlNo,
-    loginIdPrefix: item.loginIdPrefix,
-    loginId: item.loginId,
-    cmpnm: item.cmpnm,
-    bizrno: item.bizrno,
-    rprsntvNm: item.rprsntvNm,
-    adres1: item.adres1,
-    adres2: item.adres2,
-    reprsntTelno: item.reprsntTelno,
-    useYn: item.useYn,
-  }));
-
-  const localListTableData = localList.map((item) => ({
-    sptNo: item.sptNo,
-    userNo: item.userNo,
-    sptNm: item.sptNm,
-    progrsSeCd: item.progrsSeCd,
-    useYn: item.useYn,
-    cntrctBgnde: item.cntrctBgnde,
-    cntrctEndde: item.cntrctEndde,
-  }));
-
-  const localPermissionTableData = localPermission.map((item) => ({
-    id: item.sptNo,
-    sptNo: item.sptNo,
-    slutnId: item.slutnId,
-    slutnNm: item.slutnNm,
-    lisneSeCd: item.lisneSeCd,
-    lisneSeNm: item.lisneSeNm,
-    userlisneCnt: item.userlisneCnt,
-    sptlisneCnt: item.sptlisneCnt,
-    chrgcnt: item.chrgcnt,
-    userId: item.userId
-  }));
-
-  const localNonPermissionTableData = localNonPermission.map((item) => ({
-    id: item.slutnId,
-    slutnId: item.slutnId,
-    slutnNm: item.slutnNm,
-    lisneSeCd: item.lisneSeCd,
-    lisneSeNm: item.lisneSeNm,
-  }))
 
   const selectData = [
     { value: "1003005", data: "진행" },
@@ -156,51 +107,21 @@ export default function LocalManagement() {
   const [endDate, setEndDate] = useState<Date>(new Date());
 
   useEffect(() => {
-    if (data?.data.contents) {
-      setUserList(data.data.contents);
-    }
-  }, [data, isSuccess, searchQuery]);
-
-  useEffect(() => {
-    if (selectUserNo !== "") {
-      // selectUserNo가 변경될 때 localListReqData를 업데이트하고 useLocalList 호출 트리거
-      setLocalListReqData((prev) => ({
-        ...prev,
-        userNo: selectUserNo, // selectUserNo 값을 userNo에 반영
-      }));
-    } else return;
+    setLocalListReqData((prev) => ({
+      ...prev,
+      userNo: selectUserNo, // selectUserNo 값을 userNo에 반영
+    }));
   }, [selectUserNo]);
-
-  useEffect(() => {
-    if(selectUserNo !== "") {
-      if (localListData?.data.contents) {
-        setLocalList(localListData.data.contents);
-      }
-    }
-    
-  }, [localListData, localListReqData]);
 
   //현장 미허가
   useEffect(() => {
-    if (selectUserNo !== "") {
-      //console.log("여기오나?");
-      //console.log("값은? : ", localNonPermissionData?.data.contents);
-      if (localNonPermissionData?.data.contents) {
-        setLocalNonPermission(localNonPermissionData.data.contents);
-      }
+    //console.log("여기오나?");
+    //console.log("값은? : ", localNonPermissionData?.data.contents);
+    if (localNonPermissionData?.data.contents) {
+      setLocalNonPermission(localNonPermissionData.data.contents);
     }
 
   }, [localNonPermissionData, selectUserNo]);
-
-  //현장선택하면 허가현장
-  useEffect(() => {
-    if (selectUserNo !== "") {
-      if (localPermissionData?.data.contents) {
-        setLocalPermission(localPermissionData.data.contents);
-      }
-    }
-  }, [localPermissionData, selectLocalNo]);
-
 
   const handleSearch = () => {
     setSearchQuery(searchInput); // 검색어 업데이트
@@ -282,11 +203,11 @@ export default function LocalManagement() {
           <TableBox gap={1} height={"50%"}>
             <Stack width={"35%"} height={"100%"}>
               <TableBox.Inner>
-                <BasicTable data={userListTableData}>
+                <BasicTable data={data?.data.contents || []}>
                   <BasicTable.Th>사용자ID</BasicTable.Th>
                   <BasicTable.Th>사용자이름</BasicTable.Th>
                   <BasicTable.Tbody>
-                    {userListTableData.map((item, index) => {
+                    {(data?.data.contents || []).map((item, index) => {
                       return (
                         <BasicTable.Tr
                           key={index}
@@ -310,14 +231,14 @@ export default function LocalManagement() {
             </Stack>
             <Stack width={"65%"} height={"100%"}>
               <TableBox.Inner>
-                <BasicTable data={localListTableData}>
+                <BasicTable data={localListData?.data.contents || []}>
                   <BasicTable.Th>현장번호</BasicTable.Th>
                   <BasicTable.Th>현장이름</BasicTable.Th>
                   <BasicTable.Th>사용기간</BasicTable.Th>
                   <BasicTable.Th>구분</BasicTable.Th>
                   <BasicTable.Th>수정</BasicTable.Th>
                   <BasicTable.Tbody>
-                    {localListTableData.map((item, index) => {
+                    {(localListData?.data.contents || []).map((item, index) => {
                       return (
                         <BasicTable.Tr
                           key={index}
@@ -363,7 +284,7 @@ export default function LocalManagement() {
               </GrayBox>
               <TableBox.Inner>
                 <CheckboxTable
-                  data={localPermissionTableData}
+                  data={localPermissionData?.data.contents || []}
                   selectedRows={localUseSelectedRows}
                   toggleRowsSelection={toggleLocalUseRowsSelection}
                 >
@@ -388,7 +309,7 @@ export default function LocalManagement() {
                     </CheckboxTable.Tr>
                   </CheckboxTable.Thead>
                   <CheckboxTable.Tbody>
-                    {localPermissionTableData.map((item) => (
+                    {(localPermissionData?.data.contents || []).map((item) => (
                       <CheckboxTable.Tr key={item.slutnId} id={item.slutnId}>
                         <CheckboxTable.CheckboxTd
                           item={item}
@@ -441,7 +362,7 @@ export default function LocalManagement() {
               </GrayBox>
               <TableBox.Inner>
                 <CheckboxTable
-                  data={localNonPermissionTableData}
+                  data={localNonPermissionData?.data.contents || []}
                   selectedRows={localUnuseSelectedRows}
                   toggleRowsSelection={toggleLocalUnuseRowsSelection}
                 >
@@ -455,7 +376,7 @@ export default function LocalManagement() {
                   </CheckboxTable.Thead>
 
                   <CheckboxTable.Tbody>
-                    {localNonPermissionTableData.map((item) => (
+                    {(localNonPermissionData?.data.contents || []).map((item) => (
                       <CheckboxTable.Tr key={item.slutnId} id={item.slutnId}>
                         <CheckboxTable.CheckboxTd
                           item={item}

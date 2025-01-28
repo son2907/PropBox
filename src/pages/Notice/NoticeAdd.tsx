@@ -114,7 +114,7 @@ export default function NoticeAdd() {
           }
         },
         onError: (error) => {
-          console.error("FAQ 수정 실패:", error);
+          console.error("공지사항 추가 실패:", error);
         },
       })
     } else {

@@ -12,10 +12,25 @@ import TextArea from "../../components/TextArea/TextArea";
 import { useRef, useState } from "react";
 import BasicInput from "../../components/Input/BasicInput";
 import Calendar from "../../components/Calendar/Calendar";
+import { useAuthStore } from "../../stores/authStore";
+import useModal from "../../hooks/useModal";
+import { InsertCompletedModal } from "../../components/layout/modal/InsertCompletedModal";
+import { EmptyDataModal } from "../../components/layout/modal/EmptyDataModal";
+import { insertFaq } from "../../api/faq";
 
-
+interface FormData {
+  noticeSj: string;
+  noticeCn: string;
+  sj: string;
+}
 
 export default function FAQAdd() {
+
+  //api를 호출하기위해 userID 불러오기
+  const { loginId } = useAuthStore(["loginId"]);
+
+  //모달
+  const { openModal, closeModal } = useModal();
 
   // 여러개선택
   const {
@@ -29,12 +44,74 @@ export default function FAQAdd() {
   };
 
   // 이 ref를 통해 textArea에 입력된 값에 접근할 수 있음
-  const tRef1 = useRef<HTMLTextAreaElement>(null); // textArea에 연결해 줄 ref
+  const faqRef = useRef<HTMLTextAreaElement>(null); // textArea에 연결해 줄 ref
 
-  // 시작 날짜
-  const [startDate, setStartDate] = useState<Date>(new Date());
-  // 끝 날짜
-  const [endDate, setEndDate] = useState<Date>(new Date());
+  // 상태: 제목과 내용을 관리
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+
+  //api 호출시 필요한 데이터 준비
+  const insertData = {
+    body: {
+      faqNo: "",       //공지사항 번호
+      faqSj: title,       //공지사항 제목
+      faqCn: content,       //공지사항 내용
+      userId: loginId //userID
+    }
+  };
+
+  //api 호출
+  const { mutate: insertFaqAPI } = insertFaq(insertData);
+
+  // 추가 버튼 클릭 시 API 호출
+  const handleInsert = () => {
+    if (insertData.body.faqSj && insertData.body.faqCn) {
+      // API 호출 실행
+      insertFaqAPI(insertData, {
+        onSuccess: (response) => {
+          if (response.data.result === "SUCCESS") {
+            console.log("등록완");
+            insertCompletedModal();
+          } else {
+            console.warn("result가 SUCCESS가 아닙니다.");
+          }
+        },
+        onError: (error) => {
+          console.error("FAQ 추가 실패:", error);
+        },
+      })
+    } else {
+      emptyDataModal();
+    }
+  };
+
+  //입력한 값이 없을때
+  const emptyDataModal = () => {
+    openModal(EmptyDataModal, {
+      modalId: "emptyDataModal",
+      stack: false,
+      onClose: () => closeModal,
+      onSubmit: () => {
+        //window.close();
+      }
+    });
+  };
+
+  // 추가 완료 모달
+  const insertCompletedModal = () => {
+    openModal(InsertCompletedModal, {
+      modalId: "InsertCompletedModal",
+      stack: false,
+      onClose: () => closeModal,
+      onSubmit: () => {
+        window.close();
+        // 이전 창 새로 고침
+        if (window.opener) {
+          window.opener.location.reload();
+        }
+      }
+    })
+  };
 
   return (
     <>
@@ -42,21 +119,34 @@ export default function FAQAdd() {
         <Stack direction={"row"} padding={1} width={"100%"} height={"5%"} gap={2} alignItems={"center"} marginTop={1}>
           <Typography>제목</Typography>
           <Box>
-            <BasicInput sx={{ width: "650px" }}></BasicInput>
+            <BasicInput
+              sx={{ width: "650px" }}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="faq 제목을 입력하세요"
+            />
           </Box>
         </Stack>
         <Box width={"98%"} height={"90%"} margin={1}>
           <TextArea
             height="400px"
             resize="none"
-            ref={tRef1}
+            ref={faqRef}
             placeholder="FAQ 내용을 입력하세요"
+            onChange={(e) => {
+              setContent(e.target.value); // 상태 업데이트
+            }}
+            onBlur={() => {
+              const currentValue = faqRef.current?.value || ""; // ref 값 가져오기
+              setContent(currentValue); // 상태 업데이트
+              console.log("포커스 잃음, ref 값:", currentValue); // 콘솔 출력
+            }}
           />
         </Box>
         <Stack justifyContent={"end"} width={"100%"} direction={"row"} alignItems={"center"}>
           <Stack direction={"row"} gap={1} margin={1}>
-            <BasicButton>저장</BasicButton>
-            <BasicButton>닫기</BasicButton>
+            <BasicButton onClick={handleInsert}>저장</BasicButton>
+            <BasicButton onClick={() => window.close()}>닫기</BasicButton>
           </Stack>
         </Stack>
       </Stack>
