@@ -1,21 +1,15 @@
 import { Box, Stack, Typography } from "@mui/material";
-import SearchInput from "../../components/Input/SearchInput";
-import { BasicButton, IconButton } from "../../components/Button";
-import { IoIosAddCircleOutline } from "react-icons/io";
-import TableBox from "../../components/Box/TableBox";
-import CheckboxTable from "../../components/Table/CheckboxTable";
-import { tableTestData } from "../../utils/testData";
-import { RiDeleteBinLine } from "react-icons/ri";
-import { useMultiRowSelection } from "../../hooks/useMultiRowSelection";
+import { BasicButton } from "../../components/Button";
 import PathConstants from "../../routers/path";
 import TextArea from "../../components/TextArea/TextArea";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import BasicInput from "../../components/Input/BasicInput";
 import Calendar from "../../components/Calendar/Calendar";
 import { useAuthStore } from "../../stores/authStore";
-import { insertNotice } from "../../api/noticeInsert";
-
-
+import useModal from "../../hooks/useModal";
+import { InsertCompletedModal } from "../../components/layout/modal/InsertCompletedModal";
+import { EmptyDataModal } from "../../components/layout/modal/EmptyDataModal";
+import { insertNotice } from "../../api/noticeList";
 
 export default function NoticeAdd() {
 
@@ -24,8 +18,11 @@ export default function NoticeAdd() {
     windowName: "공지사항 등록",
   };
 
+  //모달
+  const { openModal, closeModal } = useModal();
+
   // 이 ref를 통해 textArea에 입력된 값에 접근할 수 있음
-  const tRef1 = useRef<HTMLTextAreaElement>(null); // textArea에 연결해 줄 ref
+  const noticeAddRef = useRef<HTMLTextAreaElement>(null); // textArea에 연결해 줄 ref
 
   // 시작 날짜
   const [startDate, setStartDate] = useState<Date>(new Date());
@@ -42,6 +39,22 @@ export default function NoticeAdd() {
 
   //api를 호출하기위해 userID 불러오기
   const { loginId } = useAuthStore(["loginId"]);
+
+  // 추가 완료 모달
+  const insertCompletedModal = () => {
+    openModal(InsertCompletedModal, {
+      modalId: "InsertCompletedModal",
+      stack: false,
+      onClose: () => closeModal,
+      onSubmit: () => {
+        window.close();
+        // 이전 창 새로 고침
+        if (window.opener) {
+          window.opener.location.reload();
+        }
+      }
+    })
+  };
 
   //날짜 형식 재정의
   const formatDate = (date: Date) => {
@@ -70,32 +83,49 @@ export default function NoticeAdd() {
       regDe: formatDate(new Date()),          //등록일
       userId: loginId //userID
     }
-  }
+  };
+
+  //입력한 값이 없을때
+  const emptyDataModal = () => {
+    openModal(EmptyDataModal, {
+      modalId: "emptyDataModal",
+      stack: false,
+      onClose: () => closeModal,
+      onSubmit: () => {
+        //window.close();
+      }
+    });
+  };
 
   //api 호출
   const { mutate: insertNoticeAPI } = insertNotice(insertData);
 
   // 추가 버튼 클릭 시 API 호출
   const handleInsert = () => {
-    // API 호출 실행
-    insertNoticeAPI(insertData, {
-      onSuccess: (response) => {
-        if (response.data.result === "SUCCESS") {
-          console.log("등록완");
-          window.close();
-          // 이전 창 새로 고침
-          if (window.opener) {
-            window.opener.location.reload();
+    if (insertData.body.noticeSj && insertData.body.noticeCn) {
+      // API 호출 실행
+      insertNoticeAPI(insertData, {
+        onSuccess: (response) => {
+          if (response.data.result === "SUCCESS") {
+            console.log("등록완");
+            insertCompletedModal();
+          } else {
+            console.warn("result가 SUCCESS가 아닙니다.");
           }
-        } else {
-          console.warn("result가 SUCCESS가 아닙니다.");
-        }
-      },
-      onError: (error) => {
-        console.error("FAQ 수정 실패:", error);
-      },
-    })
+        },
+        onError: (error) => {
+          console.error("공지사항 추가 실패:", error);
+        },
+      })
+    } else {
+      emptyDataModal();
+    }
+
   };
+
+  // useEffect(() => {
+  //   console.log("content 상태 변경:", content);
+  // }, [content]);
 
 
   return (
@@ -116,10 +146,17 @@ export default function NoticeAdd() {
           <TextArea
             height="400px"
             resize="none"
-            ref={tRef1}
+            ref={noticeAddRef}
+            //value={noticeAddRef.current?.value}
             placeholder="공지사항 내용을 입력하세요"
-            value={content} // content 상태 바인딩
-            onChange={(e) => setContent(e.target.value)} // 사용자 입력 반영
+            onChange={(e) => {
+              setContent(e.target.value); // 상태 업데이트
+            }}
+            onBlur={() => {
+              const currentValue = noticeAddRef.current?.value || ""; // ref 값 가져오기
+              setContent(currentValue); // 상태 업데이트
+              console.log("포커스 잃음, ref 값:", currentValue); // 콘솔 출력
+            }}
           />
         </Box>
         <Stack justifyContent={"space-between"} width={"100%"} direction={"row"} alignItems={"center"}>

@@ -11,13 +11,14 @@ import { useEffect, useState } from "react";
 import PathConstants from "../../routers/path";
 import { openPopup } from "../../utils/openPopup";
 import api from "../../api";
-import { popupNoticeType } from "../../api/popupNotice";
+import { popupNoticeType } from "../../types/notice";
+import { usePopupNotice } from "../../api/noticeList";
 
 export default function Launcher() {
   const { value, handleChange: tabChange } = useTabs(0);
 
   //공지사항 목록 가져오기
-  const { isSuccess, data } = api.PopupNoticeList.usePopupNotice();
+  const { isSuccess, data } = usePopupNotice();
   const [popupNoticeList, setPopupNoticeList] = useState<popupNoticeType[]>([]);
 
   const [popupCount, setPopupCount] = useState(0);

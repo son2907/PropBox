@@ -12,7 +12,8 @@ import TextArea from "../../components/TextArea/TextArea";
 import { useEffect, useRef, useState } from "react";
 import BasicInput from "../../components/Input/BasicInput";
 import Calendar from "../../components/Calendar/Calendar";
-import { noticeDetailType, useNoticeDetail } from "../../api/noticeDetail";
+import { useNoticeDetail } from "../../api/noticeList";
+import { noticeDetailType } from "../../types/notice";
 
 export default function NoticeDetail() {
   //팝업 페이지에서 id를 가져오려면 window.location.search를 사용하여 파라미터를 파싱
@@ -22,21 +23,21 @@ export default function NoticeDetail() {
 
   //공지사항 상세 가져오기
   const { isSuccess, data } = useNoticeDetail(id);
-  const [noticeDetail, setNoticeDetail] = useState<noticeDetailType | null>(
-    null
-  );
+  // const [noticeDetail, setNoticeDetail] = useState<noticeDetailType | null>(
+  //   null
+  // );
   const [title, setTitle] = useState("");
 
   useEffect(() => {
     console.log("data확인", data);
     if (data?.data.contents) {
-      setNoticeDetail(data.data.contents);
-      if (noticeDetail) {
-        const currentDetail = noticeDetail;
+      //setNoticeDetail(data.data.contents);
+      if (data.data.contents) {
+        const currentDetail = data.data.contents;
         //제목 및 내용 설정
         const textArea = tRef1.current;
         if (textArea) {
-          textArea.value = noticeDetail.noticeCn; //내용 설정
+          textArea.value = data.data.contents.noticeCn; //내용 설정
         }
       }
     }
@@ -44,15 +45,15 @@ export default function NoticeDetail() {
 
   //공지사항이 업데이트된 후 제목 및 내용을 설정
   useEffect(() => {
-    if (noticeDetail) {
-      const currentDetail = noticeDetail;
+    if (data?.data.contents) {
+      const currentDetail = data.data.contents;
 
       const textArea = tRef1.current;
       if (textArea) {
         textArea.value = currentDetail.noticeCn;
       }
     }
-  }, [noticeDetail]);
+  }, [data?.data.contents]);
 
   const NoticeDetail = {
     url: PathConstants.Notice.NoticeDetail,
@@ -95,7 +96,7 @@ export default function NoticeDetail() {
           <Box>
             <BasicInput
               sx={{ width: "650px" }}
-              value={noticeDetail ? noticeDetail.noticeSj : ""}
+              value={data?.data.contents ? data.data.contents.noticeSj : ""}
               readOnly
             ></BasicInput>
           </Box>
