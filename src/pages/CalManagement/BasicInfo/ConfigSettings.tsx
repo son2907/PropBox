@@ -26,6 +26,8 @@ import { useApiRes } from "../../../utils/useApiRes";
 import useModal from "../../../hooks/useModal";
 import { BasicDeleteConfirmModal } from "../../../components/layout/modal/BasicDeleteConfirmModal";
 import useDidMountEffect from "../../../hooks/useDidMountEffect";
+import BasicInput from "../../../components/Input/BasicInput";
+import CenteredBox from "../../../components/Box/CenteredBox";
 
 export default function ConfigSetting() {
   const sptNo = getItemByStorageOne("selectedSite")?.sptNo;
@@ -319,27 +321,6 @@ export default function ConfigSetting() {
       <Stack width={"50%"} minWidth={"400px"} height={"100%"} gap={1}>
         <GrayBox gap={1}>
           <Typography>상담항목</Typography>
-          <SearchInput
-            placeholder="입력창"
-            value={cnsltInput?.itemNm || ""}
-            onChange={(e) =>
-              setCnsltInput({
-                ...cnsltInput,
-                itemNm: e.target.value,
-              })
-            }
-          />
-          <input
-            type="checkbox"
-            checked={cnsltInput?.useYn === "Y" ? true : false}
-            onChange={(e) =>
-              setCnsltInput({
-                ...cnsltInput,
-                useYn: e.target.checked ? "Y" : "N",
-              })
-            }
-          />
-          <Typography>사용</Typography>
         </GrayBox>
         <TableBox>
           <TableBox.Inner>
@@ -384,37 +365,43 @@ export default function ConfigSetting() {
           </TableBox.Inner>
         </TableBox>
         <GrayBox gap={1}>
-          <Typography>상담항목</Typography>
-          <BasicButton sx={{ marginLeft: "auto" }} onClick={clearCnsltInput}>
-            추가
-          </BasicButton>
-          <BasicButton onClick={onAddCnslt}>저장</BasicButton>
+          <Stack width={"100%"} gap={1}>
+            <CenteredBox gap={1}>
+              <Typography>상담항목</Typography>
+              <BasicInput
+                placeholder="입력창"
+                value={cnsltInput?.itemNm || ""}
+                onChange={(e) =>
+                  setCnsltInput({
+                    ...cnsltInput,
+                    itemNm: e.target.value,
+                  })
+                }
+              />
+              <input
+                type="checkbox"
+                checked={cnsltInput?.useYn === "Y" ? true : false}
+                onChange={(e) =>
+                  setCnsltInput({
+                    ...cnsltInput,
+                    useYn: e.target.checked ? "Y" : "N",
+                  })
+                }
+              />
+              <Typography>사용</Typography>
+            </CenteredBox>
+            <CenteredBox gap={1}>
+              <BasicButton sx={{ marginLeft: "auto" }} onClick={clearCnsltInput}>
+                추가
+              </BasicButton>
+              <BasicButton onClick={onAddCnslt}>저장</BasicButton>
+            </CenteredBox>
+          </Stack>
         </GrayBox>
       </Stack>
       <Stack width={"50%"} minWidth={"400px"} height={"100%"} gap={1}>
         <GrayBox gap={1}>
           <Typography>상담항목</Typography>
-          <SearchInput
-            placeholder="입력창"
-            value={detInput?.detailNm || ""}
-            onChange={(e) =>
-              setDetInput({
-                ...detInput,
-                detailNm: e.target.value,
-              })
-            }
-          />
-          <input
-            type="checkbox"
-            checked={detInput?.useYn === "Y" ? true : false}
-            onChange={(e) =>
-              setDetInput({
-                ...detInput,
-                useYn: e.target.checked ? "Y" : "N",
-              })
-            }
-          />
-          <Typography>사용</Typography>
         </GrayBox>
         <TableBox>
           <TableBox.Inner>
@@ -459,11 +446,38 @@ export default function ConfigSetting() {
           </TableBox.Inner>
         </TableBox>
         <GrayBox gap={1}>
-          <Typography>상담세부항목</Typography>
-          <BasicButton sx={{ marginLeft: "auto" }} onClick={clearDetInput}>
-            추가
-          </BasicButton>
-          <BasicButton onClick={onAddDet}>저장</BasicButton>
+          <Stack width={"100%"} gap={1}>
+            <CenteredBox gap={1}>
+              <Typography>상담세부항목</Typography>
+              <BasicInput
+                placeholder="입력창"
+                value={detInput?.detailNm || ""}
+                onChange={(e) =>
+                  setDetInput({
+                    ...detInput,
+                    detailNm: e.target.value,
+                  })
+                }
+              />
+              <input
+                type="checkbox"
+                checked={detInput?.useYn === "Y" ? true : false}
+                onChange={(e) =>
+                  setDetInput({
+                    ...detInput,
+                    useYn: e.target.checked ? "Y" : "N",
+                  })
+                }
+              />
+              <Typography>사용</Typography>
+            </CenteredBox>
+            <CenteredBox gap={1}>
+              <BasicButton sx={{ marginLeft: "auto" }} onClick={clearDetInput}>
+                추가
+              </BasicButton>
+              <BasicButton onClick={onAddDet}>저장</BasicButton>
+            </CenteredBox>
+          </Stack>
         </GrayBox>
       </Stack>
     </>
