@@ -14,37 +14,19 @@ import BasicInput from "../../../components/Input/BasicInput";
 import { BasicButton, ToggleButton } from "../../../components/Button";
 import useToggleButtton from "../../../hooks/useToggleButton";
 import api from "../../../api";
-import { SolutionListType, useSolutionList } from "../../../api/solutionList";
-import {
-  SolutionMenuListType,
-  useSolutionMenuList,
-} from "../../../api/solutionMenuList";
+import { deleteMenu, deleteSolution, insertMenu, insertSolution, reorderSolution, updateMenu, updateSolution, useMenuDetail, useSolutionDetail, useSolutionList, useSolutionMenuList } from "../../../api/solutionList";
 import { licenseMethodType } from "../../../api/licenseMethod";
-import {
-  solutionDetailType,
-  useSolutionDetail,
-} from "../../../api/solutionDetail";
 import { useAuthStore } from "../../../stores/authStore";
-import { updateSolution } from "../../../api/solutionUpdate";
 import useModal from "../../../hooks/useModal";
-import { insertSolution } from "../../../api/solutionInsert";
 import { InsertCompletedModal } from "../../../components/layout/modal/InsertCompletedModal";
 import { UpdateCompletedModal } from "../../../components/layout/modal/UpdateCompletedModal";
-import {
-  deleteSolution,
-  deleteSolutionType,
-} from "../../../api/solutionDelete";
 import { ConfirmDeleteModal } from "../../../components/layout/modal/ConfirmDeleteModal";
 import { DeleteCompletedModal } from "../../../components/layout/modal/DeleteCompletedModal";
-import {
-  solutionMenuDetailType,
-  useMenuDetail,
-} from "../../../api/solutionMenuDetail";
-import { insertMenu } from "../../../api/solutionMenuInsert";
-import { updateMenu } from "../../../api/solutionMenuUpdate";
-import { deleteMenu } from "../../../api/solutionMenuDelete";
 import { EmptySelectModal } from "../../../components/layout/modal/EmptySelectModal";
 import { EmptyDataModal } from "../../../components/layout/modal/EmptyDataModal";
+import { solutionDetailType, SolutionListType, solutionMenuDetailType, SolutionMenuListType } from "../../../types/solution";
+import useDidMountEffect from "../../../hooks/useDidMountEffect";
+import { useApiRes } from "../../../utils/useApiRes";
 
 export default function SolutionManagement() {
   //api를 호출하기위해 userID 불러오기
@@ -60,13 +42,12 @@ export default function SolutionManagement() {
 
   // 솔루션 데이터
   const [solutionList, setSolutionList] = useState<SolutionListType[]>([]);
-  const { data: solutionData, isLoading: isLoadingSolutions } =
+  const { data: solutionData, refetch: refetchSolutionData } =
     useSolutionList();
   const [selectedSolutionId, setSelectedSolutionId] = useState<string>("");
 
   // 솔루션 상세 데이터
-  const [solutionDetail, setSolutionDetail] =
-    useState<solutionDetailType | null>(null);
+  const [solutionDetail, setSolutionDetail] = useState<solutionDetailType | null>(null);
   const [selectMenuID, setSelectMenuID] = useState<string>("");
   const { data: solutionDetailData, isSuccess: isSolutionDetailSuccess } =
     useSolutionDetail(selectedSolutionId);
@@ -81,10 +62,8 @@ export default function SolutionManagement() {
   const [solutionUseYn, setSolutionUseYn] = useState(true);
 
   // 메뉴 데이터
-  const [solutionMenuList, setSolutionMenuList] = useState<
-    SolutionMenuListType[]
-  >([]);
-  const { data: menuData, isLoading: isLoadingMenus } =
+  const [solutionMenuList, setSolutionMenuList] = useState<SolutionMenuListType[]>([]);
+  const { data: menuData, refetch: refetchMenuData } =
     useSolutionMenuList(selectedSolutionId);
 
   // 메뉴 데이터 상세
@@ -144,6 +123,10 @@ export default function SolutionManagement() {
   // 메뉴 삭제를 위한 api
   const { mutate: deleteMenuAPI } = deleteMenu();
 
+  //순서변경 api
+  const { mutate: reorderSolutionAPI } = reorderSolution(); // 솔루션 순서 변경
+  const checkApiFail = useApiRes();
+
   // 솔루션 데이터 로드 후 상태 업데이트
   useEffect(() => {
     if (solutionData?.data.contents) {
@@ -151,6 +134,48 @@ export default function SolutionManagement() {
     }
     console.log("");
   }, [solutionData]);
+
+  // 솔루션 순서 변경 - 드래그 앤 드롭 시 순서 변경 api 전송
+  useDidMountEffect(() => {
+    // lnupOrd를 배열 번호 + 1로 업데이트
+    if (solutionData?.data.contents == solutionList) return;
+    const updatedData = solutionList.map((item, index) => ({
+      slutnId: item.slutnId || "",
+      lnupOrd: (index + 1).toString(),
+      userId: loginId || "",
+    }));
+    reorderSolutionAPI(
+      { body: updatedData },
+      {
+        onSuccess: (res) => {
+          console.log("항목 정렬 응답:", res);
+          checkApiFail(res);
+          refetchSolutionData();
+        },
+      }
+    );
+  }, [solutionList]);
+
+  // 솔루션 순서 변경 - 드래그 앤 드롭 시 순서 변경 api 전송
+  useDidMountEffect(() => {
+    // lnupOrd를 배열 번호 + 1로 업데이트
+    if (menuData?.data.contents == solutionMenuList) return;
+    const updatedData = solutionMenuList.map((item, index) => ({
+      slutnId: item.slutnId || "",
+      lnupOrd: (index + 1).toString(),
+      userId: loginId || "",
+    }));
+    reorderSolutionAPI(
+      { body: updatedData },
+      {
+        onSuccess: (res) => {
+          console.log("항목 정렬 응답:", res);
+          checkApiFail(res);
+          refetchMenuData();
+        },
+      }
+    );
+  }, [solutionMenuList]);
 
   //모달
   //수정 완료 모달
