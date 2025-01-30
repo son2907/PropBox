@@ -112,7 +112,8 @@ export const useSolutionDetail = (id: string | null) => {
         queryFn: async () => {
             const result = await API.getSolutionDetail(id);
             return result;
-        }
+        },
+        enabled: !!id,
     })
 };
 
@@ -123,7 +124,8 @@ export const useMenuDetail = (id: string | null) => {
         queryFn: async () => {
             const result = await API.getMenuDetail(id);
             return result;
-        }
+        },
+        enabled: !!id,
     })
 };
 

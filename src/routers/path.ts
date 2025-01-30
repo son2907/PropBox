@@ -45,6 +45,7 @@ const PathConstants = {
     Auth: "/system/auth",
     NetworkSetup: "/system/networksetup",
     UserUpload: "/system/user/uploadUser",
+    UpdateUser: "/system/user/updateUser",
     MemberMenuPermission: "/system/auth/memberMenuPermission",
     MenuPermissionCopy: "/system/auth/menuPermissionCopy",
     PermissionRevoke: "/system/auth/permissionRevoke",

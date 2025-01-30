@@ -72,9 +72,9 @@ export default function SoketGuard({ children }: PropsWithChildren) {
     };
 
     webSocket.current.onmessage = (event: MessageEvent) => {
-      console.log("메세지 수신::", event.data);
+      //console.log("메세지 수신::", event.data);
       const messageType = JSON.parse(event.data).messageType;
-      console.log("########메세지 타입:", messageType);
+      //console.log("########메세지 타입:", messageType);
 
       if (messageType == "HEARTBEAT") {
         const exampleMessage = {

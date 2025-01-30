@@ -9,7 +9,7 @@ export const sendMessage = ({
 }) => {
   if (webSocket.current && webSocket.current.readyState === WebSocket.OPEN) {
     webSocket.current.send(JSON.stringify(message));
-    console.log("메시지 전송: ", JSON.stringify(message));
+    //console.log("메시지 전송: ", JSON.stringify(message));
   } else {
     console.log("웹소켓 연결이 불가합니다.");
   }

@@ -205,8 +205,3 @@ export type ReorderSolutionListType = {
     lnupOrd: string,
     userId: string
 }[];
-
-//솔루션 메뉴 순서 변경
-export type ReorderMenuListType = {
-    
-}

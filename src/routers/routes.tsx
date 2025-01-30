@@ -63,6 +63,7 @@ import UserInfoPopup from "../pages/Mypage";
 import AdminInfoPopup from "../pages/Mypage/AdminInfo";
 import RegisterSenerNumber from "../pages/CalManagement/Consultation/popup/RegisterSenerNumber";
 import SoketGuard from "./guard/SoketGuard";
+import UpdateUSer from "../pages/SysManagement/User/popup/UpdateUser";
 
 export const routes: RouteObject[] = [
   {
@@ -268,6 +269,10 @@ export const routes: RouteObject[] = [
   {
     path: PathConstants.System.UserUpload,
     element: <UserUpload />,
+  },
+  {
+    path: PathConstants.System.UpdateUser,
+    element: <UpdateUSer />,
   },
   {
     path: PathConstants.System.MemberMenuPermission,

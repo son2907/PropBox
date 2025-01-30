@@ -22,13 +22,9 @@ import CheckboxTable from "../../../components/Table/CheckboxTable";
 import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import api from "../../../api";
-import { deleteUser, UserListType } from "../../../api/userList";
+import { deleteUser, useUserPermitSolution } from "../../../api/userList";
 import { useAuthStore } from "../../../stores/authStore";
 import useModal from "../../../hooks/useModal";
-import {
-  UserPermitSolutionType,
-  useUserPermitSolution,
-} from "../../../api/userPermissionSolution";
 import { userSolutionCount } from "../../../api/userSolutionCount";
 import {
   UserNonPermissionSolutionType,
@@ -38,6 +34,7 @@ import { userPermissionRegistration } from "../../../api/userPermissionRegistrat
 import { userNonPermissionRegistration } from "../../../api/userNonPermissionRegistration";
 import { ConfirmDeleteModal } from "../../../components/layout/modal/ConfirmDeleteModal";
 import { DeleteCompletedModal } from "../../../components/layout/modal/DeleteCompletedModal";
+import { UserListType, UserPermitSolutionType } from "../../../types/userList";
 
 export default function Registration() {
   const [searchQuery, setSearchQuery] = useState(""); // 검색어 상태 관리
@@ -51,70 +48,20 @@ export default function Registration() {
 
   //사용자 허가 솔루션 목록 가져오기
   const [userSelectRow, setSelectRow] = useState(""); //사용자 허가 솔루션을 가져오기위한 id
-  const [userPermitSolution, setUserPermitSolution] = useState<
-    UserPermitSolutionType[]
-  >([]);
-  const { data: userPermitSolutionData, isLoading: isLoadingPermitSolution } =
-    useUserPermitSolution(userSelectRow);
-  const [solutionCounts, setSolutionCounts] = useState<Record<string, string>>(
-    {}
-  ); // 각 행의 solutionCount 관리
+  const [userPermitSolution, setUserPermitSolution] = useState<UserPermitSolutionType[]>([]);
+  const { data: userPermitSolutionData, refetch: refetchPermitSolution } = useUserPermitSolution(userSelectRow);
+  const [solutionCounts, setSolutionCounts] = useState<Record<string, string>>({}); // 각 행의 solutionCount 관리
   const [userNo, setUserNo] = useState("");
   const [solutionId, setSolutionId] = useState("");
   const [userId, setUserId] = useState("");
   const [solutionTotalCount, setSolutionTotalCount] = useState("");
 
   //사용자 미허가 솔루션 목록 가져오기
-  const [userNonPermitSolution, setUserNonPermitSolution] = useState<
-    UserNonPermissionSolutionType[]
-  >([]);
-  const {
-    data: userNonPermitSolutionData,
-    isLoading: isLoadingNonPermitSolution,
-  } = useUserNonPermissionSolution(userSelectRow);
+  const [userNonPermitSolution, setUserNonPermitSolution] = useState<UserNonPermissionSolutionType[]>([]);
+  const { data: userNonPermitSolutionData, refetch: refetchNonPermitSolution, } = useUserNonPermissionSolution(userSelectRow);
 
   const permissionRegistration = userPermissionRegistration();
   const nonPermissionRegistration = userNonPermissionRegistration();
-
-
-  //데이터 정리
-  const userListData = userList.map((item) => ({
-    userNo: item.userNo,
-    userNm: item.userNm,
-    attlistMbtlNo: item.attlistMbtlNo,
-    loginIdPrefix: item.loginIdPrefix,
-    loginId: item.loginId,
-    cmpnm: item.cmpnm,
-    bizrno: item.bizrno,
-    rprsntvNm: item.rprsntvNm,
-    adres1: item.adres1,
-    adres2: item.adres2,
-    reprsntTelno: item.reprsntTelno,
-    useYn: item.useYn,
-  }));
-
-  const formatNonPermissionList = userNonPermitSolution.map((item) => ({
-    id: item.slutnId, // ID
-    slutnId: item.slutnId, // 솔루션 ID
-    slutnNm: item.slutnNm, // 솔루션 이름
-    lisneSeCd: item.lisneSeCd, // 라이센스 코드
-    lisneSeNm: item.lisneSeNm, // 라이센스 이름
-    userNo: item.userNo, // 사용자 번호
-    isOk: item.isOk, // 사용 여부
-  }));
-
-  const formatPermissionList = userPermitSolution.map((item) => ({
-    id: item.slutnId, // ID
-    slutnId: item.slutnId, // 솔루션 ID
-    slutnNm: item.slutnNm, // 솔루션 이름
-    lisneSeCd: item.lisneSeCd, // 라이센스 코드
-    lisneSeNm: item.lisneSeNm, // 라이센스 이름
-    userNo: item.userNo, // 사용자 번호
-    chrgcnt: item.chrgcnt, // 사용 여부
-    sptlisneCnt: item.sptlisneCnt, // 사용 여부
-    userlisneCnt: item.userlisneCnt, // 사용 여부
-  }));
-
   //솔루션 전체 갯수를 수정할 경우 필요한 데이터
   const solutionTotalData = {
     body: {
@@ -142,14 +89,14 @@ export default function Registration() {
       reprsntTelno: "",
       userId: "",
     }
-  }
+  };
 
   //api 호출을 위한 id호출
   const { loginId } = useAuthStore(["loginId"]);
   const { mutate: userSolutionCountAPI } = userSolutionCount(solutionTotalData);
 
-  const userDelete = deleteUser(userDeleteData);
-  const { mutate: userDeleteAPI } = deleteUser(userDeleteData);
+  const userDelete = deleteUser();
+  const { mutate: userDeleteAPI } = deleteUser();
 
   //모달
   const { openModal, closeModal } = useModal();
@@ -186,16 +133,25 @@ export default function Registration() {
     windowFeatures: "width=700,height=700,scrollbars=yes,resizable=yes",
   };
 
+  //사용자 추가 팝업
+  const updataeUser = {
+    url: PathConstants.System.UpdateUser,
+    windowName: "사용자 수정",
+    windowFeatures: "width=700,height=700,scrollbars=yes,resizable=yes",
+  };
+
   //모달
-  const confirmDeleteModal = () => {
+  const confirmDeleteModal = (userNo: string) => {
+    console.log("userNo?:", userNo)
+    setSelectRow(userNo); // 선택된 사용자 저장
     openModal(ConfirmDeleteModal, {
-      modalId : "noticeDelete",
-      stack: false,  //단일 모달 모드
+      modalId: "noticeDelete",
+      stack: false,
       onClose: () => closeModal,
       onSubmit: () => {
-        handleDeleteUser();
-      }
-    })
+        handleDeleteUser(userNo); // 저장된 userSelectRow를 사용하여 삭제
+      },
+    });
   };
 
   const deleteCompletedModal = () => {
@@ -204,7 +160,7 @@ export default function Registration() {
       stack: false,
       onClose: () => closeModal,
       onSubmit: () => {
-        window.close();
+        window.location.reload();
       }
     })
   }
@@ -380,22 +336,27 @@ export default function Registration() {
       }
     );
   };
-  
-  const handleDeleteUser = () => {
-    userDeleteAPI(userDeleteData, {
-      onSuccess:(response) => {
+
+  const handleDeleteUser = (userNo: string) => {
+    console.log("삭제할 사용자 ID:", userNo);
+
+    if (!userNo) {
+      console.error("삭제할 사용자 ID가 없습니다.");
+      return;
+    }
+    
+    userDeleteAPI(userNo, {
+      onSuccess: (response) => {
         if (response.data.message === "SUCCESS") {
           deleteCompletedModal();
           console.log("response", response.data);
-          //window.location.reload();
         }
       },
       onError: (error) => {
         console.error("API 호출 실패:", error);
-        // 에러 처리 로직 추가
       },
-    })
-  }
+    });
+  };
 
 
   return (
@@ -430,7 +391,7 @@ export default function Registration() {
         <Stack width={"100%"} height={"95%"}>
           <Stack width={"100%"} height={"40%"}>
             <TableBox.Inner>
-              <BasicTable data={userListData}>
+              <BasicTable data={data?.data?.contents || []}>
                 <BasicTable.Th>사용자번호</BasicTable.Th>
                 <BasicTable.Th>사용자이름</BasicTable.Th>
                 <BasicTable.Th>휴대전화</BasicTable.Th>
@@ -441,7 +402,7 @@ export default function Registration() {
                 <BasicTable.Th>삭제</BasicTable.Th>
                 <BasicTable.Th>수정</BasicTable.Th>
                 <BasicTable.Tbody>
-                  {userListData.map((item, index) => {
+                  {(data?.data?.contents || []).map((item, index) => {
                     return (
                       <BasicTable.Tr
                         key={index}
@@ -467,7 +428,7 @@ export default function Registration() {
                         <BasicTable.Td>{item.bizrno}</BasicTable.Td>
                         <BasicTable.Td>{item.useYn}</BasicTable.Td>
                         <BasicTable.Td>
-                          <IconButton onClick={confirmDeleteModal}>
+                          <IconButton onClick={() => confirmDeleteModal(item.userNo)}>
                             <RiDeleteBinLine color="#f4475f" />
                           </IconButton>
                         </BasicTable.Td>
@@ -475,9 +436,9 @@ export default function Registration() {
                           <BasicButton
                             onClick={() => {
                               openPopup({
-                                url: `${uploadUser.url}?id=${item.userNo}`,
-                                windowName: uploadUser.windowName,
-                                windowFeatures: uploadUser.windowFeatures,
+                                url: `${updataeUser.url}?id=${item.userNo}`,
+                                windowName: updataeUser.windowName,
+                                windowFeatures: updataeUser.windowFeatures,
                               });
                             }}
                           >
@@ -501,7 +462,7 @@ export default function Registration() {
                 </GrayBox>
                 <TableBox.Inner>
                   <CheckboxTable
-                    data={formatPermissionList}
+                    data={userPermitSolutionData?.data?.contents || []}
                     selectedRows={authorizedSelectedRows}
                     toggleRowsSelection={toggleAuthorizedRowsSelection}
                   >
@@ -526,7 +487,7 @@ export default function Registration() {
                       </CheckboxTable.Tr>
                     </CheckboxTable.Thead>
                     <CheckboxTable.Tbody>
-                      {formatPermissionList.map((item) => (
+                      {(userPermitSolutionData?.data?.contents || []).map((item) => (
                         <CheckboxTable.Tr key={item.slutnId} id={item.slutnId}>
                           <CheckboxTable.CheckboxTd
                             item={item}
@@ -603,7 +564,7 @@ export default function Registration() {
                 </GrayBox>
                 <TableBox.Inner>
                   <CheckboxTable
-                    data={formatNonPermissionList}
+                    data={userNonPermitSolutionData?.data?.contents || []}
                     selectedRows={unauthorizedSelectedRows}
                     toggleRowsSelection={toggleUnauthorizedRowsSelection}
                   >
@@ -618,7 +579,7 @@ export default function Registration() {
                     </CheckboxTable.Thead>
 
                     <CheckboxTable.Tbody>
-                      {formatNonPermissionList.map((item) => (
+                      {(userNonPermitSolutionData?.data?.contents || []).map((item) => (
                         <CheckboxTable.Tr key={item.slutnId} id={item.slutnId}>
                           <CheckboxTable.CheckboxTd
                             item={item}
