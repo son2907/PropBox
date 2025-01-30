@@ -22,19 +22,12 @@ import CheckboxTable from "../../../components/Table/CheckboxTable";
 import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import api from "../../../api";
-import { deleteUser, useUserPermitSolution } from "../../../api/userList";
+import { deleteUser, userNonPermissionRegistration, userPermissionRegistration, userSolutionCount, useUserNonPermissionSolution, useUserPermitSolution } from "../../../api/userList";
 import { useAuthStore } from "../../../stores/authStore";
 import useModal from "../../../hooks/useModal";
-import { userSolutionCount } from "../../../api/userSolutionCount";
-import {
-  UserNonPermissionSolutionType,
-  useUserNonPermissionSolution,
-} from "../../../api/UserNonpermitSolution";
-import { userPermissionRegistration } from "../../../api/userPermissionRegistration";
-import { userNonPermissionRegistration } from "../../../api/userNonPermissionRegistration";
 import { ConfirmDeleteModal } from "../../../components/layout/modal/ConfirmDeleteModal";
 import { DeleteCompletedModal } from "../../../components/layout/modal/DeleteCompletedModal";
-import { UserListType, UserPermitSolutionType } from "../../../types/userList";
+import { UserListType, UserNonPermissionSolutionType, UserPermitSolutionType } from "../../../types/userList";
 
 export default function Registration() {
   const [searchQuery, setSearchQuery] = useState(""); // 검색어 상태 관리
@@ -284,7 +277,7 @@ export default function Registration() {
           console.log("이동성공");
           if (response.data.result === "SUCCESS") {
             console.log("response.data", response.data);
-            window.location.reload();
+            refetchPermitSolution();
           }
         },
         onError: (error) => {
@@ -327,7 +320,8 @@ export default function Registration() {
           console.log("이동성공");
           if (response.data.result === "SUCCESS") {
             console.log("response.data", response.data);
-            window.location.reload();
+            refetchNonPermitSolution();
+            refetchPermitSolution();
           }
         },
         onError: (error) => {
@@ -344,7 +338,7 @@ export default function Registration() {
       console.error("삭제할 사용자 ID가 없습니다.");
       return;
     }
-    
+
     userDeleteAPI(userNo, {
       onSuccess: (response) => {
         if (response.data.message === "SUCCESS") {
@@ -521,7 +515,7 @@ export default function Registration() {
                   <BasicButton onClick={handleCheckSolutionData}>
                     적용
                   </BasicButton>
-                  <BasicButton>새로고침</BasicButton>
+                  <BasicButton onClick={() => refetchPermitSolution()}>새로고침</BasicButton>
                 </GrayBox>
               </Stack>
               <Stack
@@ -595,7 +589,10 @@ export default function Registration() {
                   </CheckboxTable>
                 </TableBox.Inner>
                 <GrayBox>
-                  <BasicButton sx={{ marginLeft: "auto" }}>
+                  <BasicButton
+                    sx={{ marginLeft: "auto" }}
+                    onClick={() => refetchNonPermitSolution()}
+                  >
                     새로고침
                   </BasicButton>
                 </GrayBox>

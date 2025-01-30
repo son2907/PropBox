@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import instance from "../utils/axiosInstance";
-import { DeleteUserType, UserDetailResponse, UserDetailUpdateType, UserInsertType, UserListResponse, UserPermitSolutionResponse } from "../types/userList";
+import { DeleteUserType, UserDetailResponse, UserDetailUpdateType, UserInsertType, UserListResponse, UserNonPermissionRegistrationType, UserNonPermissionSolutionResponse, UserPermissionRegistrationType, UserPermitSolutionResponse, userSolutionCountType } from "../types/userList";
 
 const API = {
     //사용자 목록 조회
@@ -25,6 +25,14 @@ const API = {
         console.log("API 응답 데이터:", response.data); // 응답 데이터 로깅
         return response;
     },
+    //사용자 미허가 솔루션
+    getUserNonPermissionSolution : async (requsetData: string) => {
+        //console.log("API 요청 데이터:", requsetData); // 요청 데이터 로깅
+        const url = requsetData ? `/api/user/slutn/nosel/${requsetData}` : '/api/user/slutn/nosel/';
+        const response = await instance.get<UserNonPermissionSolutionResponse>(url);
+        //console.log("API 응답 데이터:", response.data); // 응답 데이터 로깅
+        return response;
+    },
     //사용자 추가
     insertUSer: async (requsetData: { body: UserInsertType }) => {
         const url = '/api/user'
@@ -40,6 +48,17 @@ const API = {
         const url = `/api/user/remove?userNo=${userNo}`;
         return await instance.post(url, { userNo });  // userNo를 body에도 포함
     },
+    //사용자 솔루션 갯수 수정
+    userSolutionCount: async (requestData: { body: userSolutionCountType }) => {
+        console.log("API 요청 데이터:", requestData); // 요청 데이터 로깅
+        const response = await instance.put('/api/user/slutn/count', requestData.body);
+        console.log("API 응답 데이터:", response.data); // 응답 데이터 로깅
+        return response;
+    },
+    //사용자 미허가 솔루션 등록
+    userNonPermissionRegistration: async (requstData: { body: UserNonPermissionRegistrationType }) => await instance.put('/api/user/slutn', requstData.body),
+    //사용자 허가 솔루션 등록
+    userPermissionRegistration: async (requstData: { body: UserPermissionRegistrationType }) => await instance.post('/api/user/slutn', requstData.body)
 
 };
 
@@ -57,13 +76,23 @@ const KEY = {
         const url = requsetData ? `/api/user/slutn/sel/${requsetData}` : '/api/user/slutn/sel/';
         return [url];
     },
+    //사용자 미허가 솔루션
+    getUserNonPermissionSolution: (requsetData: string) => {
+        const url = requsetData ? `/api/user/slutn/nosel/${requsetData}` : '/api/user/slutn/nosel/';
+        return [url];
+    },
     //사용자 추가
     insertUser: () => ['/api/user'],
     //사용자 수정
     updateUser: () => ['/api/user'],
     //사용자 삭제
-    deleteUser: () => [`/api/user/remove`], // 캐싱 키
-
+    deleteUser: () => [`/api/user/remove`],
+    //사용자 솔루션 갯수 수정
+    userSolutionCount: () => ['/api/user/slutn/count'],
+    //사용자 미허가 솔루션 등록
+    userNonPermissionRegistration: () => ['/api/user/slutn'],
+    //사용자 허가 솔루션 등록
+    userPermissionRegistration: () => ['/api/user/slutn'],
 };
 
 //사용자 목록 조회
@@ -104,6 +133,17 @@ export const useUserPermitSolution = (requsetData: string) => {
     })
 };
 
+//사용자 미허가 솔루션 등록
+export const useUserNonPermissionSolution = (requsetData: string) => {
+    return useQuery({
+        queryKey : KEY.getUserNonPermissionSolution(requsetData),
+        queryFn: async () => {
+            const result = await API.getUserNonPermissionSolution(requsetData);
+            return result;
+        }
+    });
+};
+
 //사용자 추가
 export const insertUser = () => {
     return useMutation({
@@ -129,6 +169,7 @@ export const updateUser = () => {
         onError: (error) => {
             console.error("API 호출 실패. 에러:", error); // 에러 로깅
         },
+        
     })
 };
 
@@ -145,3 +186,45 @@ export const deleteUser = () => {
         },
     });
 };
+
+//사용자 솔루션 갯수 수정
+export const userSolutionCount = (requestData: { body: userSolutionCountType }) => {
+    return useMutation({
+        mutationFn: API.userSolutionCount,
+        mutationKey: KEY.userSolutionCount(),
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    })
+};
+
+//사용자 미허가 솔루션 등록
+export const userNonPermissionRegistration = () => {
+    return useMutation({
+        mutationFn: (requstData: { body: UserNonPermissionRegistrationType }) => API.userNonPermissionRegistration(requstData),
+        mutationKey: KEY.userNonPermissionRegistration(),
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    })
+};
+
+//사용자 허가 솔루션 등록
+export const userPermissionRegistration = () => {
+    return useMutation({
+        mutationFn: (requstData: { body: UserPermissionRegistrationType }) => API.userPermissionRegistration(requstData),
+        mutationKey: KEY.userPermissionRegistration(),
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    })
+}

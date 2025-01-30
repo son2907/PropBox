@@ -24,7 +24,6 @@ import LabelTypo from "../../../../components/Typography/LabelTypo";
 import Calendar from "../../../../components/Calendar/Calendar";
 import useToggleButtton from "../../../../hooks/useToggleButton";
 import PasswordInput from "../../../../components/Input/PasswordInput";
-import { UserSingleDetailType, useUserSingleDetail } from "../../../../api/userSingleDetail";
 import useModal from "../../../../hooks/useModal";
 import { ConfirmDeleteModal } from "../../../../components/layout/modal/ConfirmDeleteModal";
 import { deleteUser, insertUser, useUserDetail } from "../../../../api/userList";

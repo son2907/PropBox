@@ -83,6 +83,28 @@ export interface UserPermitSolutionResponse extends ApiResponseType {
     refreshToken: null;
 };
 
+//사용자 미허가 솔루션
+export type UserNonPermissionSolutionType = {
+    id : string,
+    slutnId: string,
+    slutnNm: string,
+    lisneSeCd: string,
+    lisneSeNm: string,
+    userNo: string,
+    isOk: string
+};
+export interface UserNonPermissionSolutionResponse {
+    code: number;
+    result: string;
+    message: string;
+    totalCnt: number | null;
+    contents: UserNonPermissionSolutionType[];
+    params: null;
+    errorCode: null;
+    accessToken: null;
+    refreshToken: null;
+};
+
 //사용자 추가
 export type UserType = {
     userNo: string,
@@ -176,3 +198,40 @@ export type DeleteUserType = {
     userId: string,
 };
 
+//사용자 솔루션 count 수정
+export type userSolutionCountType = {
+    userNo: string,
+    slutnId: string,
+    userlisneCnt: string,
+    userId: string | undefined,
+};
+
+//사용자 미허가 솔루션 등록
+export type SolutionType = {
+    userNo: string,
+    slutnId: string,
+    lisneCnt: string,
+    useYn: string,
+    delYn: string,
+    rmk: string,
+    userId: string,
+};
+export type UserNonPermissionRegistrationType = {
+    userList: SolutionType[]; // 사용자 목록
+    userId: string | undefined; // 사용자 ID
+};
+
+//사용자 허가 솔루션 등록
+export type SolutionUserType = {
+    userNo: string,
+    slutnId: string,
+    lisneCnt: string,
+    useYn: string,
+    delYn: string,
+    rmk: string,
+    userId: string
+};
+export type UserPermissionRegistrationType = {
+    userList: SolutionUserType[]; // 사용자 목록
+    userId: string | undefined; // 사용자 ID
+};
