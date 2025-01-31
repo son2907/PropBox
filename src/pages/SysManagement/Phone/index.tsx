@@ -20,7 +20,7 @@ import { useRef, useState } from "react";
 import { MdArrowBackIos, MdArrowForwardIos } from "react-icons/md";
 import { FaArrowDown } from "react-icons/fa6";
 import CheckboxTable from "../../../components/Table/CheckboxTable";
-import { BiChevronLeft } from "react-icons/bi";
+import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import { RiDeleteBinLine } from "react-icons/ri";
 import PathConstants from "../../../routers/path";
 import { openPopup } from "../../../utils/openPopup";
@@ -93,262 +93,227 @@ export default function PhoneSetting() {
 
   return (
     <>
-      <Stack width={"100%"} height={"100%"} marginBottom={1}>
-        <GrayBox gap={2} justifyContent={"start"}>
-          <SearchInput></SearchInput>
+      <Stack width={"100%"} height={"100%"} gap={1}>
+        <GrayBox>
+          <SearchInput />
         </GrayBox>
-        <Stack height={"100%"} direction={"row"} gap={1}>
-          {/* 사용자 및 회사 정보 */}
-          <Stack width={"30%"} overflow={"auto"} height={"96%"}>
-            <TableBox>
-              <TableBox.Inner>
-                <BasicTable data={tableTestData}>
-                  <BasicTable.Th>사용자이름</BasicTable.Th>
-                  <BasicTable.Th>사용자ID</BasicTable.Th>
-                  <BasicTable.Th>전화기수</BasicTable.Th>
-                  <BasicTable.Tbody>
-                    {tableTestData.map((item, index) => {
-                      return (
-                        <BasicTable.Tr
-                          key={index}
-                          isClicked={userSelectedRow.has(item.id)}
-                          onClick={() => toggleUserRowSelection(item.id)}
-                        >
-                          <BasicTable.Td>{item.phone}</BasicTable.Td>
-                          <BasicTable.Td>{item.name}</BasicTable.Td>
-                          <BasicTable.Td>{item.age}</BasicTable.Td>
-                        </BasicTable.Tr>
-                      );
-                    })}
-                  </BasicTable.Tbody>
-                </BasicTable>
-              </TableBox.Inner>
-            </TableBox>
+        <TableBox width={"100%"} gap={1}>
+          <Stack overflow={"auto"} width={"20%"} height={"100%"}>
+            <TableBox.Inner>
+              <BasicTable data={tableTestData}>
+                <BasicTable.Th>사용자이름</BasicTable.Th>
+                <BasicTable.Th>사용자ID</BasicTable.Th>
+                <BasicTable.Th>전화기수</BasicTable.Th>
+                <BasicTable.Tbody>
+                  {tableTestData.map((item, index) => {
+                    return (
+                      <BasicTable.Tr
+                        key={index}
+                        isClicked={userSelectedRow.has(item.id)}
+                        onClick={() => toggleUserRowSelection(item.id)}
+                      >
+                        <BasicTable.Td>{item.phone}</BasicTable.Td>
+                        <BasicTable.Td>{item.name}</BasicTable.Td>
+                        <BasicTable.Td>{item.age}</BasicTable.Td>
+                      </BasicTable.Tr>
+                    );
+                  })}
+                </BasicTable.Tbody>
+              </BasicTable>
+            </TableBox.Inner>
           </Stack>
-          {/* 전화기 리스트 */}
-          <Stack
-            height={"96%"}
-            width={"100%"}
-            direction={"row"}
-            gap={1}
-            sx={{ minWidth: "800px", overflowX: "auto" }}
-          >
-            <Stack width={"50%"} justifyContent={"start"} overflow={"hidden"}>
-              <Box overflow={"auto"}>
-                <TableBox>
-                  <TableBox.Inner>
-                    <CheckboxTable
-                      data={tableTestData}
-                      selectedRows={useSelectedRows}
-                      toggleRowsSelection={toggleUseRowsSelection}
-                    >
-                      <CheckboxTable.Thead>
-                        <CheckboxTable.Tr>
-                          <CheckboxTable.CheckboxTh keyName="id" />
-                          <CheckboxTable.Th>전화기ID</CheckboxTable.Th>
-                          <CheckboxTable.Th>전화기이름</CheckboxTable.Th>
-                          <CheckboxTable.Th>아이디</CheckboxTable.Th>
-                          <CheckboxTable.Th>비밀번호</CheckboxTable.Th>
-                          <CheckboxTable.Th>전화번호</CheckboxTable.Th>
-                        </CheckboxTable.Tr>
-                      </CheckboxTable.Thead>
+          <Stack width={"38%"} overflow={"auto"} height={"100%"}>
+            <TableBox.Inner>
+              <CheckboxTable
+                data={tableTestData}
+                selectedRows={useSelectedRows}
+                toggleRowsSelection={toggleUseRowsSelection}
+              >
+                <CheckboxTable.Thead>
+                  <CheckboxTable.Tr>
+                    <CheckboxTable.CheckboxTh keyName="id" />
+                    <CheckboxTable.Th>전화기ID</CheckboxTable.Th>
+                    <CheckboxTable.Th>전화기이름</CheckboxTable.Th>
+                    <CheckboxTable.Th>아이디</CheckboxTable.Th>
+                    <CheckboxTable.Th>비밀번호</CheckboxTable.Th>
+                    <CheckboxTable.Th>전화번호</CheckboxTable.Th>
+                  </CheckboxTable.Tr>
+                </CheckboxTable.Thead>
 
-                      <CheckboxTable.Tbody>
-                        {tableTestData.map((item) => (
-                          <CheckboxTable.Tr key={item.id} id={item.id}>
-                            <CheckboxTable.CheckboxTd
-                              item={item}
-                              keyName="id"
-                            />
-                            <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
-                          </CheckboxTable.Tr>
-                        ))}
-                      </CheckboxTable.Tbody>
-                    </CheckboxTable>
-                  </TableBox.Inner>
-                </TableBox>
-              </Box>
-              <GrayBox justifyContent={"end"}>
-                <BasicButton>새로고침</BasicButton>
+                <CheckboxTable.Tbody>
+                  {tableTestData.map((item) => (
+                    <CheckboxTable.Tr key={item.id} id={item.id}>
+                      <CheckboxTable.CheckboxTd
+                        item={item}
+                        keyName="id"
+                      />
+                      <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
+                      <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
+                      <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
+                      <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
+                      <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
+                    </CheckboxTable.Tr>
+                  ))}
+                </CheckboxTable.Tbody>
+              </CheckboxTable>
+            </TableBox.Inner>
+          </Stack>
+          <Stack width={"2%"} bgcolor={"white"} justifyContent={"space-between"} height={"100%"}>
+            <BasicButton
+              sx={{
+                backgroundColor: "primary.A100",
+                height: "150px",
+                width: "100%",
+                padding: "0",
+                margin: "0",
+                minWidth: "unset", // 기본 minWidth 해제
+              }}
+
+            >
+              <BiChevronLeft size={"24px"} />
+            </BasicButton>
+            <BasicButton
+              sx={{
+                backgroundColor: "primary.A100",
+                height: "150px",
+                width: "100%",
+                padding: "0",
+                margin: "0",
+                minWidth: "unset", // 기본 minWidth 해제
+              }}
+
+            >
+              <BiChevronRight size={"24px"} />
+            </BasicButton>
+          </Stack>
+          <Stack width={"38%"} height={"100%"} gap={1}>
+            <Stack width={"100%"} height={"60%"} overflow={"auto"}>
+              <TableBox.Inner>
+                <CheckboxTable
+                  data={tableTestData}
+                  selectedRows={useSelectedRows}
+                  toggleRowsSelection={toggleUseRowsSelection}
+                >
+                  <CheckboxTable.Thead>
+                    <CheckboxTable.Tr>
+                      <CheckboxTable.CheckboxTh keyName="id" />
+                      <CheckboxTable.Th>전화기ID</CheckboxTable.Th>
+                      <CheckboxTable.Th>전화기이름</CheckboxTable.Th>
+                      <CheckboxTable.Th>아이디</CheckboxTable.Th>
+                      <CheckboxTable.Th>비밀번호</CheckboxTable.Th>
+                      <CheckboxTable.Th>전화번호</CheckboxTable.Th>
+                      <CheckboxTable.Th>상세보기</CheckboxTable.Th>
+                    </CheckboxTable.Tr>
+                  </CheckboxTable.Thead>
+                  <CheckboxTable.Tbody>
+                    {tableTestData.map((item) => (
+                      <CheckboxTable.Tr key={item.id} id={item.id}>
+                        <CheckboxTable.CheckboxTd
+                          item={item}
+                          keyName="id"
+                        />
+                        <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
+                        <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
+                        <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
+                        <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
+                        <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
+                        <CheckboxTable.Td>
+                          <BasicButton>상세보기</BasicButton>
+                        </CheckboxTable.Td>
+                      </CheckboxTable.Tr>
+                    ))}
+                  </CheckboxTable.Tbody>
+                </CheckboxTable>
+              </TableBox.Inner>
+            </Stack>
+            <Stack width={"100%"} height={"40%"}>
+              <GrayBox width={"100%"} height={"100%"} overflow={"auto"} flexDirection={"column"}>
+                <Box justifyContent={"start"} width={"100%"} marginBottom={1}>
+                  <Typography fontSize={"24px"} fontWeight={"bold"}>
+                    상세정보
+                  </Typography>
+                </Box>
+                <Box
+                  display="flex"
+                  flexDirection="column" // 세로 방향 설정
+                  flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
+                  justifyContent="flex-start" // 가로 방향 왼쪽 정렬
+                  width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
+                  gap={1}
+                >
+                  <LabelTypo width={"100%"}>전화기ID</LabelTypo>
+                  {/* height: 24px */}
+                  <BasicInput sx={{ minHeight: "24px", width: "60%" }} />
+                </Box>
+                <Box
+                  display="flex"
+                  flexDirection="column" // 세로 방향 설정
+                  flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
+                  justifyContent="flex-start" // 가로 방향 왼쪽 정렬
+                  width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
+                  gap={1}
+                >
+                  <LabelTypo width={"100%"}>전화기이름</LabelTypo>
+                  {/* height: 24px */}
+                  <BasicInput sx={{ minHeight: "24px", width: "60%" }} />
+                </Box>
+                <Box
+                  display="flex"
+                  flexDirection="column" // 세로 방향 설정
+                  flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
+                  justifyContent="flex-start" // 가로 방향 왼쪽 정렬
+                  width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
+                  gap={1}
+                >
+                  <LabelTypo width={"100%"}>아이디</LabelTypo>
+                  {/* height: 24px */}
+                  <BasicInput sx={{ minHeight: "24px", width: "60%" }} />
+                </Box>
+                <Box
+                  display="flex"
+                  flexDirection="column" // 세로 방향 설정
+                  flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
+                  justifyContent="flex-start" // 가로 방향 왼쪽 정렬
+                  width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
+                  gap={1}
+                >
+                  <LabelTypo width={"100%"}>비밀번호</LabelTypo>
+                  {/* height: 24px */}
+                  <BasicInput sx={{ minHeight: "24px", width: "60%" }} />
+                </Box>
+                <Box
+                  display="flex"
+                  flexDirection="column" // 세로 방향 설정
+                  flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
+                  justifyContent="flex-start" // 가로 방향 왼쪽 정렬
+                  width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
+                  gap={1}
+                >
+                  <LabelTypo width={"100%"}>전화번호</LabelTypo>
+                  {/* height: 24px */}
+                  <BasicInput sx={{ minHeight: "24px", width: "60%" }} />
+                </Box>
+                <Box
+                  display="flex"
+                  flexDirection="column" // 세로 방향 설정
+                  flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
+                  justifyContent="flex-start" // 가로 방향 왼쪽 정렬
+                  width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
+                  gap={1}
+                >
+                  <LabelTypo width={"100%"}>비고</LabelTypo>
+                  {/* height: 24px */}
+                  <TextArea
+                    height="100px"
+                    resize="none"
+                    ref={tRef1}
+                    placeholder=""
+                  />
+                </Box>
               </GrayBox>
             </Stack>
-            <Stack
-              width={"3%"}
-              bgcolor={"white"}
-              justifyContent={"space-between"}
-              justifyItems={"center"}
-            >
-              <BasicButton
-                sx={{
-                  backgroundColor: "primary.A100",
-                  height: "200px",
-                  width: "5px",
-                }}
-              >
-                <BiChevronLeft size={"24px"} />
-              </BasicButton>
-              <BasicButton
-                sx={{
-                  backgroundColor: "primary.A100",
-                  height: "200px",
-                  width: "5px",
-                }}
-              >
-                <BiChevronLeft size={"24px"} />
-              </BasicButton>
-            </Stack>
-            <Stack width={"50%"} justifyContent={"start"} overflow={"hidden"}>
-              <Box overflow={"auto"}>
-                <TableBox>
-                  <TableBox.Inner>
-                    <CheckboxTable
-                      data={tableTestData}
-                      selectedRows={useSelectedRows}
-                      toggleRowsSelection={toggleUseRowsSelection}
-                    >
-                      <CheckboxTable.Thead>
-                        <CheckboxTable.Tr>
-                          <CheckboxTable.CheckboxTh keyName="id" />
-                          <CheckboxTable.Th>전화기ID</CheckboxTable.Th>
-                          <CheckboxTable.Th>전화기이름</CheckboxTable.Th>
-                          <CheckboxTable.Th>아이디</CheckboxTable.Th>
-                          <CheckboxTable.Th>비밀번호</CheckboxTable.Th>
-                          <CheckboxTable.Th>전화번호</CheckboxTable.Th>
-                          <CheckboxTable.Th>상세보기</CheckboxTable.Th>
-                        </CheckboxTable.Tr>
-                      </CheckboxTable.Thead>
-                      <CheckboxTable.Tbody>
-                        {tableTestData.map((item) => (
-                          <CheckboxTable.Tr key={item.id} id={item.id}>
-                            <CheckboxTable.CheckboxTd
-                              item={item}
-                              keyName="id"
-                            />
-                            <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
-                            <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
-                            <CheckboxTable.Td>
-                              <BasicButton>상세보기</BasicButton>
-                            </CheckboxTable.Td>
-                          </CheckboxTable.Tr>
-                        ))}
-                      </CheckboxTable.Tbody>
-                    </CheckboxTable>
-                  </TableBox.Inner>
-                </TableBox>
-              </Box>
-              <Stack>
-                <GrayBox
-                  flexDirection={"column"}
-                  width={"100%"}
-                  height={"100%"}
-                  gap={1}
-                  overflow="auto"
-                  alignItems="start"
-                >
-                  <Box width="100%" justifyContent="flex-start">
-                    <Typography fontSize={"24px"} fontWeight={"bold"}>
-                      상세정보
-                    </Typography>
-                  </Box>
-                  <Box
-                    display="flex"
-                    flexDirection="column" // 세로 방향 설정
-                    flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
-                    justifyContent="flex-start" // 가로 방향 왼쪽 정렬
-                    width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
-                    gap={1}
-                  >
-                    <LabelTypo width={"100%"}>전화기ID</LabelTypo>
-                    {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} />
-                  </Box>
-                  <Box
-                    display="flex"
-                    flexDirection="column" // 세로 방향 설정
-                    flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
-                    justifyContent="flex-start" // 가로 방향 왼쪽 정렬
-                    width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
-                    gap={1}
-                  >
-                    <LabelTypo width={"100%"}>전화기이름</LabelTypo>
-                    {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} />
-                  </Box>
-                  <Box
-                    display="flex"
-                    flexDirection="column" // 세로 방향 설정
-                    flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
-                    justifyContent="flex-start" // 가로 방향 왼쪽 정렬
-                    width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
-                    gap={1}
-                  >
-                    <LabelTypo width={"100%"}>아이디</LabelTypo>
-                    {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} />
-                  </Box>
-                  <Box
-                    display="flex"
-                    flexDirection="column" // 세로 방향 설정
-                    flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
-                    justifyContent="flex-start" // 가로 방향 왼쪽 정렬
-                    width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
-                    gap={1}
-                  >
-                    <LabelTypo width={"100%"}>비밀번호</LabelTypo>
-                    {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} />
-                  </Box>
-                  <Box
-                    display="flex"
-                    flexDirection="column" // 세로 방향 설정
-                    flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
-                    justifyContent="flex-start" // 가로 방향 왼쪽 정렬
-                    width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
-                    gap={1}
-                  >
-                    <LabelTypo width={"100%"}>전화번호</LabelTypo>
-                    {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} />
-                  </Box>
-                  <Box
-                    display="flex"
-                    flexDirection="column" // 세로 방향 설정
-                    flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
-                    justifyContent="flex-start" // 가로 방향 왼쪽 정렬
-                    width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
-                    gap={1}
-                  >
-                    <LabelTypo width={"100%"}>비고</LabelTypo>
-                    {/* height: 24px */}
-                    <TextArea
-                      height="100px"
-                      resize="none"
-                      ref={tRef1}
-                      placeholder=""
-                    />
-                  </Box>
-                  <Stack
-                    justifyContent={"end"}
-                    width={"100%"}
-                    gap={1}
-                    direction={"row"}
-                  >
-                    <BasicButton>추가</BasicButton>
-                    <BasicButton>저장</BasicButton>
-                    <BasicButton>삭제</BasicButton>
-                  </Stack>
-                </GrayBox>
-              </Stack>
-            </Stack>
           </Stack>
-        </Stack>
+        </TableBox>
       </Stack>
     </>
   );
