@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { LocalListResponseType, LocalMemberResponseType, LocalNonPermissionResponseType, LocalNonPermissionType, LocalPermissionListResponseType, MemberListResponseType, MemberPositionResponseType } from "../types/localManagementType";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { LocalListResponseType, LocalMemberResponseType, LocalNonPermissionResponseType, LocalNonPermissionType, LocalPermissionListResponseType, MemberDeleteListType, MemberInsertListType, MemberListResponseType, MemberPositionResponseType, MemeberPositionType } from "../types/localManagementType";
 import instance from "../utils/axiosInstance";
 
 const API = {
@@ -34,7 +34,23 @@ const API = {
     getMemberList: async (userNo: string) => {
         const url = `/api/user/listofmber/${userNo}`;
         return await instance.get<MemberListResponseType>(url);
-    }
+    },
+    //구성원 직책 수정
+    updateMemeberPosition: async (requestData : { body :  MemeberPositionType}) =>{
+        console.log("구성원 직책 수정 api req 데이터 확인 : ",requestData.body);
+        const response = await instance.put('/api/spt/constnt', requestData.body);
+        return response;
+    },
+    //구성원 현장 등록
+    insertMember: async (requestData : { body : MemberInsertListType})=>{
+        const url = '/api/spt/constnt'
+        return await instance.post(url, requestData.body);
+    },
+    //구성원 현장에서 제외
+    deleteMember: async (requestData : { body : MemberDeleteListType}) => {
+        const url = '/api/spt/constnt/remove';
+        return await instance.post(url, requestData.body);
+    },
 };
 
 const KEY = {
@@ -46,6 +62,12 @@ const KEY = {
     getLocalMemberList: (requestData: { sptNo: string, userNm: string, rspofcNm: string }) => [`/api/spt/constnt/searchlist/${requestData.sptNo}?userNm=${requestData.userNm}&rspofcNm=${requestData.rspofcNm}`],
     getMemberPositionList: (upCd: string) => [`/api/common/code?upCd=${upCd}`],
     getMemberList: (userNo: string) => [`/api/user/listofmber/${userNo}`],
+    //구성원 직책 수정
+    updateMemeberPosition: () => ['/api/spt/constnt'],
+    //구성원 현장 등록
+    insertMember: () => ['/api/spt/constnt'],
+    //구성원 현장에서 제외
+    deleteMember: () => ['/api/spt/constnt/remove'],
 };
 
 //현장관리 현장 리스트
@@ -89,14 +111,15 @@ export const useNonPermissionLocalList = (userNo: string) => {
     })
 };
 export const useLocalMemberList = (requestData: { sptNo: string, userNm: string, rspofcNm: string }) => {
-    //console.log("실행됨",requestData);
+    console.log(" sptNo 실행됨",requestData);
     return useQuery({
         queryKey: KEY.getLocalMemberList(requestData),
         queryFn: async () => {
             const result = await API.getLocalMemberList(requestData);
             //console.log("결과는 :", result); // 쿼리 결과 로그 추가
             return result;
-        }
+        },
+        enabled: !!requestData.sptNo, // sptNo 번호 선택안하면 실행 안함
     })
 };
 export const useMemberPositionList = (upCd: string) => {
@@ -115,5 +138,47 @@ export const useMemberList = (userNo: string) => {
             const result = await API.getMemberList(userNo);
             return result;
         }
+    })
+};
+
+//구성원 직책 수정
+export const updateMemberPosition = (requestData : { body :  MemeberPositionType}) => {
+    return useMutation({
+        mutationFn: API.updateMemeberPosition,
+        mutationKey: KEY.updateMemeberPosition(),
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    })
+};
+
+//구성원 등록
+export const memberLocalInsert = () => {
+    return useMutation({
+        mutationFn: (requestData : { body : MemberInsertListType}) => API.insertMember(requestData),
+        mutationKey: KEY.insertMember(),
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    })
+};
+
+//구성원 현장에서 제외
+export const memberDeleteLocal = () => {
+    return useMutation({
+        mutationFn: (requestData : { body : MemberDeleteListType}) => API.deleteMember(requestData),
+        mutationKey: KEY.deleteMember(),
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
     })
 }

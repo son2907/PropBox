@@ -142,6 +142,33 @@ export interface MemberListResponseType extends ApiResponseType {
     refreshToken: null;
 };
 
+//구성원 직책 수정
+export type MemeberPositionType = {
+    userNo: string,
+    sptNo: string,
+    rspofcCd: string,
+    userId: string,
+};
+
+//구성원 현장 등록
+export type MemeberInsertType = {
+    userNo: string,
+    rspofcCd: string,
+    memo: string,
+    rmk: string,
+};
+export type MemberInsertListType = {
+    sptNo: string,
+    userId: string | undefined,
+    constntList: MemeberInsertType[],
+};
+
+//현장에서 구성원 제외
+export type MemberDeleteListType = {
+    sptNo: string;
+    userId: string | undefined;
+    userNoList: string[]; // ✅ 올바른 타입 (문자열 배열)
+};
 
 
 // export type SptList = {

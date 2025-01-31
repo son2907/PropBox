@@ -23,7 +23,6 @@ import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
 import { BiChevronLeft } from "react-icons/bi";
 import Calendar from "../../../components/Calendar/Calendar";
 import useModal from "../../../hooks/useModal";
-import { UserListType } from "../../../api/userList";
 import api from "../../../api";
 import { useLocalList, useNonPermissionLocalList, usePermissionLocalList } from "../../../api/localManagement";
 import { LocalListType, LocalNonPermissionType, LocalPermissionListType } from "../../../types/localManagementType";
@@ -60,6 +59,14 @@ export default function LocalManagement() {
     { value: "1003099", data: "종료" },
   ];
 
+  //날짜 형식 재정의
+  const formatDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}${month}${day}`;
+  };
+
   const {
     selectListData: sd_1,
     selectValue: s_1,
@@ -69,18 +76,6 @@ export default function LocalManagement() {
   const [selectedAge, setSelectedAge] = useState<number | null>(null);
 
   //useMultiRowSelection 분리해서 각 테이블에 독립적으로 selectedRows와 toggleRowsSelection을 전달하여 동작이 분리되도록 설정.
-  // 사용자 리스트 - 선택 상태 관리
-  const {
-    selectedRow: userSelectedRow,
-    toggleRowSelection: toggleUserRowSelection,
-  } = useSingleRowSelection();
-
-  // 현장 리스트 - 선택 상태 관리
-  const {
-    selectedRow: localSelectedRow,
-    toggleRowSelection: toggleLocalRowSelection,
-  } = useSingleRowSelection();
-
   // 현장 허가 솔루션 - 선택 상태 관리
   const {
     selectedRows: localUseSelectedRows,
@@ -104,7 +99,7 @@ export default function LocalManagement() {
   };
 
   const [startDate, setStartDate] = useState<Date>(new Date());
-  const [endDate, setEndDate] = useState<Date>(new Date());
+  const [endDate, setEndDate] = useState<Date>(new Date("9999-12-31"));
 
   useEffect(() => {
     setLocalListReqData((prev) => ({
@@ -146,6 +141,14 @@ export default function LocalManagement() {
     console.log("선택값은? :", value)
   };
 
+  useEffect(() => {
+    setLocalListReqData((prev) => ({
+      ...prev,
+      cntrctBgnde: formatDate(startDate),
+      cntrctEndde: endDate ? formatDate(endDate) : "99991231",
+    }));
+  }, [startDate, endDate]);
+
   return (
     <>
       {/* 사용자 리스트 테이블 - 상단 테이블 */}
@@ -177,6 +180,7 @@ export default function LocalManagement() {
               onChange={(event) => {
                 const selectedValue = event.target.value;
                 o_1(event); // 기존의 handleChange 호출
+                console.log("구분선택 값:", selectedValue);
                 handleIsUseChange(selectedValue); // isUse 값 업데이트
               }}
               selectData={sd_1}
@@ -185,13 +189,14 @@ export default function LocalManagement() {
               defaultValue={""}
             />
             <Box width={"200px"}>
-              <Calendar selectedDate={endDate} setSelectedDate={setEndDate} />
+              <Calendar selectedDate={startDate} setSelectedDate={setStartDate} />
             </Box>
             <Typography>~</Typography>
             <Box width={"200px"}>
               <Calendar
-                selectedDate={startDate}
-                setSelectedDate={setStartDate}
+                selectedDate={endDate}
+                setSelectedDate={setEndDate}
+                
               />
             </Box>
           </Stack>

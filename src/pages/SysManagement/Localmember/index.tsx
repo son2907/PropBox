@@ -20,17 +20,22 @@ import TableSelect from "../../../components/Select/TableSelect";
 import { RiDeleteBinLine } from "react-icons/ri";
 import CheckboxTable from "../../../components/Table/CheckboxTable";
 import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
-import { BiChevronLeft } from "react-icons/bi";
+import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import Calendar from "../../../components/Calendar/Calendar";
 import SelectInput from "@mui/material/Select/SelectInput";
 import useModal from "../../../hooks/useModal";
 import api from "../../../api";
-import { UserListType } from "../../../api/userList";
-import { useLocalList, useLocalMemberList, useMemberList, useMemberPositionList } from "../../../api/localManagement";
-import { LocalListType, localMemberListType, MemberPositionType, MemeberList } from "../../../types/localManagementType";
+import { memberDeleteLocal, memberLocalInsert, updateMemberPosition, useLocalList, useLocalMemberList, useMemberList, useMemberPositionList } from "../../../api/localManagement";
+import { LocalListType, localMemberListType, MemberInsertListType, MemberPositionType, MemeberList } from "../../../types/localManagementType";
 import useDidMountEffect from "../../../hooks/useDidMountEffect";
+import { UserListType } from "../../../types/userList";
+import { EmptySelectModal } from "../../../components/layout/modal/EmptySelectModal";
+import { useAuthStore } from "../../../stores/authStore";
 
 export default function LocalmemberManagement() {
+
+  //api를 호출하기위해 userID 불러오기
+  const { loginId } = useAuthStore(["loginId"]);
 
   //모달
   const { openModal, closeModal } = useModal();
@@ -51,21 +56,33 @@ export default function LocalmemberManagement() {
   const [localListReqData, setLocalListReqData] = useState({ sptNm: "", progrsSeCd: "", userNo: "", cntrctBgnde: "", cntrctEndde: "" });
   const { data: localListData, isSuccess: isLocalListData } = useLocalList(localListReqData);
   const [selectLocalNo, setSelectLocalNo] = useState("");
-  const [localList, setLocalList] = useState<LocalListType[]>([]);
 
   //현장 구성원 리스트
-  const [localMemberReqData, setLocalMemberReqData] = useState({sptNo:"",userNm:"",rspofcNm:""});
-  const {data: localMemberListData, refetch: localMemberListDataRefetch} = useLocalMemberList(localMemberReqData);
+  const [localMemberReqData, setLocalMemberReqData] = useState({ sptNo: "", userNm: "", rspofcNm: "" });
+  const { data: localMemberListData, refetch: localMemberListDataRefetch } = useLocalMemberList(localMemberReqData);
   const [localMemberList, setLocalMemberList] = useState<localMemberListType[]>([]);
 
   //구성원 직책 리스트
-  const {data: memberPositionListData, isSuccess: isMemberPositionListData} = useMemberPositionList("1004000");
+  const { data: memberPositionListData, isSuccess: isMemberPositionListData } = useMemberPositionList("1004000");
   const [memberPositionList, setMemberPositionList] = useState<MemberPositionType[]>([]);
   const [memberPositionKey, setMemberPositionKey] = useState("");
   const [memberPositionValue, setMemberPositionValue] = useState("");
 
+  //직책 변경 reqData
+  const changePositionReqData = {
+    body: {
+      userNo: selectUserNo,
+      sptNo: selectLocalNo,
+      rspofcCd: memberPositionKey,
+      userId: loginId || "",
+    }
+  };
+
+  const { mutate: changePositionAPI } = updateMemberPosition(changePositionReqData);
+
+
   //구성원 리스트
-  const {data: memberListData, refetch: memberListDataRefetch} = useMemberList(selectUserNo);
+  const { data: memberListData, refetch: memberListDataRefetch } = useMemberList(selectUserNo);
   const [memberList, setMemberList] = useState<MemeberList[]>([]);
 
   const { selectListData, selectValue, handleChange } = useSelect(
@@ -74,6 +91,11 @@ export default function LocalmemberManagement() {
     "cdNm"
   );
   const [selectedAge, setSelectedAge] = useState<number | null>(null);
+
+  //구성원 -> 현장 구성원 등록
+  const insertLocalMember = memberLocalInsert();
+  //현장구성원 -> 구성원
+  const deleteLocalMember = memberDeleteLocal();
 
   //useMultiRowSelection 분리해서 각 테이블에 독립적으로 selectedRows와 toggleRowsSelection을 전달하여 동작이 분리되도록 설정.
   // 사용자 리스트 - 선택 상태 관리
@@ -126,43 +148,33 @@ export default function LocalmemberManagement() {
   }, [data, isSuccess, searchQuery]);
 
   useEffect(() => {
-    if (selectUserNo !== "") {
-      // selectUserNo가 변경될 때 localListReqData를 업데이트하고 useLocalList 호출 트리거
-      setLocalListReqData((prev) => ({
-        ...prev,
-        userNo: selectUserNo, // selectUserNo 값을 userNo에 반영
-      }));
-    } else return;
+    setLocalListReqData((prev) => ({
+      ...prev,
+      userNo: selectUserNo, // selectUserNo 값을 userNo에 반영
+    }));
   }, [selectUserNo]);
 
-  useDidMountEffect(() => {
-    //console.log("localListData 확인 : ",localListData);
-    if(localListData?.data.contents){
-      setLocalList(localListData?.data.contents);
-    }
-  },[localListData]);
   useEffect(() => {
     setLocalMemberReqData((prev) => ({
       ...prev,
       sptNo: selectLocalNo
     }))
-  },[selectLocalNo]);
+  }, [selectLocalNo]);
   useDidMountEffect(() => {
-    if(localMemberListData?.data.contents) {
+    if (localMemberListData?.data.contents) {
       setLocalMemberList(localMemberListData.data.contents);
     }
-  },[selectLocalNo,localMemberListData]);
+  }, [selectLocalNo, localMemberListData]);
   useDidMountEffect(() => {
-    if(memberPositionListData?.data.contents){
+    if (memberPositionListData?.data.contents) {
       setMemberPositionList(memberPositionListData.data.contents);
     }
-  },[memberPositionListData]);
+  }, [memberPositionListData]);
   useDidMountEffect(() => {
-    if(memberListData?.data.contents) {
+    if (memberListData?.data.contents) {
       setMemberList(memberListData.data.contents);
     }
-  },[memberListData])
-
+  }, [memberListData]);
 
   const handleSearch = () => {
     setSearchQuery(searchInput); // 검색어 업데이트
@@ -172,24 +184,125 @@ export default function LocalmemberManagement() {
 
   const handleLocalSearch = () => {
     setLocalSearchQuery(localSearchInput); // 검색어 업데이트
-    // setLocalListReqData((prev) => ({
-    //   ...prev,
-    //   sptNm: localSearchInput, // 선택한 값으로 isUse 업데이트
-    //   userNo: selectUserNo
-    // }));
+    setLocalListReqData((prev) => ({
+      ...prev,
+      sptNm: localSearchInput, // 선택한 값으로 isUse 업데이트
+      userNo: selectUserNo
+    }));
   }
 
-  const refreshLocalMemberList = useCallback(() => {
-    if(localMemberListData?.data.contents) {
-      localMemberListDataRefetch();
-    }
-  },[localMemberListDataRefetch]);
+  //구성원 직책 변경
+  const handleChangePosition = (position: string, userNo: string) => {
+    const changePositionReqData = {
+      body: {
+        userNo: userNo,
+        sptNo: selectLocalNo,
+        rspofcCd: position,
+        userId: loginId || "",
+      }
+    };
 
-  const refreshMemberList = useCallback(() => {
-    if(memberListData?.data.contents) {
-      memberListDataRefetch();
+    console.log("직책변경을 위한 요청 데이터", changePositionReqData);
+
+    if (position) {
+      changePositionAPI(changePositionReqData, {
+        onSuccess: (response) => {
+          if (response.data.message === "SUCCESS") {
+            console.log("대답", response.data);
+            localMemberListDataRefetch();
+          }
+        }
+      });
+    } else {
+      emptySelectionModal();
+      return;
     }
-  },[memberListDataRefetch]);
+  };
+
+  //현장 구성원 -> 구성원 할당(빼기)
+  const handleMemberChange = () => {
+    const userNoList = Array.from(localUseSelectedRows).map((rowId) => {
+      const selectedItem = localMemberList.find(
+        (item) => item.userNo === rowId
+      );
+      return selectedItem?.userNo || ""; // ✅ 문자열만 반환하도록 수정
+    });
+
+    const requestData = {
+      sptNo : selectLocalNo,
+      userId: loginId || "",
+      userNoList,
+    };
+
+    console.log("할당제외데이터",requestData);
+
+    deleteLocalMember.mutate(
+      {body: requestData},
+      {
+        onSuccess: (response) => {
+          console.log("이동성공");
+          if (response.data.result === "SUCCESS") {
+            console.log("response.data", response.data);
+            localMemberListDataRefetch();
+            memberListDataRefetch();
+          }
+        }
+      }
+    )
+  }
+
+  //구성원 -> 현장 구성원 할당
+  const handleInertLocalMember = () => {
+    const constntList = Array.from(localUnuseSelectedRows).map((rowId) => {
+      const selectedItem = memberList.find(
+        (item) => item.userNo === rowId
+      );
+      return {
+        userNo: selectedItem?.userNo || "",
+        rspofcCd: "0",
+        memo: "",
+        rmk: "",
+      }
+    });
+
+    //api 호출 데이터 생성
+    const requestData = {
+      sptNo: selectLocalNo,
+      userId: loginId || "",
+      constntList,
+    };
+
+    console.log("구성원등록할때 보내는 데이터 :",requestData);
+
+    insertLocalMember.mutate(
+      {body: requestData},
+      {
+        onSuccess: (response) => {
+          console.log("이동성공");
+          if (response.data.result === "SUCCESS") {
+            console.log("response.data", response.data);
+            localMemberListDataRefetch();
+            memberListDataRefetch();
+          }
+        },
+        onError: (error) => {
+          console.error("이동 실패:", error);
+        },
+      }
+    )
+  }
+
+
+  const emptySelectionModal = () => {
+    openModal(EmptySelectModal, {
+      modalId: "emptySelectModal",
+      stack: false,
+      onClose: () => closeModal,
+      onSubmit: () => {
+        window.close();
+      },
+    });
+  };
 
   return (
     <>
@@ -224,7 +337,7 @@ export default function LocalmemberManagement() {
                   <BasicTable.Th>사용자ID</BasicTable.Th>
                   <BasicTable.Th>사용자이름</BasicTable.Th>
                   <BasicTable.Tbody>
-                    {data?.data.contents.map((item, index) => {
+                    {(data?.data.contents || []).map((item, index) => {
                       return (
                         <BasicTable.Tr
                           key={index}
@@ -249,12 +362,12 @@ export default function LocalmemberManagement() {
             </Stack>
             <Stack width={"50%"} height={"100%"}>
               <TableBox.Inner>
-                <BasicTable data={localList}>
+                <BasicTable data={localListData?.data.contents || []}>
                   <BasicTable.Th>현장번호</BasicTable.Th>
                   <BasicTable.Th>현장이름</BasicTable.Th>
                   <BasicTable.Th>사용기간</BasicTable.Th>
                   <BasicTable.Tbody>
-                    {localList.map((item, index) => {
+                    {(localListData?.data.contents || []).map((item, index) => {
                       return (
                         <BasicTable.Tr
                           key={index}
@@ -287,24 +400,24 @@ export default function LocalmemberManagement() {
               </GrayBox>
               <TableBox.Inner>
                 <CheckboxTable
-                  data={localMemberList}
+                  data={localMemberListData?.data.contents || []}
                   selectedRows={localUseSelectedRows}
                   toggleRowsSelection={toggleLocalUseRowsSelection}
                 >
                   <CheckboxTable.Thead>
                     <CheckboxTable.Tr>
-                      <CheckboxTable.CheckboxTh keyName="id" />
+                      <CheckboxTable.CheckboxTh keyName="userNo" />
                       <CheckboxTable.Th>구성원번호</CheckboxTable.Th>
                       <CheckboxTable.Th>구성원이름</CheckboxTable.Th>
                       <CheckboxTable.Th>직책</CheckboxTable.Th>
                     </CheckboxTable.Tr>
                   </CheckboxTable.Thead>
                   <CheckboxTable.Tbody>
-                    {localMemberList.map((item) => (
+                    {(localMemberListData?.data.contents || []).map((item) => (
                       <CheckboxTable.Tr key={item.userNo} id={item.userNo}>
                         <CheckboxTable.CheckboxTd
                           item={item}
-                          keyName="id"
+                          keyName="userNo"
                         />
                         <CheckboxTable.Td>{item.userNo}</CheckboxTable.Td>
                         <CheckboxTable.Td>{item.userNm}</CheckboxTable.Td>
@@ -317,11 +430,13 @@ export default function LocalmemberManagement() {
                               const selectedOption = memberPositionList.find(
                                 (item) => item.cdNm === newValue
                               );
-                              if(selectedOption) {
-                                console.log("직책변경:",  selectedOption.cdNm);
+                              if (selectedOption) {
+                                console.log("직책변경:", selectedOption.cdNm);
                                 console.log(`직책 키 변경: ${selectedOption.cd}`); // cd 콘솔 출력
                                 setMemberPositionKey(selectedOption.cd);
                                 setMemberPositionValue(selectedOption.cdNm);
+
+                                handleChangePosition(selectedOption.cd, item.userNo);
                               }
                             }}
                             selectData={memberPositionList.map((item) => ({
@@ -337,7 +452,7 @@ export default function LocalmemberManagement() {
                 </CheckboxTable>
               </TableBox.Inner>
               <GrayBox justifyContent={"end"}>
-                <BasicButton onClick={refreshMemberList}>새로고침</BasicButton>
+                <BasicButton onClick={() => localMemberListDataRefetch()}>새로고침</BasicButton>
               </GrayBox>
             </Stack>
             <Stack width={"2%"} bgcolor={"white"} justifyContent={"space-between"} height={"100%"}>
@@ -350,6 +465,7 @@ export default function LocalmemberManagement() {
                   margin: "0",
                   minWidth: "unset", // 기본 minWidth 해제
                 }}
+                onClick={handleInertLocalMember}
               >
                 <BiChevronLeft size={"24px"} />
               </BasicButton>
@@ -362,8 +478,9 @@ export default function LocalmemberManagement() {
                   margin: "0",
                   minWidth: "unset", // 기본 minWidth 해제
                 }}
+                onClick={handleMemberChange}
               >
-                <BiChevronLeft size={"24px"} />
+                <BiChevronRight size={"24px"} />
               </BasicButton>
             </Stack>
             <Stack width={"29%"} height={"100%"}>
@@ -372,24 +489,24 @@ export default function LocalmemberManagement() {
               </GrayBox>
               <TableBox.Inner>
                 <CheckboxTable
-                  data={memberList}
+                  data={memberListData?.data.contents || []}
                   selectedRows={localUnuseSelectedRows}
                   toggleRowsSelection={toggleLocalUnuseRowsSelection}
                 >
                   <CheckboxTable.Thead>
                     <CheckboxTable.Tr>
-                      <CheckboxTable.CheckboxTh keyName="id" />
+                      <CheckboxTable.CheckboxTh keyName="userNo" />
                       <CheckboxTable.Th>구성원ID</CheckboxTable.Th>
                       <CheckboxTable.Th>구성원이름</CheckboxTable.Th>
                     </CheckboxTable.Tr>
                   </CheckboxTable.Thead>
 
                   <CheckboxTable.Tbody>
-                    {memberList.map((item) => (
+                    {(memberListData?.data.contents || []).map((item) => (
                       <CheckboxTable.Tr key={item.userNo} id={item.userNo}>
                         <CheckboxTable.CheckboxTd
                           item={item}
-                          keyName="id"
+                          keyName="userNo"
                         />
                         <CheckboxTable.Td>{item.userNo}</CheckboxTable.Td>
                         <CheckboxTable.Td>{item.userNm}</CheckboxTable.Td>
@@ -399,7 +516,7 @@ export default function LocalmemberManagement() {
                 </CheckboxTable>
               </TableBox.Inner>
               <GrayBox justifyContent={"end"}>
-                <BasicButton onClick={refreshLocalMemberList}>새로고침</BasicButton>
+                <BasicButton onClick={() => memberListDataRefetch()}>새로고침</BasicButton>
               </GrayBox>
             </Stack>
           </TableBox>
