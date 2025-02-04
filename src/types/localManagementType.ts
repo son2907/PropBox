@@ -166,9 +166,59 @@ export type MemberInsertListType = {
 //현장에서 구성원 제외
 export type MemberDeleteListType = {
     sptNo: string;
-    userId: string | undefined;
+    userId: string | undefined,
     userNoList: string[]; // ✅ 올바른 타입 (문자열 배열)
 };
+
+//현장 허가 솔루션 등록
+export type LocalPermissionRegistrationDataType = {
+    slutnId: string,
+    sptNo: string,
+    userId: string | undefined,
+};
+export type LocalPermissionRegistrationType = {
+    sptList: LocalPermissionRegistrationDataType[],
+    userId: string | undefined,
+}[];
+
+//현장 미허가 솔루션 등록
+export type LocalNonPermissionRegistrationType = {
+    sptNo: string,
+    slutnId: string,
+    userId: string | undefined,
+}[];
+
+//현장 등록
+export type LocalInsertType = {
+    sptNo: string,
+    userNo: string,
+    sptNm: string,
+    progrsSeCd: string,
+    useYn: string,
+    cntrctBgnde: string,
+    cntrctEndde: string,
+    rmk: string,
+    userId: string | undefined,
+};
+
+//현장 수정
+export type LocalUpdateType = {
+    sptNo: string,
+    userNo: string,
+    sptNm: string,
+    progrsSeCd: string,
+    useYn: string,
+    cntrctBgnde: string,
+    cntrctEndde: string,
+    rmk: string,
+    userId: string | undefined,
+};
+
+//현장 삭제
+export type LocalDeleteType = {
+    sptNo: string,
+    userId: string | undefined,
+}
 
 
 // export type SptList = {

@@ -64,6 +64,7 @@ import AdminInfoPopup from "../pages/Mypage/AdminInfo";
 import RegisterSenerNumber from "../pages/CalManagement/Consultation/popup/RegisterSenerNumber";
 import SoketGuard from "./guard/SoketGuard";
 import UpdateUSer from "../pages/SysManagement/User/popup/UpdateUser";
+import LocalUpdate from "../pages/SysManagement/Local/popup/LocalModify";
 
 export const routes: RouteObject[] = [
   {
@@ -349,5 +350,9 @@ export const routes: RouteObject[] = [
   {
     path: PathConstants.MyPage.AdminInfoPopup,
     element: <AdminInfoPopup />,
+  },
+  {
+    path: PathConstants.System.LocalUpdate,
+    element: <LocalUpdate />,
   },
 ];

@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { LocalListResponseType, LocalMemberResponseType, LocalNonPermissionResponseType, LocalNonPermissionType, LocalPermissionListResponseType, MemberDeleteListType, MemberInsertListType, MemberListResponseType, MemberPositionResponseType, MemeberPositionType } from "../types/localManagementType";
+import { LocalDeleteType, LocalInsertType, LocalListResponseType, LocalMemberResponseType, LocalNonPermissionRegistrationType, LocalNonPermissionResponseType, LocalNonPermissionType, LocalPermissionListResponseType, LocalPermissionRegistrationType, LocalUpdateType, MemberDeleteListType, MemberInsertListType, MemberListResponseType, MemberPositionResponseType, MemeberPositionType } from "../types/localManagementType";
 import instance from "../utils/axiosInstance";
 
 const API = {
@@ -51,16 +51,47 @@ const API = {
         const url = '/api/spt/constnt/remove';
         return await instance.post(url, requestData.body);
     },
+    //현장 허가 솔루션 등록
+    localPermissionRegistration: async (requestData : {body: LocalPermissionRegistrationType}) => {
+        const url = '/api/spt/slutn';
+        return await instance.post(url, requestData.body);
+    },
+    //현장 미허가 솔루션 등록
+    localNonPermissionRegistration: async (requestData : {body : LocalNonPermissionRegistrationType}) => {
+        const response = await instance.put('/api/spt/slutn/remove/selected', requestData.body);
+        return response;
+    },
+    //현장 등록
+    localInsert: async (requestData : {body : LocalInsertType}) => {
+        const response = await instance.post('/api/spt',requestData.body);
+        return response;
+    },
+    //현장 수정
+    localUpdate: async (requestData: {body : LocalUpdateType}) => {
+        const response = await instance.put('/api/spt', requestData.body);
+        return response;
+    },
+    //현장 삭제 
+    localDelete: async (requestData : {body :LocalDeleteType}) => {
+        const url = '/api/spt/remove';
+        return await instance.post(url, requestData.body);
+    },
 };
 
 const KEY = {
+    //현장 목록
     getLocalList: (requestData: { sptNm: string; progrsSeCd: string; userNo: string, cntrctBgnde: string, cntrctEndde: string }) =>
         [`/api/spt/listsimple?userNo=${requestData.userNo}&sptNm=${requestData.sptNm}&progrsSeCd=${requestData.progrsSeCd}&cntrctBgnde=${requestData.cntrctBgnde}&cntrctEndde=${requestData.cntrctEndde}`],
+    //허가 현장 목록
     getPermissionLocalList: (sptNo: string) =>
         [`/api/spt/slutn/lisne/sel/${sptNo}`],
+    //미허가 현장 목록
     getNonPermissionLocalList: (userNo: string) => [`/api/spt/slutn/lisne/nosel/${userNo}`],
+    //현장 구성원 목록
     getLocalMemberList: (requestData: { sptNo: string, userNm: string, rspofcNm: string }) => [`/api/spt/constnt/searchlist/${requestData.sptNo}?userNm=${requestData.userNm}&rspofcNm=${requestData.rspofcNm}`],
+    //구성원 직책 목록
     getMemberPositionList: (upCd: string) => [`/api/common/code?upCd=${upCd}`],
+    //구성원 목록
     getMemberList: (userNo: string) => [`/api/user/listofmber/${userNo}`],
     //구성원 직책 수정
     updateMemeberPosition: () => ['/api/spt/constnt'],
@@ -68,6 +99,16 @@ const KEY = {
     insertMember: () => ['/api/spt/constnt'],
     //구성원 현장에서 제외
     deleteMember: () => ['/api/spt/constnt/remove'],
+    //현장 허가 솔루션 등록
+    localPermissionRegistration: () => ['/api/spt/slutn'],
+    //현장 미허가 솔루션 등록
+    localNonPermissionRegistration: () => ['/api/spt/slutn/remove/selected'],
+    //현장 등록
+    localInsert: () => ['/api/spt'],
+    //현장 수정
+    localUpdate: () => ['/api/spt'],
+    //현장 삭제
+    localDelete: () => ['/api/spt/remove'],
 };
 
 //현장관리 현장 리스트
@@ -110,6 +151,8 @@ export const useNonPermissionLocalList = (userNo: string) => {
         enabled: !!userNo, // 현장번호 선택안하면 실행 안함
     })
 };
+
+// 현장 허가 구성원 리스트
 export const useLocalMemberList = (requestData: { sptNo: string, userNm: string, rspofcNm: string }) => {
     console.log(" sptNo 실행됨",requestData);
     return useQuery({
@@ -122,6 +165,8 @@ export const useLocalMemberList = (requestData: { sptNo: string, userNm: string,
         enabled: !!requestData.sptNo, // sptNo 번호 선택안하면 실행 안함
     })
 };
+
+//구성원 직책 목록
 export const useMemberPositionList = (upCd: string) => {
     return useQuery({
         queryKey: KEY.getMemberPositionList(upCd),
@@ -131,6 +176,8 @@ export const useMemberPositionList = (upCd: string) => {
         }
     })
 };
+
+//구성원 목록
 export const useMemberList = (userNo: string) => {
     return useQuery({
         queryKey: KEY.getMemberList(userNo),
@@ -181,4 +228,74 @@ export const memberDeleteLocal = () => {
             console.error("API 호출 실패. 에러:", error); // 에러 로깅
         },
     })
-}
+};
+
+//현장 허가 솔루션 등록
+export const localPermissionRegistration = () => {
+    return useMutation({
+        mutationFn: (requestData : {body: LocalPermissionRegistrationType}) => API.localPermissionRegistration(requestData),
+        mutationKey: KEY.localPermissionRegistration(),
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    })
+};
+
+//현장 미허가 솔루션 등록
+export const localNonPermissionRegistration = () => {
+    return useMutation({
+        mutationFn: (requestData : {body : LocalNonPermissionRegistrationType}) => API.localNonPermissionRegistration(requestData),
+        mutationKey: KEY.localNonPermissionRegistration(),
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    })
+};
+
+//현장 등록
+export const localInsert = () => {
+    return useMutation({
+        mutationFn: (requestData : {body : LocalInsertType}) => API.localInsert(requestData),
+        mutationKey: KEY.localInsert(),
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    })
+};
+
+//현장 수정
+export const localUpdate = () => {
+    return useMutation({
+        mutationFn: (requestData: {body : LocalUpdateType}) => API.localUpdate(requestData),
+        mutationKey: KEY.localUpdate(),
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    })
+};
+
+//현장 삭제
+export const localDelete = () => {
+    return useMutation({
+        mutationFn: (requestData : {body :LocalDeleteType}) => API.localDelete(requestData),
+        mutationKey: KEY.localDelete(),
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    })
+};

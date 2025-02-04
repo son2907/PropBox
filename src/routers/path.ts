@@ -53,6 +53,7 @@ const PathConstants = {
     AuthCode: "/system/authCode",
     Phone: "/system/phone",
     LocalRegistration: "/system/local/localRegistration",
+    LocalUpdate:"/system/local/localUpdate",
     PhoneAdd: "/system/phone/phoneAdd",
     DeviceType: "/system/phone/deviceType",
   },

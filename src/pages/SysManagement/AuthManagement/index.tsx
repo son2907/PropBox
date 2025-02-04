@@ -23,12 +23,12 @@ import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
 import { BiChevronLeft } from "react-icons/bi";
 import useModal from "../../../hooks/useModal";
 import api from "../../../api";
-import { UserListType } from "../../../api/userList";
 import { useLocalList, useLocalMemberList, usePermissionLocalList } from "../../../api/localManagement";
 import { LocalListType, localMemberListType, LocalPermissionListType } from "../../../types/localManagementType";
 import useDidMountEffect from "../../../hooks/useDidMountEffect";
 import { useMemberMenuList } from "../../../api/authManagement";
 import { MemberMenuList } from "../../../types/authManagement";
+import { UserListType } from "../../../types/userList";
 
 export default function AuthManagement() {
 

@@ -32,6 +32,7 @@ import { UserListType } from "../../../types/userList";
 import { EmptySelectModal } from "../../../components/layout/modal/EmptySelectModal";
 import { useAuthStore } from "../../../stores/authStore";
 
+//현장별구성원관리
 export default function LocalmemberManagement() {
 
   //api를 호출하기위해 userID 불러오기
@@ -249,7 +250,7 @@ export default function LocalmemberManagement() {
         }
       }
     )
-  }
+  };
 
   //구성원 -> 현장 구성원 할당
   const handleInertLocalMember = () => {
