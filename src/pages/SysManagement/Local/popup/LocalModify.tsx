@@ -138,7 +138,12 @@ export default function LocalUpdate() {
 
       // 변환된 값을 startDate와 endDate에 설정
       setStartDate(parseDate(localDetail.cntrctBgnde));
-      setEndDate(parseDate(localDetail.cntrctEndde));
+      if(localDetail.cntrctEndde) {
+        setEndDate(parseDate(localDetail.cntrctEndde));
+      } else {
+        setEndDate(parseDate("9999-12-31"))
+      }
+      
     }
   }, [localDetail]);
 
@@ -313,7 +318,7 @@ export default function LocalUpdate() {
         >
           <Typography>사용종료</Typography>
           <Box width={"80%"}>
-            <Calendar selectedDate={endDate} setSelectedDate={setEndDate} />
+            <Calendar selectedDate={endDate || ""} setSelectedDate={setEndDate} />
           </Box>
         </Stack>
         <Stack direction={"row"} gap={5} marginTop={1} alignItems={"center"}>
