@@ -21,6 +21,7 @@ export default function AuthGuard({ children }: PropsWithChildren) {
     }
   }, [matches]); // 라우트 매칭 변경 시 효과 실행
 
+  // sptNo를 Store에 저장하도록 변경하였음
   useEffect(() => {
     if (
       accessToken != null &&
