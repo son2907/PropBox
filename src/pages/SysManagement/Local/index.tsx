@@ -387,7 +387,7 @@ return (
                           <BasicButton
                             onClick={() => {
                               openPopup({
-                                url: `${localUpdate.url}?sptNo=${item.sptNo}?userNo=${selectUserNo}`,//localUpdate.url,
+                                url: `${localUpdate.url}?sptNo=${item.sptNo}&userNo=${selectUserNo}`,//localUpdate.url,
                                 windowName: localUpdate.windowName,
                                 windowFeatures: localUpdate.windowFeatures,
                               });

@@ -12,7 +12,7 @@ import CenteredBox from "../../../../components/Box/CenteredBox";
 import { useMultiRowSelection } from "../../../../hooks/useMultiRowSelection";
 import MultiSelect from "../../../../components/Select/MultiSelect";
 import { useMultiSelect } from "../../../../hooks/useMultiSselect";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import RowDragTable from "../../../../components/Table/RowDragTable";
 import { openPopup } from "../../../../utils/openPopup";
 import PathConstants from "../../../../routers/path";
@@ -25,9 +25,12 @@ import Calendar from "../../../../components/Calendar/Calendar";
 import useToggleButtton from "../../../../hooks/useToggleButton";
 import { useAuthStore } from "../../../../stores/authStore";
 import useModal from "../../../../hooks/useModal";
-import { localUpdate } from "../../../../api/localManagement";
-import { LocalUpdateType } from "../../../../types/localManagementType";
+import { localDelete, localUpdate, useLocalDetail } from "../../../../api/localManagement";
+import { LocalDeleteType, LocalDetailType, LocalUpdateType } from "../../../../types/localManagementType";
 import { UpdateCompletedModal } from "../../../../components/layout/modal/UpdateCompletedModal";
+import { id } from "date-fns/locale";
+import { ConfirmDeleteModal } from "../../../../components/layout/modal/ConfirmDeleteModal";
+import { DeleteCompletedModal } from "../../../../components/layout/modal/DeleteCompletedModal";
 
 interface Data {
   id: string;
@@ -53,6 +56,11 @@ export default function LocalUpdate() {
   //모달
   const { openModal, closeModal } = useModal();
 
+  //현장 상세 조회
+  const { isSuccess, data } = useLocalDetail(sptNo || "");
+  const [localDetail, setLocalDetail] = useState<LocalDetailType>();
+
+
   // 현장 수정
   const [localId, setLocalId] = useState("");
   const [localName, setLocalName] = useState("");
@@ -63,6 +71,7 @@ export default function LocalUpdate() {
   const [rmk, setRmk] = useState("");
 
   const updateLocalAPI = localUpdate();  //현장 수정
+  const deleteLocalAPI = localDelete();
 
   const {
     selectListData: sd_0,
@@ -71,7 +80,6 @@ export default function LocalUpdate() {
   } = useSelect(selectData, "value", "data");
 
   const { selectedValues, handleSelectChange } = useMultiSelect<number>();
-  const [data, setData] = useState<Data[]>(tableTestData);
 
   const { selectedRows: s_1, toggleRowsSelection: t_1 } =
     useMultiRowSelection();
@@ -103,6 +111,37 @@ export default function LocalUpdate() {
     return `${year}${month}${day}`;
   };
 
+  useEffect(() => {
+    console.log("data확인", data);
+    if (data?.data.contents) {
+      setLocalDetail(data.data.contents);
+    }
+  }, [data, isSuccess]);
+
+  useEffect(() => {
+    if (localDetail) {
+      setLocalId(localDetail.sptNo);
+      setLocalName(localDetail.sptNm);
+      setIsUse(localDetail.useYn === "Y" ? true : false);
+      setProgrsSeCd(localDetail.progrsSeCd);
+      //setRmk(localDetail.);
+
+      //기간 설정
+      const parseDate = (dateString: string) => {
+        const year = parseInt(dateString.slice(0, 4), 10);
+        const month = parseInt(dateString.slice(4, 6), 10) - 1; // JavaScript의 월은 0부터 시작
+        const day = parseInt(dateString.slice(6, 8), 10);
+
+        // 로컬 타임존으로 설정
+        return new Date(year, month, day);
+      };
+
+      // 변환된 값을 startDate와 endDate에 설정
+      setStartDate(parseDate(localDetail.cntrctBgnde));
+      setEndDate(parseDate(localDetail.cntrctEndde));
+    }
+  }, [localDetail]);
+
   const handleIsUseChange = (value) => {
     // setLocalListReqData((prev) => ({
     //   ...prev,
@@ -129,16 +168,42 @@ export default function LocalUpdate() {
       userId: loginId || "",
     };
 
-    if(sptNo && userNo) {
+    if (sptNo && userNo) {
       console.log("데이터 전달 확인 : ", localUpdateReqData);
 
       updateLocalAPI.mutate(
-        { body :  localUpdateReqData},
+        { body: localUpdateReqData },
         {
           onSuccess: (response) => {
             if (response.data.message === "SUCCESS") {
               console.log("response.data", response.data);
               updateCompletedModal();
+            }
+          }
+        }
+      )
+    }
+  };
+
+  //현장 삭제
+  const handleDelete = () => {
+
+    //api 호출시 전달할 데이터
+    const localDeleteReqData: LocalDeleteType = {
+      sptNo: sptNo || "",
+      userId: loginId || ""
+    }
+
+    console.log("삭제 데이터 확인:", localDeleteReqData);
+
+    if (sptNo && userNo) {
+      deleteLocalAPI.mutate(
+        { body: localDeleteReqData },
+        {
+          onSuccess: (response) => {
+            if (response.data.message === "SUCCESS") {
+              console.log("response.data", response.data);
+              deleteCompletedModal();
             }
           }
         }
@@ -161,6 +226,31 @@ export default function LocalUpdate() {
       }
     });
   };
+
+  const confirmDeleteModal = () => {
+    openModal(ConfirmDeleteModal, {
+      modalId: "noticeDelete",
+      stack: false,  //단일 모달 모드
+      onClose: () => closeModal,
+      onSubmit: () => {
+        handleDelete();
+      }
+    })
+  };
+
+  const deleteCompletedModal = () => {
+    openModal(DeleteCompletedModal, {
+      modalId: "deleteCompleted",
+      stack: false,
+      onClose: () => closeModal,
+      onSubmit: () => {
+        window.close();
+        if (window.opener) {
+          window.opener.location.reload();
+        }
+      }
+    })
+  }
 
   return (
     <Stack
@@ -257,7 +347,7 @@ export default function LocalUpdate() {
               }}
               selectData={sd_0}
               sx={{ width: "204px" }}
-              placeholder="종료 구분 선택"
+              placeholder={localDetail?.progrsSeCd === "1003005" ? "진행" : "종료"}
               defaultValue={""}
             />
           </Box>
@@ -270,14 +360,22 @@ export default function LocalUpdate() {
           justifyContent={"space-between"}
         >
           <Typography>비고</Typography>
-          <BasicInput sx={{ width: "80%" }}></BasicInput>
+          <BasicInput
+            sx={{ width: "80%" }}
+            value={rmk}
+            onChange={(e) => setRmk(e.target.value)}
+            placeholder={"비고"}
+          ></BasicInput>
         </Stack>
       </Stack>
-      <GrayBox width={"100%"}>
-        <Box sx={{ marginLeft: "auto" }}>
-          <BasicButton>확인</BasicButton>
-          <BasicButton>취소</BasicButton>
-        </Box>
+      <GrayBox width={"100%"} gap={1} justifyContent={"end"}>
+        <BasicButton onClick={handleUpdate}>확인</BasicButton>
+        <BasicButton onClick={() => window.close()}>취소</BasicButton>
+        <BasicButton onClick={confirmDeleteModal}>
+          <IconButton color="error">
+            <RiDeleteBinLine />
+          </IconButton>
+        </BasicButton>
       </GrayBox>
     </Stack>
   );

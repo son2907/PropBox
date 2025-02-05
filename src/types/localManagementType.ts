@@ -201,6 +201,20 @@ export type LocalInsertType = {
     userId: string | undefined,
 };
 
+//현장 상세보기
+export type LocalDetailType = {
+    sptNo: string,
+    userNo: string,
+    sptNm: string,
+    progrsSeCd: string,
+    cntrctBgnde: string,
+    cntrctEndde: string,
+    useYn: string
+};
+export interface LocalDetailResponse extends ApiResponseType {
+    contents: LocalDetailType
+};
+
 //현장 수정
 export type LocalUpdateType = {
     sptNo: string,
@@ -218,7 +232,7 @@ export type LocalUpdateType = {
 export type LocalDeleteType = {
     sptNo: string,
     userId: string | undefined,
-}
+};
 
 
 // export type SptList = {
