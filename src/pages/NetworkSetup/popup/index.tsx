@@ -5,13 +5,12 @@ import { BasicButton } from "../../../components/Button";
 import { usePopupStore } from "../../../stores/popupStore";
 import { useTelList } from "../../../api/telList";
 import { filterDataByValues } from "../../../utils/filterDataByValues";
-import getItemByStorageOne from "../../../utils/getItemByStorageOne";
 import BlackButton from "../../../components/Button/BlackButton";
 import { useTelStore } from "../../../stores/telStore";
-import { useEffect } from "react";
+import { useSptStore } from "../../../stores/sptStore";
 
 export default function NetworkSetupPop() {
-  const sptNo = getItemByStorageOne("selectedSite")?.sptNo;
+  const { sptNo } = useSptStore();
 
   const { data } = useTelList(sptNo);
   const { setTelInfo } = useTelStore();
@@ -30,17 +29,18 @@ export default function NetworkSetupPop() {
     window.close();
   };
 
+  console.log("tel정보;", data);
+
   const onSave = () => {
     const { closeAllPopups } = usePopupStore.getState();
     if (selectValue) {
       const selectInfo = filterDataByValues({
         data: data?.data.contents,
         key: "telId",
-        values: Array.from(selectValue),
+        values: [selectValue],
       });
       setTelInfo(selectInfo[0].telId, selectInfo[0].telno);
     }
-
     closeAllPopups();
     window.opener.close();
     window.close();

@@ -17,10 +17,10 @@ import {
 import { useCnsltStore } from "../../../stores/CunsltStore";
 import { useEffect, useRef } from "react";
 import { useAuthStore } from "../../../stores/authStore";
-import getItemByStorageOne from "../../../utils/getItemByStorageOne";
 import { HiOutlineDocumentText } from "react-icons/hi";
 import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
 import { filterDataByValues } from "../../../utils/filterDataByValues";
+import { useSptStore } from "../../../stores/sptStore";
 
 export default function MemoGroup() {
   const { value, handleChange: tabChange } = useTabs(0);
@@ -51,9 +51,11 @@ export default function MemoGroup() {
     resetSelection();
   }, [histListData]);
 
+  const { sptNo } = useSptStore();
+
   const postMemoFn = () => {
     const body = {
-      sptNo: getItemByStorageOne("selectedSite").sptNo,
+      sptNo: sptNo,
       userNo: userNo,
       memo: memoRef.current?.value || "",
       userId: loginId,

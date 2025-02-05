@@ -1,6 +1,5 @@
 import { IconButton, Stack, Typography } from "@mui/material";
 import GrayBox from "../../../components/Box/GrayBox";
-import SearchInput from "../../../components/Input/SearchInput";
 import TableBox from "../../../components/Box/TableBox";
 import RowDragTable from "../../../components/Table/RowDragTable";
 import { useEffect, useState } from "react";
@@ -20,7 +19,6 @@ import {
   useReorderBasicItem,
   useReorderBasicItemDet,
 } from "../../../api/calllBasic";
-import getItemByStorageOne from "../../../utils/getItemByStorageOne";
 import { useAuthStore } from "../../../stores/authStore";
 import { useApiRes } from "../../../utils/useApiRes";
 import useModal from "../../../hooks/useModal";
@@ -28,9 +26,10 @@ import { BasicDeleteConfirmModal } from "../../../components/layout/modal/BasicD
 import useDidMountEffect from "../../../hooks/useDidMountEffect";
 import BasicInput from "../../../components/Input/BasicInput";
 import CenteredBox from "../../../components/Box/CenteredBox";
+import { useSptStore } from "../../../stores/sptStore";
 
 export default function ConfigSetting() {
-  const sptNo = getItemByStorageOne("selectedSite")?.sptNo;
+  const { sptNo } = useSptStore();
   const [cnsltList, setCnsltList] = useState<CnsltItem[]>([]);
   const [detList, setDetList] = useState<DetailItem[]>([]);
 
@@ -391,7 +390,10 @@ export default function ConfigSetting() {
               <Typography>사용</Typography>
             </CenteredBox>
             <CenteredBox gap={1}>
-              <BasicButton sx={{ marginLeft: "auto" }} onClick={clearCnsltInput}>
+              <BasicButton
+                sx={{ marginLeft: "auto" }}
+                onClick={clearCnsltInput}
+              >
                 추가
               </BasicButton>
               <BasicButton onClick={onAddCnslt}>저장</BasicButton>

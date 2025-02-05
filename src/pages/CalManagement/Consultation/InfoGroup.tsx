@@ -32,7 +32,6 @@ import { useForm } from "react-hook-form";
 import { getFormattedDate } from "../../../utils/getFormattedDate";
 import { useAuthStore } from "../../../stores/authStore";
 import useDidMountEffect from "../../../hooks/useDidMountEffect";
-import getItemByStorageOne from "../../../utils/getItemByStorageOne";
 import { useStorageStore } from "../../../hooks/useStorageStore";
 import { useTelStore } from "../../../stores/telStore";
 import { useApiRes } from "../../../utils/useApiRes";
@@ -42,6 +41,7 @@ import { BasicCompletedModl } from "../../../components/layout/modal/BasicComple
 import { sendMessage, useWebSocket } from "../../../routers/guard/soketFn";
 import { WebSocketContext } from "../../../routers/guard/SoketGuard";
 import { getKoreanTime } from "../../../utils/getKoreanTime";
+import { useSptStore } from "../../../stores/sptStore";
 
 export default function InfoGroup({ tabType }: TabType) {
   // 웹소켓
@@ -81,6 +81,7 @@ export default function InfoGroup({ tabType }: TabType) {
 
   // 선택한 세부 사항
   const [detailInfo, setDetailInfo] = useState<any[]>([{}]);
+  const { sptNo } = useSptStore();
 
   // 초깃값
   const defaultValue = useMemo(
@@ -266,7 +267,6 @@ export default function InfoGroup({ tabType }: TabType) {
   const onSubmit = useCallback(
     (data: any) => {
       const data_1 = cunsltDetailList?.data.contents;
-      const spt = getItemByStorageOne("selectedSite")?.sptNo;
       const telCnsltCnList = detailInfo
         .filter((item) => item && Object.keys(item).length > 0)
         .map(({ itemNo, detailNo }) => ({ itemNo, detailNo }));
@@ -274,7 +274,7 @@ export default function InfoGroup({ tabType }: TabType) {
       const isWorUn = trsmYn == "W" || !data_1 ? true : false; // 대기 고객이거나 신규 고객 trsmYn:통화여부(Y:통화, N:부재, W:대기)
 
       const body: CnsltInfoRequestType = {
-        sptNo: spt,
+        sptNo: sptNo,
         cstmrNo: isWorUn ? "0" : data_1.cstmrNo,
         cnsltNo: !isToday(selectedDate) || isWorUn ? "0" : data_1.cnsltNo,
         cnsltnt: isWorUn ? "" : data_1.cnsltnt,

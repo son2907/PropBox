@@ -1,7 +1,6 @@
 // 전화 관리 > 전화상담
 import { useMutation, useQuery } from "@tanstack/react-query";
 import instance from "../utils/axiosInstance";
-import getItemByStorageOne from "../utils/getItemByStorageOne";
 import { getFormattedDate } from "../utils/getFormattedDate";
 import {
   CnsltInfoRequestType,
@@ -12,11 +11,11 @@ import {
   ReportListResponseType,
   CnsltItemDataResponseType,
 } from "../types/callCnslt";
+import { spt } from "../utils/sptNo";
 
 const API = {
   // 상담 항목 목록
   getCnsltItemList: async () => {
-    const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
     return await instance.get<CnsltItemListResponseType>(
       `/api/sptcnslt/itemlist/${spt}`
     );
@@ -27,7 +26,6 @@ const API = {
     trsmYn?: string // 통화여부 (선택적)
   ) => {
     // 쿼리 파라미터를 동적으로 생성
-    const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
     const date = getFormattedDate(); // 상담 일자는 반드시 금일
     // ======================================테스트 날짜======================================
     // const date = 20241223;
@@ -40,7 +38,6 @@ const API = {
     cstmrNo?: string, // 고객번호
     cnsltNo?: string // 상담번호
   ) => {
-    const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
     const url = `/api/tel/cnslt/hist/detail?sptNo=${spt}&cstmrNo=${cstmrNo}&cnsltNo=${cnsltNo}`;
     return await instance.get(url);
   },
@@ -48,7 +45,6 @@ const API = {
   getCnsltHistList: async (
     cstmrNo?: string // 고객 번호
   ) => {
-    const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
     const url = `/api/tel/cnslt/hist/list?sptNo=${spt}&cstmrNo=${cstmrNo}`;
     return await instance.get(url);
   },
@@ -57,7 +53,6 @@ const API = {
     cstmrNo?: string, // 고객 번호
     cnsltNo?: string // 상담번호
   ) => {
-    const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
     const url = `/api/tel/cnslt/item?sptNo=${spt}&cstmrNo=${cstmrNo}&cnsltNo=${cnsltNo}`;
     return await instance.get<CnsltItemDataResponseType>(url);
   },
@@ -71,7 +66,6 @@ const API = {
     detailNm?: string;
     useYn?: string;
   }) => {
-    const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
     let url = `/api/sptcnslt/itemdet/list/${spt}/${itemNo}`;
     if (detailNm) url += `&detailNm=${detailNm}`;
     if (useYn) url += `&useYn=${useYn}`;
@@ -79,7 +73,6 @@ const API = {
   },
   // 관리지역 목록
   getAreaList: async () => {
-    const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
     const url = `/api/sptcnslt/area/list/${spt}`;
     return await instance.get<AreaListItemListResponseType>(url);
   },
@@ -87,7 +80,6 @@ const API = {
   getCnsltMemo: async (
     userNo?: string // 사용자 번호
   ) => {
-    const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
     const url = `/api/tel/cnslt/memo?sptNo=${spt}&userNo=${userNo}`;
     return await instance.get(url);
   },
@@ -108,7 +100,6 @@ const API = {
     telno?: string;
     cstmrNm?: string;
   }) => {
-    const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
     let url = `/api/tel/cnslt/findCustom?sptNo=${spt}`;
     if (telno) url += `&telno=${telno}`;
     if (cstmrNm) url += `&cstmrNm=${cstmrNm}`;
@@ -116,7 +107,6 @@ const API = {
   },
   // 상담현황 팝업 조회
   getReportList: async () => {
-    const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
     const url = `/api/tel/cnslt/reportlist?sptNo=${spt}`;
     return await instance.get<ReportListResponseType>(url);
   },

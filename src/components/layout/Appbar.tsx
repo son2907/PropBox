@@ -5,9 +5,9 @@ import { Select } from "../Select";
 import useSelect from "../../hooks/useSelect";
 import UserInfo from "./UserInfo";
 import { useSiteList } from "../../api/siteList";
-import getItemByStorageOne from "../../utils/getItemByStorageOne";
 import { filterDataByValues } from "../../utils/filterDataByValues";
 import useDidMountEffect from "../../hooks/useDidMountEffect";
+import { useSptStore } from "../../stores/sptStore";
 
 // AppBarArea 컴포넌트: 앱바 영역
 const AppBarArea = styled(Box)(({ theme }) => ({
@@ -25,7 +25,7 @@ const AppBarArea = styled(Box)(({ theme }) => ({
 
 // 실시간으로 상태를 받아서 보여주어야 함
 export default function Appbar() {
-  const sptNo = getItemByStorageOne("selectedSite")?.sptNo;
+  const { sptNo, setSptData } = useSptStore();
 
   const { data } = useSiteList();
 
@@ -39,15 +39,12 @@ export default function Appbar() {
   useDidMountEffect(() => {
     if (sptNo == selectValue) return;
 
-    localStorage.setItem(
-      "selectedSite",
-      JSON.stringify(
-        filterDataByValues({
-          data: data?.data.contents,
-          key: "sptNo",
-          values: [selectValue],
-        })
-      )
+    setSptData(
+      filterDataByValues({
+        data: data?.data.contents,
+        key: "sptNo",
+        values: [selectValue],
+      })[0]
     );
     window.location.reload();
   }, [selectValue]);

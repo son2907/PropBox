@@ -1,6 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import instance from "../utils/axiosInstance";
-import getItemByStorageOne from "../utils/getItemByStorageOne";
 import {
   CrtfcListResponseType,
   CrtfcCheckResponseType,
@@ -10,11 +9,11 @@ import {
   CrtfcDeleteRequestType,
   CtrfcRequestType,
 } from "../types/crtfc";
+import { spt } from "../utils/sptNo";
 
 const API = {
   // 발신번호 목록 조회
   getCrtfcList: async ({ cid }: CrtfcListRequestType) => {
-    const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
     let url = `/api/crtfc/cidno/list?sptNo=${spt}`;
     if (cid) url += `&cid=${cid}`;
     return await instance.get<CrtfcListResponseType>(url);

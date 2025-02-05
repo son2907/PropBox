@@ -17,9 +17,9 @@ import {
   usePostBasicArea,
   usePutBasicArea,
 } from "../../../api/calllBasic";
-import getItemByStorageOne from "../../../utils/getItemByStorageOne";
 import { useAuthStore } from "../../../stores/authStore";
 import { useApiRes } from "../../../utils/useApiRes";
+import { useSptStore } from "../../../stores/sptStore";
 
 export default function RegionRegistration() {
   const [areaList, setAreaList] = useState<AreaListItem[]>([]);
@@ -54,8 +54,10 @@ export default function RegionRegistration() {
   const { mutate: deleteArea } = useDeleteBasicArea(); // 지역 삭제
   const checkApiFail = useApiRes(); // API 실패 확인 훅
 
+  const { sptNo } = useSptStore();
+
   const defaultCnsltInput = {
-    sptNo: getItemByStorageOne("selectedSite")?.sptNo,
+    sptNo: sptNo,
     userId: loginId || "",
   };
 
