@@ -26,10 +26,10 @@ import {
 import { useForm } from "react-hook-form";
 import useDidMountEffect from "../../../../hooks/useDidMountEffect";
 import { useApiRes } from "../../../../utils/useApiRes";
-import getItemByStorageOne from "../../../../utils/getItemByStorageOne";
 import { filterDataByValues } from "../../../../utils/filterDataByValues";
 import useModal from "../../../../hooks/useModal";
 import { ConfirmMultipleDeletionModal } from "../../../../components/layout/modal/ConfirmMultipleDeletionModal";
+import { useSptStore } from "../../../../stores/sptStore";
 
 interface FormData {
   eno: string;
@@ -55,6 +55,7 @@ export default function RegisterSenerNumber() {
   const onRerefresh = () => {
     reset();
   };
+  const { sptNo } = useSptStore();
 
   const { data: crtfcListAPi, refetch: refetchCrtfc } = useCrtfcList({ cid }); // 테이블 리스트
   const { mutate: postCrtfc } = usePostCrtfc(); // 인증 요청
@@ -96,7 +97,7 @@ export default function RegisterSenerNumber() {
     saveCrtfc(
       {
         body: {
-          sptNo: getItemByStorageOne("selectedSite")?.sptNo,
+          sptNo: sptNo,
           cid: data.cid,
           sj: data.sj,
           eno: data.sj,
@@ -139,7 +140,7 @@ export default function RegisterSenerNumber() {
       deleteCrtfc(
         {
           body: {
-            sptNo: getItemByStorageOne("selectedSite")?.sptNo,
+            sptNo: sptNo,
             cid: item.cid,
           },
         },

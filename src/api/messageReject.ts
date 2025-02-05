@@ -1,5 +1,4 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import getItemByStorageOne from "../utils/getItemByStorageOne";
 import {
   GetRejectListRequestType,
   GetRejectListResponseType,
@@ -10,11 +9,11 @@ import {
   PostRejectRequestType,
 } from "../types/messageReject";
 import instance from "../utils/axiosInstance";
+import { spt } from "../utils/sptNo";
 
 const API = {
   // 수신거부 목록 조회
   getRejectList: async ({ page, limit }: GetRejectListRequestType) => {
-    const spt = getItemByStorageOne("selectedSite")?.sptNo;
     const url = `/api/spt/reject/list?sptNo=${spt}&page=${page}&limit=${limit}`;
     return await instance.get<GetRejectListResponseType>(url);
   },

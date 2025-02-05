@@ -9,6 +9,7 @@ import { useSingleRowSelection } from "../../hooks/useSingleRowSelection";
 import { openPopup } from "../../utils/openPopup";
 import PathConstants from "../../routers/path";
 import { filterDataByValues } from "../../utils/filterDataByValues";
+import { useSptStore } from "../../stores/sptStore";
 
 export default function SiteSelection() {
   const searchRef = useRef<HTMLInputElement | null>(null);
@@ -16,6 +17,7 @@ export default function SiteSelection() {
   const [errText, setErrText] = useState<string>("");
 
   const { userNm, mbtlNo } = useAuthStore(["userNm", "mbtlNo"]);
+  const { setSptData } = useSptStore();
   const { data } = useSiteList();
 
   const { selectedRow: selectedSite, toggleRowSelection: setSelectSite } =
@@ -35,23 +37,19 @@ export default function SiteSelection() {
     openPopup({
       url: PathConstants.NetworkSetup,
       windowName: "통신환경설정",
-      windowFeatures: "width=300,height=250,scrollbars=no,resizable=no",
+      windowFeatures: `width=300,height=250,scrollbars=no,resizable=no`,
     });
   };
   useEffect(() => {
     if (selectedSite.size === 0) setErrText("현장을 선택해 주십시오.");
     else setErrText("");
     // 선택된 데이터를 로컬 스토리지에 저장
-    localStorage.setItem(
-      "selectedSite",
-      JSON.stringify(
-        filterDataByValues({
-          data: data?.data.contents,
-          key: "sptNo",
-          values: Array.from(selectedSite),
-        })
-      )
-    );
+    const parseData = filterDataByValues({
+      data: data?.data.contents,
+      key: "sptNo",
+      values: Array.from(selectedSite),
+    });
+    setSptData(parseData[0]);
   }, [selectedSite]);
 
   return (

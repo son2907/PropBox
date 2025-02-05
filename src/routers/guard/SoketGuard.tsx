@@ -14,6 +14,8 @@ import { useCnsltStore } from "../../stores/CunsltStore";
 import { useAuthStore } from "../../stores/authStore";
 import useModal from "../../hooks/useModal";
 import { DisconnectedModal } from "./modal/DisconnectedModal";
+import { useSocketApi } from "../../api/soketApi";
+import { useTelStore } from "../../stores/telStore";
 
 export const WebSocketContext = createContext<WebSocket | null>(null);
 
@@ -30,8 +32,19 @@ export default function SoketGuard({ children }: PropsWithChildren) {
   const { setCnsltInfo, clear } = useCnsltStore();
   const navigate = useNavigate();
 
-  const { accessToken } = useAuthStore(["accessToken"]);
+  const { accessToken, userNo } = useAuthStore(["accessToken", "userNo"]);
+  const { telId } = useTelStore();
+  const { data, refetch } = useSocketApi({
+    userNo: userNo || "",
+    telId: telId || "",
+  });
+  console.log("결과::", data);
 
+  useEffect(() => {
+    if (accessToken && telId && userNo) {
+      refetch();
+    }
+  }, [userNo, telId, accessToken]);
   useEffect(() => {
     if (!accessToken) return;
 

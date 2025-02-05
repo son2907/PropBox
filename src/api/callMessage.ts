@@ -2,7 +2,6 @@
 
 import { useMutation, useQuery } from "@tanstack/react-query";
 import instance from "../utils/axiosInstance";
-import getItemByStorageOne from "../utils/getItemByStorageOne";
 import {
   GetCidListResponseType,
   GetRejectMsgResponseType,
@@ -11,23 +10,21 @@ import {
   MsgGetOneRequestType,
   MsgSaveRequestType,
 } from "../types/callCnslt";
+import { spt } from "../utils/sptNo";
 
 const API = {
   // 발신번호 목록 조회
   getCidList: async () => {
-    const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
     const url = `/api/tel/cnslt/cidlist/${spt}`;
     return await instance.get<GetCidListResponseType>(url);
   },
   // 수신거부 한 개 조회
   getRejectOne: async () => {
-    const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
     const url = `/api/msg/reject/one/${spt}`;
     return await instance.get<GetRejectMsgResponseType>(url);
   },
   // 메세지 목록 조회 (우측 상단)
   getMsgsaveList: async () => {
-    const spt = getItemByStorageOne("selectedSite")?.sptNo; // 현장 선택 정보
     const url = `/api/spt/msgsave/list/${spt}`;
     return await instance.get<GetMsgsaveListResponseType>(url);
   },
