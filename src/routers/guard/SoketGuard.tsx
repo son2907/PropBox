@@ -37,9 +37,6 @@ export default function SoketGuard({ children }: PropsWithChildren) {
   const { telId } = useTelStore();
   const checkApiFail = useApiRes();
 
-  console.log("TELID:", telId);
-  console.log("USERNO", userNo);
-
   const { data } = useSocketApi({
     userNo: userNo,
     telId: telId,

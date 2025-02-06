@@ -1,10 +1,8 @@
 import { Stack, Typography } from "@mui/material";
-import React from "react";
 import GrayBox from "../../../components/Box/GrayBox";
 import SearchInput from "../../../components/Input/SearchInput";
 import { BasicButton } from "../../../components/Button";
 import TableBox from "../../../components/Box/TableBox";
-import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
 import BasicTable from "../../../components/Table/BasicTable";
 import { tableTestData } from "../../../utils/testData";
 import CenteredBox from "../../../components/Box/CenteredBox";
@@ -17,34 +15,23 @@ import PathConstants from "../../../routers/path";
 import useModal from "../../../hooks/useModal";
 // import BasicAlert from "../../../components/Alert/BasicAlert";
 import CustomAlert from "../../../components/Alert/CustomAlert";
-import { useRejectList } from "../../../api/messageReject";
+import {
+  useDeletetReject,
+  usePostReject,
+  usePutReject,
+  useRejectList,
+} from "../../../api/messageReject";
 import { useTableSelect } from "../../../hooks/useTableSelect";
+import { useSingleRowData } from "../../../hooks/useTest";
+import { useForm } from "react-hook-form";
+import useDidMountEffect from "../../../hooks/useDidMountEffect";
+import { GetRejectList } from "../../../types/messageReject";
+import { useAuthStore } from "../../../stores/authStore";
+import { useApiRes } from "../../../utils/useApiRes";
+import { BasicCompletedModl } from "../../../components/layout/modal/BasicCompletedModl";
+import { useSptStore } from "../../../stores/sptStore";
 
-// const AlertComponent1 = ({
-//   onClose,
-//   onSubmit,
-//   modalId,
-// }: {
-//   onClose: () => void;
-//   onSubmit: () => void;
-//   modalId: string;
-// }) => {
-//   return (
-//     <BasicAlert>
-//       <BasicAlert.Content>{modalId}</BasicAlert.Content>
-//       <BasicAlert.ButtonZone>
-//         <BasicButton onClick={onClose} variant="outlined">
-//           취소
-//         </BasicButton>
-//         <BasicButton onClick={onSubmit} variant="contained">
-//           확인
-//         </BasicButton>
-//       </BasicAlert.ButtonZone>
-//     </BasicAlert>
-//   );
-// };
-
-const AlertComponent2 = ({
+const DeleteAlert = ({
   onClose,
   onSubmit,
 }: {
@@ -59,10 +46,10 @@ const AlertComponent2 = ({
       </CustomAlert.Title>
       <CustomAlert.Content>삭제하시겠습니까?</CustomAlert.Content>
       <CustomAlert.ButtonZone>
-        <BasicButton onClick={onClose} variant="outlined">
+        <BasicButton onClick={onSubmit} variant="outlined">
           예
         </BasicButton>
-        <BasicButton onClick={onSubmit} variant="contained">
+        <BasicButton onClick={onClose} variant="contained">
           아니오
         </BasicButton>
       </CustomAlert.ButtonZone>
@@ -72,38 +59,135 @@ const AlertComponent2 = ({
 
 export default function RejectMessage() {
   const { countValues, selectValue, handleChange } = useTableSelect();
-  const { selectedRows: ts_1, toggleRowsSelection: tt_1 } =
-    useMultiRowSelection();
   const { currentPage, onChangePage } = usePagination();
-  console.log("currentPage::", currentPage);
-
+  const { selectedRow, toggleRowSelection } =
+    useSingleRowData<GetRejectList>("rejectNo");
+  const { loginId } = useAuthStore(["loginId"]);
+  const { sptNo } = useSptStore();
   const popupInfo = {
     url: PathConstants.Message.RegistrationExel,
     windowName: "수신거부 엑셀등록",
     windowFeatures: "width=1000,height=500,scrollbars=yes,resizable=yes",
   };
-  const { openModal } = useModal();
+  const { openModal, closeModal } = useModal();
 
-  const handleOpenStackedModal = () => {
-    openModal(AlertComponent2, {
-      modalId: "alert1",
-      stack: true, // 단일 모달 모드 = false,
-      onClose: () => console.log("모달 닫힘"),
-      onSubmit: () => console.log("확인"),
-    });
-  };
-
-  const { data: rejectList } = useRejectList({
+  const { data: rejectList, refetch: rejectRefetch } = useRejectList({
     page: currentPage,
     limit: selectValue,
   });
 
-  console.log(currentPage, selectValue, rejectList);
+  console.log("응답:", rejectList);
+  const { register, reset, getValues } = useForm({
+    defaultValues: {
+      rejectTelNo: "",
+      rmk: "",
+    },
+  });
+
+  useDidMountEffect(() => {
+    reset({
+      rejectTelNo: selectedRow?.rejectTelNo ?? "",
+      rmk: selectedRow?.rmk ?? "",
+    });
+  }, [selectedRow]);
+
+  const checkApiFail = useApiRes();
+
+  // 수정
+  const { mutate: put } = usePutReject();
+  const onPut = () => {
+    if (!selectedRow) return;
+    const formData = getValues();
+    put(
+      {
+        body: { ...selectedRow, ...formData, userId: loginId || "" },
+      },
+      {
+        onSuccess: (res) => {
+          const result = checkApiFail(res);
+          if (result.data.message === "SUCCESS") {
+            console.log("수정 성공 응답:", res);
+            openModal(BasicCompletedModl, {
+              modalId: "complete",
+              stack: false,
+              onClose: () => closeModal,
+            });
+            rejectRefetch();
+          }
+        },
+      }
+    );
+  };
+
+  // 추가
+  const { mutate: post } = usePostReject();
+  const onPost = () => {
+    const formData = getValues();
+    console.log("추가 데이터:", {
+      sptNo: sptNo,
+      ...formData,
+      userId: loginId || "",
+    });
+    post(
+      {
+        body: { sptNo: sptNo, ...formData, userId: loginId || "" },
+      },
+      {
+        onSuccess: (res) => {
+          const result = checkApiFail(res);
+          console.log("추가 응답:", res);
+          if (result.data.message === "SUCCESS") {
+            console.log("추가 성공:", res);
+            openModal(BasicCompletedModl, {
+              modalId: "complete",
+              stack: false,
+              onClose: () => closeModal,
+            });
+            rejectRefetch();
+          }
+        },
+      }
+    );
+  };
+
+  const onSubmit = () => (selectedRow ? onPut() : onPost());
+
+  const { mutate: delete_ } = useDeletetReject();
+
+  const handleDelete = () => {
+    openModal(DeleteAlert, {
+      modalId: "alert1",
+      stack: false,
+      onClose: () => closeModal,
+      onSubmit: () => {
+        delete_(
+          {
+            rejectNo: selectedRow?.rejectNo || "",
+          },
+          {
+            onSuccess: (res) => {
+              const result = checkApiFail(res);
+              // console.log("삭제 응답:", res);
+              if (result.data.message === "SUCCESS") {
+                // console.log("삭제 성공:", res);
+                openModal(BasicCompletedModl, {
+                  modalId: "complete",
+                  stack: false,
+                  onClose: () => closeModal,
+                });
+                rejectRefetch();
+              }
+            },
+          }
+        );
+      },
+    });
+  };
 
   return (
     <Stack width={"100%"} height={"100%"} gap={2}>
       <GrayBox gap={1}>
-        <SearchInput />
+        <SearchInput type="number" />
         <BasicButton
           sx={{
             marginLeft: "auto",
@@ -120,21 +204,23 @@ export default function RejectMessage() {
         <Stack width="100%" minWidth={"900px"} height={"100%"}>
           <TableBox.Inner>
             <BasicTable data={tableTestData}>
-              <BasicTable.Th>전송일시</BasicTable.Th>
-              <BasicTable.Th>구분</BasicTable.Th>
-              <BasicTable.Th>메시지</BasicTable.Th>
+              <BasicTable.Th>휴대전화</BasicTable.Th>
+              <BasicTable.Th>비고(거부사유)</BasicTable.Th>
+              <BasicTable.Th>등록자</BasicTable.Th>
+              <BasicTable.Th>등록일시</BasicTable.Th>
 
               <BasicTable.Tbody>
-                {tableTestData.map((item, index) => {
+                {rejectList?.data.contents.map((item, index) => {
                   return (
                     <BasicTable.Tr
                       key={index}
-                      isClicked={ts_1.has(item.id)}
-                      onClick={() => tt_1(item.id)}
+                      isClicked={selectedRow?.rejectNo === item.rejectNo}
+                      onClick={() => toggleRowSelection(item)}
                     >
-                      <BasicTable.Td>{item.name}</BasicTable.Td>
-                      <BasicTable.Td>{item.age}</BasicTable.Td>
-                      <BasicTable.Td>{item.age}</BasicTable.Td>
+                      <BasicTable.Td>{item.rejectTelNo}</BasicTable.Td>
+                      <BasicTable.Td>{item.rmk}</BasicTable.Td>
+                      <BasicTable.Td>등록자</BasicTable.Td>
+                      <BasicTable.Td>등록일시</BasicTable.Td>
                     </BasicTable.Tr>
                   );
                 })}
@@ -142,9 +228,13 @@ export default function RejectMessage() {
             </BasicTable>
           </TableBox.Inner>
           <CenteredBox justifyContent={"space-between"} padding={1}>
-            <Pagination count={25} page={currentPage} onChange={onChangePage} />
+            <Pagination
+              count={rejectList?.data.totalPage || 1}
+              page={currentPage}
+              onChange={onChangePage}
+            />
             <TableSelect
-              total={100}
+              total={rejectList?.data.totalCnt || 10}
               countValues={countValues}
               selectValue={selectValue}
               handleChange={handleChange}
@@ -158,12 +248,12 @@ export default function RejectMessage() {
                 수신거부 등록정보
               </Typography>
               <Typography>휴대전화</Typography>
-              <BasicInput />
+              <BasicInput {...register("rejectTelNo")} />
               <Typography>비고(거부사유)</Typography>
-              <BasicInput />
+              <BasicInput {...register("rmk")} />
               <CenteredBox justifyContent={"flex-end"} gap={1} marginTop={3}>
-                <BasicButton>저장</BasicButton>
-                <BasicButton onClick={handleOpenStackedModal}>삭제</BasicButton>
+                <BasicButton onClick={onSubmit}>저장</BasicButton>
+                <BasicButton onClick={handleDelete}>삭제</BasicButton>
               </CenteredBox>
             </Stack>
           </GrayBox>

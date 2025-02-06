@@ -460,6 +460,7 @@ export default function InfoGroup({ tabType }: TabType) {
                 <BasicInput {...register("mbtlNo")} />
                 {tabType ? (
                   <IconSquareButton
+                    tabIndex={-1}
                     onClick={() => {
                       onCall({ type: "Mbt" });
                     }}
@@ -471,6 +472,7 @@ export default function InfoGroup({ tabType }: TabType) {
                 <BasicInput {...register("telNo")} />
                 {tabType ? (
                   <IconSquareButton
+                    tabIndex={-1}
                     onClick={() => {
                       onCall({ type: "tel" });
                     }}

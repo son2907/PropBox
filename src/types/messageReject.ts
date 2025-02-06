@@ -8,17 +8,19 @@ export type GetRejectListRequestType = {
 };
 
 export type GetRejectList = {
-  rejectNo?: string;
-  sptNo?: string;
-  tel070No?: string;
-  rejectTelNo?: string;
-  rejectCd?: string;
-  useYn?: string;
-  rmk?: string;
+  rejectNo: string;
+  sptNo: string;
+  tel070No: string;
+  rejectTelNo: string;
+  rejectCd: string;
+  useYn: string;
+  rmk: string;
 };
 
 export interface GetRejectListResponseType extends ApiResponseType {
   contents: GetRejectList[];
+  totalCnt: number;
+  totalPage: number;
 }
 
 // 수신거부 현장 목록 조회
@@ -59,12 +61,12 @@ export interface GetRejectDetResponseType extends ApiResponseType {
 
 // 수신거부 등록 및 수정
 export type PostRejectRequestType = {
-  rejectNo: string;
+  rejectNo?: string;
   sptNo: string;
-  tel070No: string;
-  rejectTelNo: string;
-  rejectCd: string;
-  useYn: string;
+  tel070No?: string;
+  rejectTelNo?: string;
+  rejectCd?: string;
+  useYn?: string;
   rmk: string;
   userId: string;
 };
