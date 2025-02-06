@@ -60,6 +60,7 @@ export default function BulkMessage() {
 
   const [date, setDate] = useState<Date>(new Date()); // 날짜
   const [selectedTime, setSelectedTime] = useState(Date.now()); // 시간
+  console.log(selectedTime);
 
   // const isoDateTime = combineDateAndTime(date, selectedTime); // 시간과 날짜를 조합함
 

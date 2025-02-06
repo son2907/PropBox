@@ -9,13 +9,6 @@ export default function AuthGuard({ children }: PropsWithChildren) {
   const { accessToken } = useAuthStore(["accessToken"]); // accessToken 상태를 가져옵니다.
 
   useEffect(() => {
-    // 인증이 필요한데 accessToken이 없으면 로그인 페이지로 리다이렉트
-    // if (!accessToken) {
-    // 이미 로그인 페이지로 리다이렉트된 경우엔 다시 리다이렉트하지 않음
-    // if (window.location.pathname !== PathConstants.Login) {
-    // navigate(PathConstants.Login, { replace: true });
-    // }
-    // }
     // accessToken이 이미 있으면서 로그인 페이지로 진입하려고 하는 경우
     if (
       accessToken != null &&

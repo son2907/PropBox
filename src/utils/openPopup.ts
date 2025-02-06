@@ -11,16 +11,7 @@ export const openPopup = ({
   windowName,
   windowFeatures = "width=600,height=500,scrollbars=yes,resizable=yes",
 }: PopupType) => {
-  const screenWidth = window.innerWidth;
-  const screenHeight = window.innerHeight;
-
-  const popupWidth = 600;
-  const popupHeight = 400;
-
-  const left = (screenWidth - popupWidth) / 2;
-  const top = (screenHeight - popupHeight) / 2;
-
-  const popupFeatures = `${windowFeatures},left=${left},top=${top}`;
+  const popupFeatures = `${windowFeatures},left=700,top=500`;
   const newWindow = window.open(url, windowName, popupFeatures);
 
   if (

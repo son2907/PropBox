@@ -14,6 +14,9 @@ import { useCnsltStore } from "../../stores/CunsltStore";
 import { useAuthStore } from "../../stores/authStore";
 import useModal from "../../hooks/useModal";
 import { DisconnectedModal } from "./modal/DisconnectedModal";
+import { useSocketApi } from "../../api/soketApi";
+import { useTelStore } from "../../stores/telStore";
+import { useApiRes } from "../../utils/useApiRes";
 
 export const WebSocketContext = createContext<WebSocket | null>(null);
 
@@ -30,10 +33,33 @@ export default function SoketGuard({ children }: PropsWithChildren) {
   const { setCnsltInfo, clear } = useCnsltStore();
   const navigate = useNavigate();
 
-  const { accessToken } = useAuthStore(["accessToken"]);
+  const { accessToken, userNo } = useAuthStore(["accessToken", "userNo"]);
+  const { telId } = useTelStore();
+  const checkApiFail = useApiRes();
+
+  console.log("TELID:", telId);
+  console.log("USERNO", userNo);
+
+  const { data } = useSocketApi({
+    userNo: userNo,
+    telId: telId,
+  });
+
+  console.log("############ 웹소켓 로그인 데이터:", data);
 
   useEffect(() => {
+    const info = data?.data.contents;
+    if (!info) {
+      console.log("인포 없음:", info);
+      return;
+    }
     if (!accessToken) return;
+    if (data?.data.code !== 200) {
+      checkApiFail(data);
+      return;
+    }
+
+    console.log("aaaaaaaaaaaa 실행됨 aaaaaaaaaaaaaaaaaa");
 
     webSocket.current = new WebSocket("ws://js-lab.iptime.org:23570");
     webSocket.current.onopen = () => {
@@ -47,17 +73,18 @@ export default function SoketGuard({ children }: PropsWithChildren) {
       //   };
 
       // 웹소켓 연결 후, 서버로 로그인 메세지 전송
+
       const exampleMessage = {
         messageType: "LOGIN",
         timestampUTC: "",
         loginInfo: {
-          userNo: "유저1001",
-          sptNo: "현장1",
-          deviceSe: "통신1",
-          commnCarrier: "LG U+",
-          commnID: "209",
-          commnPw: "js_labs_209",
-          commnHost: "211.233.62.206",
+          userNo: info.userNo,
+          sptNo: info.sptNo,
+          deviceSe: info.deviceSe,
+          commnCarrier: info.commCarrier,
+          commnID: info.commnId,
+          commnPw: info.commnPw,
+          commnHost: info.commnHost,
         },
       };
       sendMessage({ webSocket, message: exampleMessage });
@@ -72,9 +99,9 @@ export default function SoketGuard({ children }: PropsWithChildren) {
     };
 
     webSocket.current.onmessage = (event: MessageEvent) => {
-      //console.log("메세지 수신::", event.data);
+      console.log("########메세지 수신::", event.data);
+
       const messageType = JSON.parse(event.data).messageType;
-      //console.log("########메세지 타입:", messageType);
 
       if (messageType == "HEARTBEAT") {
         const exampleMessage = {
@@ -88,7 +115,7 @@ export default function SoketGuard({ children }: PropsWithChildren) {
       if (messageType == "DISCONNECTED") {
         setMessages((prev) => [...prev, event.data]);
         openModal(DisconnectedModal, {
-          modalId: "logOut",
+          modalId: "disconnected",
           stack: false, // 단일 모달 모드 = false,
           onClose: () => closeModal,
         });
@@ -118,14 +145,17 @@ export default function SoketGuard({ children }: PropsWithChildren) {
         clear();
         toastClose();
       }
-
       setMessages((prev) => [...prev, event.data]);
     };
 
     return () => {
       webSocket.current?.close();
     };
-  }, [accessToken]);
+  }, [accessToken, data]);
+
+  useEffect(() => {
+    useTelStore.persist.rehydrate();
+  }, []);
 
   console.log("메세지에 저장된 내용:", messages);
 
