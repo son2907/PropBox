@@ -37,7 +37,7 @@ export const useSocketApi = ({
         telId,
       });
     },
-    enabled: false,
+    enabled: !!userNo && !!telId,
     gcTime: 0,
   });
 };

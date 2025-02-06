@@ -17,16 +17,18 @@ import { useQueryClient } from "@tanstack/react-query";
 import api from "../../api";
 import { LoginRequestModel } from "../../types/adminAccount";
 import { useNavigate } from "react-router-dom";
-import { openPopup } from "../../utils/openPopup";
 import { usePopupStore } from "../../stores/popupStore";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "../../utils/adminResolver";
 import { useMenuStore } from "../../stores/menuStore";
 import useDidMountEffect from "../../hooks/useDidMountEffect";
+import useModal from "../../hooks/useModal";
+import SiteSelection from "../SiteSelection";
 
 export default function Login() {
   const [rememberId, setRembmber] = useState<boolean>(false);
   const [errMsg, setErrMsg] = useState<string>("");
+  const { openModal } = useModal();
   const { popups } = usePopupStore();
 
   const {
@@ -68,10 +70,9 @@ export default function Login() {
     }
     userLogin(data, {
       onSuccess: () => {
-        openPopup({
-          url: "/siteSelection",
-          windowName: "현장 선택",
-          windowFeatures: "width=345,height=500,scrollbars=yes,resizable=no",
+        openModal(SiteSelection, {
+          modalId: "현장선택",
+          stack: true, // 단일 모달 모드 = false,
         });
       },
       onError: () => {

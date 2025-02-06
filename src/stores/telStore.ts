@@ -2,8 +2,8 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 type TelStoreType = {
-  telId?: string; // 전화기 ID
-  telno?: string; // 전화번호
+  telId: string; // 전화기 ID
+  telno: string; // 전화번호
 
   setTelInfo: (telId: string, telno: string) => void;
   clear: () => void;
