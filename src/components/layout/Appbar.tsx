@@ -8,6 +8,7 @@ import { useSiteList } from "../../api/siteList";
 import { filterDataByValues } from "../../utils/filterDataByValues";
 import useDidMountEffect from "../../hooks/useDidMountEffect";
 import { useSptStore } from "../../stores/sptStore";
+import { useEffect } from "react";
 
 // AppBarArea 컴포넌트: 앱바 영역
 const AppBarArea = styled(Box)(({ theme }) => ({
@@ -48,6 +49,10 @@ export default function Appbar() {
     );
     window.location.reload();
   }, [selectValue]);
+
+  useEffect(() => {
+    useSptStore.persist.rehydrate();
+  }, []);
 
   return (
     <AppBarArea>
