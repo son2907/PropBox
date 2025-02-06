@@ -23,6 +23,7 @@ export default function CustomAlert({
         textAlign: "center",
         backgroundColor: "primary.light",
         zIndex: 1300, // MUI의 기본 모달 z-index
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)", // 쉐도우 추가
       }}
     >
       <Box sx={{ position: "relative" }}>

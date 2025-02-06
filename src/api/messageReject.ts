@@ -67,11 +67,7 @@ const KEY = {
   ],
   postReject: () => ["/api/spt/reject", "post"],
   putReject: () => ["/api/spt/reject", "put"],
-  deleteRejectDet: ({ rejectNo }: GetRejectDetRequestType) => [
-    "/api/spt/reject",
-    "delete",
-    rejectNo,
-  ],
+  deleteRejectDet: () => ["/api/spt/reject", "delete"],
 };
 
 // 수신거부 목록 조회
@@ -121,7 +117,7 @@ export const usePostReject = () => {
 };
 
 //수신거부 수정
-export const usePutMsg = () => {
+export const usePutReject = () => {
   return useMutation({
     mutationFn: (requstData: { body: PostRejectRequestType }) =>
       API.putReject(requstData),
@@ -130,10 +126,10 @@ export const usePutMsg = () => {
 };
 
 //수신거부 삭제
-export const useDeletetMsg = ({ rejectNo }: GetRejectDetRequestType) => {
+export const useDeletetReject = () => {
   return useMutation({
     mutationFn: ({ rejectNo }: GetRejectDetRequestType) =>
       API.deleteRejectDet({ rejectNo }),
-    mutationKey: KEY.deleteRejectDet({ rejectNo }),
+    mutationKey: KEY.deleteRejectDet(),
   });
 };
