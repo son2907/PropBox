@@ -10,8 +10,13 @@ import {
   MemoRequestBody,
   ReportListResponseType,
   CnsltItemDataResponseType,
+  CallyRequestType,
+  CallyMasterResponseType,
+  CallyDetailRequestType,
+  CallyDetailResponseType,
 } from "../types/callCnslt";
 import { spt } from "../utils/sptNo";
+import DownloadExcel from "../utils/download";
 
 const API = {
   // 상담 항목 목록
@@ -110,6 +115,46 @@ const API = {
     const url = `/api/tel/cnslt/reportlist?sptNo=${spt}`;
     return await instance.get<ReportListResponseType>(url);
   },
+  // 기타 팝업 - 왼쪽 테이블 조회
+  getCallyMaster: async ({ fromDate, toDate }: CallyRequestType) => {
+    const url = `/api/tel/cnslt/cally/master?sptNo=${spt}&fromDate=${fromDate}&toDate=${toDate}`;
+    return await instance.get<CallyMasterResponseType>(url);
+  },
+  // 기타 팝업 - 왼쪽 테이블 엑셀 다운로드
+  getCallyMasterExcel: async ({ fromDate, toDate }: CallyRequestType) => {
+    const url = `/api/tel/cnslt/cally/master/exceldownload?sptNo=${spt}&fromDate=${fromDate}&toDate=${toDate}`;
+    const response = await instance.get(url, {
+      responseType: "blob",
+    });
+    DownloadExcel({ response });
+    return response;
+  },
+
+  // 기타 팝업 - 오른쪽 테이블 조회
+  getCallyDetail: async ({
+    fromDate,
+    toDate,
+    cnsltnt,
+  }: CallyDetailRequestType) => {
+    const url = `/api/tel/cnslt/cally/detail?sptNo=${spt}&fromDate=${fromDate}&toDate=${toDate}&cnsltnt=${cnsltnt}`;
+    return await instance.get<CallyDetailResponseType>(url);
+  },
+
+  // 기타 팝업 - 오른쪽 테이블 엑셀 다운로드
+  getCallyDetailExecl: async ({
+    fromDate,
+    toDate,
+    cnsltnt,
+  }: CallyDetailRequestType) => {
+    const url = `/api/tel/cnslt/cally/detail/exceldownload?sptNo=${spt}&fromDate=${fromDate}&toDate=${toDate}&cnsltnt=${cnsltnt}`;
+
+    const response = await instance.get(url, {
+      responseType: "blob",
+    });
+
+    DownloadExcel({ response });
+    return response;
+  },
 };
 
 const KEY = {
@@ -149,6 +194,32 @@ const KEY = {
     cstmrNm,
   ],
   getReportList: () => ["/api/tel/cnslt/reportlist"],
+  getCallyMaster: ({ fromDate, toDate }: CallyRequestType) => [
+    "/api/tel/cnslt/cally/master",
+    fromDate,
+    toDate,
+  ],
+  getCallyMasterExcel: ({ fromDate, toDate }: CallyRequestType) => [
+    "/api/tel/cnslt/cally/master/exceldownload",
+    fromDate,
+    toDate,
+  ],
+  getCallyDetail: ({ fromDate, toDate, cnsltnt }: CallyDetailRequestType) => [
+    "/api/tel/cnslt/cally/detail",
+    fromDate,
+    toDate,
+    cnsltnt,
+  ],
+  getCallyDetailExecl: ({
+    fromDate,
+    toDate,
+    cnsltnt,
+  }: CallyDetailRequestType) => [
+    "/api/tel/cnslt/cally/detail/exceldownload",
+    fromDate,
+    toDate,
+    cnsltnt,
+  ],
 };
 
 // 전화번호 또는 고객명으로 검색
@@ -307,5 +378,77 @@ export const usePostCnsltInfo = () => {
     mutationFn: (requstData: { body: CnsltInfoRequestType }) =>
       API.postCnsltInfo(requstData),
     mutationKey: KEY.postCnsltInfo(),
+  });
+};
+
+// 왼쪽 마스터 테이블 조회
+export const useCallyMaster = ({ fromDate, toDate }: CallyRequestType) => {
+  return useQuery({
+    queryKey: KEY.getCallyMaster({ fromDate, toDate }),
+    queryFn: async () => {
+      return await API.getCallyMaster({ fromDate, toDate });
+    },
+    gcTime: 0,
+    enabled: !!fromDate && !!toDate,
+  });
+};
+
+// 마스터 테이블 엑셀 다운로드
+export const useMasterExcel = ({ fromDate, toDate }: CallyRequestType) => {
+  return useQuery({
+    queryKey: KEY.getCallyMasterExcel({ fromDate, toDate }),
+    queryFn: async () => {
+      return await API.getCallyMasterExcel({ fromDate, toDate });
+    },
+    gcTime: 0,
+    enabled: false,
+  });
+};
+
+// 디테일 테이블 조회
+export const useCallyDetail = ({
+  fromDate,
+  toDate,
+  cnsltnt,
+}: CallyDetailRequestType) => {
+  return useQuery({
+    queryKey: KEY.getCallyDetail({
+      fromDate,
+      toDate,
+      cnsltnt,
+    }),
+    queryFn: async () => {
+      return await API.getCallyDetail({
+        fromDate,
+        toDate,
+        cnsltnt,
+      });
+    },
+    enabled: !!cnsltnt,
+    gcTime: 0,
+  });
+};
+
+// 디테일 테이블 엑셀 다운로드
+export const useCallyDetailExcel = ({
+  fromDate,
+  toDate,
+  cnsltnt,
+}: CallyDetailRequestType) => {
+  return useQuery({
+    queryKey: KEY.getCallyDetailExecl({
+      fromDate,
+      toDate,
+      cnsltnt,
+    }),
+    queryFn: async () => {
+      return await API.getCallyDetailExecl({
+        fromDate,
+        toDate,
+        cnsltnt,
+      });
+    },
+    enabled: false,
+    gcTime: 0,
   });
 };
