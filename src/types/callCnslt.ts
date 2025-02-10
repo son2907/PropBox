@@ -193,3 +193,41 @@ export type MsgSaveRequestType = {
   mssage: string;
   userId: string;
 };
+
+// <--------------기타 팝업--------------->
+// 마스터 테이블
+export type CallyContentsType = {
+  seqNo: number;
+  cnsltnt: string;
+  cnsltntNm: string;
+  callY: number;
+  trsmY: number;
+  trsmN: number;
+  callTot: number;
+};
+
+export interface CallyMasterResponseType extends ApiResponseType {
+  contents: CallyContentsType[];
+}
+
+export interface CallyRequestType {
+  fromDate: string;
+  toDate: string;
+}
+
+// 디테일 테이블
+export type CallyDetailContentsType = {
+  cnsltDt: string;
+  callY: number;
+  trsmY: number;
+  trsmN: number;
+  callTot: number;
+};
+
+export interface CallyDetailResponseType extends ApiResponseType {
+  contents: CallyDetailContentsType[];
+}
+
+export interface CallyDetailRequestType extends CallyRequestType {
+  cnsltnt: string;
+}
