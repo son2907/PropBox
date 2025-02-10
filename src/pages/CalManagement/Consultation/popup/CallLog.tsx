@@ -4,19 +4,57 @@ import CenteredBox from "../../../../components/Box/CenteredBox";
 import { useState } from "react";
 import Calendar from "../../../../components/Calendar/Calendar";
 import { BasicButton } from "../../../../components/Button";
-import CheckboxTable from "../../../../components/Table/CheckboxTable";
-import { tableTestData } from "../../../../utils/testData";
-import { useMultiRowSelection } from "../../../../hooks/useMultiRowSelection";
 import TableBox from "../../../../components/Box/TableBox";
+import {
+  useCallyDetail,
+  useCallyDetailExcel,
+  useCallyMaster,
+  useMasterExcel,
+} from "../../../../api/callCnslt";
+import { getFormattedDate } from "../../../../utils/getFormattedDate";
+import BasicTable from "../../../../components/Table/BasicTable";
+import { useSingleRowData } from "../../../../hooks/useTest";
+import { CallyContentsType } from "../../../../types/callCnslt";
 
 export default function CallLog() {
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(new Date());
-  const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
-  const {
-    selectedRows: selectedRows2,
-    toggleRowsSelection: toggleRowsSelection2,
-  } = useMultiRowSelection();
+
+  const { selectedRow, toggleRowSelection } =
+    useSingleRowData<CallyContentsType>("seqNo");
+
+  // 왼쪽 테이블 조회
+  const { data: masterData } = useCallyMaster({
+    fromDate: getFormattedDate(startDate),
+    toDate: getFormattedDate(endDate),
+  });
+  // 왼쪽 테이블 엑셀 다운로드
+  const { refetch: downloadMasteExcel } = useMasterExcel({
+    fromDate: getFormattedDate(startDate),
+    toDate: getFormattedDate(endDate),
+  });
+
+  // 오른쪽 테이블 조회
+  const { data: detailData } = useCallyDetail({
+    fromDate: getFormattedDate(startDate),
+    toDate: getFormattedDate(endDate),
+    cnsltnt: selectedRow?.cnsltnt || "",
+  });
+  // 오른쪽 테이블 엑셀 다운로드
+  const { refetch: downloadDetailExcel } = useCallyDetailExcel({
+    fromDate: getFormattedDate(startDate),
+    toDate: getFormattedDate(endDate),
+    cnsltnt: selectedRow?.cnsltnt || "",
+  });
+
+  const onClickMasterExcel = () => {
+    downloadMasteExcel();
+  };
+
+  const onClickDetailExcel = () => {
+    if (!selectedRow) return;
+    downloadDetailExcel();
+  };
 
   return (
     <Stack padding={2} bgcolor={"white"} height={"100%"} width={"100%"} gap={1}>
@@ -42,73 +80,65 @@ export default function CallLog() {
         </CenteredBox>
       </GrayBox>
 
-      <TableBox>
+      <TableBox gap={1}>
         <TableBox.Inner width="50%">
           {/* 왼쪽 테이블 */}
           <GrayBox justifyContent={"flex-end"} marginBottom={1}>
-            <BasicButton>엑셀저장</BasicButton>
+            <BasicButton onClick={onClickMasterExcel}>엑셀저장</BasicButton>
           </GrayBox>
-          <CheckboxTable
-            data={tableTestData}
-            selectedRows={selectedRows}
-            toggleRowsSelection={toggleRowsSelection}
-          >
-            <CheckboxTable.Thead>
-              <CheckboxTable.Tr>
-                <CheckboxTable.Th>No</CheckboxTable.Th>
-                <CheckboxTable.Th>이름</CheckboxTable.Th>
-                <CheckboxTable.Th>걸기</CheckboxTable.Th>
-                <CheckboxTable.Th>통화콜</CheckboxTable.Th>
-                <CheckboxTable.Th>부재콜</CheckboxTable.Th>
-                <CheckboxTable.Th>계</CheckboxTable.Th>
-              </CheckboxTable.Tr>
-            </CheckboxTable.Thead>
-            <CheckboxTable.Tbody>
-              {tableTestData.map((item) => (
-                <CheckboxTable.Tr key={item.id} id={item.id}>
-                  <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                  <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                  <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                  <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                  <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                  <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                </CheckboxTable.Tr>
-              ))}
-            </CheckboxTable.Tbody>
-          </CheckboxTable>
+          <BasicTable data={masterData?.data.contents}>
+            <BasicTable.Th>No</BasicTable.Th>
+            <BasicTable.Th>이름</BasicTable.Th>
+            <BasicTable.Th>걸기</BasicTable.Th>
+            <BasicTable.Th>통화콜</BasicTable.Th>
+            <BasicTable.Th>부재콜</BasicTable.Th>
+            <BasicTable.Th>계</BasicTable.Th>
+            <BasicTable.Tbody>
+              {masterData?.data.contents.map((item, index) => {
+                return (
+                  <BasicTable.Tr
+                    key={index}
+                    isClicked={selectedRow?.seqNo === item.seqNo} // 전체 데이터 객체를 비교
+                    onClick={() => toggleRowSelection(item)} // 데이터 자체를 전달
+                  >
+                    <BasicTable.Td>{item.seqNo}</BasicTable.Td>
+                    <BasicTable.Td>{item.cnsltntNm}</BasicTable.Td>
+                    <BasicTable.Td>{item.callY}</BasicTable.Td>
+                    <BasicTable.Td>{item.trsmY}</BasicTable.Td>
+                    <BasicTable.Td>{item.trsmN}</BasicTable.Td>
+                    <BasicTable.Td>{item.callTot}</BasicTable.Td>
+                  </BasicTable.Tr>
+                );
+              })}
+            </BasicTable.Tbody>
+          </BasicTable>
         </TableBox.Inner>
 
         {/* 오른쪽 테이블 */}
         <TableBox.Inner width="50%">
           <GrayBox justifyContent={"flex-end"} marginBottom={1}>
-            <BasicButton>엑셀저장</BasicButton>
+            <BasicButton onClick={onClickDetailExcel}>엑셀저장</BasicButton>
           </GrayBox>
-          <CheckboxTable
-            data={tableTestData}
-            selectedRows={selectedRows2}
-            toggleRowsSelection={toggleRowsSelection2}
-          >
-            <CheckboxTable.Thead>
-              <CheckboxTable.Tr>
-                <CheckboxTable.Th>상담일자</CheckboxTable.Th>
-                <CheckboxTable.Th>걸기</CheckboxTable.Th>
-                <CheckboxTable.Th>통화콜</CheckboxTable.Th>
-                <CheckboxTable.Th>부재콜</CheckboxTable.Th>
-                <CheckboxTable.Th>계</CheckboxTable.Th>
-              </CheckboxTable.Tr>
-            </CheckboxTable.Thead>
-            <CheckboxTable.Tbody>
-              {tableTestData.map((item) => (
-                <CheckboxTable.Tr key={item.id} id={item.id}>
-                  <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                  <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                  <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                  <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                  <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                </CheckboxTable.Tr>
-              ))}
-            </CheckboxTable.Tbody>
-          </CheckboxTable>
+          <BasicTable data={detailData?.data.contents}>
+            <BasicTable.Th>상담일자</BasicTable.Th>
+            <BasicTable.Th>걸기</BasicTable.Th>
+            <BasicTable.Th>통화콜</BasicTable.Th>
+            <BasicTable.Th>부재콜</BasicTable.Th>
+            <BasicTable.Th>계</BasicTable.Th>
+            <BasicTable.Tbody>
+              {detailData?.data.contents.map((item, index) => {
+                return (
+                  <BasicTable.Tr key={index}>
+                    <BasicTable.Td>{item.cnsltDt}</BasicTable.Td>
+                    <BasicTable.Td>{item.callY}</BasicTable.Td>
+                    <BasicTable.Td>{item.trsmY}</BasicTable.Td>
+                    <BasicTable.Td>{item.trsmN}</BasicTable.Td>
+                    <BasicTable.Td>{item.callTot}</BasicTable.Td>
+                  </BasicTable.Tr>
+                );
+              })}
+            </BasicTable.Tbody>
+          </BasicTable>
         </TableBox.Inner>
       </TableBox>
     </Stack>

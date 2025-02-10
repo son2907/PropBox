@@ -11,7 +11,7 @@ export const openPopup = ({
   windowName,
   windowFeatures = "width=600,height=500,scrollbars=yes,resizable=yes",
 }: PopupType) => {
-  const popupFeatures = `${windowFeatures},left=700,top=500`;
+  const popupFeatures = `${windowFeatures},left=700,top=400`;
   const newWindow = window.open(url, windowName, popupFeatures);
 
   if (
