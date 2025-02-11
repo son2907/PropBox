@@ -63,6 +63,7 @@ export default function LocalUpdate() {
 
   // 현장 수정
   const [localId, setLocalId] = useState("");
+  const [localCode, setLocalCode] = useState("");
   const [localName, setLocalName] = useState("");
   const [startDate, setStartDate] = useState<Date>(new Date());  //시작일
   const [endDate, setEndDate] = useState<Date>(new Date());  //종료일
@@ -124,7 +125,8 @@ export default function LocalUpdate() {
       setLocalName(localDetail.sptNm);
       setIsUse(localDetail.useYn === "Y" ? true : false);
       setProgrsSeCd(localDetail.progrsSeCd);
-      //setRmk(localDetail.);
+      setLocalCode(localDetail.storeCd);
+      setRmk(localDetail.rmk);
 
       //기간 설정
       const parseDate = (dateString: string) => {
@@ -170,6 +172,7 @@ export default function LocalUpdate() {
       cntrctBgnde: formatDate(startDate),
       cntrctEndde: formatDate(endDate),
       rmk: rmk,
+      storeCd: localCode,
       userId: loginId || "",
     };
 
@@ -295,6 +298,21 @@ export default function LocalUpdate() {
             value={localName}
             onChange={(e) => setLocalName(e.target.value)}
             placeholder={"현장이름"}
+          ></BasicInput>
+        </Stack>
+        <Stack
+          direction={"row"}
+          gap={1}
+          marginTop={1}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+        >
+          <Typography>현장상점코드</Typography>
+          <BasicInput
+            sx={{ width: "80%" }}
+            value={localCode}
+            onChange={(e) => setLocalCode(e.target.value)}
+            placeholder={"현장상점코드"}
           ></BasicInput>
         </Stack>
         <Stack
