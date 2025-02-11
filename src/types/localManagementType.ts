@@ -198,6 +198,7 @@ export type LocalInsertType = {
     cntrctBgnde: string,
     cntrctEndde: string,
     rmk: string,
+    storeCd: string,
     userId: string | undefined,
 };
 
@@ -209,7 +210,9 @@ export type LocalDetailType = {
     progrsSeCd: string,
     cntrctBgnde: string,
     cntrctEndde: string,
-    useYn: string
+    useYn: string,
+    storeCd: string,
+    rmk : string,
 };
 export interface LocalDetailResponse extends ApiResponseType {
     contents: LocalDetailType
@@ -224,6 +227,7 @@ export type LocalUpdateType = {
     useYn: string,
     cntrctBgnde: string,
     cntrctEndde: string,
+    storeCd: string,
     rmk: string,
     userId: string | undefined,
 };
