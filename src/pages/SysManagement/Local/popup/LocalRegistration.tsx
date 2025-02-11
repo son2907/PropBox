@@ -58,6 +58,7 @@ export default function LocalRegistration() {
 
   // 현장 추가
   const [localId, setLocalId] = useState("");
+  const [localCode, setLocalCode] = useState("");
   const [localName, setLocalName] = useState("");
   const [startDate, setStartDate] = useState<Date>(new Date());  //시작일
   const [endDate, setEndDate] = useState<Date>(new Date());  //종료일
@@ -136,6 +137,7 @@ export default function LocalRegistration() {
       cntrctBgnde: formatDate(startDate),
       cntrctEndde: formatDate(endDate),
       rmk: rmk,
+      storeCd: localCode,
       userId: loginId || "",
     };
 
@@ -194,6 +196,21 @@ export default function LocalRegistration() {
             value={localId}
             onChange={(e) => setLocalId(e.target.value)}
             placeholder={"현장아이디"}
+          />
+        </Stack>
+        <Stack
+          direction={"row"}
+          gap={1}
+          marginTop={1}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+        >
+          <Typography>현장상점코드</Typography>
+          <BasicInput
+            sx={{ width: "80%" }}
+            value={localCode}
+            onChange={(e) => setLocalCode(e.target.value)}
+            placeholder={"현장상점코드"}
           />
         </Stack>
         <Stack
