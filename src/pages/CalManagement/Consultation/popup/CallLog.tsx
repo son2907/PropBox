@@ -6,10 +6,12 @@ import Calendar from "../../../../components/Calendar/Calendar";
 import { BasicButton } from "../../../../components/Button";
 import TableBox from "../../../../components/Box/TableBox";
 import {
+  useAbsenceExcel,
   useCallyDetail,
   useCallyDetailExcel,
   useCallyMaster,
   useMasterExcel,
+  useWaitExcel,
 } from "../../../../api/callCnslt";
 import { getFormattedDate } from "../../../../utils/getFormattedDate";
 import BasicTable from "../../../../components/Table/BasicTable";
@@ -47,6 +49,23 @@ export default function CallLog() {
     cnsltnt: selectedRow?.cnsltnt || "",
   });
 
+  // 오른쪽 테이블 엑셀 다운로드
+  const { refetch: downloadWaitExcel } = useWaitExcel();
+
+  // 오른쪽 테이블 엑셀 다운로드
+  const { refetch: downloadAbsenceExcel } = useAbsenceExcel({
+    fromDate: getFormattedDate(startDate),
+    toDate: getFormattedDate(endDate),
+  });
+
+  const onClickWaitExcel = () => {
+    downloadWaitExcel();
+  };
+
+  const onClickAbsenceExcel = () => {
+    downloadAbsenceExcel();
+  };
+
   const onClickMasterExcel = () => {
     downloadMasteExcel();
   };
@@ -75,8 +94,12 @@ export default function CallLog() {
       <GrayBox>
         <CenteredBox width={"100%"} gap={1}>
           <Typography display={"inline"}>구분</Typography>
-          <BasicButton>대기자료 엑셀저장</BasicButton>
-          <BasicButton>부재콜자료 엑셀저장</BasicButton>
+          <BasicButton onClick={onClickWaitExcel}>
+            대기자료 엑셀저장
+          </BasicButton>
+          <BasicButton onClick={onClickAbsenceExcel}>
+            부재콜자료 엑셀저장
+          </BasicButton>
         </CenteredBox>
       </GrayBox>
 

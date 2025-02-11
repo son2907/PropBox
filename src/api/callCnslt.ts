@@ -155,6 +155,29 @@ const API = {
     DownloadExcel({ response });
     return response;
   },
+
+  // 기타 팝업 - 대기자료 엑셀 저장
+  getWaitExecl: async () => {
+    const url = `/api/tel/cnslt/wait/exceldownload?sptNo=${spt}`;
+
+    const response = await instance.get(url, {
+      responseType: "blob",
+    });
+
+    DownloadExcel({ response });
+    return response;
+  },
+  // 기타 팝업 - 부재콜 엑셀 저장
+  getAbsenceExcel: async ({ fromDate, toDate }: CallyRequestType) => {
+    const url = `/api/tel/cnslt/absence/exceldownload?sptNo=${spt}&fromDate=${fromDate}&toDate=${toDate}`;
+
+    const response = await instance.get(url, {
+      responseType: "blob",
+    });
+
+    DownloadExcel({ response });
+    return response;
+  },
 };
 
 const KEY = {
@@ -219,6 +242,12 @@ const KEY = {
     fromDate,
     toDate,
     cnsltnt,
+  ],
+  getWaitExecl: () => ["/api/tel/cnslt/wait/exceldownload"],
+  getAbsenceExcel: ({ fromDate, toDate }: CallyRequestType) => [
+    "/api/tel/cnslt/cally/master/exceldownload",
+    fromDate,
+    toDate,
   ],
 };
 
@@ -450,5 +479,28 @@ export const useCallyDetailExcel = ({
     },
     enabled: false,
     gcTime: 0,
+  });
+};
+// 대기 엑셀 다운
+export const useWaitExcel = () => {
+  return useQuery({
+    queryKey: KEY.getWaitExecl(),
+    queryFn: async () => {
+      return await API.getWaitExecl();
+    },
+    gcTime: 0,
+    enabled: false,
+  });
+};
+
+// 부재콜 엑셀 다운
+export const useAbsenceExcel = ({ fromDate, toDate }: CallyRequestType) => {
+  return useQuery({
+    queryKey: KEY.getAbsenceExcel({ fromDate, toDate }),
+    queryFn: async () => {
+      return await API.getAbsenceExcel({ fromDate, toDate });
+    },
+    gcTime: 0,
+    enabled: false,
   });
 };

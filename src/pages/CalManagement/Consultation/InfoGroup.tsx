@@ -44,6 +44,7 @@ import { getKoreanTime } from "../../../utils/getKoreanTime";
 import { useSptStore } from "../../../stores/sptStore";
 
 export default function InfoGroup({ tabType }: TabType) {
+  const [smsPopup, setSmsPopup] = useState<any>();
   // 웹소켓
   const webSocket = useWebSocket(WebSocketContext);
 
@@ -147,6 +148,31 @@ export default function InfoGroup({ tabType }: TabType) {
       reset({ ...message });
     }
   }, [message, reset]);
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data && event.data.type === "REQUEST_INITIAL_DATA") {
+        // 초기 데이터 요청 시 메시지 전송
+        smsPopup.postMessage(
+          { message: { cstmrNo: cstmrNo, cnsltTelno: cnsltTelno } },
+          "*"
+        );
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+
+    if (smsPopup) {
+      smsPopup.postMessage(
+        { message: { cstmrNo: cstmrNo, cnsltTelno: cnsltTelno } },
+        "*"
+      );
+    }
+
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, [cstmrNo, cnsltTelno, smsPopup]);
 
   // <========================= Popup Constance =========================>
 
@@ -405,7 +431,8 @@ export default function InfoGroup({ tabType }: TabType) {
               <BasicButton>삭제</BasicButton>
               <BasicButton
                 onClick={() => {
-                  openPopup(smsPopupInfo);
+                  const popup = openPopup(smsPopupInfo);
+                  setSmsPopup(popup);
                 }}
               >
                 문자

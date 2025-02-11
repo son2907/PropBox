@@ -9,6 +9,8 @@ import {
   GetMsgsaveOneResponseType,
   MsgGetOneRequestType,
   MsgSaveRequestType,
+  MacroRequestType,
+  MacroResponseType,
 } from "../types/callCnslt";
 import { spt } from "../utils/sptNo";
 
@@ -48,6 +50,20 @@ const API = {
     const url = `/api/spt/msgsave/${saveNo}`;
     return await instance.delete(url);
   },
+  // 매크로 테이블 조회
+  getMacroList: async ({ cstmrNo }: MacroRequestType) => {
+    const url = `/api/msg/telcnslt/cstmr?sptNo=${spt}&cstmrNo=${cstmrNo}`;
+    return await instance.get<MacroResponseType>(url);
+  },
+  // 메세지 전송
+  sendMsg: async (requestData: { body: any }) => {
+    const url = `/api/msg/send/telcnsltmsg`;
+    return await instance.post(url, requestData.body, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  },
 };
 
 const KEY = {
@@ -65,6 +81,11 @@ const KEY = {
     "delete",
     saveNo,
   ],
+  getMacroList: ({ cstmrNo }: MacroRequestType) => [
+    "/api/msg/telcnslt/cstmr",
+    cstmrNo,
+  ],
+  sendMsg: () => ["/api/msg/send/telcnsltmsg"],
 };
 
 // 발신번호 목록 조회
@@ -84,7 +105,6 @@ export const useRejectAd = () => {
     queryFn: async () => {
       return await API.getRejectOne();
     },
-    enabled: false,
   });
 };
 
@@ -132,5 +152,25 @@ export const useDeleteMsg = ({ saveNo }: MsgGetOneRequestType) => {
   return useMutation({
     mutationFn: ({ saveNo }: MsgGetOneRequestType) => API.deleteMsg({ saveNo }),
     mutationKey: KEY.deleteMsg({ saveNo }),
+  });
+};
+
+// 매크로 조회
+export const useMacroList = ({ cstmrNo }: MacroRequestType) => {
+  return useQuery({
+    queryKey: KEY.getMacroList({ cstmrNo }),
+    queryFn: async () => {
+      return await API.getMacroList({ cstmrNo });
+    },
+    enabled: !!cstmrNo,
+    gcTime: 0,
+  });
+};
+
+//메세지 전송
+export const useSendMsg = () => {
+  return useMutation({
+    mutationFn: (requestData: { body: any }) => API.sendMsg(requestData),
+    mutationKey: KEY.sendMsg(),
   });
 };
