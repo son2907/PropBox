@@ -10,5 +10,6 @@ export function useRadioGroup(initialValue: string) {
   return {
     selectedValue,
     handleRadioChange,
+    setSelectedValue,
   };
 }

@@ -166,9 +166,10 @@ export interface GetRejectMsgResponseType extends ApiResponseType {
 // 메세지 목록 조회
 export type MsgSaveItem = {
   saveNo: string;
-  sptNo: string;
-  userNo: string;
   mssage: string;
+  advTxt: string;
+  advYn: string;
+  commUse: string;
 };
 
 export interface GetMsgsaveOneResponseType extends ApiResponseType {
@@ -184,14 +185,43 @@ export type MsgGetOneRequestType = {
   saveNo: string; // 메세지 번호
 };
 
+// 매크로 조회
+export type MacroRequestType = {
+  cstmrNo: string;
+};
+
+// 매크로 응답
+export type MacroContentsType = {
+  macroNm: string;
+  macroDesc: string;
+};
+
+export interface MacroResponseType extends ApiResponseType {
+  contents: MacroContentsType[];
+}
+
 // 메세지 저장 및 수정
 export type MsgSaveRequestType = {
   saveNo: string;
   sptNo: string;
-  userNo: string;
   commUseYn: string;
   mssage: string;
-  userId: string;
+  advYn: string;
+  advTxt: string;
+};
+
+// 메세지 전송
+
+export type SendMessageRequestType = {
+  sptNo: string;
+  cstmrNo: string;
+  smsKnd: string;
+  subject: string;
+  mssage: string;
+  trnsmitTxt: string;
+  adYn: string;
+  mbtlNo: string;
+  dsptchNo: string;
 };
 
 // <--------------기타 팝업--------------->

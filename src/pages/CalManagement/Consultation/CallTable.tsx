@@ -85,12 +85,14 @@ export default function CallTable({ tabType, tabChange }: TabType) {
           key,
           values: selectedValues,
         });
+        console.log("선택한 값:", data);
         if (data.length > 0) {
           setCnsltInfo({
             cstmrNo: data[0][cstmrKey],
             cnsltNo: data[0][cnsltKey],
             callYn: callYn,
             trsmYn: trsmYn,
+            cnsltTelno: data[0].cnsltTelno,
           });
         }
       };

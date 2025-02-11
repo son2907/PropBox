@@ -56,8 +56,6 @@ export default function SoketGuard({ children }: PropsWithChildren) {
       return;
     }
 
-    console.log("aaaaaaaaaaaa 실행됨 aaaaaaaaaaaaaaaaaa");
-
     webSocket.current = new WebSocket("ws://js-lab.iptime.org:23570");
     webSocket.current.onopen = () => {
       console.log("웹소켓 실행:", "ws://js-lab.iptime.org:23570");
