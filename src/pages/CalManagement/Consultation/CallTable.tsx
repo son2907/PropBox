@@ -13,6 +13,7 @@ import { useTelCnsltList } from "../../../api/callCnslt";
 import { useEffect } from "react";
 import { useCnsltStore } from "../../../stores/CunsltStore";
 import { filterDataByValues } from "../../../utils/filterDataByValues";
+import useDidMountEffect from "../../../hooks/useDidMountEffect";
 
 export default function CallTable({ tabType, tabChange }: TabType) {
   //  통화콜, 부재콜
@@ -69,10 +70,9 @@ export default function CallTable({ tabType, tabChange }: TabType) {
   const { setCnsltInfo, clear } = useCnsltStore();
   console.log("############# 테이블 데이터:", cnsltData);
 
-  useEffect(() => {
-    clear();
-    resetSelection();
-  }, [tabType, takeValue, callOptionValue]);
+  // useDidMountEffect(() => {
+  //   resetSelection();
+  // }, [tabType, takeValue, callOptionValue]);
 
   useEffect(() => {
     if (selectedRow.size > 0 && cnsltData?.data?.contents) {
@@ -85,14 +85,17 @@ export default function CallTable({ tabType, tabChange }: TabType) {
           key,
           values: selectedValues,
         });
-        console.log("선택한 값:", data);
+        console.log("데이터", data);
         if (data.length > 0) {
           setCnsltInfo({
-            cstmrNo: data[0][cstmrKey],
-            cnsltNo: data[0][cnsltKey],
+            cstmrNo: data[0][cstmrKey] || "",
+            cnsltNo: data[0][cnsltKey] || "",
             callYn: callYn,
             trsmYn: trsmYn,
-            cnsltTelno: data[0].cnsltTelno,
+            cnsltTelno: data[0].cnsltTelno || "",
+            cstmrNm: data[0].cstmrNm || "",
+            mbtlNo: data[0].mbtlNo || "",
+            telNo: data[0].telNo || "",
           });
         }
       };
@@ -107,9 +110,7 @@ export default function CallTable({ tabType, tabChange }: TabType) {
       }
     }
 
-    if (selectedRow.size === 0) {
-      clear();
-    }
+    if (selectedRow.size == 0) clear();
   }, [selectedRow, cnsltData, callYn, trsmYn]);
 
   // Tab change 시에도 useCnsltStore에 값 저장

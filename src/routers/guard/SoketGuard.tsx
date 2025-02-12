@@ -60,13 +60,6 @@ export default function SoketGuard({ children }: PropsWithChildren) {
     webSocket.current.onopen = () => {
       console.log("웹소켓 실행:", "ws://js-lab.iptime.org:23570");
 
-      // 전화 걸기 api
-      //   const exampleMessage = {
-      //     messageType: "DIAL",
-      //     timestampUTC: "2024-11-22 01:55:00.000",
-      //     counterpart: "07040342009",
-      //   };
-
       // 웹소켓 연결 후, 서버로 로그인 메세지 전송
 
       const exampleMessage = {
@@ -131,11 +124,7 @@ export default function SoketGuard({ children }: PropsWithChildren) {
           cnsltTelno: JSON.parse(event.data).counterpart,
         });
       }
-      if (
-        messageType === "MISSED" ||
-        messageType === "HANGUP" ||
-        messageType === "ANSWERED"
-      ) {
+      if (messageType === "MISSED") {
         setToastContent({ name: "", telNo: "", info: "" });
         clear();
         toastClose();

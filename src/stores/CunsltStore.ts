@@ -7,6 +7,9 @@ type CunsltStoreType = {
   cstmrNm?: string; // 상담자 이름
   callYn?: string; // 전화 걸기, 받기
   trsmYn?: string; // 통화콜, 부재콜, 대기
+  mbtlNo?: string;
+  telNo?: string;
+
   setCnsltInfo: (info: {
     cstmrNo?: string;
     cnsltNo?: string;
@@ -14,6 +17,8 @@ type CunsltStoreType = {
     cstmrNm?: string;
     callYn?: string;
     trsmYn?: string;
+    mbtlNo?: string;
+    telNo?: string;
   }) => void;
   clear: () => void;
 };
@@ -26,5 +31,7 @@ export const useCnsltStore = create<CunsltStoreType>()((set) => ({
       cnsltNo: "",
       cnsltTelno: "",
       cstmrNm: "",
+      mbtlNo: "",
+      telNo: "",
     })),
 }));
