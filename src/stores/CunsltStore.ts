@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 type CunsltStoreType = {
+  fromSocket?: boolean;
   cstmrNo?: string; // 고객번호, 대기일때는 waitCstmrNo
   cnsltNo?: string; // 상담번호, 대기일때는 cnsltNm
   cnsltTelno?: string; // 상담전화번호
@@ -11,6 +12,7 @@ type CunsltStoreType = {
   telNo?: string;
 
   setCnsltInfo: (info: {
+    fromSocket?: boolean;
     cstmrNo?: string;
     cnsltNo?: string;
     cnsltTelno?: string;
@@ -27,6 +29,7 @@ export const useCnsltStore = create<CunsltStoreType>()((set) => ({
   setCnsltInfo: (info) => set(info),
   clear: () =>
     set(() => ({
+      fromSocket: false,
       cstmrNo: "",
       cnsltNo: "",
       cnsltTelno: "",

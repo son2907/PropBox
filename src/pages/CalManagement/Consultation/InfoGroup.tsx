@@ -54,6 +54,7 @@ export default function InfoGroup({ tabType }: TabType) {
   const telStore = useStorageStore(useTelStore, "selectedTel");
   // 검색 조건 (왼쪽 테이블에서 선택한 한 행)
   const {
+    fromSocket,
     cstmrNo,
     cnsltNo,
     cstmrNm,
@@ -283,6 +284,24 @@ export default function InfoGroup({ tabType }: TabType) {
 
   // 웹소켓 반응에 따라 데이터 바인딩
   useEffect(() => {
+    console.log("데이터:", cstmrNm, cnsltTelno);
+    if (fromSocket) {
+      reset({
+        cstmrNm,
+        cnsltTelno,
+        mbtlNo: "",
+        telNo: "",
+        cstmrRmk: "",
+        addr: "",
+        complianceRate: "",
+        hopeBalance: "",
+        cnsltCnt: "",
+        rctnRejectXyn: "",
+        spcmnt: "",
+        areaNo: "",
+      });
+      return;
+    }
     reset({
       cstmrNm,
       cnsltTelno: trsmYn == "W" ? "" : cnsltTelno,
@@ -297,7 +316,7 @@ export default function InfoGroup({ tabType }: TabType) {
       spcmnt: "",
       areaNo: "",
     });
-  }, [reset, cstmrNm, cnsltTelno, mbtlNo, telNo]);
+  }, [reset, cstmrNm, cnsltTelno, mbtlNo, telNo, fromSocket]);
 
   // 모달 hook
   const { openModal, closeModal } = useModal();
