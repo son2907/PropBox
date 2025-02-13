@@ -219,8 +219,8 @@ export default function RejectMessage() {
                     >
                       <BasicTable.Td>{item.rejectTelNo}</BasicTable.Td>
                       <BasicTable.Td>{item.rmk}</BasicTable.Td>
-                      <BasicTable.Td>등록자</BasicTable.Td>
-                      <BasicTable.Td>등록일시</BasicTable.Td>
+                      <BasicTable.Td>{item.regrNm}</BasicTable.Td>
+                      <BasicTable.Td>{item.regDtm}</BasicTable.Td>
                     </BasicTable.Tr>
                   );
                 })}

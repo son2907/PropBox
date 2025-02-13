@@ -53,8 +53,17 @@ export default function InfoGroup({ tabType }: TabType) {
   // telId값
   const telStore = useStorageStore(useTelStore, "selectedTel");
   // 검색 조건 (왼쪽 테이블에서 선택한 한 행)
-  const { cstmrNo, cnsltNo, cstmrNm, cnsltTelno, callYn, trsmYn } =
-    useCnsltStore();
+  const {
+    fromSocket,
+    cstmrNo,
+    cnsltNo,
+    cstmrNm,
+    mbtlNo,
+    telNo,
+    cnsltTelno,
+    callYn,
+    trsmYn,
+  } = useCnsltStore();
 
   // 상담 일자
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -154,7 +163,12 @@ export default function InfoGroup({ tabType }: TabType) {
       if (event.data && event.data.type === "REQUEST_INITIAL_DATA") {
         // 초기 데이터 요청 시 메시지 전송
         smsPopup.postMessage(
-          { message: { cstmrNo: cstmrNo, cnsltTelno: cnsltTelno } },
+          {
+            message: {
+              cstmrNo: cstmrNo,
+              cnsltTelno: cnsltTelno || getValues("cnsltTelno") || "",
+            },
+          },
           "*"
         );
       }
@@ -257,14 +271,8 @@ export default function InfoGroup({ tabType }: TabType) {
     }
   };
 
-  // api 재호출 또는 항목 선택 해제 시 데이터 비움
+  // api 재호출 시 데이터 비움
   useDidMountEffect(() => {
-    if (trsmYn == "W") {
-      reset({
-        cstmrNm: cnsltNo,
-      });
-      return;
-    }
     if (cunsltDetailList?.data?.contents) {
       reset({ ...cunsltDetailList.data.contents });
     } else {
@@ -272,15 +280,43 @@ export default function InfoGroup({ tabType }: TabType) {
       setDetailItem("");
       setDetailInfo([{}]);
     }
-  }, [cunsltDetailList, cnsltNo, cnsltItemData]);
+  }, [cunsltDetailList, cnsltItemData]);
 
   // 웹소켓 반응에 따라 데이터 바인딩
   useEffect(() => {
+    console.log("데이터:", cstmrNm, cnsltTelno);
+    if (fromSocket) {
+      reset({
+        cstmrNm,
+        cnsltTelno,
+        mbtlNo: "",
+        telNo: "",
+        cstmrRmk: "",
+        addr: "",
+        complianceRate: "",
+        hopeBalance: "",
+        cnsltCnt: "",
+        rctnRejectXyn: "",
+        spcmnt: "",
+        areaNo: "",
+      });
+      return;
+    }
     reset({
       cstmrNm,
-      cnsltTelno,
+      cnsltTelno: trsmYn == "W" ? "" : cnsltTelno,
+      mbtlNo: trsmYn !== "W" ? "" : mbtlNo,
+      telNo: trsmYn !== "W" ? "" : telNo,
+      cstmrRmk: "",
+      addr: "",
+      complianceRate: "",
+      hopeBalance: "",
+      cnsltCnt: "",
+      rctnRejectXyn: "",
+      spcmnt: "",
+      areaNo: "",
     });
-  }, [reset, cstmrNm, cnsltTelno]);
+  }, [reset, cstmrNm, cnsltTelno, mbtlNo, telNo, fromSocket]);
 
   // 모달 hook
   const { openModal, closeModal } = useModal();

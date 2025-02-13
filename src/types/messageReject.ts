@@ -8,6 +8,8 @@ export type GetRejectListRequestType = {
 };
 
 export type GetRejectList = {
+  regDtm: string;
+  regrNm: string;
   rejectNo: string;
   sptNo: string;
   tel070No: string;

@@ -13,6 +13,7 @@ import { useTelCnsltList } from "../../../api/callCnslt";
 import { useEffect } from "react";
 import { useCnsltStore } from "../../../stores/CunsltStore";
 import { filterDataByValues } from "../../../utils/filterDataByValues";
+import useDidMountEffect from "../../../hooks/useDidMountEffect";
 
 export default function CallTable({ tabType, tabChange }: TabType) {
   //  통화콜, 부재콜
@@ -22,8 +23,7 @@ export default function CallTable({ tabType, tabChange }: TabType) {
   const { value: callOptionValue, handleChange: callOptionChange } = useTabs(0);
 
   // 단일 선택
-  const { selectedRow, toggleRowSelection, resetSelection } =
-    useSingleRowSelection();
+  const { selectedRow, toggleRowSelection } = useSingleRowSelection();
 
   const callPopupInfo = {
     url: PathConstants.Call.CallLog,
@@ -66,15 +66,14 @@ export default function CallTable({ tabType, tabChange }: TabType) {
   }
 
   const { data: cnsltData } = useTelCnsltList(callYn, trsmYn);
-  const { setCnsltInfo, clear } = useCnsltStore();
+  const { fromSocket, setCnsltInfo, clear } = useCnsltStore();
   console.log("############# 테이블 데이터:", cnsltData);
 
-  useEffect(() => {
-    clear();
-    resetSelection();
-  }, [tabType, takeValue, callOptionValue]);
+  // useDidMountEffect(() => {
+  //   resetSelection();
+  // }, [tabType, takeValue, callOptionValue]);
 
-  useEffect(() => {
+  useDidMountEffect(() => {
     if (selectedRow.size > 0 && cnsltData?.data?.contents) {
       const selectedValues = Array.from(selectedRow);
       const { contents } = cnsltData.data;
@@ -85,14 +84,17 @@ export default function CallTable({ tabType, tabChange }: TabType) {
           key,
           values: selectedValues,
         });
-        console.log("선택한 값:", data);
         if (data.length > 0) {
           setCnsltInfo({
-            cstmrNo: data[0][cstmrKey],
-            cnsltNo: data[0][cnsltKey],
+            fromSocket: false,
+            cstmrNo: data[0][cstmrKey] || "",
+            cnsltNo: data[0][cnsltKey] || "",
             callYn: callYn,
             trsmYn: trsmYn,
-            cnsltTelno: data[0].cnsltTelno,
+            cnsltTelno: data[0].cnsltTelno || "",
+            cstmrNm: data[0].cstmrNm || "",
+            mbtlNo: data[0].mbtlNo || "",
+            telNo: data[0].telNo || "",
           });
         }
       };
@@ -107,9 +109,7 @@ export default function CallTable({ tabType, tabChange }: TabType) {
       }
     }
 
-    if (selectedRow.size === 0) {
-      clear();
-    }
+    if (selectedRow.size == 0 && !fromSocket) clear();
   }, [selectedRow, cnsltData, callYn, trsmYn]);
 
   // Tab change 시에도 useCnsltStore에 값 저장

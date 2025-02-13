@@ -60,13 +60,6 @@ export default function SoketGuard({ children }: PropsWithChildren) {
     webSocket.current.onopen = () => {
       console.log("웹소켓 실행:", "ws://js-lab.iptime.org:23570");
 
-      // 전화 걸기 api
-      //   const exampleMessage = {
-      //     messageType: "DIAL",
-      //     timestampUTC: "2024-11-22 01:55:00.000",
-      //     counterpart: "07040342009",
-      //   };
-
       // 웹소켓 연결 후, 서버로 로그인 메세지 전송
 
       const exampleMessage = {
@@ -117,6 +110,12 @@ export default function SoketGuard({ children }: PropsWithChildren) {
         return;
       }
       if (messageType == "RINGING") {
+        setCnsltInfo({
+          fromSocket: true,
+          cstmrNm: "홍길동",
+          cnsltTelno: JSON.parse(event.data).counterpart,
+        });
+
         // 추후 웹소켓에서 보내준 고객 이름과 고객 정보를 등록해줘야 함
         setToastContent({
           name: "홍길동",
@@ -125,17 +124,8 @@ export default function SoketGuard({ children }: PropsWithChildren) {
         });
 
         toastOpen();
-
-        setCnsltInfo({
-          cstmrNm: "홍길동",
-          cnsltTelno: JSON.parse(event.data).counterpart,
-        });
       }
-      if (
-        messageType === "MISSED" ||
-        messageType === "HANGUP" ||
-        messageType === "ANSWERED"
-      ) {
+      if (messageType === "MISSED") {
         setToastContent({ name: "", telNo: "", info: "" });
         clear();
         toastClose();
@@ -152,14 +142,20 @@ export default function SoketGuard({ children }: PropsWithChildren) {
     useTelStore.persist.rehydrate();
   }, []);
 
-  console.log("메세지에 저장된 내용:", messages);
+  console.log("웹소켓 응답 리스트:", messages);
 
   const onClickToast = (e) => {
-    // 다른페이지 이동 후 해당 정보가 clear() 되었을 때를 대비하여 set
+    // // 다른페이지 이동 후 해당 정보가 clear() 되었을 때를 대비하여 set
     setCnsltInfo({
+      fromSocket: true,
       cstmrNm: toastContent.name,
       cnsltTelno: toastContent.telNo,
     });
+    // setCnsltInfo({
+    //   fromSocket: true,
+    //   cstmrNm: "홍길동",
+    //   cnsltTelno: "010-0000-0000",
+    // });
     navigate(PathConstants.Call.Consultation);
     e.preventDefault(); // 기본 동작을 막음
     e.stopPropagation(); // 이벤트 버블링을 막음
