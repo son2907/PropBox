@@ -30,7 +30,7 @@ export default function SoketGuard({ children }: PropsWithChildren) {
     telNo: "",
     info: "",
   });
-  const { setCnsltInfo, clear } = useCnsltStore();
+  const { fromSocket, setCnsltInfo, clear } = useCnsltStore();
   const navigate = useNavigate();
 
   const { accessToken, userNo } = useAuthStore(["accessToken", "userNo"]);
@@ -110,13 +110,7 @@ export default function SoketGuard({ children }: PropsWithChildren) {
         return;
       }
       if (messageType == "RINGING") {
-        setCnsltInfo({
-          fromSocket: true,
-          cstmrNm: "홍길동",
-          cnsltTelno: JSON.parse(event.data).counterpart,
-        });
-
-        // 추후 웹소켓에서 보내준 고객 이름과 고객 정보를 등록해줘야 함
+        // TODO 웹소켓에서 보내준 고객 이름과 고객 정보를 등록해줘야 함
         setToastContent({
           name: "홍길동",
           telNo: JSON.parse(event.data).counterpart,
@@ -127,7 +121,9 @@ export default function SoketGuard({ children }: PropsWithChildren) {
       }
       if (messageType === "MISSED") {
         setToastContent({ name: "", telNo: "", info: "" });
-        clear();
+        if (fromSocket) {
+          clear();
+        }
         toastClose();
       }
       setMessages((prev) => [...prev, event.data]);
@@ -151,11 +147,6 @@ export default function SoketGuard({ children }: PropsWithChildren) {
       cstmrNm: toastContent.name,
       cnsltTelno: toastContent.telNo,
     });
-    // setCnsltInfo({
-    //   fromSocket: true,
-    //   cstmrNm: "홍길동",
-    //   cnsltTelno: "010-0000-0000",
-    // });
     navigate(PathConstants.Call.Consultation);
     e.preventDefault(); // 기본 동작을 막음
     e.stopPropagation(); // 이벤트 버블링을 막음

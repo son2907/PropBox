@@ -109,7 +109,9 @@ export default function CallTable({ tabType, tabChange }: TabType) {
       }
     }
 
-    if (selectedRow.size == 0 && !fromSocket) clear();
+    if (selectedRow.size == 0 && !fromSocket) {
+      clear();
+    }
   }, [selectedRow, cnsltData, callYn, trsmYn]);
 
   // Tab change 시에도 useCnsltStore에 값 저장

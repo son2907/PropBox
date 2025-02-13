@@ -273,18 +273,18 @@ export default function InfoGroup({ tabType }: TabType) {
 
   // api 재호출 시 데이터 비움
   useDidMountEffect(() => {
-    if (cunsltDetailList?.data?.contents) {
+    console.log("이게 실행이 되어야 하는거임..");
+    if (cunsltDetailList?.data?.contents && !fromSocket) {
       reset({ ...cunsltDetailList.data.contents });
     } else {
       reset(defaultValue);
       setDetailItem("");
       setDetailInfo([{}]);
     }
-  }, [cunsltDetailList, cnsltItemData]);
+  }, [cunsltDetailList, cnsltItemData, fromSocket]);
 
   // 웹소켓 반응에 따라 데이터 바인딩
   useEffect(() => {
-    console.log("데이터:", cstmrNm, cnsltTelno);
     if (fromSocket) {
       reset({
         cstmrNm,
@@ -302,20 +302,22 @@ export default function InfoGroup({ tabType }: TabType) {
       });
       return;
     }
-    reset({
-      cstmrNm,
-      cnsltTelno: trsmYn == "W" ? "" : cnsltTelno,
-      mbtlNo: trsmYn !== "W" ? "" : mbtlNo,
-      telNo: trsmYn !== "W" ? "" : telNo,
-      cstmrRmk: "",
-      addr: "",
-      complianceRate: "",
-      hopeBalance: "",
-      cnsltCnt: "",
-      rctnRejectXyn: "",
-      spcmnt: "",
-      areaNo: "",
-    });
+    if (trsmYn == "W") {
+      reset({
+        cstmrNm,
+        cnsltTelno: "",
+        mbtlNo: mbtlNo,
+        telNo: telNo,
+        cstmrRmk: "",
+        addr: "",
+        complianceRate: "",
+        hopeBalance: "",
+        cnsltCnt: "",
+        rctnRejectXyn: "",
+        spcmnt: "",
+        areaNo: "",
+      });
+    }
   }, [reset, cstmrNm, cnsltTelno, mbtlNo, telNo, fromSocket]);
 
   // 모달 hook
