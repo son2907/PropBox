@@ -129,20 +129,19 @@ export default function WorkLogSearch() {
     <Stack
       width={"100%"}
       gap={1}
-      height={"100%"}
+      height={"90%"}
       paddingTop={1}
       paddingBottom={1}
-      overflow={"auto"}
     >
-      <CenteredBox gap={1}>
+      <Stack gap={1} direction={"row"} height={"5%"}>
         <Calendar
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
         />
         <BasicButton> 이전 </BasicButton>
         <BasicButton> 이후 </BasicButton>
-      </CenteredBox>
-      <CenteredBox gap={1}>
+      </Stack>
+      <Stack gap={1} direction={"row"} height={"5%"} alignItems={"center"}>
         <Typography noWrap>상담구분</Typography>
         <Select
           selectData={selectTestData}
@@ -150,8 +149,8 @@ export default function WorkLogSearch() {
           onChange={o_0}
           placeholder="받기"
         />
-      </CenteredBox>
-      <CenteredBox gap={1}>
+      </Stack>
+      <Stack gap={1} direction={"row"} height={"5%"} alignItems={"center"}>
         <Typography>산정 기준</Typography>
         <RadioGroup value={radioValue} onChange={setRadioValue} row>
           <FormControlLabel
@@ -165,52 +164,54 @@ export default function WorkLogSearch() {
             label="고객별"
           />
         </RadioGroup>
-      </CenteredBox>
+      </Stack>
       {/* 통계1 */}
-      <Statistics
-        title="통계 1"
-        note="1. 상담건수 통계자료"
-        selectInfo={f_staticsInfo}
-      />
-      {/* 통계2 */}
-      <Statistics
-        title="통계 2"
-        note="2. 청약순위 별 상담현황"
-        selectInfo={s_staticsInfo}
-      />
-      {/* 통계3 */}
-      <Statistics
-        title="통계 3"
-        note="3. 고객 반응도"
-        selectInfo={t_staticsInfo}
-      />
-      {/* 통계4 */}
-      <Statistics
-        title="통계 4"
-        note="4. 지역별 상담현황"
-        selectInfo={fo_staticsInfo}
-      />
-      {/* 통계5 */}
-      <Statistics
-        title="통계 5"
-        note="5. 광고매체"
-        selectInfo={fi_staticsInfo}
-      />
+      <Stack overflow={"auto"} gap={1} paddingTop={1} height={"70%"}>
+        <Statistics
+          title="통계 1"
+          note="1. 상담건수 통계자료"
+          selectInfo={f_staticsInfo}
+        />
+        {/* 통계2 */}
+        <Statistics
+          title="통계 2"
+          note="2. 청약순위 별 상담현황"
+          selectInfo={s_staticsInfo}
+        />
+        {/* 통계3 */}
+        <Statistics
+          title="통계 3"
+          note="3. 고객 반응도"
+          selectInfo={t_staticsInfo}
+        />
+        {/* 통계4 */}
+        <Statistics
+          title="통계 4"
+          note="4. 지역별 상담현황"
+          selectInfo={fo_staticsInfo}
+        />
+        {/* 통계5 */}
+        <Statistics
+          title="통계 5"
+          note="5. 광고매체"
+          selectInfo={fi_staticsInfo}
+        />
 
-      {/* 특기사항 */}
-      <CenteredBox gap={1}>
-        <Typography>특기사항</Typography>
-        <TextArea height="80px" resize="none" />
-      </CenteredBox>
+        {/* 특기사항 */}
+        <Stack gap={1} direction={"row"}>
+          <Typography>특기사항</Typography>
+          <TextArea height="80px" resize="none" />
+        </Stack>
+      </Stack>
       {/* 조회 조건 저장 */}
-      <CenteredBox justifyContent={"center"} gap={1}>
+      <Stack justifyContent={"center"} gap={1} direction={"row"} height={"5%"} alignItems={"center"}>
         <input type="checkbox" />
         <Typography>조회 조건 저장</Typography>
         <BasicButton>불러오기</BasicButton>
-      </CenteredBox>
-      <CenteredBox justifyContent={"center"}>
+      </Stack>
+      <Stack justifyContent={"center"} height={"5%"} alignItems={"center"}>
         <BasicButton sx={{ width: "150px" }}>조회</BasicButton>
-      </CenteredBox>
+      </Stack>
     </Stack>
   );
 }
@@ -233,7 +234,7 @@ interface StatisticsProps {
 
 const Statistics = ({ title, note, selectInfo, children }: StatisticsProps) => {
   return (
-    <CenteredBox gap={2} margin={1}>
+    <Stack gap={2} margin={1} direction={"row"} alignItems={"center"}>
       <Typography>{title}</Typography>
       <Stack width={"100%"} gap={1}>
         <BasicInput value={note} fullWidth />
@@ -249,6 +250,6 @@ const Statistics = ({ title, note, selectInfo, children }: StatisticsProps) => {
         })}
         {children}
       </Stack>
-    </CenteredBox>
+    </Stack>
   );
 };

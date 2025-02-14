@@ -10,7 +10,7 @@ export default function DataManage() {
   const { value, handleChange: tabChange } = useTabs(0);
   return (
     <>
-      <Stack minWidth={"400px"} height={"100%"}>
+      <Stack minWidth={"20%"} height={"100%"}>
         <TabMenus value={value} handleChange={tabChange}>
           <TabMenus.Tab label="상담데이터" />
           <TabMenus.Tab label="고객데이터" />
@@ -24,8 +24,7 @@ export default function DataManage() {
       </Stack>
 
       <Stack
-        width={"calc(100% - 400px)"}
-        minWidth={"960px"}
+        width={"80%"}
         bgcolor={"white"}
         height={"100%"}
         marginLeft={1}

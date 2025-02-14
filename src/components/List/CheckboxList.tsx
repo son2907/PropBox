@@ -74,11 +74,11 @@ export default function CheckboxList({
       sx={{
         border: "1px solid gray",
         borderRadius: "7px",
-        overflow: "hidden",
+        overflow: "auto",
       }}
     >
       {data.map((item, index) => (
-        <Box key={item.id}>
+        <Box key={item.id} sx={{overflow: "auto"}}>
           <ListItem
             ref={(el) => (refArray[index] = el)}
             value={item.id}
