@@ -101,83 +101,85 @@ export default function BulkMessage() {
       </GrayBox>
 
       <TableBox gap={2}>
-        <Stack width={"30%"} minWidth={"450px"} height={"100%"} gap={2}>
+        <Stack width={"30%"} minWidth={"450px"} height={"100%"} gap={1}>
           <Typography variant="h3">메시지 작성</Typography>
-          <CenteredBox>
-            {/* 라디오 그룹 */}
-            <RadioGroup value={selectedValue} onChange={handleRadioChange} row>
-              <FormControlLabel
-                value="sms"
-                control={<Radio size="small" />}
-                label="SMS"
-              />
-              <FormControlLabel
-                value="lms"
-                control={<Radio size="small" />}
-                label="LMS"
-              />
-              <FormControlLabel
-                value="mms"
-                control={<Radio size="small" />}
-                label="MMS"
-              />
-            </RadioGroup>
-            <BasicButton>이미지 선택</BasicButton>
-          </CenteredBox>
-
-          <CenteredBox gap={1}>
-            <Typography>제목</Typography>
-            <BasicInput fullWidth placeholder="내용 입력" />
-          </CenteredBox>
-
-          <TextArea
-            resize="none"
-            height="100px"
-            placeholder="자동문자 메시지를 입력해 주십시오."
-          />
-
-          <CenteredBox gap={1}>
-            <Typography>발신번호</Typography>
-            <Select selectData={sd_0} value={s_0} onChange={o_0} />
-            <IconButton sx={{ color: "root.mainBlue" }}>
-              {/* react-icon 사이트에서 아이콘 찾아서 이용함 */}
-              <IoSettingsOutline />
-            </IconButton>
-          </CenteredBox>
-
-          <CenteredBox gap={1}>
-            <FormControlLabel control={<Checkbox />} label="광고문자" />
-            <BasicInput placeholder="수신 거부 번호" />
-            <BasicButton>복사하기</BasicButton>
-          </CenteredBox>
-          <CenteredBox gap={1} marginBottom={1}>
-            <FormControlLabel control={<Checkbox />} label="예약문자" />
-            <Stack width={"100%"} gap={1}>
-              <Calendar selectedDate={date} setSelectedDate={setDate} />
-              {/* 추후 시간 컴포넌트로 바꿔야함 */}
-              <TimePicker
-                time={selectedTime}
-                setSelectedTime={setSelectedTime}
-              />
+          <Stack width={"100%"} height={"100%"} overflow={"auto"} gap={1}>
+            <Stack direction={"row"} alignItems={"center"}>
+              {/* 라디오 그룹 */}
+              <RadioGroup value={selectedValue} onChange={handleRadioChange} row>
+                <FormControlLabel
+                  value="sms"
+                  control={<Radio size="small" />}
+                  label="SMS"
+                />
+                <FormControlLabel
+                  value="lms"
+                  control={<Radio size="small" />}
+                  label="LMS"
+                />
+                <FormControlLabel
+                  value="mms"
+                  control={<Radio size="small" />}
+                  label="MMS"
+                />
+              </RadioGroup>
+              <BasicButton>이미지 선택</BasicButton>
             </Stack>
-          </CenteredBox>
 
-          <CenteredBox gap={1}>
-            <FormControlLabel control={<Checkbox />} label="분할전송" />
-            <Stack gap={1}>
-              <CenteredBox gap={1}>
-                <BasicInput placeholder="1,000건" sx={{ width: "150px" }} />
-                <Typography>건 단위로</Typography>
-              </CenteredBox>
-              <CenteredBox gap={1}>
-                <BasicInput placeholder="1" sx={{ width: "150px" }} />
-                <Typography>분 간격으로 발송합니다.</Typography>
-              </CenteredBox>
+            <Stack gap={1} direction={"row"} alignItems={"center"}>
+              <Typography>제목</Typography>
+              <BasicInput fullWidth placeholder="내용 입력" />
             </Stack>
-          </CenteredBox>
 
-          <Typography variant="h3">매크로</Typography>
-          <TextArea resize="none" height="300px" />
+            <TextArea
+              resize="none"
+              height="100px"
+              placeholder="자동문자 메시지를 입력해 주십시오."
+            />
+
+            <Stack gap={1} direction={"row"} alignItems={"center"}>
+              <Typography>발신번호</Typography>
+              <Select selectData={sd_0} value={s_0} onChange={o_0} />
+              <IconButton sx={{ color: "root.mainBlue" }}>
+                {/* react-icon 사이트에서 아이콘 찾아서 이용함 */}
+                <IoSettingsOutline />
+              </IconButton>
+            </Stack>
+
+            <Stack gap={1} direction={"row"} alignItems={"center"}>
+              <FormControlLabel control={<Checkbox />} label="광고문자" />
+              <BasicInput placeholder="수신 거부 번호" />
+              <BasicButton>복사하기</BasicButton>
+            </Stack>
+            <Stack gap={1} marginBottom={1} direction={"row"} alignItems={"center"}>
+              <FormControlLabel control={<Checkbox />} label="예약문자" />
+              <Stack width={"100%"} gap={1}>
+                <Calendar selectedDate={date} setSelectedDate={setDate} />
+                {/* 추후 시간 컴포넌트로 바꿔야함 */}
+                <TimePicker
+                  time={selectedTime}
+                  setSelectedTime={setSelectedTime}
+                />
+              </Stack>
+            </Stack>
+
+            <Stack gap={1} direction={"row"} alignItems={"center"}>
+              <FormControlLabel control={<Checkbox />} label="분할전송" />
+              <Stack gap={1}>
+                <CenteredBox gap={1}>
+                  <BasicInput placeholder="1,000건" sx={{ width: "150px" }} />
+                  <Typography>건 단위로</Typography>
+                </CenteredBox>
+                <CenteredBox gap={1}>
+                  <BasicInput placeholder="1" sx={{ width: "150px" }} />
+                  <Typography>분 간격으로 발송합니다.</Typography>
+                </CenteredBox>
+              </Stack>
+            </Stack>
+
+            <Typography variant="h3">매크로</Typography>
+            <TextArea resize="none" height="300px" />
+          </Stack>
         </Stack>
 
         <Stack width={"30%"} minWidth={"350px"} height={"100%"} gap={1}>

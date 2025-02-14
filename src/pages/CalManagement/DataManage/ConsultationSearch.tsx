@@ -52,13 +52,13 @@ export default function ConsultationSearch() {
   };
 
   return (
-    <Stack width={"100%"} gap={2}>
-      <CenteredBox gap={1}>
+    <Stack width={"100%"} gap={2} height={"80%"}>
+      <Stack gap={1} direction={"row"} height={"5%"}>
         <Calendar selectedDate={startDate} setSelectedDate={setStartDate} />
         <Typography>~</Typography>
         <Calendar selectedDate={endDate} setSelectedDate={setEndDate} />
-      </CenteredBox>
-      <CenteredBox gap={1}>
+      </Stack>
+      <Stack gap={1} direction={"row"} alignItems={"center"} height={"5%"}>
         <Typography>상담구분</Typography>
         <Select
           selectData={sd_0}
@@ -66,15 +66,15 @@ export default function ConsultationSearch() {
           onChange={o_0}
           placeholder="받기"
         />
-      </CenteredBox>
-      <Stack>
+      </Stack>
+      <Stack height={"90%"}>
         <CheckboxList
           data={checkList}
           refArray={checkListRef.current}
           dividerIds={["customerInfo"]}
         />
       </Stack>
-      <CenteredBox justifyContent={"center"}>
+      <Stack justifyContent={"center"} direction={"row"} alignItems={"center"}>
         <BasicButton
           sx={{ width: "250px" }}
           onClick={() => {
@@ -83,7 +83,7 @@ export default function ConsultationSearch() {
         >
           조회
         </BasicButton>
-      </CenteredBox>
+      </Stack>
     </Stack>
   );
 }
