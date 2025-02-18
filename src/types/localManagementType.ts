@@ -167,7 +167,7 @@ export type MemberInsertListType = {
 export type MemberDeleteListType = {
     sptNo: string;
     userId: string | undefined;
-    userNoList: string[]; // ✅ 올바른 타입 (문자열 배열)
+    userNoList: string[];
 };
 
 

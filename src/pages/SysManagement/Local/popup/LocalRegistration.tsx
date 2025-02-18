@@ -152,7 +152,7 @@ export default function LocalRegistration() {
       <GrayBox width={"100%"}>
         <Box sx={{ marginLeft: "auto" }}>
           <BasicButton>확인</BasicButton>
-          <BasicButton>취소</BasicButton>
+          <BasicButton onClick={() => window.close()}>취소</BasicButton>
         </Box>
       </GrayBox>
     </Stack>

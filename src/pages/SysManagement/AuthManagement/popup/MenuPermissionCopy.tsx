@@ -12,7 +12,7 @@ import CenteredBox from "../../../../components/Box/CenteredBox";
 import { useMultiRowSelection } from "../../../../hooks/useMultiRowSelection";
 import MultiSelect from "../../../../components/Select/MultiSelect";
 import { useMultiSelect } from "../../../../hooks/useMultiSselect";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import RowDragTable from "../../../../components/Table/RowDragTable";
 import { openPopup } from "../../../../utils/openPopup";
 import PathConstants from "../../../../routers/path";
@@ -25,6 +25,14 @@ import Calendar from "../../../../components/Calendar/Calendar";
 import useToggleButtton from "../../../../hooks/useToggleButton";
 import { BiChevronLeft } from "react-icons/bi";
 import SearchInput from "../../../../components/Input/SearchInput";
+import { useAuthStore } from "../../../../stores/authStore";
+import { getMemberAuthDetail, permissionMenuCopy, permissionMenuCopyList } from "../../../../api/authManagement";
+import { MemberAuthDetailType, PermissionMenuListType } from "../../../../types/authManagement";
+import { useMemberPositionList } from "../../../../api/localManagement";
+import { MemberPositionType } from "../../../../types/localManagementType";
+import useModal from "../../../../hooks/useModal";
+import { BasicCompletedModl } from "../../../../components/layout/modal/BasicCompletedModl";
+import { InsertCompletedModal } from "../../../../components/layout/modal/InsertCompletedModal";
 
 interface Data {
   id: string;
@@ -32,19 +40,59 @@ interface Data {
 }
 
 export default function MenuPermissionCopy() {
-  const {
-    selectListData: sd_0,
-    selectValue: s_0,
-    handleChange: o_0,
-  } = useSelect(selectTestData, "value", "data");
+
+  //팝업 페이지에서 id를 가져오려면 window.location.search를 사용하여 파라미터를 파싱
+  const queryParams = new URLSearchParams(window.location.search);
+  const userNo = queryParams.get("userNo");
+  const sptNo = queryParams.get("sptNo");
+  console.log("팝업으로 가져온 데이터 : ", sptNo);
+
+  //api를 호출하기위해 userID 불러오기
+  const { loginId } = useAuthStore(["loginId"]);
+
+  //모달
+  const { openModal, closeModal } = useModal();
+
+  //권한 복사
+  const permissionMenuCopyAPI = permissionMenuCopy();
+
+  //상세 조회
+  const [menuListReqData, setMenuListReqData] = useState({ userNo: "", sptNo: "" })
+  const { isSuccess, data } = getMemberAuthDetail(menuListReqData);
+  const [memberAuthDetail, setMemberAuthDetail] = useState<MemberAuthDetailType>();
+  const [sptNum, setSptNo] = useState("");
+  const [userNm, setUserNm] = useState("");
+  const [constntUserNo, setConstntUserNo] = useState("");
+  const [userConstntSeCd, setUserConstntSeCd] = useState("");
+  const [rspofcCd, setRspofcCd] = useState("");
+  const [rspofcNm, setRspofcNm] = useState("");
+  const [rmk, setRmk] = useState("");
+
+  //구성원 직책 리스트
+  const { data: memberPositionListData, isSuccess: isMemberPositionListData } = useMemberPositionList("1004000");
+  const [memberPositionList, setMemberPositionList] = useState<MemberPositionType[]>([]);
+  const [memberPositionKey, setMemberPositionKey] = useState("");
+  const [memberPositionValue, setMemberPositionValue] = useState("");
+
+  useEffect(() => {
+    if (memberPositionListData?.data.contents) {
+      setMemberPositionList(memberPositionListData.data.contents);
+    }
+  }, [memberPositionListData]);
+
+  const { selectListData, selectValue, handleChange } = useSelect(
+    memberPositionList,
+    "cd",
+    "cdNm"
+  );
+
+  //목록
+  const [menuSearchInput, setMenuSearchInput] = useState("");
+  const [menuCopyListReqData, setMenuCopyListReqData] = useState({ sptNo: "", userNo: "", userNm: "", rspofcCd: "" });
+  const { data : menuCopyList, refetch: refetchMenuCopyList } = permissionMenuCopyList(menuCopyListReqData);
+  const [menuCopyListData, setMenuCopyListData] = useState<PermissionMenuListType[]>([]);
 
   const { selectedValues, handleSelectChange } = useMultiSelect<number>();
-  const [data, setData] = useState<Data[]>(tableTestData);
-
-  const { selectedRows: s_1, toggleRowsSelection: t_1 } =
-    useMultiRowSelection();
-  const { selectedRows: s_3, toggleRowsSelection: t_3 } =
-    useMultiRowSelection();
 
   const topicPopupInfo = {
     url: PathConstants.Call.TopicRegistration,
@@ -60,11 +108,7 @@ export default function MenuPermissionCopy() {
     defaultValue: true,
   });
 
-  const { selectListData, selectValue, handleChange } = useSelect(
-    selectTestData,
-    "value",
-    "data"
-  );
+
 
   //useMultiRowSelection 분리해서 각 테이블에 독립적으로 selectedRows와 toggleRowsSelection을 전달하여 동작이 분리되도록 설정.
   // 권한 메뉴 - 선택 상태 관리
@@ -72,6 +116,99 @@ export default function MenuPermissionCopy() {
     selectedRows: authorizedSelectedRows,
     toggleRowsSelection: toggleAuthorizedRowsSelection,
   } = useMultiRowSelection();
+
+  useEffect(() => {
+    setMenuListReqData((prev) => ({
+      ...prev,
+      userNo: userNo || "",
+      sptNo: sptNo || "",
+    }))
+  }, [userNo, sptNo]);
+
+  useEffect(() => {
+    if (data?.data.contents) {
+      setMemberAuthDetail(data.data.contents);
+    }
+  }, [data, isSuccess]);
+
+  useEffect(() => {
+    if (memberAuthDetail) {
+      setSptNo(memberAuthDetail.sptNo);
+      setUserNm(memberAuthDetail.userNm);
+      setConstntUserNo(memberAuthDetail.constntUserNo);
+      setUserConstntSeCd(memberAuthDetail.userConstntSeCd)
+      setRspofcCd(memberAuthDetail.rspofcCd)
+      setRspofcNm(memberAuthDetail.rspofcNm)
+      setRmk(memberAuthDetail.rmk)
+    }
+
+  }, [memberAuthDetail]);
+
+  useEffect(() => {
+    setMenuCopyListReqData((prev) => ({
+      ...prev,
+      sptNo: sptNo || "",
+      userNo: userNo || "",
+      userNm: menuSearchInput || "",
+      rspofcCd: memberPositionKey,
+    }))
+  }, [memberPositionKey, memberPositionValue]);
+
+  const handleLocalSearch = () => {
+    setMenuCopyListReqData((prev) => ({
+      ...prev,
+      sptNo: sptNo || "",
+      userNo: userNo || "",
+      userNm: menuSearchInput || "",
+      rspofcCd: memberPositionKey,
+    }));
+  };
+
+  useEffect(() => {
+    if(menuCopyList?.data?.contents) {
+      setMenuCopyListData(menuCopyList.data.contents);
+    }
+  },[menuCopyList]);
+
+  //권한 복사
+  const handlePermissionCopy = () => {
+    const userList = Array.from(authorizedSelectedRows);
+
+    const requestData = {
+      sptNo: sptNo || "",
+      userId: loginId || "",
+      userNo: userNo || "",
+      userList
+    };
+    
+    //console.log("requestData", requestData);
+
+    permissionMenuCopyAPI.mutate(
+      {body : requestData},
+      {
+        onSuccess: (response) => {
+          if (response.data.result === "SUCCESS") {
+            console.log("response.data", response.data);
+            completeModal();
+          }
+        }
+      }
+    )
+  };
+
+  const completeModal = () => {
+    openModal(InsertCompletedModal, {
+      modalId: "emptySelectModal",
+      stack: false,
+      onClose: () => closeModal,
+      onSubmit: () => {
+        window.close();
+        if (window.opener) {
+          window.opener.location.reload();
+        }
+      },
+    });
+  };
 
   return (
     <Stack
@@ -100,7 +237,7 @@ export default function MenuPermissionCopy() {
               borderColor={"primary.100"}
               padding={1}
             >
-              <Typography>구성원ID</Typography>
+              <Typography>구성원이름</Typography>
             </Stack>
             <Stack
               width={"100%"}
@@ -109,7 +246,7 @@ export default function MenuPermissionCopy() {
               borderColor={"primary.100"}
               padding={1}
             >
-              <Typography>구성원ID</Typography>
+              <Typography>구성원직책</Typography>
             </Stack>
           </Stack>
           <Stack bgcolor={"white"} direction={"row"} marginLeft={1}>
@@ -120,7 +257,7 @@ export default function MenuPermissionCopy() {
               borderRight={1}
               borderColor={"primary.100"}
             >
-              <Typography>{"구성원"}</Typography>
+              <Typography>{userNo}</Typography>
             </Stack>
             <Stack
               width={"100%"}
@@ -129,7 +266,7 @@ export default function MenuPermissionCopy() {
               borderRight={1}
               borderColor={"primary.100"}
             >
-              <Typography>{"구성원"}</Typography>
+              <Typography>{userNm}</Typography>
             </Stack>
             <Stack
               width={"100%"}
@@ -138,7 +275,7 @@ export default function MenuPermissionCopy() {
               borderRight={1}
               borderColor={"primary.100"}
             >
-              <Typography>{"구성원"}</Typography>
+              <Typography>{rspofcNm}</Typography>
             </Stack>
           </Stack>
         </Stack>
@@ -159,37 +296,60 @@ export default function MenuPermissionCopy() {
           >
             <GrayBox gap={1}>
               <Select
-                value={selectValue}
-                onChange={handleChange}
-                selectData={selectTestData}
+                value={selectValue} // 선택한 값 유지
+                onChange={(e) => {
+                  const newValue = e.target.value; // 선택된 값 (cdNm)
+                  const selectedOption = memberPositionList.find(
+                    (item) => item.cdNm === newValue
+                  );
+
+                  if (selectedOption) {
+                    console.log("직책변경:", selectedOption.cdNm);
+                    console.log(`직책 키 변경: ${selectedOption.cd}`); // cd 콘솔 출력
+                    setMemberPositionKey(selectedOption.cd);
+                    setMemberPositionValue(selectedOption.cdNm);
+                    handleChange(e); // selectValue를 업데이트
+                  }
+                }}
+                selectData={memberPositionList.map((item) => ({
+                  value: item.cdNm,
+                  data: item.cdNm,
+                }))}
                 sx={{ width: "204px" }}
               />
-              <SearchInput placeholder="구성원이름 검색" />
+              <SearchInput
+                placeholder="구성원이름 검색"
+                value={menuSearchInput}
+                onChange={(e) => setMenuSearchInput(e.target.value)} // 검색어 입력값 업데이트
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    handleLocalSearch(); // 검색 실행 함수 호출
+                  }
+                }}
+              />
             </GrayBox>
             <TableBox>
               <TableBox.Inner>
                 <CheckboxTable
-                  data={tableTestData}
+                  data={menuCopyList?.data.contents || []}
                   selectedRows={authorizedSelectedRows}
                   toggleRowsSelection={toggleAuthorizedRowsSelection}
                 >
                   <CheckboxTable.Thead>
                     <CheckboxTable.Tr>
-                      <CheckboxTable.CheckboxTh keyName="id" />
-                      <CheckboxTable.Th>솔루션ID</CheckboxTable.Th>
-                      <CheckboxTable.Th>솔루션이름</CheckboxTable.Th>
-                      <CheckboxTable.Th>메뉴ID</CheckboxTable.Th>
-                      <CheckboxTable.Th>메뉴이름</CheckboxTable.Th>
+                      <CheckboxTable.CheckboxTh keyName="userNo" />
+                      <CheckboxTable.Th>구성원번호</CheckboxTable.Th>
+                      <CheckboxTable.Th>구성원이름</CheckboxTable.Th>
+                      <CheckboxTable.Th>직책</CheckboxTable.Th>
                     </CheckboxTable.Tr>
                   </CheckboxTable.Thead>
                   <CheckboxTable.Tbody>
-                    {tableTestData.map((item) => (
-                      <CheckboxTable.Tr key={item.id} id={item.id}>
-                        <CheckboxTable.CheckboxTd item={item} keyName="id" />
-                        <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                        <CheckboxTable.Td>{item.phone}</CheckboxTable.Td>
-                        <CheckboxTable.Td>{item.job}</CheckboxTable.Td>
-                        <CheckboxTable.Td>{item.address}</CheckboxTable.Td>
+                    {(menuCopyList?.data.contents || []).map((item) => (
+                      <CheckboxTable.Tr key={item.userNo} id={item.userNo}>
+                        <CheckboxTable.CheckboxTd item={item} keyName="userNo" />
+                        <CheckboxTable.Td>{item.userNo}</CheckboxTable.Td>
+                        <CheckboxTable.Td>{item.userNm}</CheckboxTable.Td>
+                        <CheckboxTable.Td>{item.rspofcNm}</CheckboxTable.Td>
                       </CheckboxTable.Tr>
                     ))}
                   </CheckboxTable.Tbody>
@@ -200,7 +360,7 @@ export default function MenuPermissionCopy() {
         </Stack>
       </Stack>
       <GrayBox gap={2} justifyContent={"end"}>
-        <BasicButton>권한복사</BasicButton>
+        <BasicButton onClick={handlePermissionCopy}>권한복사</BasicButton>
         <BasicButton>취소</BasicButton>
       </GrayBox>
     </Stack>
