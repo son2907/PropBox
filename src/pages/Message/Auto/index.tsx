@@ -99,6 +99,8 @@ export default function AutoMessage() {
     windowFeatures: "width=400,height=150,scrollbars=yes,resizable=no",
   };
 
+  // <------------------------------- API ------------------------------->
+
   return (
     // 그냥 <> 로 시작하면 만든것들이 가로로 쌓임
     // 이유 : layout 폴더의 Content 내에 이 페이지가 들어가는데

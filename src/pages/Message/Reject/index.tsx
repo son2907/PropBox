@@ -30,6 +30,9 @@ import { useAuthStore } from "../../../stores/authStore";
 import { useApiRes } from "../../../utils/useApiRes";
 import { BasicCompletedModl } from "../../../components/layout/modal/BasicCompletedModl";
 import { useSptStore } from "../../../stores/sptStore";
+import PhoneInput from "../../../components/Input/PhoneInput";
+import SearchIcon from "../../../assets/images/Search.png";
+import { useRef } from "react";
 
 const DeleteAlert = ({
   onClose,
@@ -60,6 +63,8 @@ const DeleteAlert = ({
 export default function RejectMessage() {
   const { countValues, selectValue, handleChange } = useTableSelect();
   const { currentPage, onChangePage } = usePagination();
+  const searchRef = useRef<HTMLInputElement>(null);
+
   const { selectedRow, toggleRowSelection } =
     useSingleRowData<GetRejectList>("rejectNo");
   const { loginId } = useAuthStore(["loginId"]);
@@ -74,9 +79,9 @@ export default function RejectMessage() {
   const { data: rejectList, refetch: rejectRefetch } = useRejectList({
     page: currentPage,
     limit: selectValue,
+    rejectTelNo: searchRef.current?.value,
   });
 
-  console.log("응답:", rejectList);
   const { register, reset, getValues } = useForm({
     defaultValues: {
       rejectTelNo: "",
@@ -90,6 +95,12 @@ export default function RejectMessage() {
       rmk: selectedRow?.rmk ?? "",
     });
   }, [selectedRow]);
+
+  console.log(searchRef.current?.value);
+
+  const searchFn = () => {
+    rejectRefetch();
+  };
 
   const checkApiFail = useApiRes();
 
@@ -187,7 +198,16 @@ export default function RejectMessage() {
   return (
     <Stack width={"100%"} height={"100%"} gap={2}>
       <GrayBox gap={1}>
-        <SearchInput type="number" />
+        <PhoneInput
+          endAdornment={<img src={SearchIcon} alt="search-icon" />}
+          placeholder="검색"
+          ref={searchRef}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              searchFn();
+            }
+          }}
+        />
         <BasicButton
           sx={{
             marginLeft: "auto",
@@ -248,7 +268,7 @@ export default function RejectMessage() {
                 수신거부 등록정보
               </Typography>
               <Typography>휴대전화</Typography>
-              <BasicInput {...register("rejectTelNo")} />
+              <PhoneInput {...register("rejectTelNo")} />
               <Typography>비고(거부사유)</Typography>
               <BasicInput {...register("rmk")} />
               <CenteredBox justifyContent={"flex-end"} gap={1} marginTop={3}>

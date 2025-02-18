@@ -13,8 +13,13 @@ import { spt } from "../utils/sptNo";
 
 const API = {
   // 수신거부 목록 조회
-  getRejectList: async ({ page, limit }: GetRejectListRequestType) => {
-    const url = `/api/spt/reject/list?sptNo=${spt}&page=${page}&limit=${limit}`;
+  getRejectList: async ({
+    page,
+    limit,
+    rejectTelNo,
+  }: GetRejectListRequestType) => {
+    let url = `/api/spt/reject/list?sptNo=${spt}&page=${page}&limit=${limit}`;
+    if (rejectTelNo) url += `&rejectTelNo=${rejectTelNo}`;
     return await instance.get<GetRejectListResponseType>(url);
   },
   // 수신거부 현장 목록 조회
@@ -50,10 +55,11 @@ const API = {
 };
 
 const KEY = {
-  getRejectList: ({ page, limit }: GetRejectListRequestType) => [
+  getRejectList: ({ page, limit, rejectTelNo }: GetRejectListRequestType) => [
     "/api/spt/reject/list",
     page,
     limit,
+    rejectTelNo,
   ],
   getRejectSptList: ({ userNm, page, limit }: GetRejectSptListRequestType) => [
     "/api/spt/reject/list",
@@ -71,10 +77,14 @@ const KEY = {
 };
 
 // 수신거부 목록 조회
-export const useRejectList = ({ page, limit }: GetRejectListRequestType) => {
+export const useRejectList = ({
+  page,
+  limit,
+  rejectTelNo,
+}: GetRejectListRequestType) => {
   return useQuery({
-    queryKey: KEY.getRejectList({ page, limit }),
-    queryFn: async () => await API.getRejectList({ page, limit }),
+    queryKey: KEY.getRejectList({ page, limit, rejectTelNo }),
+    queryFn: async () => await API.getRejectList({ page, limit, rejectTelNo }),
   });
 };
 
