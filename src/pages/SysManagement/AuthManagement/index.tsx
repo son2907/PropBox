@@ -29,6 +29,7 @@ import useDidMountEffect from "../../../hooks/useDidMountEffect";
 import { useMemberMenuList } from "../../../api/authManagement";
 import { MemberMenuList } from "../../../types/authManagement";
 import { UserListType } from "../../../types/userList";
+import { EmptySelectModal } from "../../../components/layout/modal/EmptySelectModal";
 
 export default function AuthManagement() {
 
@@ -49,12 +50,12 @@ export default function AuthManagement() {
 
   //현장 리스트
   const [localListReqData, setLocalListReqData] = useState({ sptNm: "", progrsSeCd: "", userNo: "", cntrctBgnde: "", cntrctEndde: "" });
-  const { data: localListData, isSuccess: isLocalListData } = useLocalList(localListReqData);
+  const { data: localListData, refetch: refetchLocalListData } = useLocalList(localListReqData);
   const [selectLocalNo, setSelectLocalNo] = useState("");
   const [localList, setLocalList] = useState<LocalListType[]>([]);
 
   //현장 허가 솔루션
-  const { data: localPermissionData, isSuccess: isLocalPermissionData } = usePermissionLocalList(selectLocalNo);
+  const { data: localPermissionData, refetch: refetchLocalPermissionData } = usePermissionLocalList(selectLocalNo);
   const [localPermission, setLocalPermission] = useState<LocalPermissionListType[]>([]);
 
   //현장 구성원 리스트
@@ -64,7 +65,7 @@ export default function AuthManagement() {
   const [selectMemberNo, setSelectMemberNo] = useState("");
 
   //구성원 메뉴 조회
-  const { data: memberMenuListData, refetch: memberMenuListDataRefetch } = useMemberMenuList(selectMemberNo);
+  const { data: memberMenuListData, refetch: memberMenuListDataRefetch } = useMemberMenuList(selectMemberNo);  //팝업테스트를 위해 임시로 처리
   const [memberMenuList, setMemberMenuList] = useState<MemberMenuList[]>([]);
 
   const { selectListData, selectValue, handleChange } = useSelect(
@@ -91,9 +92,9 @@ export default function AuthManagement() {
 
   // 구성원 리스트 - 선택 상태 관리
   const {
-    selectedRow: memberSelectRow,
-    toggleRowSelection: toggleMemberRowSelection,
-  } = useSingleRowSelection();
+    selectedRows: memberSelectRows,
+    toggleRowsSelection: toggleMemberRowsSelection,
+  } = useMultiRowSelection();
 
   // usePagination에
   const { currentPage, onChangePage } = usePagination();
@@ -118,7 +119,7 @@ export default function AuthManagement() {
     if (localPermissionData?.data.contents) {
       setLocalPermission(localPermissionData.data.contents);
     }
-  }, [localPermissionData]);
+  }, [localPermissionData, selectLocalNo]);
   useEffect(() => {
     setLocalMemberReqData((prev) => ({
       ...prev,
@@ -134,7 +135,7 @@ export default function AuthManagement() {
     if (memberMenuListData?.data.contents) {
       setMemberMenuList(memberMenuListData.data.contents);
     }
-  }, [memberMenuListData,selectUserNo])
+  }, [memberMenuListData, selectUserNo])
 
   //구성원 메뉴 권한 등록 및 수정
   const memberMenuPermission = {
@@ -159,38 +160,66 @@ export default function AuthManagement() {
 
   const handleSearch = () => {
     setSearchQuery(searchInput); // 검색어 업데이트
-    //console.log("검색 실행:", searchQuery);
+    console.log("검색 실행:", searchQuery);
     // 검색 로직 추가 (API 호출)
   };
-  
+
+  const handleLocalSearch = () => {
+    console.log("현장검색호출");
+    setLocalSearchQuery(localSearchInput); // 검색어 업데이트
+    setLocalListReqData((prev) => ({
+      ...prev,
+      sptNm: localSearchInput, // 선택한 값으로 isUse 업데이트
+      userNo: selectUserNo
+    }));
+  };
+
+  const emptySelectModal = () => {
+    openModal(EmptySelectModal, {
+      modalId: "EmptySelectModal",
+      stack: false,
+      onClose: () => closeModal,
+      onSubmit: () => {
+        window.close();
+      },
+    });
+  };
+
   return (
     <>
       <Stack width={"100%"} height={"100%"} gap={1}>
         <GrayBox gap={1}>
           <SearchInput
             placeholder={"사용자 이름 검색"}
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)} // 검색어 입력값 업데이트
-              onKeyDown={(event) => {
-                if (event.key === "Enter") {
-                  handleSearch(); // 검색 실행 함수 호출
-                }
-              }}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)} // 검색어 입력값 업데이트
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                handleSearch(); // 검색 실행 함수 호출
+              }
+            }}
           />
           <SearchInput
-            placeholder={"현장 이름 검색"}
+            placeholder="현장 검색"
+            value={localSearchInput}
+            onChange={(e) => setLocalSearchInput(e.target.value)} // 검색어 입력값 업데이트
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                handleLocalSearch(); // 검색 실행 함수 호출
+              }
+            }}
           />
         </GrayBox>
         <Stack width={"100%"} height={"40%"} gap={1}>
           <TableBox gap={1}>
             <Stack width={"20%"} height={"100%"}>
               <TableBox.Inner>
-                <BasicTable data={data?.data.contents}>
+                <BasicTable data={data?.data.contents || []}>
                   <BasicTable.Th>사용자ID</BasicTable.Th>
                   <BasicTable.Th>사용자이름</BasicTable.Th>
 
                   <BasicTable.Tbody>
-                    {data?.data.contents.map((item, index) => {
+                    {(data?.data.contents || []).map((item, index) => {
                       return (
                         <BasicTable.Tr
                           key={index}
@@ -214,12 +243,12 @@ export default function AuthManagement() {
             </Stack>
             <Stack width={"20%"} height={"100%"}>
               <TableBox.Inner>
-                <BasicTable data={localList}>
+                <BasicTable data={localListData?.data.contents || []}>
                   <BasicTable.Th>현장번호</BasicTable.Th>
                   <BasicTable.Th>현장이름</BasicTable.Th>
 
                   <BasicTable.Tbody>
-                    {localList.map((item, index) => {
+                    {(localListData?.data.contents || []).map((item, index) => {
                       return (
                         <BasicTable.Tr
                           key={index}
@@ -244,7 +273,7 @@ export default function AuthManagement() {
             <Stack width={"60%"} height={"100%"}>
               <TableBox.Inner>
                 <CheckboxTable
-                  data={localPermission}
+                  data={localPermissionData?.data.contents || []}
                   selectedRows={authorizedSelectedRows}
                   toggleRowsSelection={toggleAuthorizedRowsSelection}
                 >
@@ -265,7 +294,7 @@ export default function AuthManagement() {
                     </CheckboxTable.Tr>
                   </CheckboxTable.Thead>
                   <CheckboxTable.Tbody>
-                    {localPermission.map((item) => (
+                    {(localPermissionData?.data.contents || []).map((item) => (
                       <CheckboxTable.Tr key={item.slutnId} id={item.slutnId}>
                         <CheckboxTable.Td>{item.slutnId}</CheckboxTable.Td>
                         <CheckboxTable.Td>{item.slutnNm}</CheckboxTable.Td>
@@ -288,13 +317,13 @@ export default function AuthManagement() {
                 <Typography>현장 구성원</Typography>
               </GrayBox>
               <TableBox.Inner>
-                <BasicTable data={localMemberList}>
+                <BasicTable data={localMemberListData?.data.contents || []}>
                   <BasicTable.Th>구성원번호</BasicTable.Th>
                   <BasicTable.Th>구성원이름</BasicTable.Th>
                   <BasicTable.Th>직책</BasicTable.Th>
 
                   <BasicTable.Tbody>
-                    {localMemberList.map((item, index) => {
+                    {(localMemberListData?.data.contents || []).map((item, index) => {
                       return (
                         <BasicTable.Tr
                           key={index}
@@ -319,70 +348,119 @@ export default function AuthManagement() {
             </Stack>
             <Stack width={"60%"} height={"100%"}>
               <GrayBox>
-                <Typography>구성원</Typography>
+                <Typography>구성원 허가 솔루션</Typography>
               </GrayBox>
               <TableBox.Inner>
-                <BasicTable data={memberMenuList}>
-                  <BasicTable.Th>솔루션 ID</BasicTable.Th>
-                  <BasicTable.Th>솔루션 이름</BasicTable.Th>
-                  <BasicTable.Th>메뉴 ID</BasicTable.Th>
-                  <BasicTable.Th>메뉴 이름</BasicTable.Th>
-                  <BasicTable.Th>권한관리</BasicTable.Th>
-                  <BasicTable.Th>권한복사</BasicTable.Th>
-                  <BasicTable.Th>권한회수</BasicTable.Th>
-                  <BasicTable.Tbody>
-                    {memberMenuList.map((item, index) => {
-                      return (
-                        <BasicTable.Tr
-                          key={index}
-                          isClicked={memberSelectRow.has(item.slutnId)}
-                          onClick={() => toggleMemberRowSelection(item.slutnId)}
-                        >
-                          <BasicTable.Td>{item.slutnId}</BasicTable.Td>
-                          <BasicTable.Td>{item.slutnNm}</BasicTable.Td>
-                          <BasicTable.Td>{item.menuId}</BasicTable.Td>
-                          <BasicTable.Td>{item.menuNm}</BasicTable.Td>
-                          <BasicTable.Td>
-                            <BasicButton
-                              onClick={() => {
-                                openPopup({
-                                  url: memberMenuPermission.url,
-                                  windowName: memberMenuPermission.windowName,
-                                  windowFeatures: memberMenuPermission.windowFeatures,
-                                });
-                              }}
-                            >권한관리</BasicButton>
-                          </BasicTable.Td>
-                          <BasicTable.Td>
-                            <BasicButton
-                              onClick={() => {
-                                openPopup({
-                                  url: menuPermissionCopy.url,
-                                  windowName: menuPermissionCopy.windowName,
-                                  windowFeatures: menuPermissionCopy.windowFeatures,
-                                });
-                              }}
-                            >권한복사</BasicButton>
-                          </BasicTable.Td>
-                          <BasicTable.Td>
-                            <BasicButton
-                              onClick={() => {
-                                openPopup({
-                                  url: permissionRevoke.url,
-                                  windowName: permissionRevoke.windowName,
-                                  windowFeatures: permissionRevoke.windowFeatures,
-                                });
-                              }}
-                            >권한회수</BasicButton>
-                          </BasicTable.Td>
-                        </BasicTable.Tr>
-                      );
-                    })}
-                  </BasicTable.Tbody>
-                </BasicTable>
+                <CheckboxTable
+                  data={memberMenuListData?.data.contents || []}
+                  selectedRows={memberSelectRows}
+                  toggleRowsSelection={toggleMemberRowsSelection}
+                >
+                  <CheckboxTable.Thead>
+                    <CheckboxTable.Tr>
+                      <CheckboxTable.CheckboxTh keyName="menuId" />
+                      <CheckboxTable.Th>솔루션ID</CheckboxTable.Th>
+                      <CheckboxTable.Th>솔루션이름</CheckboxTable.Th>
+                      <CheckboxTable.Th>메뉴ID</CheckboxTable.Th>
+                      <CheckboxTable.Th>메뉴명</CheckboxTable.Th>
+                    </CheckboxTable.Tr>
+                  </CheckboxTable.Thead>
+                  <CheckboxTable.Tbody>
+                    {(memberMenuListData?.data.contents || []).map((item) => (
+                      <CheckboxTable.Tr key={item.menuId} id={item.menuId}>
+                        <CheckboxTable.CheckboxTd
+                          item={item}
+                          keyName="menuId"
+                        />
+                        <CheckboxTable.Td>{item.slutnId}</CheckboxTable.Td>
+                        <CheckboxTable.Td>{item.slutnNm}</CheckboxTable.Td>
+                        <CheckboxTable.Td>{item.menuId}</CheckboxTable.Td>
+                        <CheckboxTable.Td>{item.menuNm}</CheckboxTable.Td>
+                      </CheckboxTable.Tr>
+                    ))}
+                  </CheckboxTable.Tbody>
+                </CheckboxTable>
               </TableBox.Inner>
-              <GrayBox justifyContent={"end"}>
-                <BasicButton >새로고침</BasicButton>
+              <GrayBox>
+                <TableBox justifyContent={"space-between"}>
+                  <Stack width={"50%"} gap={1} direction={"row"} >
+                    <BasicButton onClick={() => memberMenuListDataRefetch()}>새로고침</BasicButton>
+                  </Stack>
+                  <Stack width={"50%"} gap={1} direction={"row"} justifyContent={"end"}>
+                    <BasicButton
+                      onClick={() => {
+                        const selectedMember = (localMemberListData?.data.contents || []).find(
+                          (item) => item.userNo === selectMemberNo
+                        );
+                        const selectedSptNo = selectedMember?.sptNo || "";
+
+                        console.log("선택된 userNo:", selectMemberNo);
+                        console.log("선택된 sptNo:", selectedSptNo);
+
+                        if(selectMemberNo) {
+                          openPopup({
+                            url: `${memberMenuPermission.url}?userNo=${selectMemberNo}&sptNo=${selectedSptNo}`,
+                            windowName: memberMenuPermission.windowName,
+                            windowFeatures: memberMenuPermission.windowFeatures,
+                          });
+                        } else {
+                          emptySelectModal()
+                        }
+                        
+                      }}
+                    >권한관리</BasicButton>
+                    <BasicButton
+                      onClick={() => {
+                        const selectedMember = (localMemberListData?.data.contents || []).find(
+                          (item) => item.userNo === selectMemberNo
+                        );
+                        const selectedSptNo = selectedMember?.sptNo || "";
+
+                        if(selectMemberNo) {
+                          openPopup({
+                            url: `${menuPermissionCopy.url}?userNo=${selectMemberNo}&sptNo=${selectedSptNo}`,
+                            windowName: menuPermissionCopy.windowName,
+                            windowFeatures: menuPermissionCopy.windowFeatures,
+                          });
+                        } else {
+                          emptySelectModal()
+                        }
+                        
+                      }}
+                    >권한복사</BasicButton>
+                    <BasicButton
+                      onClick={() => {
+
+                        // 선택된 menuId 값에 해당하는 slutnId 찾기
+                        const selectedSlutnIds = (memberMenuListData?.data.contents || [])
+                          .filter((item) => memberSelectRows.has(item.menuId)) // menuId로 필터링
+                          .map((item) => item.menuId); // slutnId만 추출
+
+                        const slutnIdParam = selectedSlutnIds.join(','); // 콤마로 연결된 문자열
+
+                        //userNo 추출
+                        const selectedMember = (localMemberListData?.data.contents || []).find(
+                          (item) => item.userNo === selectMemberNo
+                        );
+                        //현장 번호 추출
+                        const selectedSptNo = selectedMember?.sptNo || "";
+
+                        console.log("선택한 슬루션 ID:", selectedSlutnIds);
+
+                        if(selectMemberNo) {
+                          openPopup({
+                            url: `${permissionRevoke.url}?slutnId=${slutnIdParam}&userNo=${selectMemberNo}&sptNo=${selectedSptNo}`,
+                            windowName: permissionRevoke.windowName,
+                            windowFeatures: permissionRevoke.windowFeatures,
+                          });
+                        } else {
+                          emptySelectModal();
+                        }
+                        
+                      }}
+                    >권한회수</BasicButton>
+                  </Stack>
+                </TableBox>
               </GrayBox>
             </Stack>
           </TableBox>

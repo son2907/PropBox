@@ -41,8 +41,8 @@ const API = {
         return await instance.get<LocalDetailResponse>(url);
     },
     //구성원 직책 수정
-    updateMemeberPosition: async (requestData: { body: MemeberPositionType }) => {
-        console.log("구성원 직책 수정 api req 데이터 확인 : ", requestData.body);
+    updateMemeberPosition: async (requestData : { body :  MemeberPositionType}) =>{
+        //console.log("구성원 직책 수정 api req 데이터 확인 : ",requestData.body);
         const response = await instance.put('/api/spt/constnt', requestData.body);
         return response;
     },
@@ -181,7 +181,8 @@ export const useMemberPositionList = (upCd: string) => {
         queryFn: async () => {
             const result = await API.getMemberPositionList(upCd);
             return result;
-        }
+        },
+        enabled: !!upCd
     })
 };
 

@@ -166,8 +166,8 @@ export type MemberInsertListType = {
 //현장에서 구성원 제외
 export type MemberDeleteListType = {
     sptNo: string;
-    userId: string | undefined,
-    userNoList: string[]; // ✅ 올바른 타입 (문자열 배열)
+    userId: string | undefined;
+    userNoList: string[];
 };
 
 //현장 허가 솔루션 등록

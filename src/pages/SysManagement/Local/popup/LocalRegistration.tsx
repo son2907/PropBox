@@ -306,7 +306,7 @@ export default function LocalRegistration() {
       </Stack>
       <GrayBox width={"100%"} gap={1} justifyContent={"end"}>
         <BasicButton onClick={handleInsert}>확인</BasicButton>
-        <BasicButton>취소</BasicButton>
+        <BasicButton onClick={() => window.close()}>취소</BasicButton>
       </GrayBox>
     </Stack>
   );
