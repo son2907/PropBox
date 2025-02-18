@@ -107,6 +107,10 @@ export default function SoketGuard({ children }: PropsWithChildren) {
     webSocket.current.onmessage = (event: MessageEvent) => {
       console.log("########메세지 수신::", event.data);
 
+      if (JSON.parse(event.data).loginInfo) {
+        setLoginInfo(JSON.parse(event.data).loginInfo);
+      }
+
       const messageType = JSON.parse(event.data).messageType;
 
       if (messageType == "HEARTBEAT") {
