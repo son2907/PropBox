@@ -16,6 +16,8 @@ import { filterDataByValues } from "../../../utils/filterDataByValues";
 import useDidMountEffect from "../../../hooks/useDidMountEffect";
 
 export default function CallTable({ tabType, tabChange }: TabType) {
+  console.log("CallTable");
+
   //  통화콜, 부재콜
   const { value: takeValue, handleChange: takeChange } = useTabs(0);
 
@@ -67,11 +69,6 @@ export default function CallTable({ tabType, tabChange }: TabType) {
 
   const { data: cnsltData } = useTelCnsltList(callYn, trsmYn);
   const { fromSocket, setCnsltInfo, clear } = useCnsltStore();
-  console.log("############# 테이블 데이터:", cnsltData);
-
-  // useDidMountEffect(() => {
-  //   resetSelection();
-  // }, [tabType, takeValue, callOptionValue]);
 
   useDidMountEffect(() => {
     if (selectedRow.size > 0 && cnsltData?.data?.contents) {
@@ -147,6 +144,8 @@ export default function CallTable({ tabType, tabChange }: TabType) {
     }
   }, [tabType, takeValue, callOptionValue, setCnsltInfo]);
 
+  console.log("씨발 뭔데:", cnsltData);
+
   return (
     <>
       <TabMenus value={tabType} handleChange={tabChange}>
@@ -174,7 +173,11 @@ export default function CallTable({ tabType, tabChange }: TabType) {
                       <BasicTable.Tr
                         key={index}
                         isClicked={selectedRow.has(item.seqNo)}
-                        onClick={() => toggleRowSelection(item.seqNo)}
+                        onClick={(e) => {
+                          e.preventDefault(); // 기본 동작을 막음
+                          e.stopPropagation(); // 이벤트 버블링을 막음
+                          toggleRowSelection(item.seqNo); // row selection 토글
+                        }}
                       >
                         <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
                         <BasicTable.Td>{item.cnsltTelno}</BasicTable.Td>
@@ -222,7 +225,11 @@ export default function CallTable({ tabType, tabChange }: TabType) {
                           <BasicTable.Tr
                             key={index}
                             isClicked={selectedRow.has(item.waitCstmrNo)}
-                            onClick={() => toggleRowSelection(item.waitCstmrNo)}
+                            onClick={(e) => {
+                              toggleRowSelection(item.waitCstmrNo);
+                              e.preventDefault(); // 기본 동작을 막음
+                              e.stopPropagation(); // 이벤트 버블링을 막음
+                            }}
                           >
                             <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
                             <BasicTable.Td>{item.themaNm}</BasicTable.Td>
@@ -244,7 +251,11 @@ export default function CallTable({ tabType, tabChange }: TabType) {
                         <BasicTable.Tr
                           key={index}
                           isClicked={selectedRow.has(item.seqNo)}
-                          onClick={() => toggleRowSelection(item.seqNo)}
+                          onClick={(e) => {
+                            toggleRowSelection(item.seqNo);
+                            e.preventDefault(); // 기본 동작을 막음
+                            e.stopPropagation(); // 이벤트 버블링을 막음
+                          }}
                         >
                           <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
                           <BasicTable.Td>{item.cnsltTelno}</BasicTable.Td>

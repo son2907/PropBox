@@ -1,6 +1,5 @@
 import { Stack, Typography } from "@mui/material";
 import GrayBox from "../../../components/Box/GrayBox";
-import SearchInput from "../../../components/Input/SearchInput";
 import { BasicButton } from "../../../components/Button";
 import TableBox from "../../../components/Box/TableBox";
 import BasicTable from "../../../components/Table/BasicTable";
@@ -13,7 +12,6 @@ import BasicInput from "../../../components/Input/BasicInput";
 import { openPopup } from "../../../utils/openPopup";
 import PathConstants from "../../../routers/path";
 import useModal from "../../../hooks/useModal";
-// import BasicAlert from "../../../components/Alert/BasicAlert";
 import CustomAlert from "../../../components/Alert/CustomAlert";
 import {
   useDeletetReject,
@@ -95,8 +93,6 @@ export default function RejectMessage() {
       rmk: selectedRow?.rmk ?? "",
     });
   }, [selectedRow]);
-
-  console.log(searchRef.current?.value);
 
   const searchFn = () => {
     rejectRefetch();

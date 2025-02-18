@@ -10,6 +10,9 @@ type CunsltStoreType = {
   trsmYn?: string; // 통화콜, 부재콜, 대기
   mbtlNo?: string;
   telNo?: string;
+  socketInfo?: any;
+  socketCallYn?: string;
+  socketTrsmYn?: string;
 
   setCnsltInfo: (info: {
     fromSocket?: boolean;
@@ -21,6 +24,9 @@ type CunsltStoreType = {
     trsmYn?: string;
     mbtlNo?: string;
     telNo?: string;
+    socketInfo?: any;
+    socketCallYn?: string;
+    socketTrsmYn?: string;
   }) => void;
   clear: () => void;
 };
@@ -36,5 +42,8 @@ export const useCnsltStore = create<CunsltStoreType>()((set) => ({
       cstmrNm: "",
       mbtlNo: "",
       telNo: "",
+      socketInfo: null,
+      socketCallYn: "",
+      socketTrsmYn: "",
     })),
 }));

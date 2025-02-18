@@ -18,33 +18,30 @@ import { useCnsltStore } from "../../../stores/CunsltStore";
 import { useEffect, useRef } from "react";
 import { useAuthStore } from "../../../stores/authStore";
 import { HiOutlineDocumentText } from "react-icons/hi";
-import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
-import { filterDataByValues } from "../../../utils/filterDataByValues";
 import { useSptStore } from "../../../stores/sptStore";
+import { useSingleRowData } from "../../../hooks/useTest";
 
 export default function MemoGroup() {
+  console.log("MemoGroup");
   const { value, handleChange: tabChange } = useTabs(0);
 
   const { selectedRow, toggleRowSelection, resetSelection } =
-    useSingleRowSelection();
+    useSingleRowData<any>("cnsltNo");
 
-  const { cstmrNo, trsmYn } = useCnsltStore();
+  const { cstmrNo, trsmYn, fromSocket, socketTrsmYn } = useCnsltStore();
   const { userNo, loginId } = useAuthStore(["userNo", "loginId"]);
-  const { data: histListData } = useCnslHist(cstmrNo, trsmYn);
+  const { data: histListData } = useCnslHist(
+    cstmrNo,
+    fromSocket ? socketTrsmYn : trsmYn
+  );
   const { data: memoData } = useCnsltMemo(userNo);
 
   const memoRef = useRef<HTMLTextAreaElement>(null); // memo Ref
   const { mutate: postMemo } = usePostMemo();
 
-  const userData = filterDataByValues({
-    data: histListData?.data.contents,
-    key: "cnsltNo",
-    values: Array.from(selectedRow),
-  });
-
   const { data: cnsltItemList } = useCnsltDetail(
-    userData[0]?.cstmrNo,
-    userData[0]?.cnsltNo
+    selectedRow?.cstmrNo,
+    selectedRow?.cnsltNo
   );
 
   useEffect(() => {
@@ -52,6 +49,8 @@ export default function MemoGroup() {
   }, [histListData]);
 
   const { sptNo } = useSptStore();
+
+  console.log("@@@@@@@@@@@@@@@  cstmrNo, trsmYn :", cstmrNo, trsmYn);
 
   const postMemoFn = () => {
     const body = {
@@ -93,8 +92,8 @@ export default function MemoGroup() {
                 return (
                   <BasicTable.Tr
                     key={index}
-                    isClicked={selectedRow.has(item.cnsltNo)}
-                    onClick={() => toggleRowSelection(item.cnsltNo)}
+                    isClicked={selectedRow?.cnsltNo === item.cnsltNo} // 전체 데이터 객체를 비교
+                    onClick={() => toggleRowSelection(item)} // 데이터 자체를 전달
                   >
                     <BasicTable.Td>{item.callYn}</BasicTable.Td>
                     <BasicTable.Td>{item.cnsltDt}</BasicTable.Td>
