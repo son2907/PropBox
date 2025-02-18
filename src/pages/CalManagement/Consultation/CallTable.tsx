@@ -25,7 +25,8 @@ export default function CallTable({ tabType, tabChange }: TabType) {
   const { value: callOptionValue, handleChange: callOptionChange } = useTabs(0);
 
   // 단일 선택
-  const { selectedRow, toggleRowSelection } = useSingleRowSelection();
+  const { selectedRow, toggleRowSelection, resetSelection } =
+    useSingleRowSelection();
 
   const callPopupInfo = {
     url: PathConstants.Call.CallLog,
@@ -107,12 +108,14 @@ export default function CallTable({ tabType, tabChange }: TabType) {
     }
 
     if (selectedRow.size == 0 && !fromSocket) {
+      // 선택한 게 없으면서 socket으로부터 온 데이터가 아니면
       clear();
     }
   }, [selectedRow, cnsltData, callYn, trsmYn]);
 
   // Tab change 시에도 useCnsltStore에 값 저장
   useEffect(() => {
+    resetSelection();
     if (tabType === 0) {
       // 전화받기 탭
       const trsmYn = takeValue === 0 ? "Y" : "N"; // 통화콜 또는 부재콜
@@ -143,8 +146,6 @@ export default function CallTable({ tabType, tabChange }: TabType) {
       });
     }
   }, [tabType, takeValue, callOptionValue, setCnsltInfo]);
-
-  console.log("씨발 뭔데:", cnsltData);
 
   return (
     <>

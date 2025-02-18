@@ -33,9 +33,11 @@ export const SocketLoginInfoContext = createContext<{
 export default function SoketGuard({ children }: PropsWithChildren) {
   const webSocket = useRef<WebSocket | null>(null);
   const [messages, setMessages] = useState<string[]>([]);
+  const [callNumber, setCallNumber] = useState<string>("");
+
   const { openToast, toastOpen, toastClose } = useToast();
   const { openModal, closeModal } = useModal();
-  const [callNumber, setCallNumber] = useState<string>("");
+
   const [loginInfo, setLoginInfo] = useState<any | null>(null);
 
   const [toastContent, setToastContent] = useState({
@@ -108,11 +110,11 @@ export default function SoketGuard({ children }: PropsWithChildren) {
       const messageType = JSON.parse(event.data).messageType;
 
       if (messageType == "HEARTBEAT") {
-        const response = {
+        const responseData = {
           messageType: "HEARTBEAT",
         };
 
-        sendMessage({ webSocket, message: response });
+        sendMessage({ webSocket, message: responseData });
         return;
       }
 
@@ -128,6 +130,7 @@ export default function SoketGuard({ children }: PropsWithChildren) {
       if (messageType == "RINGING") {
         setCallNumber(JSON.parse(event.data).counterpart);
         refetchCustomer().then((result) => {
+          console.log("result:", result.data?.data.contents);
           if (result.data) {
             const axiosData =
               result.data as AxiosResponse<FindToastCustomResponseType>;
@@ -140,23 +143,40 @@ export default function SoketGuard({ children }: PropsWithChildren) {
           toastOpen();
         });
       }
+      // MISSED와 ANSWERED의 동작은 같지만, 추후 유지보수를 위해 따로 작성
       if (messageType === "MISSED") {
         setToastContent({ name: "", telNo: "", info: "" });
-        setCnsltInfo({ socketCallYn: "N", socketTrsmYn: "N" });
-        onClickToast();
+        setCnsltInfo({
+          socketInfo: { ...customerData?.data.contents },
+          cstmrNo: customerData?.data.contents.cstmrNo || "",
+          fromSocket: true,
+          socketCallYn: "N",
+          socketTrsmYn: "N",
+        });
+        toastClose();
+        navigate(PathConstants.Call.Consultation);
       }
+
       if (messageType === "ANSWERED") {
         setToastContent({ name: "", telNo: "", info: "" });
-        setCnsltInfo({ socketCallYn: "N", socketTrsmYn: "Y" });
-        onClickToast();
+        setCnsltInfo({
+          socketInfo: { ...customerData?.data.contents },
+          cstmrNo: customerData?.data.contents.cstmrNo || "",
+          fromSocket: true,
+          socketCallYn: "N",
+          socketTrsmYn: "Y",
+        });
+        toastClose();
+        navigate(PathConstants.Call.Consultation);
       }
+
       setMessages((prev) => [...prev, event.data]);
     };
 
     return () => {
       webSocket.current?.close();
     };
-  }, [accessToken, data]);
+  }, [accessToken, data, customerData]);
 
   useEffect(() => {
     useTelStore.persist.rehydrate();
@@ -165,14 +185,13 @@ export default function SoketGuard({ children }: PropsWithChildren) {
   console.log("웹소켓 응답 리스트:", messages);
 
   const onClickToast = (e?) => {
-    // 스토어에 정보 바인딩
     setCnsltInfo({
       socketInfo: { ...customerData?.data.contents },
       cstmrNo: customerData?.data.contents.cstmrNo || "",
       fromSocket: true,
     });
-    toastClose();
 
+    toastClose();
     navigate(PathConstants.Call.Consultation);
     if (e) {
       e.preventDefault(); // 기본 동작을 막음
