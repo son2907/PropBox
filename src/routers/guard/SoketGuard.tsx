@@ -14,23 +14,39 @@ import { useCnsltStore } from "../../stores/CunsltStore";
 import { useAuthStore } from "../../stores/authStore";
 import useModal from "../../hooks/useModal";
 import { DisconnectedModal } from "./modal/DisconnectedModal";
-import { useSocketApi } from "../../api/soketApi";
+import { useFindCustom, useSocketApi } from "../../api/soketApi";
 import { useTelStore } from "../../stores/telStore";
 import { useApiRes } from "../../utils/useApiRes";
+import { FindToastCustomResponseType } from "../../types/socketApi";
+import { AxiosResponse } from "axios";
 
 export const WebSocketContext = createContext<WebSocket | null>(null);
+
+export const SocketLoginInfoContext = createContext<{
+  loginInfo: any | null;
+  setLoginInfo: React.Dispatch<React.SetStateAction<any | null>>;
+}>({
+  loginInfo: null,
+  setLoginInfo: () => {},
+});
 
 export default function SoketGuard({ children }: PropsWithChildren) {
   const webSocket = useRef<WebSocket | null>(null);
   const [messages, setMessages] = useState<string[]>([]);
+  const [callNumber, setCallNumber] = useState<string>("");
+
   const { openToast, toastOpen, toastClose } = useToast();
   const { openModal, closeModal } = useModal();
+
+  const [loginInfo, setLoginInfo] = useState<any | null>(null);
+
   const [toastContent, setToastContent] = useState({
     name: "",
     telNo: "",
     info: "",
   });
-  const { fromSocket, setCnsltInfo, clear } = useCnsltStore();
+
+  const { setCnsltInfo } = useCnsltStore();
   const navigate = useNavigate();
 
   const { accessToken, userNo } = useAuthStore(["accessToken", "userNo"]);
@@ -42,7 +58,9 @@ export default function SoketGuard({ children }: PropsWithChildren) {
     telId: telId,
   });
 
-  console.log("############ 웹소켓 로그인 데이터:", data);
+  const { data: customerData, refetch: refetchCustomer } = useFindCustom({
+    telno: callNumber,
+  });
 
   useEffect(() => {
     const info = data?.data.contents;
@@ -91,12 +109,16 @@ export default function SoketGuard({ children }: PropsWithChildren) {
 
       const messageType = JSON.parse(event.data).messageType;
 
+      if (messageType == "LOGIN") {
+        setLoginInfo(JSON.parse(event.data).loginInfo);
+      }
+
       if (messageType == "HEARTBEAT") {
-        const exampleMessage = {
+        const responseData = {
           messageType: "HEARTBEAT",
         };
 
-        sendMessage({ webSocket, message: exampleMessage });
+        sendMessage({ webSocket, message: responseData });
         return;
       }
 
@@ -110,29 +132,54 @@ export default function SoketGuard({ children }: PropsWithChildren) {
         return;
       }
       if (messageType == "RINGING") {
-        // TODO 웹소켓에서 보내준 고객 이름과 고객 정보를 등록해줘야 함
-        setToastContent({
-          name: "홍길동",
-          telNo: JSON.parse(event.data).counterpart,
-          info: "고객정보",
+        setCallNumber(JSON.parse(event.data).counterpart);
+        refetchCustomer().then((result) => {
+          console.log("result:", result.data?.data.contents);
+          if (result.data) {
+            const axiosData =
+              result.data as AxiosResponse<FindToastCustomResponseType>;
+            setToastContent({
+              name: axiosData.data.contents.cstmrNm || "",
+              telNo: JSON.parse(event.data).counterpart,
+              info: axiosData.data.contents.cstmrRmk || "",
+            });
+          }
+          toastOpen();
         });
-
-        toastOpen();
       }
+      // MISSED와 ANSWERED의 동작은 같지만, 추후 유지보수를 위해 따로 작성
       if (messageType === "MISSED") {
         setToastContent({ name: "", telNo: "", info: "" });
-        if (fromSocket) {
-          clear();
-        }
+        setCnsltInfo({
+          socketInfo: { ...customerData?.data.contents },
+          cstmrNo: customerData?.data.contents.cstmrNo || "",
+          fromSocket: true,
+          socketCallYn: "N",
+          socketTrsmYn: "N",
+        });
         toastClose();
+        navigate(PathConstants.Call.Consultation);
       }
+
+      if (messageType === "ANSWERED") {
+        setCnsltInfo({
+          socketInfo: { ...customerData?.data.contents },
+          cstmrNo: customerData?.data.contents.cstmrNo || "",
+          fromSocket: true,
+          socketCallYn: "N",
+          socketTrsmYn: "Y",
+        });
+        toastClose();
+        navigate(PathConstants.Call.Consultation);
+      }
+
       setMessages((prev) => [...prev, event.data]);
     };
 
     return () => {
       webSocket.current?.close();
     };
-  }, [accessToken, data]);
+  }, [accessToken, data, customerData]);
 
   useEffect(() => {
     useTelStore.persist.rehydrate();
@@ -140,45 +187,46 @@ export default function SoketGuard({ children }: PropsWithChildren) {
 
   console.log("웹소켓 응답 리스트:", messages);
 
-  const onClickToast = (e) => {
-    // // 다른페이지 이동 후 해당 정보가 clear() 되었을 때를 대비하여 set
+  const onClickToast = (e?) => {
     setCnsltInfo({
+      socketInfo: { ...customerData?.data.contents },
+      cstmrNo: customerData?.data.contents.cstmrNo || "",
       fromSocket: true,
-      cstmrNm: toastContent.name,
-      cnsltTelno: toastContent.telNo,
     });
+
+    toastClose();
     navigate(PathConstants.Call.Consultation);
-    e.preventDefault(); // 기본 동작을 막음
-    e.stopPropagation(); // 이벤트 버블링을 막음
+    if (e) {
+      e.preventDefault(); // 기본 동작을 막음
+      e.stopPropagation(); // 이벤트 버블링을 막음
+    }
   };
 
   return (
     <WebSocketContext.Provider value={webSocket.current}>
-      <Toast
-        open={openToast}
-        vertical={"bottom"}
-        horizontal={"right"}
-        toastClose={toastClose}
-        onClick={onClickToast}
-      >
-        <Toast.Row>
-          <Toast.InfoHeader>고객명</Toast.InfoHeader>
-          <Toast.InfoContent>{toastContent.name}</Toast.InfoContent>
-        </Toast.Row>
-        <Toast.Row>
-          <Toast.InfoHeader>전화번호</Toast.InfoHeader>
-          <Toast.InfoContent>{toastContent.telNo}</Toast.InfoContent>
-        </Toast.Row>
-        <Toast.Row>
-          <Toast.InfoHeader>고객정보</Toast.InfoHeader>
-          <Toast.InfoContent>
-            {toastContent.info}
-            홍길동님의 정보입니다.홍길동님의 정보입니다. 홍길동님의 정보입니다.
-            홍길동님의 정보입니다. 홍길동님의 정보입니다.
-          </Toast.InfoContent>
-        </Toast.Row>
-      </Toast>
-      {children}
+      <SocketLoginInfoContext.Provider value={{ loginInfo, setLoginInfo }}>
+        <Toast
+          open={openToast}
+          vertical={"bottom"}
+          horizontal={"right"}
+          toastClose={toastClose}
+          onClick={onClickToast}
+        >
+          <Toast.Row>
+            <Toast.InfoHeader>고객명</Toast.InfoHeader>
+            <Toast.InfoContent>{toastContent.name}</Toast.InfoContent>
+          </Toast.Row>
+          <Toast.Row>
+            <Toast.InfoHeader>전화번호</Toast.InfoHeader>
+            <Toast.InfoContent>{toastContent.telNo}</Toast.InfoContent>
+          </Toast.Row>
+          <Toast.Row>
+            <Toast.InfoHeader>고객정보</Toast.InfoHeader>
+            <Toast.InfoContent>{toastContent.info}</Toast.InfoContent>
+          </Toast.Row>
+        </Toast>
+        {children}
+      </SocketLoginInfoContext.Provider>
     </WebSocketContext.Provider>
   );
 }

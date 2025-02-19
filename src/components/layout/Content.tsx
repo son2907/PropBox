@@ -6,12 +6,13 @@ import PathConstants from "../../routers/path";
 import { IconList } from "./MenuIconList";
 import { HiRefresh } from "react-icons/hi";
 import IconSquareButton from "../Button/IconSquareButton";
+import { useEffect } from "react";
 
 interface ContentProps {
   children: React.ReactNode;
 }
 export default function Content({ children }: ContentProps) {
-  const { allMenus, menus, closeMenu } = useMenuStore();
+  const { allMenus, menus, addMenu, closeMenu } = useMenuStore();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -42,6 +43,16 @@ export default function Content({ children }: ContentProps) {
     e.preventDefault(); // 기본 동작을 막음
     e.stopPropagation(); // 이벤트 버블링을 막음
   };
+
+  // 새로고침 시 현재 페이지만 탭에 추가
+  useEffect(() => {
+    if (location.pathname == PathConstants.Home) return;
+    const currentMenuLabel = allMenus.find((menu) =>
+      menu.subMenu.some((item) => item.url === location.pathname)
+    )?.label;
+    if (!currentMenuLabel) return;
+    addMenu(currentMenuLabel, location.pathname);
+  }, [allMenus]);
 
   return (
     <>

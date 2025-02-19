@@ -40,8 +40,8 @@ const API = {
   },
   // 오른쪽 상담 상세 목록
   getCnsltDetail: async (
-    cstmrNo?: string, // 고객번호
-    cnsltNo?: string // 상담번호
+    cstmrNo?: string | null, // 고객번호
+    cnsltNo?: string | null // 상담번호
   ) => {
     const url = `/api/tel/cnslt/hist/detail?sptNo=${spt}&cstmrNo=${cstmrNo}&cnsltNo=${cnsltNo}`;
     return await instance.get(url);
@@ -187,7 +187,7 @@ const KEY = {
     absnceYn,
     trsmYn,
   ],
-  getCnsltDetail: (cstmrNo?: string, cnsltNo?: string) => [
+  getCnsltDetail: (cstmrNo?: string | null, cnsltNo?: string | null) => [
     "/tel/cnslt/hist/detail",
     cstmrNo,
     cnsltNo,
@@ -306,8 +306,8 @@ export const useTelCnsltList = (
 
 // 오른쪽 상담 상세 목록
 export const useCnsltDetail = (
-  cstmrNo?: string, // 고객번호
-  cnsltNo?: string, // 상담번호
+  cstmrNo?: string | null, // 고객번호
+  cnsltNo?: string | null, // 상담번호
   trsmYn?: string //대기 테이블일 경우 조회하지 않도록 처리함
 ) => {
   return useQuery({
