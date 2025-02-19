@@ -4,12 +4,13 @@ import { replace } from "react-router-dom";
 
 interface InputProps extends OutlinedInputProps {
   placeholder?: string;
+  value?: string;
 }
 
 //전화번호 정규식 추가 inputbox
 const PhoneInput = forwardRef<HTMLInputElement, InputProps>(
-  ({ placeholder = "", ...rest }, ref) => {
-    const [phoneNum, setPhoneNum] = useState("");
+  ({ placeholder = "", value, ...rest }, ref) => {
+    const [phoneNum, setPhoneNum] = useState(value);
 
     // 숫자만 입력되도록 함
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
