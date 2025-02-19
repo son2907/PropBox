@@ -42,6 +42,7 @@ import { sendMessage, useWebSocket } from "../../../routers/guard/soketFn";
 import { WebSocketContext } from "../../../routers/guard/SoketGuard";
 import { getKoreanTime } from "../../../utils/getKoreanTime";
 import { useSptStore } from "../../../stores/sptStore";
+import PhoneInput from "../../../components/Input/PhoneInput";
 
 export default function InfoGroup({ tabType }: TabType) {
   console.log("InfoGroup");
@@ -527,6 +528,7 @@ export default function InfoGroup({ tabType }: TabType) {
               <CenteredBox>
                 <LabelTypo>휴대전화</LabelTypo>
                 <BasicInput {...register("mbtlNo")} />
+                {/* <PhoneInput {...register("mbtlNo")} /> */}
                 {tabType ? (
                   <IconSquareButton
                     tabIndex={-1}

@@ -36,7 +36,7 @@ interface CheckboxTdProps {
 
 const Th: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
-    <th className="border-solid bg-gray-200 border border-gray-300 border-b-0 border-t-0 p-2 text-left last:border-0 whitespace-nowrap">
+    <th className="border-solid bg-gray-200 border border-gray-300 border-b-0 border-t-0 p-2 text-left last:border-0 whitespace-nowrap sticky top-0 z-10">
       {children}
     </th>
   );

@@ -17,6 +17,7 @@ import IconSquareButton from "../../../components/Button/IconSquareButton";
 import PathConstants from "../../../routers/path";
 import { openPopup } from "../../../utils/openPopup";
 import { useTableSelect } from "../../../hooks/useTableSelect";
+import { useGetKccList } from "../../../api/kcc";
 
 export default function DeclarationMessage() {
   const {
@@ -34,6 +35,7 @@ export default function DeclarationMessage() {
   const spam = {
     url: PathConstants.Message.Sapm,
     windowName: "방송통신위원회 스팸 등록",
+    windowFeatures: "width=1200,height=500,scrollbars=yes,resizable=yes",
   };
 
   const groupCell = {
@@ -42,6 +44,10 @@ export default function DeclarationMessage() {
   };
 
   const { countValues, selectValue, handleChange } = useTableSelect();
+
+  // -----------------------------API-----------------------------
+
+  // const { data: kccListData } = useGetKccList();
 
   return (
     <Stack width={"100%"} height={"100%"}>

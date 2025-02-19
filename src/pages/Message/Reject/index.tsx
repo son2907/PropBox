@@ -31,7 +31,6 @@ import { useSptStore } from "../../../stores/sptStore";
 import PhoneInput from "../../../components/Input/PhoneInput";
 import SearchIcon from "../../../assets/images/Search.png";
 import { useRef } from "react";
-import ExcelUploadTable from "./ExcelUploadTable";
 
 const DeleteAlert = ({
   onClose,
@@ -91,9 +90,10 @@ export default function RejectMessage() {
   });
 
   useDidMountEffect(() => {
+    if (!selectedRow) return;
     reset({
-      rejectTelNo: selectedRow?.rejectTelNo ?? "",
-      rmk: selectedRow?.rmk ?? "",
+      rejectTelNo: selectedRow.rejectTelNo ?? "",
+      rmk: selectedRow.rmk ?? "",
     });
   }, [selectedRow]);
 
@@ -205,7 +205,6 @@ export default function RejectMessage() {
 
   return (
     <Stack width={"100%"} height={"100%"} gap={2}>
-      <ExcelUploadTable />
       <GrayBox gap={1}>
         <PhoneInput
           endAdornment={<img src={SearchIcon} alt="search-icon" />}

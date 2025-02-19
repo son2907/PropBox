@@ -23,7 +23,7 @@ const Th: React.FC<TableItemProps> = ({ children, ...rest }) => {
   return (
     <th
       {...rest}
-      className="border-solid bg-gray-200 border border-gray-300 border-b-0 border-t-0 last:border-0 text-left whitespace-nowrap py-3"
+      className="border-solid bg-gray-200 border border-gray-300 border-b-0 border-t-0 last:border-0 text-left whitespace-nowrap py-3 sticky top-0 z-10"
     >
       {children}
     </th>
