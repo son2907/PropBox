@@ -107,11 +107,11 @@ export default function SoketGuard({ children }: PropsWithChildren) {
     webSocket.current.onmessage = (event: MessageEvent) => {
       console.log("########메세지 수신::", event.data);
 
-      if (JSON.parse(event.data).loginInfo) {
+      const messageType = JSON.parse(event.data).messageType;
+
+      if (messageType == "LOGIN") {
         setLoginInfo(JSON.parse(event.data).loginInfo);
       }
-
-      const messageType = JSON.parse(event.data).messageType;
 
       if (messageType == "HEARTBEAT") {
         const responseData = {
@@ -162,7 +162,6 @@ export default function SoketGuard({ children }: PropsWithChildren) {
       }
 
       if (messageType === "ANSWERED") {
-        setToastContent({ name: "", telNo: "", info: "" });
         setCnsltInfo({
           socketInfo: { ...customerData?.data.contents },
           cstmrNo: customerData?.data.contents.cstmrNo || "",

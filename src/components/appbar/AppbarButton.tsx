@@ -44,6 +44,8 @@ export default function AppbarButton({ ...rest }: ButtonProps) {
     useTelStore.persist.rehydrate();
   }, []);
 
+  console.log("뭐지:", loginInfo);
+
   return (
     <Button
       variant="contained"

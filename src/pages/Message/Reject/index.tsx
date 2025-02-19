@@ -80,6 +80,8 @@ export default function RejectMessage() {
     rejectTelNo: searchRef.current?.value,
   });
 
+  console.log("rejectList:", rejectList);
+
   const { register, reset, getValues } = useForm({
     defaultValues: {
       rejectTelNo: "",
@@ -193,6 +195,7 @@ export default function RejectMessage() {
 
   return (
     <Stack width={"100%"} height={"100%"} gap={2}>
+      <BasicButton>테스트좀</BasicButton>
       <GrayBox gap={1}>
         <PhoneInput
           endAdornment={<img src={SearchIcon} alt="search-icon" />}
@@ -226,7 +229,7 @@ export default function RejectMessage() {
               <BasicTable.Th>등록일시</BasicTable.Th>
 
               <BasicTable.Tbody>
-                {rejectList?.data.contents.map((item, index) => {
+                {rejectList?.data?.contents?.map((item, index) => {
                   return (
                     <BasicTable.Tr
                       key={index}

@@ -320,6 +320,8 @@ export default function InfoGroup({ tabType }: TabType) {
   // 모달 hook
   const { openModal, closeModal } = useModal();
 
+  console.log("########cnsltNo:", cnsltNo, fromSocket);
+
   // <========================= 저장 버튼 =========================>
 
   const { mutate: postInfo } = usePostCnsltInfo();
@@ -337,7 +339,11 @@ export default function InfoGroup({ tabType }: TabType) {
       const body: CnsltInfoRequestType = {
         sptNo: sptNo,
         cstmrNo: isWorUn ? "0" : data_1.cstmrNo,
-        cnsltNo: !isToday(selectedDate) || isWorUn ? "0" : data_1.cnsltNo,
+        cnsltNo: fromSocket
+          ? cnsltNo
+          : !isToday(selectedDate) || isWorUn
+            ? "0"
+            : data_1.cnsltNo,
         cnsltnt: isWorUn ? "" : data_1.cnsltnt,
         cnsltDt: getFormattedDate(selectedDate),
         telId: isWorUn
@@ -345,14 +351,14 @@ export default function InfoGroup({ tabType }: TabType) {
           : data_1.telId !== ""
             ? data_1.telId
             : "0",
-        cnsltTelno: data.cnsltTelno,
-        cstmrNm: data.cstmrNm,
-        mbtlNo: data.mbtlNo,
-        telNo: data.telNo,
-        cstmrRmk: data.cstmrRmk,
-        addr: data.addr,
-        areaNo: selectValue,
-        spcmnt: data.spcmnt,
+        cnsltTelno: data.cnsltTelno, // 입력값
+        cstmrNm: data.cstmrNm, // 입력값
+        mbtlNo: data.mbtlNo, // 입력값
+        telNo: data.telNo, // 입력값
+        cstmrRmk: data.cstmrRmk, // 입력값
+        addr: data.addr, // 입력값
+        areaNo: selectValue, // 입력값
+        spcmnt: data.spcmnt, // 입력값
         callYn: fromSocket ? socketCallYn || "" : callYn || "",
         trsmYn: fromSocket ? socketTrsmYn || "" : trsmYn || "",
         legacySlutnId: isWorUn ? "CS0001" : "TM0001",
