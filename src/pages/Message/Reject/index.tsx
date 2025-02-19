@@ -31,6 +31,7 @@ import { useSptStore } from "../../../stores/sptStore";
 import PhoneInput from "../../../components/Input/PhoneInput";
 import SearchIcon from "../../../assets/images/Search.png";
 import { useRef } from "react";
+import ExcelUploadTable from "./ExcelUploadTable";
 
 const DeleteAlert = ({
   onClose,
@@ -106,10 +107,18 @@ export default function RejectMessage() {
   const { mutate: put } = usePutReject();
   const onPut = () => {
     if (!selectedRow) return;
-    const formData = getValues();
+    const body = {
+      rejectNo: selectedRow.rejectNo,
+      sptNo: selectedRow.sptNo,
+      rejectTelNo: getValues("rejectTelNo"),
+      useYn: selectedRow.useYn,
+      rmk: getValues("rmk"),
+      userId: loginId || "",
+    };
+    console.log("수정 보내는 정보 : ", body);
     put(
       {
-        body: { ...selectedRow, ...formData, userId: loginId || "" },
+        body: body,
       },
       {
         onSuccess: (res) => {
@@ -131,15 +140,16 @@ export default function RejectMessage() {
   // 추가
   const { mutate: post } = usePostReject();
   const onPost = () => {
-    const formData = getValues();
-    console.log("추가 데이터:", {
+    const body = {
       sptNo: sptNo,
-      ...formData,
+      rejectTelNo: getValues("rejectTelNo"),
+      rmk: getValues("rmk"),
       userId: loginId || "",
-    });
+    };
+    console.log("추가 보내는 정보 : ", body);
     post(
       {
-        body: { sptNo: sptNo, ...formData, userId: loginId || "" },
+        body: body,
       },
       {
         onSuccess: (res) => {
@@ -195,7 +205,7 @@ export default function RejectMessage() {
 
   return (
     <Stack width={"100%"} height={"100%"} gap={2}>
-      <BasicButton>테스트좀</BasicButton>
+      <ExcelUploadTable />
       <GrayBox gap={1}>
         <PhoneInput
           endAdornment={<img src={SearchIcon} alt="search-icon" />}
@@ -267,7 +277,8 @@ export default function RejectMessage() {
                 수신거부 등록정보
               </Typography>
               <Typography>휴대전화</Typography>
-              <PhoneInput {...register("rejectTelNo")} />
+              {/* <PhoneInput {...register("rejectTelNo")} /> */}
+              <BasicInput {...register("rejectTelNo")} />
               <Typography>비고(거부사유)</Typography>
               <BasicInput {...register("rmk")} />
               <CenteredBox justifyContent={"flex-end"} gap={1} marginTop={3}>
