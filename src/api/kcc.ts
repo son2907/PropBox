@@ -1,6 +1,9 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
+  KccGroupDeleteRequestType,
   KccGroupListResponseType,
+  KccGroupPostRequestType,
+  KccGroupPutRequestType,
   KccListResponseType,
   KccMsgRequestType,
   KccMsgResponseType,
@@ -46,6 +49,21 @@ const API = {
     const url = `/api/kcc/group/list?sptNo=${spt}`;
     return await instance.get<KccGroupListResponseType>(url);
   },
+  // 방통위 그룹셀 등록
+  postKccGroup: async (requestData: { body: KccGroupPostRequestType }) => {
+    const url = `/api/kcc/group`;
+    return await instance.post(url, requestData.body);
+  },
+  // 방통위 그룹셀 수정
+  putKccGroup: async (requestData: { body: KccGroupPutRequestType }) => {
+    const url = `/api/kcc/group`;
+    return await instance.put(url, requestData);
+  },
+  // 방통위 그룹셀 삭제
+  deleteKccGroup: async ({ groupNo }: KccGroupDeleteRequestType) => {
+    const url = `/api/kcc/group/${groupNo}`;
+    return await instance.delete(url);
+  },
 };
 
 const KEY = {
@@ -66,6 +84,7 @@ export const useGetKccList = ({ groupNo }: KccRequestType) => {
       return await API.getKccList({ groupNo });
     },
     gcTime: 0,
+    enabled: !!groupNo,
   });
 };
 
@@ -77,6 +96,7 @@ export const useGetKccMsg = ({ encptMbtlNo }: KccMsgRequestType) => {
       return await API.getKccMsg({ encptMbtlNo });
     },
     gcTime: 0,
+    enabled: !!encptMbtlNo,
   });
 };
 
@@ -107,5 +127,29 @@ export const useKccExcelUpload = () => {
     { requestData: UploadKccExcelRequestType }
   >({
     mutationFn: ({ requestData }) => API.uploadKccExcel(requestData),
+  });
+};
+
+// 방통위 그룹셀 등록
+export const usePostKccGroup = () => {
+  return useMutation({
+    mutationFn: (requestData: { body: KccGroupPostRequestType }) =>
+      API.postKccGroup(requestData),
+  });
+};
+
+// 방통위 그룹셀 수정
+export const usePutKccGroup = () => {
+  return useMutation({
+    mutationFn: (requestData: { body: KccGroupPutRequestType }) =>
+      API.putKccGroup(requestData),
+  });
+};
+
+// 방통위 그룹셀 삭제
+export const useDeleteKccGroup = () => {
+  return useMutation({
+    mutationFn: ({ groupNo }: KccGroupDeleteRequestType) =>
+      API.deleteKccGroup({ groupNo }),
   });
 };

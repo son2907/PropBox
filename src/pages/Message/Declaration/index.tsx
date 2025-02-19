@@ -17,7 +17,8 @@ import IconSquareButton from "../../../components/Button/IconSquareButton";
 import PathConstants from "../../../routers/path";
 import { openPopup } from "../../../utils/openPopup";
 import { useTableSelect } from "../../../hooks/useTableSelect";
-import { useGetKccList } from "../../../api/kcc";
+import { useGetKccList, useGetKccMsg } from "../../../api/kcc";
+import { useState } from "react";
 
 export default function DeclarationMessage() {
   const {
@@ -29,6 +30,8 @@ export default function DeclarationMessage() {
     useMultiRowSelection();
   const { selectedRows: ts_2, toggleRowsSelection: tt_2 } =
     useMultiRowSelection();
+
+  const [encptMbtlNo, setEncptMbtlNo] = useState("");
 
   const { currentPage, onChangePage } = usePagination();
 
@@ -45,10 +48,23 @@ export default function DeclarationMessage() {
 
   const { countValues, selectValue, handleChange } = useTableSelect();
 
+  const onClickGetMsg = (encptMbtlNo) => {
+    setEncptMbtlNo(encptMbtlNo);
+  };
+
   // -----------------------------API-----------------------------
 
-  // const { data: kccListData } = useGetKccList();
+  // TODO 그룹 선택할 수 있게 수정해야 함(api 또는 고정 데이터가 없음)
+  const testGroupData = 1;
+  const testEncpt = "AA9EE02D23DABA9C41B874B4F1332468";
+  const { data: kccListData } = useGetKccList({ groupNo: testGroupData });
+  const { data: kccMsgData } = useGetKccMsg({
+    // encptMbtlNo
+    encptMbtlNo: testEncpt,
+  });
 
+  console.log("kccListData:", kccListData);
+  console.log("kccMsgData:", kccMsgData);
   return (
     <Stack width={"100%"} height={"100%"}>
       <GrayBox gap={1}>
@@ -83,26 +99,48 @@ export default function DeclarationMessage() {
         <Stack width={"50%"} height={"100%"}>
           <TableBox.Inner>
             <CheckboxTable
-              data={tableTestData}
+              data={kccListData?.data?.contents}
               selectedRows={ts_1}
               toggleRowsSelection={tt_1}
             >
               <CheckboxTable.Thead>
                 <CheckboxTable.Tr>
-                  <CheckboxTable.CheckboxTh keyName="id" />
+                  <CheckboxTable.CheckboxTh keyName="groupNo" />
                   <CheckboxTable.Th>그룹</CheckboxTable.Th>
                   <CheckboxTable.Th>신고전화번호</CheckboxTable.Th>
                   <CheckboxTable.Th>휴대전화</CheckboxTable.Th>
+                  <CheckboxTable.Th>전화상담</CheckboxTable.Th>
+                  <CheckboxTable.Th>설문</CheckboxTable.Th>
+                  <CheckboxTable.Th>MGM</CheckboxTable.Th>
+                  <CheckboxTable.Th>이벤트</CheckboxTable.Th>
+                  <CheckboxTable.Th>방문상담</CheckboxTable.Th>
+                  <CheckboxTable.Th>고객등록</CheckboxTable.Th>
+                  <CheckboxTable.Th>메세지 조회</CheckboxTable.Th>
                 </CheckboxTable.Tr>
               </CheckboxTable.Thead>
 
               <CheckboxTable.Tbody>
-                {tableTestData.map((item) => (
-                  <CheckboxTable.Tr key={item.id} id={item.id}>
-                    <CheckboxTable.CheckboxTd item={item} keyName="id" />
-                    <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                    <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                    <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
+                {kccListData?.data?.contents?.map((item, index) => (
+                  <CheckboxTable.Tr key={index} id={item.groupNo}>
+                    <CheckboxTable.CheckboxTd item={item} keyName="groupNo" />
+                    <CheckboxTable.Td>{item.grpNm}</CheckboxTable.Td>
+                    <CheckboxTable.Td>{item.encptMbtlNo}</CheckboxTable.Td>
+                    <CheckboxTable.Td>{item.sttemntTelno}</CheckboxTable.Td>
+                    <CheckboxTable.Td>전화상담</CheckboxTable.Td>
+                    <CheckboxTable.Td>설문</CheckboxTable.Td>
+                    <CheckboxTable.Td>MGM</CheckboxTable.Td>
+                    <CheckboxTable.Td>이벤트</CheckboxTable.Td>
+                    <CheckboxTable.Td>방문상담</CheckboxTable.Td>
+                    <CheckboxTable.Td>고객등록</CheckboxTable.Td>
+                    <CheckboxTable.Td>
+                      <BasicButton
+                        onClick={() => {
+                          onClickGetMsg(item.encptMbtlNo);
+                        }}
+                      >
+                        조회
+                      </BasicButton>
+                    </CheckboxTable.Td>
                   </CheckboxTable.Tr>
                 ))}
               </CheckboxTable.Tbody>
@@ -121,22 +159,18 @@ export default function DeclarationMessage() {
 
         <Stack width={"50%"} height={"100%"}>
           <TableBox.Inner>
-            <BasicTable data={tableTestData}>
+            <BasicTable data={kccMsgData?.data?.contents}>
               <BasicTable.Th>전송일시</BasicTable.Th>
               <BasicTable.Th>구분</BasicTable.Th>
               <BasicTable.Th>메시지</BasicTable.Th>
 
               <BasicTable.Tbody>
-                {tableTestData.map((item, index) => {
+                {kccMsgData?.data?.contents?.map((item, index) => {
                   return (
-                    <BasicTable.Tr
-                      key={index}
-                      isClicked={ts_2.has(item.id)}
-                      onClick={() => tt_2(item.id)}
-                    >
-                      <BasicTable.Td>{item.name}</BasicTable.Td>
-                      <BasicTable.Td>{item.age}</BasicTable.Td>
-                      <BasicTable.Td>{item.age}</BasicTable.Td>
+                    <BasicTable.Tr key={index}>
+                      <BasicTable.Td>{item.trnsmitTxt}</BasicTable.Td>
+                      <BasicTable.Td>{item.smsKnd}</BasicTable.Td>
+                      <BasicTable.Td>{item.trnsmitTxt}</BasicTable.Td>
                     </BasicTable.Tr>
                   );
                 })}
