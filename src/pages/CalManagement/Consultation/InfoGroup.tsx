@@ -45,7 +45,6 @@ import { useSptStore } from "../../../stores/sptStore";
 import PhoneInput from "../../../components/Input/PhoneInput";
 
 export default function InfoGroup({ tabType }: TabType) {
-  console.log("InfoGroup");
   const [smsPopup, setSmsPopup] = useState<any>();
   // 웹소켓
   const webSocket = useWebSocket(WebSocketContext);
@@ -320,8 +319,6 @@ export default function InfoGroup({ tabType }: TabType) {
 
   // 모달 hook
   const { openModal, closeModal } = useModal();
-
-  console.log("########cnsltNo:", cnsltNo, fromSocket);
 
   // <========================= 저장 버튼 =========================>
 

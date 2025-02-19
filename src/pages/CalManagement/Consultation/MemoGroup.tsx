@@ -22,7 +22,6 @@ import { useSptStore } from "../../../stores/sptStore";
 import { useSingleRowData } from "../../../hooks/useTest";
 
 export default function MemoGroup() {
-  console.log("MemoGroup");
   const { value, handleChange: tabChange } = useTabs(0);
 
   const { selectedRow, toggleRowSelection, resetSelection } =
@@ -49,8 +48,6 @@ export default function MemoGroup() {
   }, [histListData]);
 
   const { sptNo } = useSptStore();
-
-  console.log("@@@@@@@@@@@@@@@  cstmrNo, trsmYn :", cstmrNo, trsmYn);
 
   const postMemoFn = () => {
     const body = {

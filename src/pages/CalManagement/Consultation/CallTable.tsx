@@ -16,8 +16,6 @@ import { filterDataByValues } from "../../../utils/filterDataByValues";
 import useDidMountEffect from "../../../hooks/useDidMountEffect";
 
 export default function CallTable({ tabType, tabChange }: TabType) {
-  console.log("CallTable");
-
   //  통화콜, 부재콜
   const { value: takeValue, handleChange: takeChange } = useTabs(0);
 
