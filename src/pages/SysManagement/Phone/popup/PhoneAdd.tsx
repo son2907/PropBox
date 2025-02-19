@@ -12,7 +12,7 @@ import CenteredBox from "../../../../components/Box/CenteredBox";
 import { useMultiRowSelection } from "../../../../hooks/useMultiRowSelection";
 import MultiSelect from "../../../../components/Select/MultiSelect";
 import { useMultiSelect } from "../../../../hooks/useMultiSselect";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import RowDragTable from "../../../../components/Table/RowDragTable";
 import { openPopup } from "../../../../utils/openPopup";
 import PathConstants from "../../../../routers/path";
@@ -25,6 +25,13 @@ import Calendar from "../../../../components/Calendar/Calendar";
 import useToggleButtton from "../../../../hooks/useToggleButton";
 import PasswordInput from "../../../../components/Input/PasswordInput";
 import { BsGear } from "react-icons/bs";
+import useModal from "../../../../hooks/useModal";
+import { useForm } from "react-hook-form";
+import { getDeviceSection, insertPhone } from "../../../../api/networkSetup";
+import PhoneInput from "../../../../components/Input/PhoneInput";
+import { DeviceSectionListType, InsertPhone } from "../../../../types/networkSetup";
+import { useAuthStore } from "../../../../stores/authStore";
+import { EmptyDataModal } from "../../../../components/layout/modal/EmptyDataModal";
 
 interface Data {
   id: string;
@@ -32,11 +39,38 @@ interface Data {
 }
 
 export default function PhoneAdd() {
-  const {
-    selectListData: sd_0,
-    selectValue: s_0,
-    handleChange: o_0,
-  } = useSelect(selectTestData, "value", "data");
+
+  const { loginId } = useAuthStore(["loginId"]);
+
+  //모달
+  const { openModal, closeModal } = useModal();
+
+  //초기값
+  const { register, handleSubmit, reset, getValues } = useForm({
+    defaultValues: {
+      telno: "",
+      commnSeNo: "",
+      lxtnNo: "",
+      id: "",
+      pwdNo: "",
+      rmk: "",
+    }
+  });
+
+  //전화기 추가 api
+  const insertPhoneAPI = insertPhone();
+
+  //장치구분
+  const { data: deviceSection, refetch: refetchDeviceSection } = getDeviceSection();
+  const [deviceSectionData, setDeviceSection] = useState<DeviceSectionListType[]>([]);
+  const [deviceSectionDataKey, setDeviceSectionDataKey] = useState("");
+  const [deviceSectionDataValue, setDeviceSectionDataValue] = useState("");
+
+  const { selectListData, selectValue, handleChange } = useSelect(
+    deviceSectionData,
+    "commnSeNo",
+    "commnSeNm"
+  );
 
   const { selectedValues, handleSelectChange } = useMultiSelect<number>();
   const [data, setData] = useState<Data[]>(tableTestData);
@@ -60,11 +94,7 @@ export default function PhoneAdd() {
     defaultValue: true,
   });
 
-  const { selectListData, selectValue, handleChange } = useSelect(
-    selectTestData,
-    "value",
-    "data"
-  );
+
 
   //장치구분관리
   const deviceType = {
@@ -73,92 +103,163 @@ export default function PhoneAdd() {
     windowFeatures: "width=500,height=800,scrollbars=yes,resizable=yes",
   };
 
+  useEffect(() => {
+    if (deviceSection?.data?.contents) {
+      setDeviceSection(deviceSection.data.contents);
+    }
+  }, [deviceSection]);
+
+  //전화기 추가
+  const onSubmit = useCallback(
+    (data: any) => {
+      const phoneInsertReqData: InsertPhone = {
+        telno: getValues("telno") || "",
+        commnSeNo: deviceSectionDataKey || "",
+        lxtnNo: getValues("lxtnNo") || "",
+        id: getValues("id") || "",
+        pwdNo: getValues("pwdNo") || "",
+        rmk: getValues("rmk") || "",
+        userId: loginId || ""
+      };
+
+      if (!data.telno || !deviceSectionDataKey || !data.lxtnNo || !data.id || !data.pwdNo) {
+        emptyDataModal();
+      } else {
+        console.log("보낼 데이터 확인 : ", phoneInsertReqData);
+      }
+    }, []
+  );
+
+  //모달
+  const emptyDataModal = () => {
+    openModal(EmptyDataModal, {
+      modalId: "EmptyDataModal",
+      stack: false,
+      onClose: () => closeModal,
+      onSubmit: () => closeModal,
+    });
+  };
+
   return (
-    <Stack
-      width={"100%"}
-      height={"100%"}
-      bgcolor={"white"}
-      alignItems={"center"}
-      justifyContent={"space-between"}
-      alignContent={"center"}
+    <form
+      onSubmit={handleSubmit(onSubmit)}
     >
-      <Stack width={"80%"}>
-        <Stack
-          direction={"row"}
-          gap={1}
-          marginTop={1}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Typography>전화번호</Typography>
-          <BasicInput sx={{ width: "80%" }}></BasicInput>
-        </Stack>
-        <Stack
-          direction={"row"}
-          gap={1}
-          marginTop={1}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Typography>내선번호</Typography>
-          <BasicInput sx={{ width: "80%" }}></BasicInput>
-        </Stack>
-        <Stack
-          direction={"row"}
-          gap={1}
-          marginTop={1}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Typography>아이디</Typography>
-          <BasicInput sx={{ width: "80%" }}></BasicInput>
-        </Stack>
-        <Stack
-          direction={"row"}
-          gap={1}
-          marginTop={1}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Typography>비밀번호</Typography>
-          <PasswordInput sx={{ width: "80%" }}></PasswordInput>
-        </Stack>
-        <Stack
-          direction={"row"}
-          gap={1}
-          marginTop={1}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Typography>장치구분</Typography>
-          <Stack width={"80%"} direction={"row"} justifyContent={"center"}>
-            <Select
-              value={selectValue}
-              onChange={handleChange}
-              selectData={selectTestData}
+      <Stack
+        width={"100%"}
+        height={"100%"}
+        bgcolor={"white"}
+        alignItems={"center"}
+        justifyContent={"space-between"}
+        alignContent={"center"}
+      >
+        <Stack width={"80%"}>
+          <Stack
+            direction={"row"}
+            gap={1}
+            marginTop={1}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Typography>전화번호</Typography>
+            <PhoneInput
+              sx={{ width: "80%" }}
+              placeholder={"전화번호 입력"}
+              {...register("telno")}
             />
-            <Box marginLeft={1} alignContent={"center"}>
-              <IconButton
-                onClick={() => {
-                  openPopup({
-                    url: deviceType.url,
-                    windowName: deviceType.windowName,
-                    windowFeatures: deviceType.windowFeatures,
-                  });
+          </Stack>
+          <Stack
+            direction={"row"}
+            gap={1}
+            marginTop={1}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Typography>내선번호</Typography>
+            <PhoneInput
+              sx={{ width: "80%" }}
+              placeholder={"내선번호 입력"}
+              {...register("lxtnNo")}
+            />
+          </Stack>
+          <Stack
+            direction={"row"}
+            gap={1}
+            marginTop={1}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Typography>아이디</Typography>
+            <BasicInput
+              sx={{ width: "80%" }}
+              placeholder={"아이디 입력"}
+              {...register("id")}
+            />
+          </Stack>
+          <Stack
+            direction={"row"}
+            gap={1}
+            marginTop={1}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Typography>비밀번호</Typography>
+            <BasicInput
+              sx={{ width: "80%" }}
+              placeholder={"비밀번호 입력"}
+              {...register("pwdNo")}
+            />
+          </Stack>
+          <Stack
+            direction={"row"}
+            gap={1}
+            marginTop={1}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Typography>장치구분</Typography>
+            <Stack width={"80%"} direction={"row"} justifyContent={"center"}>
+              <Select
+                value={selectValue} // 선택한 값 유지
+                onChange={(e) => {
+                  const newValue = e.target.value; // 선택된 값 (commnSeNm)
+                  const selectedOption = deviceSectionData.find(
+                    (item) => item.commnSeNm === newValue
+                  );
+
+                  if (selectedOption) {
+                    console.log("구분값 변경:", selectedOption.commnSeNm);
+                    console.log(`구분값 키 변경: ${selectedOption.commnSeNo}`); // cd 콘솔 출력
+                    setDeviceSectionDataKey(selectedOption.commnSeNo);
+                    setDeviceSectionDataValue(selectedOption.commnSeNm);
+                    handleChange(e); // selectValue를 업데이트
+                  }
                 }}
-              >
-                <BsGear size={"24px"} />
-              </IconButton>
-            </Box>
+                selectData={deviceSectionData.map((item) => ({
+                  value: item.commnSeNm,
+                  data: item.commnSeNm,
+                }))}
+              />
+              <Box marginLeft={1} alignContent={"center"}>
+                <IconButton
+                  onClick={() => {
+                    openPopup({
+                      url: deviceType.url,
+                      windowName: deviceType.windowName,
+                      windowFeatures: deviceType.windowFeatures,
+                    });
+                  }}
+                >
+                  <BsGear size={"24px"} />
+                </IconButton>
+              </Box>
+            </Stack>
           </Stack>
         </Stack>
-      </Stack>
-      <GrayBox width={"100%"}>
-        <Box sx={{ marginLeft: "auto" }}>
-          <BasicButton>확인</BasicButton>
+        <GrayBox width={"100%"} marginTop={1} gap={1} justifyContent={"end"}>
+          <BasicButton type="submit">확인</BasicButton>
           <BasicButton>취소</BasicButton>
-        </Box>
-      </GrayBox>
-    </Stack>
+        </GrayBox>
+      </Stack>
+    </form>
   );
 }

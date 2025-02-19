@@ -25,6 +25,9 @@ import Calendar from "../../../components/Calendar/Calendar";
 import useToggleButtton from "../../../hooks/useToggleButton";
 import PasswordInput from "../../../components/Input/PasswordInput";
 import { BsGear } from "react-icons/bs";
+import useModal from "../../../hooks/useModal";
+import { useForm } from "react-hook-form";
+import { insertPhone } from "../../../api/networkSetup";
 
 interface Data {
   id: string;
@@ -32,6 +35,25 @@ interface Data {
 }
 
 export default function PhoneAdd() {
+  //모달
+  const { openModal, closeModal } = useModal();
+
+  //초기값
+  const { register, handleSubmit, reset, getValues } = useForm({
+    defaultValues: {
+      telno: "",
+      commnSeNo: "",
+      lxtnNo: "",
+      id: "",
+      pwdNo: "",
+      rmk: "",
+    }
+  });
+
+  const insertPhoneAPI = insertPhone();
+
+
+
   const {
     selectListData: sd_0,
     selectValue: s_0,
@@ -74,91 +96,109 @@ export default function PhoneAdd() {
   };
 
   return (
-    <Stack
-      width={"100%"}
-      height={"100%"}
-      bgcolor={"white"}
-      alignItems={"center"}
-      justifyContent={"space-between"}
-      alignContent={"center"}
-    >
-      <Stack width={"80%"}>
-        <Stack
-          direction={"row"}
-          gap={1}
-          marginTop={1}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Typography>전화번호</Typography>
-          <BasicInput sx={{ width: "80%" }}></BasicInput>
-        </Stack>
-        <Stack
-          direction={"row"}
-          gap={1}
-          marginTop={1}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Typography>내선번호</Typography>
-          <BasicInput sx={{ width: "80%" }}></BasicInput>
-        </Stack>
-        <Stack
-          direction={"row"}
-          gap={1}
-          marginTop={1}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Typography>아이디</Typography>
-          <BasicInput sx={{ width: "80%" }}></BasicInput>
-        </Stack>
-        <Stack
-          direction={"row"}
-          gap={1}
-          marginTop={1}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Typography>비밀번호</Typography>
-          <PasswordInput sx={{ width: "80%" }}></PasswordInput>
-        </Stack>
-        <Stack
-          direction={"row"}
-          gap={1}
-          marginTop={1}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Typography>장치구분</Typography>
-          <Stack width={"80%"} direction={"row"} justifyContent={"center"}>
-            <Select
-              value={selectValue}
-              onChange={handleChange}
-              selectData={selectTestData}
+    <form>
+      <Stack
+        width={"100%"}
+        height={"100%"}
+        bgcolor={"white"}
+        alignItems={"center"}
+        justifyContent={"space-between"}
+        alignContent={"center"}
+      >
+        <Stack width={"80%"}>
+          <Stack
+            direction={"row"}
+            gap={1}
+            marginTop={1}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Typography>전화번호</Typography>
+            <BasicInput
+              sx={{ width: "80%" }}
+              placeholder={"전화번호 입력"}
+              {...register("telno")}
             />
-            <Box marginLeft={1} alignContent={"center"}>
-              <IconButton
-                onClick={() => {
-                  openPopup({
-                    url: deviceType.url,
-                    windowName: deviceType.windowName,
-                    windowFeatures: deviceType.windowFeatures,
-                  });
-                }}
-              >
-                <BsGear size={"24px"} />
-              </IconButton>
-            </Box>
+          </Stack>
+          <Stack
+            direction={"row"}
+            gap={1}
+            marginTop={1}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Typography>내선번호</Typography>
+            <BasicInput
+              sx={{ width: "80%" }}
+              placeholder={"내선번호 입력"}
+              {...register("lxtnNo")}
+            />
+          </Stack>
+          <Stack
+            direction={"row"}
+            gap={1}
+            marginTop={1}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Typography>아이디</Typography>
+            <BasicInput
+              sx={{ width: "80%" }}
+              placeholder={"아이디 입력"}
+              {...register("id")}
+            />
+          </Stack>
+          <Stack
+            direction={"row"}
+            gap={1}
+            marginTop={1}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Typography>비밀번호</Typography>
+            <BasicInput
+              sx={{ width: "80%" }}
+              placeholder={"비밀번호 입력"}
+              {...register("pwdNo")}
+            />
+          </Stack>
+          <Stack
+            direction={"row"}
+            gap={1}
+            marginTop={1}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Typography>장치구분</Typography>
+            <Stack width={"80%"} direction={"row"} justifyContent={"center"}>
+              <Select
+                value={selectValue}
+                onChange={handleChange}
+                selectData={selectTestData}
+              />
+              <Box marginLeft={1} alignContent={"center"}>
+                <IconButton
+                  onClick={() => {
+                    openPopup({
+                      url: deviceType.url,
+                      windowName: deviceType.windowName,
+                      windowFeatures: deviceType.windowFeatures,
+                    });
+                  }}
+                >
+                  <BsGear size={"24px"} />
+                </IconButton>
+              </Box>
+            </Stack>
           </Stack>
         </Stack>
+        <GrayBox width={"100%"}>
+          <Box sx={{ marginLeft: "auto" }}>
+            <BasicButton>확인</BasicButton>
+            <BasicButton>취소</BasicButton>
+          </Box>
+        </GrayBox>
       </Stack>
-      <GrayBox width={"100%"}>
-        <Box sx={{ marginLeft: "auto" }}>
-          <BasicButton>확인</BasicButton>
-          <BasicButton>취소</BasicButton>
-        </Box>
-      </GrayBox>
-    </Stack>
+    </form>
   );
 }
