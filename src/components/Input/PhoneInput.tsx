@@ -8,7 +8,7 @@ interface InputProps extends OutlinedInputProps {
 
 //전화번호 정규식 추가 inputbox
 const PhoneInput = forwardRef<HTMLInputElement, InputProps>(
-  ({ placeholder = "", value, ...rest }, ref) => {
+  ({ placeholder = "", value, defaultValue = "", ...rest }, ref) => {
     const [phoneNum, setPhoneNum] = useState(value);
 
     // 숫자만 입력되도록 함
@@ -47,6 +47,11 @@ const PhoneInput = forwardRef<HTMLInputElement, InputProps>(
       setPhoneNum(numericValue);
     };
 
+    // 포커스 아웃 시 값 초기화
+    const handleBlur = () => {
+      setPhoneNum(value); // 입력값 초기화
+    };
+
     return (
       <OutlinedInput
         {...rest}
@@ -54,7 +59,9 @@ const PhoneInput = forwardRef<HTMLInputElement, InputProps>(
         placeholder={placeholder}
         inputRef={ref}
         value={phoneNum}
+        defaultValue={defaultValue}
         onChange={handleChange} // 숫자만 입력받도록 설정
+        onBlur={handleBlur} // 포커스 아웃 시 초기화
         sx={{
           backgroundColor: "white",
           ...(rest.sx || {}),

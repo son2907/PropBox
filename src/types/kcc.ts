@@ -49,10 +49,28 @@ export type UploadKccExcelRequestType = {
 
 // 방통위 신고 그룹 목록 조회(팝업)
 export type KccGroupListType = {
-  groupNo: string | null;
-  groupNm: string | null;
+  groupNo: string;
+  groupNm: string;
 };
 
 export interface KccGroupListResponseType extends ApiResponseType {
   contents: KccGroupListType[];
 }
+
+// 방통위 그룹셀 팝업
+// 등록
+export type KccGroupPostRequestType = {
+  sptNo: string;
+  groupNm: string;
+};
+
+// 수정
+export type KccGroupPutRequestType = {
+  groupNo: string;
+  groupNm: string;
+};
+
+// 삭제
+export type KccGroupDeleteRequestType = {
+  groupNo: string;
+};
