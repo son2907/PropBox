@@ -22,11 +22,17 @@ interface CheckboxThProps extends CheckboxTdProps {
   [property: string]: any;
 }
 
-const Th: React.FC<TableItemProps> = ({ children, ...rest }) => {
+const Th: React.FC<TableItemProps & { radius?: boolean }> = ({
+  children,
+  radius = false,
+  ...rest
+}) => {
   return (
     <th
       {...rest}
-      className="border-solid bg-gray-200 border border-gray-300 border-b-0 border-t-0 last:border-0 text-left whitespace-nowrap sticky top-0 z-10"
+      className={`border-solid bg-tableHeader border border-tableBorder border-t-0 first:border-l-0 last:border-r-0 text-center whitespace-nowrap py-3 sticky top-0 z-10 ${
+        radius ? "first:rounded-tl-lg last:rounded-tr-lg" : ""
+      }`}
     >
       {children}
     </th>
@@ -82,7 +88,7 @@ const EmptyTable = () => {
     <table className="table-auto w-full border-collapse">
       <thead>
         <tr>
-          <th className="border-solid flex justify-center bg-gray-200 border border-gray-300 border-b-0 border-t-0 p-2 text-left last:border-0">
+          <th className="border-solid bg-tableHeader border border-tableBorder border-t-0 first:border-l-0 last:border-r-0 text-center whitespace-nowrap py-3 sticky top-0 z-10">
             조회 데이터가 존재하지 않습니다.
           </th>
         </tr>

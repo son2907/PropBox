@@ -8,9 +8,19 @@ interface TableItemProps {
   children: ReactNode;
   [property: string]: any; // ...rest를 받기 위함
 }
-const Th: React.FC<TableItemProps> = ({ children }) => {
+
+const Th: React.FC<TableItemProps & { radius?: boolean }> = ({
+  children,
+  radius = false,
+  ...rest
+}) => {
   return (
-    <th className="border-solid bg-gray-200 border border-gray-300 border-b-0 border-t-0 last:border-0 text-left py-3 px-3 whitespace-nowrap sticky top-0 z-10">
+    <th
+      {...rest}
+      className={`border-solid bg-tableHeader border border-tableBorder border-t-0 first:border-l-0 last:border-r-0 text-center whitespace-nowrap py-3 sticky top-0 z-10 ${
+        radius ? "first:rounded-tl-lg last:rounded-tr-lg" : ""
+      }`}
+    >
       {children}
     </th>
   );
@@ -18,7 +28,10 @@ const Th: React.FC<TableItemProps> = ({ children }) => {
 
 const Td: React.FC<TableItemProps> = ({ children, ...rest }) => {
   return (
-    <td className="py-1 px-1" {...rest}>
+    <td
+      className="py-3 px-3 border-tableBorder border-solid border border-b-0 border-t-0 first:border-l-0 last:border-r-0  "
+      {...rest}
+    >
       {children}
     </td>
   );

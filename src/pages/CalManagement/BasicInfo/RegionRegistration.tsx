@@ -10,7 +10,7 @@ import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
 import { useAreaList } from "../../../api/callCnslt";
 import { AreaListItem } from "../../../types/callCnslt";
 import { filterDataByValues } from "../../../utils/filterDataByValues";
-import { BasicDeleteConfirmModal } from "../../../components/layout/modal/BasicDeleteConfirmModal";
+import { BasicDeleteConfirmModal } from "../../../components/Modal/modal/BasicDeleteConfirmModal";
 import useModal from "../../../hooks/useModal";
 import {
   useDeleteBasicArea,

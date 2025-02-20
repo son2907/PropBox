@@ -8,13 +8,14 @@ import { useMultiRowSelection } from "../../../../hooks/useMultiRowSelection";
 import CheckboxTable from "../../../../components/Table/CheckboxTable";
 import { useGetKccGroupList, useKccExcelUpload } from "../../../../api/kcc";
 import HardcodingBasicTable from "../../../../components/Table/HardcodingBasicTable";
-import { ExcelToTable } from "../../../../utils/excelToTable";
 import { useRef, useState } from "react";
 import { filterDataByValues } from "../../../../utils/filterDataByValues";
 import { useApiRes } from "../../../../utils/useApiRes";
 import useModal from "../../../../hooks/useModal";
-import { BasicCompletedModl } from "../../../../components/layout/modal/BasicCompletedModl";
-import { ConfirmMultipleDeletionModal } from "../../../../components/layout/modal/ConfirmMultipleDeletionModal";
+import { BasicCompletedModl } from "../../../../components/Modal/modal/BasicCompletedModl";
+import { ConfirmMultipleDeletionModal } from "../../../../components/Modal/modal/ConfirmMultipleDeletionModal";
+import { ExcelToTable } from "../../../../utils/ExcelToTable";
+import { useSptStore } from "../../../../stores/sptStore";
 
 export default function Spam() {
   const {
@@ -24,7 +25,7 @@ export default function Spam() {
   } = useMultiRowSelection();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [tableHeader, setTableHeader] = useState<any[]>([]);
-  const [tableData, setTableData] = useState<any[]>([]);
+  const [tableData, setTableData] = useState<any>([]);
 
   const { data: groupList } = useGetKccGroupList(); // 그룹 목록
 
@@ -37,17 +38,26 @@ export default function Spam() {
   const { mutate: uploadExcel } = useKccExcelUpload();
   const checkApiFail = useApiRes();
   const { openModal, closeModal } = useModal();
+  const { sptNo } = useSptStore();
 
   const onClickUpload = () => {
     const file = fileInputRef.current?.files?.[0];
     if (!file) return;
+
+    const body = {
+      sptNo: sptNo,
+      groupNo: s_0,
+      mbtlNoList: tableData.map(({ id, 스팸문자 }) => ({
+        id,
+        mbtlNo: 스팸문자,
+      })),
+    };
+
+    console.log("body:", body);
+
     uploadExcel(
       {
-        requestData: {
-          groupNo: s_0,
-          mbtlNoPos: 1,
-          file: file,
-        },
+        body: body,
       },
       {
         onSuccess: (res) => {

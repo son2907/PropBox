@@ -82,7 +82,12 @@ export default function Content({ children }: ContentProps) {
           );
         })}
         <Box marginLeft={"auto"}>
-          <IconSquareButton color="primary">
+          <IconSquareButton
+            color="primary"
+            onClick={() => {
+              navigate(0);
+            }}
+          >
             <HiRefresh />
           </IconSquareButton>
         </Box>

@@ -23,16 +23,23 @@ import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
 import { BiChevronLeft } from "react-icons/bi";
 import useModal from "../../../hooks/useModal";
 import api from "../../../api";
-import { useLocalList, useLocalMemberList, usePermissionLocalList } from "../../../api/localManagement";
-import { LocalListType, localMemberListType, LocalPermissionListType } from "../../../types/localManagementType";
+import {
+  useLocalList,
+  useLocalMemberList,
+  usePermissionLocalList,
+} from "../../../api/localManagement";
+import {
+  LocalListType,
+  localMemberListType,
+  LocalPermissionListType,
+} from "../../../types/localManagementType";
 import useDidMountEffect from "../../../hooks/useDidMountEffect";
 import { useMemberMenuList } from "../../../api/authManagement";
 import { MemberMenuList } from "../../../types/authManagement";
 import { UserListType } from "../../../types/userList";
-import { EmptySelectModal } from "../../../components/layout/modal/EmptySelectModal";
+import { EmptySelectModal } from "../../../components/Modal/modal/EmptySelectModal";
 
 export default function AuthManagement() {
-
   //모달
   const { openModal, closeModal } = useModal();
 
@@ -49,23 +56,41 @@ export default function AuthManagement() {
   const [selectUserNo, setSelectUserNo] = useState("");
 
   //현장 리스트
-  const [localListReqData, setLocalListReqData] = useState({ sptNm: "", progrsSeCd: "", userNo: "", cntrctBgnde: "", cntrctEndde: "" });
-  const { data: localListData, refetch: refetchLocalListData } = useLocalList(localListReqData);
+  const [localListReqData, setLocalListReqData] = useState({
+    sptNm: "",
+    progrsSeCd: "",
+    userNo: "",
+    cntrctBgnde: "",
+    cntrctEndde: "",
+  });
+  const { data: localListData, refetch: refetchLocalListData } =
+    useLocalList(localListReqData);
   const [selectLocalNo, setSelectLocalNo] = useState("");
   const [localList, setLocalList] = useState<LocalListType[]>([]);
 
   //현장 허가 솔루션
-  const { data: localPermissionData, refetch: refetchLocalPermissionData } = usePermissionLocalList(selectLocalNo);
-  const [localPermission, setLocalPermission] = useState<LocalPermissionListType[]>([]);
+  const { data: localPermissionData, refetch: refetchLocalPermissionData } =
+    usePermissionLocalList(selectLocalNo);
+  const [localPermission, setLocalPermission] = useState<
+    LocalPermissionListType[]
+  >([]);
 
   //현장 구성원 리스트
-  const [localMemberReqData, setLocalMemberReqData] = useState({ sptNo: "", userNm: "", rspofcNm: "" });
-  const { data: localMemberListData, refetch: localMemberListDataRefetch } = useLocalMemberList(localMemberReqData);
-  const [localMemberList, setLocalMemberList] = useState<localMemberListType[]>([]);
+  const [localMemberReqData, setLocalMemberReqData] = useState({
+    sptNo: "",
+    userNm: "",
+    rspofcNm: "",
+  });
+  const { data: localMemberListData, refetch: localMemberListDataRefetch } =
+    useLocalMemberList(localMemberReqData);
+  const [localMemberList, setLocalMemberList] = useState<localMemberListType[]>(
+    []
+  );
   const [selectMemberNo, setSelectMemberNo] = useState("");
 
   //구성원 메뉴 조회
-  const { data: memberMenuListData, refetch: memberMenuListDataRefetch } = useMemberMenuList(selectMemberNo);  //팝업테스트를 위해 임시로 처리
+  const { data: memberMenuListData, refetch: memberMenuListDataRefetch } =
+    useMemberMenuList(selectMemberNo); //팝업테스트를 위해 임시로 처리
   const [memberMenuList, setMemberMenuList] = useState<MemberMenuList[]>([]);
 
   const { selectListData, selectValue, handleChange } = useSelect(
@@ -123,8 +148,8 @@ export default function AuthManagement() {
   useEffect(() => {
     setLocalMemberReqData((prev) => ({
       ...prev,
-      sptNo: selectLocalNo
-    }))
+      sptNo: selectLocalNo,
+    }));
   }, [selectLocalNo]);
   useDidMountEffect(() => {
     if (localMemberListData?.data.contents) {
@@ -135,7 +160,7 @@ export default function AuthManagement() {
     if (memberMenuListData?.data.contents) {
       setMemberMenuList(memberMenuListData.data.contents);
     }
-  }, [memberMenuListData, selectUserNo])
+  }, [memberMenuListData, selectUserNo]);
 
   //구성원 메뉴 권한 등록 및 수정
   const memberMenuPermission = {
@@ -170,7 +195,7 @@ export default function AuthManagement() {
     setLocalListReqData((prev) => ({
       ...prev,
       sptNm: localSearchInput, // 선택한 값으로 isUse 업데이트
-      userNo: selectUserNo
+      userNo: selectUserNo,
     }));
   };
 
@@ -323,25 +348,27 @@ export default function AuthManagement() {
                   <BasicTable.Th>직책</BasicTable.Th>
 
                   <BasicTable.Tbody>
-                    {(localMemberListData?.data.contents || []).map((item, index) => {
-                      return (
-                        <BasicTable.Tr
-                          key={index}
-                          isClicked={selectMemberNo === item.userNo}
-                          onClick={() => {
-                            if (selectMemberNo === item.userNo) {
-                              setSelectMemberNo("");
-                            } else {
-                              setSelectMemberNo(item.userNo);
-                            }
-                          }}
-                        >
-                          <BasicTable.Td>{item.userNo}</BasicTable.Td>
-                          <BasicTable.Td>{item.userNm}</BasicTable.Td>
-                          <BasicTable.Td>{item.rspofcNm}</BasicTable.Td>
-                        </BasicTable.Tr>
-                      );
-                    })}
+                    {(localMemberListData?.data.contents || []).map(
+                      (item, index) => {
+                        return (
+                          <BasicTable.Tr
+                            key={index}
+                            isClicked={selectMemberNo === item.userNo}
+                            onClick={() => {
+                              if (selectMemberNo === item.userNo) {
+                                setSelectMemberNo("");
+                              } else {
+                                setSelectMemberNo(item.userNo);
+                              }
+                            }}
+                          >
+                            <BasicTable.Td>{item.userNo}</BasicTable.Td>
+                            <BasicTable.Td>{item.userNm}</BasicTable.Td>
+                            <BasicTable.Td>{item.rspofcNm}</BasicTable.Td>
+                          </BasicTable.Tr>
+                        );
+                      }
+                    )}
                   </BasicTable.Tbody>
                 </BasicTable>
               </TableBox.Inner>
@@ -383,71 +410,81 @@ export default function AuthManagement() {
               </TableBox.Inner>
               <GrayBox>
                 <TableBox justifyContent={"space-between"}>
-                  <Stack width={"50%"} gap={1} direction={"row"} >
-                    <BasicButton onClick={() => memberMenuListDataRefetch()}>새로고침</BasicButton>
+                  <Stack width={"50%"} gap={1} direction={"row"}>
+                    <BasicButton onClick={() => memberMenuListDataRefetch()}>
+                      새로고침
+                    </BasicButton>
                   </Stack>
-                  <Stack width={"50%"} gap={1} direction={"row"} justifyContent={"end"}>
+                  <Stack
+                    width={"50%"}
+                    gap={1}
+                    direction={"row"}
+                    justifyContent={"end"}
+                  >
                     <BasicButton
                       onClick={() => {
-                        const selectedMember = (localMemberListData?.data.contents || []).find(
-                          (item) => item.userNo === selectMemberNo
-                        );
+                        const selectedMember = (
+                          localMemberListData?.data.contents || []
+                        ).find((item) => item.userNo === selectMemberNo);
                         const selectedSptNo = selectedMember?.sptNo || "";
 
                         console.log("선택된 userNo:", selectMemberNo);
                         console.log("선택된 sptNo:", selectedSptNo);
 
-                        if(selectMemberNo) {
+                        if (selectMemberNo) {
                           openPopup({
                             url: `${memberMenuPermission.url}?userNo=${selectMemberNo}&sptNo=${selectedSptNo}`,
                             windowName: memberMenuPermission.windowName,
                             windowFeatures: memberMenuPermission.windowFeatures,
                           });
                         } else {
-                          emptySelectModal()
+                          emptySelectModal();
                         }
-                        
                       }}
-                    >권한관리</BasicButton>
+                    >
+                      권한관리
+                    </BasicButton>
                     <BasicButton
                       onClick={() => {
-                        const selectedMember = (localMemberListData?.data.contents || []).find(
-                          (item) => item.userNo === selectMemberNo
-                        );
+                        const selectedMember = (
+                          localMemberListData?.data.contents || []
+                        ).find((item) => item.userNo === selectMemberNo);
                         const selectedSptNo = selectedMember?.sptNo || "";
 
-                        if(selectMemberNo) {
+                        if (selectMemberNo) {
                           openPopup({
                             url: `${menuPermissionCopy.url}?userNo=${selectMemberNo}&sptNo=${selectedSptNo}`,
                             windowName: menuPermissionCopy.windowName,
                             windowFeatures: menuPermissionCopy.windowFeatures,
                           });
                         } else {
-                          emptySelectModal()
+                          emptySelectModal();
                         }
-                        
                       }}
-                    >권한복사</BasicButton>
+                    >
+                      권한복사
+                    </BasicButton>
                     <BasicButton
                       onClick={() => {
-
                         // 선택된 menuId 값에 해당하는 slutnId 찾기
-                        const selectedSlutnIds = (memberMenuListData?.data.contents || [])
+                        const selectedSlutnIds = (
+                          memberMenuListData?.data.contents || []
+                        )
                           .filter((item) => memberSelectRows.has(item.menuId)) // menuId로 필터링
                           .map((item) => item.menuId); // slutnId만 추출
 
-                        const slutnIdParam = selectedSlutnIds.join(','); // 콤마로 연결된 문자열
+                        const slutnIdParam = selectedSlutnIds.join(","); // 콤마로 연결된 문자열
 
                         //userNo 추출
-                        const selectedMember = (localMemberListData?.data.contents || []).find(
-                          (item) => item.userNo === selectMemberNo
-                        );
+                        const selectedMember = (
+                          localMemberListData?.data.contents || []
+                        ).find((item) => item.userNo === selectMemberNo);
                         //현장 번호 추출
                         const selectedSptNo = selectedMember?.sptNo || "";
 
                         console.log("선택한 슬루션 ID:", selectedSlutnIds);
 
-                        if(selectMemberNo) {
+                        if (selectMemberNo) {
                           openPopup({
                             url: `${permissionRevoke.url}?slutnId=${slutnIdParam}&userNo=${selectMemberNo}&sptNo=${selectedSptNo}`,
                             windowName: permissionRevoke.windowName,
@@ -456,9 +493,10 @@ export default function AuthManagement() {
                         } else {
                           emptySelectModal();
                         }
-                        
                       }}
-                    >권한회수</BasicButton>
+                    >
+                      권한회수
+                    </BasicButton>
                   </Stack>
                 </TableBox>
               </GrayBox>

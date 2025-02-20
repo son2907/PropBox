@@ -27,7 +27,7 @@ import useModal from "../../../../hooks/useModal";
 import { localInsert } from "../../../../api/localManagement";
 import { LocalInsertType } from "../../../../types/localManagementType";
 import { useAuthStore } from "../../../../stores/authStore";
-import { InsertCompletedModal } from "../../../../components/layout/modal/InsertCompletedModal";
+import { InsertCompletedModal } from "../../../../components/Modal/modal/InsertCompletedModal";
 
 interface Data {
   id: string;
@@ -41,12 +41,11 @@ interface FormData {
   endDate: string;
   isUse: string;
   rmk: string;
-  progrsSeCd: string,
+  progrsSeCd: string;
 }
 
 //현장등록
 export default function LocalRegistration() {
-
   //팝업 페이지에서 id를 가져오려면 window.location.search를 사용하여 파라미터를 파싱
   const queryParams = new URLSearchParams(window.location.search);
   const id = queryParams.get("id");
@@ -60,13 +59,11 @@ export default function LocalRegistration() {
   const [localId, setLocalId] = useState("");
   const [localCode, setLocalCode] = useState("");
   const [localName, setLocalName] = useState("");
-  const [startDate, setStartDate] = useState<Date>(new Date());  //시작일
-  const [endDate, setEndDate] = useState<Date>(new Date());  //종료일
+  const [startDate, setStartDate] = useState<Date>(new Date()); //시작일
+  const [endDate, setEndDate] = useState<Date>(new Date()); //종료일
   const [isUse, setIsUse] = useState(true);
   const [progrsSeCd, setProgrsSeCd] = useState("");
   const [rmk, setRmk] = useState("");
-
-
 
   //모달
   const { openModal, closeModal } = useModal();
@@ -88,7 +85,6 @@ export default function LocalRegistration() {
   //현장 추가
   const insertLocalAPI = localInsert();
 
-
   const localRegistration = {
     url: PathConstants.System.LocalRegistration,
     windowName: "현장 등록 및 수정",
@@ -103,7 +99,6 @@ export default function LocalRegistration() {
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}${month}${day}`;
   };
-
 
   const { toggle, onChange: setToggle } = useToggleButtton({
     defaultValue: true,
@@ -121,12 +116,11 @@ export default function LocalRegistration() {
     //   progrsSeCd: value, // 선택한 값으로 isUse 업데이트
     // }));
     setProgrsSeCd(value);
-    console.log("선택값은? :", value)
+    console.log("선택값은? :", value);
   };
 
   //현장 추가를 위한 데이터
   const handleInsert = () => {
-
     //api 호출시 전달할 데이터
     const localInsertData: LocalInsertType = {
       sptNo: localId,
@@ -151,9 +145,9 @@ export default function LocalRegistration() {
               console.log("response.data", response.data);
               insertCompletedModal();
             }
-          }
+          },
         }
-      )
+      );
     }
   };
 

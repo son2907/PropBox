@@ -21,7 +21,7 @@ import { useRadioGroup } from "../../../../hooks/useRadioGroup";
 import { openPopup } from "../../../../utils/openPopup";
 import PathConstants from "../../../../routers/path";
 import useModal from "../../../../hooks/useModal";
-import { FileModal } from "../../../../components/layout/modal/FIleModal";
+import { FileModal } from "../../../../components/Modal/modal/FIleModal";
 import {
   useDeleteMsg,
   useGetCidList,
@@ -37,13 +37,13 @@ import { useSingleRowData } from "../../../../hooks/useTest";
 import { MsgSaveItem } from "../../../../types/callCnslt";
 import { useSptStore } from "../../../../stores/sptStore";
 import { useApiRes } from "../../../../utils/useApiRes";
-import { BasicCompletedModl } from "../../../../components/layout/modal/BasicCompletedModl";
-import { FailModal } from "../../../../components/layout/modal/FailModal";
-import { BasicDeleteConfirmModal } from "../../../../components/layout/modal/BasicDeleteConfirmModal";
+import { BasicCompletedModl } from "../../../../components/Modal/modal/BasicCompletedModl";
+import { FailModal } from "../../../../components/Modal/modal/FailModal";
+import { BasicDeleteConfirmModal } from "../../../../components/Modal/modal/BasicDeleteConfirmModal";
 
 import TimePicker from "../../../../components/TimePicker";
 import { getFormatTime } from "../../../../utils/getFormatTime";
-import { WarningModal } from "../../../../components/layout/modal/WarningModal";
+import { WarningModal } from "../../../../components/Modal/modal/WarningModal";
 
 interface Register {
   sj: string;

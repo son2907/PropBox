@@ -14,17 +14,34 @@ import BasicInput from "../../../components/Input/BasicInput";
 import { BasicButton, ToggleButton } from "../../../components/Button";
 import useToggleButtton from "../../../hooks/useToggleButton";
 import api from "../../../api";
-import { deleteMenu, deleteSolution, insertMenu, insertSolution, reorderSolution, updateMenu, updateSolution, useMenuDetail, useSolutionDetail, useSolutionList, useSolutionMenuList } from "../../../api/solutionList";
+import {
+  deleteMenu,
+  deleteSolution,
+  insertMenu,
+  insertSolution,
+  reorderSolution,
+  updateMenu,
+  updateSolution,
+  useMenuDetail,
+  useSolutionDetail,
+  useSolutionList,
+  useSolutionMenuList,
+} from "../../../api/solutionList";
 import { licenseMethodType } from "../../../api/licenseMethod";
 import { useAuthStore } from "../../../stores/authStore";
 import useModal from "../../../hooks/useModal";
-import { InsertCompletedModal } from "../../../components/layout/modal/InsertCompletedModal";
-import { UpdateCompletedModal } from "../../../components/layout/modal/UpdateCompletedModal";
-import { ConfirmDeleteModal } from "../../../components/layout/modal/ConfirmDeleteModal";
-import { DeleteCompletedModal } from "../../../components/layout/modal/DeleteCompletedModal";
-import { EmptySelectModal } from "../../../components/layout/modal/EmptySelectModal";
-import { EmptyDataModal } from "../../../components/layout/modal/EmptyDataModal";
-import { solutionDetailType, SolutionListType, solutionMenuDetailType, SolutionMenuListType } from "../../../types/solution";
+import { InsertCompletedModal } from "../../../components/Modal/modal/InsertCompletedModal";
+import { UpdateCompletedModal } from "../../../components/Modal/modal/UpdateCompletedModal";
+import { ConfirmDeleteModal } from "../../../components/Modal/modal/ConfirmDeleteModal";
+import { DeleteCompletedModal } from "../../../components/Modal/modal/DeleteCompletedModal";
+import { EmptySelectModal } from "../../../components/Modal/modal/EmptySelectModal";
+import { EmptyDataModal } from "../../../components/Modal/modal/EmptyDataModal";
+import {
+  solutionDetailType,
+  SolutionListType,
+  solutionMenuDetailType,
+  SolutionMenuListType,
+} from "../../../types/solution";
 import useDidMountEffect from "../../../hooks/useDidMountEffect";
 import { useApiRes } from "../../../utils/useApiRes";
 
@@ -47,7 +64,8 @@ export default function SolutionManagement() {
   const [selectedSolutionId, setSelectedSolutionId] = useState<string>("");
 
   // 솔루션 상세 데이터
-  const [solutionDetail, setSolutionDetail] = useState<solutionDetailType | null>(null);
+  const [solutionDetail, setSolutionDetail] =
+    useState<solutionDetailType | null>(null);
   const [selectMenuID, setSelectMenuID] = useState<string>("");
   const { data: solutionDetailData, isSuccess: isSolutionDetailSuccess } =
     useSolutionDetail(selectedSolutionId);
@@ -62,7 +80,9 @@ export default function SolutionManagement() {
   const [solutionUseYn, setSolutionUseYn] = useState(true);
 
   // 메뉴 데이터
-  const [solutionMenuList, setSolutionMenuList] = useState<SolutionMenuListType[]>([]);
+  const [solutionMenuList, setSolutionMenuList] = useState<
+    SolutionMenuListType[]
+  >([]);
   const { data: menuData, refetch: refetchMenuData } =
     useSolutionMenuList(selectedSolutionId);
 
@@ -82,7 +102,9 @@ export default function SolutionManagement() {
 
   //라이선스 방식 데이터
   const { isSuccess, data } = api.LicenseMethod.useLicenseMethod();
-  const [licenseMethodData, setLicenseMethodData] = useState<licenseMethodType[]>([]);
+  const [licenseMethodData, setLicenseMethodData] = useState<
+    licenseMethodType[]
+  >([]);
 
   const selectData = [
     { value: "Y", data: "사용" },

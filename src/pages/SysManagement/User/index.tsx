@@ -22,12 +22,23 @@ import CheckboxTable from "../../../components/Table/CheckboxTable";
 import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import api from "../../../api";
-import { deleteUser, userNonPermissionRegistration, userPermissionRegistration, userSolutionCount, useUserNonPermissionSolution, useUserPermitSolution } from "../../../api/userList";
+import {
+  deleteUser,
+  userNonPermissionRegistration,
+  userPermissionRegistration,
+  userSolutionCount,
+  useUserNonPermissionSolution,
+  useUserPermitSolution,
+} from "../../../api/userList";
 import { useAuthStore } from "../../../stores/authStore";
 import useModal from "../../../hooks/useModal";
-import { ConfirmDeleteModal } from "../../../components/layout/modal/ConfirmDeleteModal";
-import { DeleteCompletedModal } from "../../../components/layout/modal/DeleteCompletedModal";
-import { UserListType, UserNonPermissionSolutionType, UserPermitSolutionType } from "../../../types/userList";
+import { ConfirmDeleteModal } from "../../../components/Modal/modal/ConfirmDeleteModal";
+import { DeleteCompletedModal } from "../../../components/Modal/modal/DeleteCompletedModal";
+import {
+  UserListType,
+  UserNonPermissionSolutionType,
+  UserPermitSolutionType,
+} from "../../../types/userList";
 
 export default function Registration() {
   const [searchQuery, setSearchQuery] = useState(""); // 검색어 상태 관리
@@ -41,17 +52,25 @@ export default function Registration() {
 
   //사용자 허가 솔루션 목록 가져오기
   const [userSelectRow, setSelectRow] = useState(""); //사용자 허가 솔루션을 가져오기위한 id
-  const [userPermitSolution, setUserPermitSolution] = useState<UserPermitSolutionType[]>([]);
-  const { data: userPermitSolutionData, refetch: refetchPermitSolution } = useUserPermitSolution(userSelectRow);
-  const [solutionCounts, setSolutionCounts] = useState<Record<string, string>>({}); // 각 행의 solutionCount 관리
+  const [userPermitSolution, setUserPermitSolution] = useState<
+    UserPermitSolutionType[]
+  >([]);
+  const { data: userPermitSolutionData, refetch: refetchPermitSolution } =
+    useUserPermitSolution(userSelectRow);
+  const [solutionCounts, setSolutionCounts] = useState<Record<string, string>>(
+    {}
+  ); // 각 행의 solutionCount 관리
   const [userNo, setUserNo] = useState("");
   const [solutionId, setSolutionId] = useState("");
   const [userId, setUserId] = useState("");
   const [solutionTotalCount, setSolutionTotalCount] = useState("");
 
   //사용자 미허가 솔루션 목록 가져오기
-  const [userNonPermitSolution, setUserNonPermitSolution] = useState<UserNonPermissionSolutionType[]>([]);
-  const { data: userNonPermitSolutionData, refetch: refetchNonPermitSolution, } = useUserNonPermissionSolution(userSelectRow);
+  const [userNonPermitSolution, setUserNonPermitSolution] = useState<
+    UserNonPermissionSolutionType[]
+  >([]);
+  const { data: userNonPermitSolutionData, refetch: refetchNonPermitSolution } =
+    useUserNonPermissionSolution(userSelectRow);
 
   const permissionRegistration = userPermissionRegistration();
   const nonPermissionRegistration = userNonPermissionRegistration();
@@ -62,7 +81,7 @@ export default function Registration() {
       slutnId: solutionId,
       userlisneCnt: solutionTotalCount,
       userId: userId,
-    }
+    },
   };
 
   //사용자 삭제를 위한 데이터
@@ -81,7 +100,7 @@ export default function Registration() {
       adres2: "",
       reprsntTelno: "",
       userId: "",
-    }
+    },
   };
 
   //api 호출을 위한 id호출
@@ -135,7 +154,7 @@ export default function Registration() {
 
   //모달
   const confirmDeleteModal = (userNo: string) => {
-    console.log("userNo?:", userNo)
+    console.log("userNo?:", userNo);
     setSelectRow(userNo); // 선택된 사용자 저장
     openModal(ConfirmDeleteModal, {
       modalId: "noticeDelete",
@@ -154,9 +173,9 @@ export default function Registration() {
       onClose: () => closeModal,
       onSubmit: () => {
         window.location.reload();
-      }
-    })
-  }
+      },
+    });
+  };
 
   //이벤트 발생시 동작
 
@@ -352,7 +371,6 @@ export default function Registration() {
     });
   };
 
-
   return (
     <>
       {/* 사용자 리스트 테이블 - 상단 테이블 */}
@@ -422,7 +440,9 @@ export default function Registration() {
                         <BasicTable.Td>{item.bizrno}</BasicTable.Td>
                         <BasicTable.Td>{item.useYn}</BasicTable.Td>
                         <BasicTable.Td>
-                          <IconButton onClick={() => confirmDeleteModal(item.userNo)}>
+                          <IconButton
+                            onClick={() => confirmDeleteModal(item.userNo)}
+                          >
                             <RiDeleteBinLine color="#f4475f" />
                           </IconButton>
                         </BasicTable.Td>
@@ -481,33 +501,40 @@ export default function Registration() {
                       </CheckboxTable.Tr>
                     </CheckboxTable.Thead>
                     <CheckboxTable.Tbody>
-                      {(userPermitSolutionData?.data?.contents || []).map((item) => (
-                        <CheckboxTable.Tr key={item.slutnId} id={item.slutnId}>
-                          <CheckboxTable.CheckboxTd
-                            item={item}
-                            keyName="slutnId"
-                          />
-                          <CheckboxTable.Td>{item.slutnId}</CheckboxTable.Td>
-                          <CheckboxTable.Td>{item.slutnNm}</CheckboxTable.Td>
-                          <CheckboxTable.Td>{item.lisneSeNm}</CheckboxTable.Td>
-                          <CheckboxTable.Td>
-                            <BasicInput
-                              placeholder={item.userlisneCnt}
-                              value={solutionCounts[item.slutnId] || ""} // 현재 행의 입력값
-                              onChange={(e) =>
-                                handleSolutionCountChange(
-                                  item.slutnId,
-                                  e.target.value
-                                )
-                              } // 각 행의 상태 업데이트
+                      {(userPermitSolutionData?.data?.contents || []).map(
+                        (item) => (
+                          <CheckboxTable.Tr
+                            key={item.slutnId}
+                            id={item.slutnId}
+                          >
+                            <CheckboxTable.CheckboxTd
+                              item={item}
+                              keyName="slutnId"
                             />
-                          </CheckboxTable.Td>
-                          <CheckboxTable.Td>
-                            {item.sptlisneCnt}
-                          </CheckboxTable.Td>
-                          <CheckboxTable.Td>{item.chrgcnt}</CheckboxTable.Td>
-                        </CheckboxTable.Tr>
-                      ))}
+                            <CheckboxTable.Td>{item.slutnId}</CheckboxTable.Td>
+                            <CheckboxTable.Td>{item.slutnNm}</CheckboxTable.Td>
+                            <CheckboxTable.Td>
+                              {item.lisneSeNm}
+                            </CheckboxTable.Td>
+                            <CheckboxTable.Td>
+                              <BasicInput
+                                placeholder={item.userlisneCnt}
+                                value={solutionCounts[item.slutnId] || ""} // 현재 행의 입력값
+                                onChange={(e) =>
+                                  handleSolutionCountChange(
+                                    item.slutnId,
+                                    e.target.value
+                                  )
+                                } // 각 행의 상태 업데이트
+                              />
+                            </CheckboxTable.Td>
+                            <CheckboxTable.Td>
+                              {item.sptlisneCnt}
+                            </CheckboxTable.Td>
+                            <CheckboxTable.Td>{item.chrgcnt}</CheckboxTable.Td>
+                          </CheckboxTable.Tr>
+                        )
+                      )}
                     </CheckboxTable.Tbody>
                   </CheckboxTable>
                 </TableBox.Inner>
@@ -515,7 +542,9 @@ export default function Registration() {
                   <BasicButton onClick={handleCheckSolutionData}>
                     적용
                   </BasicButton>
-                  <BasicButton onClick={() => refetchPermitSolution()}>새로고침</BasicButton>
+                  <BasicButton onClick={() => refetchPermitSolution()}>
+                    새로고침
+                  </BasicButton>
                 </GrayBox>
               </Stack>
               <Stack
@@ -573,18 +602,25 @@ export default function Registration() {
                     </CheckboxTable.Thead>
 
                     <CheckboxTable.Tbody>
-                      {(userNonPermitSolutionData?.data?.contents || []).map((item) => (
-                        <CheckboxTable.Tr key={item.slutnId} id={item.slutnId}>
-                          <CheckboxTable.CheckboxTd
-                            item={item}
-                            keyName="slutnId"
-                          />
-                          <CheckboxTable.Td>{item.slutnId}</CheckboxTable.Td>
-                          <CheckboxTable.Td>{item.slutnNm}</CheckboxTable.Td>
-                          <CheckboxTable.Td>{item.lisneSeNm}</CheckboxTable.Td>
-                          <CheckboxTable.Td>{item.isOk}</CheckboxTable.Td>
-                        </CheckboxTable.Tr>
-                      ))}
+                      {(userNonPermitSolutionData?.data?.contents || []).map(
+                        (item) => (
+                          <CheckboxTable.Tr
+                            key={item.slutnId}
+                            id={item.slutnId}
+                          >
+                            <CheckboxTable.CheckboxTd
+                              item={item}
+                              keyName="slutnId"
+                            />
+                            <CheckboxTable.Td>{item.slutnId}</CheckboxTable.Td>
+                            <CheckboxTable.Td>{item.slutnNm}</CheckboxTable.Td>
+                            <CheckboxTable.Td>
+                              {item.lisneSeNm}
+                            </CheckboxTable.Td>
+                            <CheckboxTable.Td>{item.isOk}</CheckboxTable.Td>
+                          </CheckboxTable.Tr>
+                        )
+                      )}
                     </CheckboxTable.Tbody>
                   </CheckboxTable>
                 </TableBox.Inner>
