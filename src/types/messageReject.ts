@@ -5,6 +5,7 @@ import { ApiResponseType } from "./apiResponse";
 export type GetRejectListRequestType = {
   page: number;
   limit: number;
+  rejectTelNo?: string;
 };
 
 export type GetRejectList = {
@@ -65,9 +66,7 @@ export interface GetRejectDetResponseType extends ApiResponseType {
 export type PostRejectRequestType = {
   rejectNo?: string;
   sptNo: string;
-  tel070No?: string;
-  rejectTelNo?: string;
-  rejectCd?: string;
+  rejectTelNo: string;
   useYn?: string;
   rmk: string;
   userId: string;

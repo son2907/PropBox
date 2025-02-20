@@ -11,7 +11,7 @@ interface TableItemProps {
 }
 const Th: React.FC<TableItemProps> = ({ children }) => {
   return (
-    <th className="border-solid bg-gray-200 border border-gray-300 border-b-0 border-t-0 last:border-0 text-left py-3 px-3 whitespace-nowrap">
+    <th className="border-solid bg-gray-200 border border-gray-300 border-b-0 border-t-0 last:border-0 text-left py-3 px-3 whitespace-nowrap sticky top-0 z-10">
       {children}
     </th>
   );
@@ -26,7 +26,7 @@ const Td: React.FC<TableItemProps> = ({ children, ...rest }) => {
 };
 
 const Tr: React.FC<
-  TableItemProps & { isClicked?: boolean; onClick?: () => void }
+  TableItemProps & { isClicked?: boolean; onClick?: (e?) => void }
 > = ({ children, isClicked, onClick, ...rest }) => {
   return (
     <tr

@@ -23,7 +23,8 @@ export default function CallTable({ tabType, tabChange }: TabType) {
   const { value: callOptionValue, handleChange: callOptionChange } = useTabs(0);
 
   // 단일 선택
-  const { selectedRow, toggleRowSelection } = useSingleRowSelection();
+  const { selectedRow, toggleRowSelection, resetSelection } =
+    useSingleRowSelection();
 
   const callPopupInfo = {
     url: PathConstants.Call.CallLog,
@@ -67,11 +68,6 @@ export default function CallTable({ tabType, tabChange }: TabType) {
 
   const { data: cnsltData } = useTelCnsltList(callYn, trsmYn);
   const { fromSocket, setCnsltInfo, clear } = useCnsltStore();
-  console.log("############# 테이블 데이터:", cnsltData);
-
-  // useDidMountEffect(() => {
-  //   resetSelection();
-  // }, [tabType, takeValue, callOptionValue]);
 
   useDidMountEffect(() => {
     if (selectedRow.size > 0 && cnsltData?.data?.contents) {
@@ -110,12 +106,14 @@ export default function CallTable({ tabType, tabChange }: TabType) {
     }
 
     if (selectedRow.size == 0 && !fromSocket) {
+      // 선택한 게 없으면서 socket으로부터 온 데이터가 아니면
       clear();
     }
   }, [selectedRow, cnsltData, callYn, trsmYn]);
 
   // Tab change 시에도 useCnsltStore에 값 저장
   useEffect(() => {
+    resetSelection();
     if (tabType === 0) {
       // 전화받기 탭
       const trsmYn = takeValue === 0 ? "Y" : "N"; // 통화콜 또는 부재콜
@@ -174,7 +172,11 @@ export default function CallTable({ tabType, tabChange }: TabType) {
                       <BasicTable.Tr
                         key={index}
                         isClicked={selectedRow.has(item.seqNo)}
-                        onClick={() => toggleRowSelection(item.seqNo)}
+                        onClick={(e) => {
+                          e.preventDefault(); // 기본 동작을 막음
+                          e.stopPropagation(); // 이벤트 버블링을 막음
+                          toggleRowSelection(item.seqNo); // row selection 토글
+                        }}
                       >
                         <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
                         <BasicTable.Td>{item.cnsltTelno}</BasicTable.Td>
@@ -222,7 +224,11 @@ export default function CallTable({ tabType, tabChange }: TabType) {
                           <BasicTable.Tr
                             key={index}
                             isClicked={selectedRow.has(item.waitCstmrNo)}
-                            onClick={() => toggleRowSelection(item.waitCstmrNo)}
+                            onClick={(e) => {
+                              toggleRowSelection(item.waitCstmrNo);
+                              e.preventDefault(); // 기본 동작을 막음
+                              e.stopPropagation(); // 이벤트 버블링을 막음
+                            }}
                           >
                             <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
                             <BasicTable.Td>{item.themaNm}</BasicTable.Td>
@@ -244,7 +250,11 @@ export default function CallTable({ tabType, tabChange }: TabType) {
                         <BasicTable.Tr
                           key={index}
                           isClicked={selectedRow.has(item.seqNo)}
-                          onClick={() => toggleRowSelection(item.seqNo)}
+                          onClick={(e) => {
+                            toggleRowSelection(item.seqNo);
+                            e.preventDefault(); // 기본 동작을 막음
+                            e.stopPropagation(); // 이벤트 버블링을 막음
+                          }}
                         >
                           <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
                           <BasicTable.Td>{item.cnsltTelno}</BasicTable.Td>

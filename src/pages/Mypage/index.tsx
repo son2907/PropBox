@@ -20,6 +20,7 @@ import { MyInfoDetailType, MyInfoUpdateType } from "../../types/myInfo";
 import { PasswordCheckErrorModal } from "../../components/layout/modal/PasswordCheckErrorModal";
 import { UpdateCompletedModal } from "../../components/layout/modal/UpdateCompletedModal";
 import { useForm } from "react-hook-form";
+import PhoneInput from "../../components/Input/PhoneInput";
 
 interface FormData {
   userID: string;
@@ -266,7 +267,7 @@ export default function UserInfoPopup() {
               <Typography fontSize={"19px"}>
                 전화번호
               </Typography>
-              <BasicInput
+              <PhoneInput
                 sx={{ height: "50px" }}
                 fullWidth
                 // value={phoneNum}

@@ -42,6 +42,7 @@ import { sendMessage, useWebSocket } from "../../../routers/guard/soketFn";
 import { WebSocketContext } from "../../../routers/guard/SoketGuard";
 import { getKoreanTime } from "../../../utils/getKoreanTime";
 import { useSptStore } from "../../../stores/sptStore";
+import PhoneInput from "../../../components/Input/PhoneInput";
 
 export default function InfoGroup({ tabType }: TabType) {
   const [smsPopup, setSmsPopup] = useState<any>();
@@ -63,6 +64,10 @@ export default function InfoGroup({ tabType }: TabType) {
     cnsltTelno,
     callYn,
     trsmYn,
+    socketInfo,
+    socketCallYn,
+    socketTrsmYn,
+    clear,
   } = useCnsltStore();
 
   // 상담 일자
@@ -96,8 +101,8 @@ export default function InfoGroup({ tabType }: TabType) {
   // 초깃값
   const defaultValue = useMemo(
     () => ({
-      cnsltTelno: cnsltTelno,
-      cstmrNm: cstmrNm,
+      cnsltTelno: "",
+      cstmrNm: "",
       cstmrRmk: "",
       mbtlNo: "",
       telNo: "",
@@ -109,7 +114,7 @@ export default function InfoGroup({ tabType }: TabType) {
       spcmnt: "",
       areaNo: "",
     }),
-    [cnsltTelno, cstmrNm]
+    []
   );
 
   // input 할당 useForm
@@ -129,27 +134,22 @@ export default function InfoGroup({ tabType }: TabType) {
 
   const [message, setMessage] = useState<object>();
 
-  const handleMessage = useCallback(
-    (event) => {
-      if (event.origin !== window.location.origin) {
-        return;
-      }
-      if (
-        event.data &&
-        JSON.stringify(event.data) !== JSON.stringify(message)
-      ) {
-        setMessage(event.data);
-      }
-    },
-    [message]
-  );
+  const handleMessage = (event) => {
+    if (event.origin !== window.location.origin) {
+      return;
+    }
+    if (event.data.source == "react-devtools-bridge") return;
+    if (event.data && JSON.stringify(event.data) !== JSON.stringify(message)) {
+      setMessage(event.data);
+    }
+  };
 
   useEffect(() => {
     window.addEventListener("message", handleMessage);
     return () => {
       window.removeEventListener("message", handleMessage);
     };
-  }, [handleMessage]);
+  }, []);
 
   useEffect(() => {
     if (message && Object.keys(message).length > 0) {
@@ -273,7 +273,7 @@ export default function InfoGroup({ tabType }: TabType) {
 
   // api 재호출 시 데이터 비움
   useDidMountEffect(() => {
-    console.log("이게 실행이 되어야 하는거임..");
+    if (fromSocket) return;
     if (cunsltDetailList?.data?.contents && !fromSocket) {
       reset({ ...cunsltDetailList.data.contents });
     } else {
@@ -286,20 +286,8 @@ export default function InfoGroup({ tabType }: TabType) {
   // 웹소켓 반응에 따라 데이터 바인딩
   useEffect(() => {
     if (fromSocket) {
-      reset({
-        cstmrNm,
-        cnsltTelno,
-        mbtlNo: "",
-        telNo: "",
-        cstmrRmk: "",
-        addr: "",
-        complianceRate: "",
-        hopeBalance: "",
-        cnsltCnt: "",
-        rctnRejectXyn: "",
-        spcmnt: "",
-        areaNo: "",
-      });
+      console.log("socketInfo:", socketInfo);
+      reset({ ...socketInfo });
       return;
     }
     if (trsmYn == "W") {
@@ -318,7 +306,16 @@ export default function InfoGroup({ tabType }: TabType) {
         areaNo: "",
       });
     }
-  }, [reset, cstmrNm, cnsltTelno, mbtlNo, telNo, fromSocket]);
+  }, [
+    reset,
+    cstmrNm,
+    cnsltTelno,
+    mbtlNo,
+    telNo,
+    fromSocket,
+    socketInfo,
+    trsmYn,
+  ]);
 
   // 모달 hook
   const { openModal, closeModal } = useModal();
@@ -340,7 +337,11 @@ export default function InfoGroup({ tabType }: TabType) {
       const body: CnsltInfoRequestType = {
         sptNo: sptNo,
         cstmrNo: isWorUn ? "0" : data_1.cstmrNo,
-        cnsltNo: !isToday(selectedDate) || isWorUn ? "0" : data_1.cnsltNo,
+        cnsltNo: fromSocket
+          ? cnsltNo
+          : !isToday(selectedDate) || isWorUn
+            ? "0"
+            : data_1.cnsltNo,
         cnsltnt: isWorUn ? "" : data_1.cnsltnt,
         cnsltDt: getFormattedDate(selectedDate),
         telId: isWorUn
@@ -348,16 +349,16 @@ export default function InfoGroup({ tabType }: TabType) {
           : data_1.telId !== ""
             ? data_1.telId
             : "0",
-        cnsltTelno: data.cnsltTelno,
-        cstmrNm: data.cstmrNm,
-        mbtlNo: data.mbtlNo,
-        telNo: data.telNo,
-        cstmrRmk: data.cstmrRmk,
-        addr: data.addr,
-        areaNo: selectValue,
-        spcmnt: data.spcmnt,
-        callYn: callYn || "",
-        trsmYn: trsmYn || "",
+        cnsltTelno: data.cnsltTelno, // 입력값
+        cstmrNm: data.cstmrNm, // 입력값
+        mbtlNo: data.mbtlNo, // 입력값
+        telNo: data.telNo, // 입력값
+        cstmrRmk: data.cstmrRmk, // 입력값
+        addr: data.addr, // 입력값
+        areaNo: selectValue, // 입력값
+        spcmnt: data.spcmnt, // 입력값
+        callYn: fromSocket ? socketCallYn || "" : callYn || "",
+        trsmYn: fromSocket ? socketTrsmYn || "" : trsmYn || "",
         legacySlutnId: isWorUn ? "CS0001" : "TM0001",
         userId: loginId || "",
         telCnsltCnList: telCnsltCnList,
@@ -395,6 +396,7 @@ export default function InfoGroup({ tabType }: TabType) {
           },
         }
       );
+      clear();
     },
     [
       cunsltDetailList,
@@ -522,7 +524,7 @@ export default function InfoGroup({ tabType }: TabType) {
               </CenteredBox>
               <CenteredBox>
                 <LabelTypo>휴대전화</LabelTypo>
-                <BasicInput {...register("mbtlNo")} />
+                <PhoneInput {...register("mbtlNo")} />
                 {tabType ? (
                   <IconSquareButton
                     tabIndex={-1}
@@ -534,7 +536,7 @@ export default function InfoGroup({ tabType }: TabType) {
                   </IconSquareButton>
                 ) : null}
                 <LabelTypo marginLeft={2}>일반전화</LabelTypo>
-                <BasicInput {...register("telNo")} />
+                <PhoneInput {...register("telNo")} />
                 {tabType ? (
                   <IconSquareButton
                     tabIndex={-1}
