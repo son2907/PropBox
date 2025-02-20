@@ -13,18 +13,19 @@ import { useEffect, useRef, useState } from "react";
 import BasicInput from "../../components/Input/BasicInput";
 import Calendar from "../../components/Calendar/Calendar";
 import { useAuthStore } from "../../stores/authStore";
-import { ConfirmDeleteModal } from "../../components/layout/modal/ConfirmDeleteModal";
+import { ConfirmDeleteModal } from "../../components/Modal/modal/ConfirmDeleteModal";
 import useModal from "../../hooks/useModal";
-import { DeleteCompletedModal } from "../../components/layout/modal/DeleteCompletedModal";
-import { deleteNotice, updateNotice, useNoticeDetail } from "../../api/noticeList";
+import { DeleteCompletedModal } from "../../components/Modal/modal/DeleteCompletedModal";
+import {
+  deleteNotice,
+  updateNotice,
+  useNoticeDetail,
+} from "../../api/noticeList";
 import { deleteNoticeType, noticeDetailType } from "../../types/notice";
-import { EmptyDataModal } from "../../components/layout/modal/EmptyDataModal";
-import { UpdateCompletedModal } from "../../components/layout/modal/UpdateCompletedModal";
-
-
+import { EmptyDataModal } from "../../components/Modal/modal/EmptyDataModal";
+import { UpdateCompletedModal } from "../../components/Modal/modal/UpdateCompletedModal";
 
 export default function NoticeModify() {
-
   const NoticeModify = {
     url: PathConstants.Notice.NoticeModify,
     windowName: "공지사항 수정",
@@ -66,12 +67,12 @@ export default function NoticeModify() {
   const confirmDeleteModal = () => {
     openModal(ConfirmDeleteModal, {
       modalId: "noticeDelete",
-      stack: false,  //단일 모달 모드
+      stack: false, //단일 모달 모드
       onClose: () => closeModal,
       onSubmit: () => {
         handleDelete();
-      }
-    })
+      },
+    });
   };
 
   //입력한 값이 없을때
@@ -82,7 +83,7 @@ export default function NoticeModify() {
       onClose: () => closeModal,
       onSubmit: () => {
         //window.close();
-      }
+      },
     });
   };
 
@@ -98,7 +99,7 @@ export default function NoticeModify() {
         if (window.opener) {
           window.opener.location.reload();
         }
-      }
+      },
     });
   };
 
@@ -109,15 +110,14 @@ export default function NoticeModify() {
       onClose: () => closeModal,
       onSubmit: () => {
         window.close();
-      }
-    })
-  }
+      },
+    });
+  };
 
   //------------공지사항 상세 가져옴-------------//
   const { isSuccess, data } = useNoticeDetail(id);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-
 
   useEffect(() => {
     console.log("data확인", data);
@@ -151,10 +151,9 @@ export default function NoticeModify() {
         setEndDate(parseDate(data.data.contents.popupEndde));
       }
 
-
       // 내용 설정
       setContent(data.data.contents.noticeCn || "");
-      setTitle(data.data.contents.noticeSj || "")
+      setTitle(data.data.contents.noticeSj || "");
       // popupYn이 'Y'일 경우 체크박스 상태를 true로 설정
       setIsPopupChecked(data.data.contents.popupYn === "Y");
     }
@@ -163,8 +162,16 @@ export default function NoticeModify() {
 
   useEffect(() => {
     const today = new Date();
-    const strippedEndDate = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
-    const strippedToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const strippedEndDate = new Date(
+      endDate.getFullYear(),
+      endDate.getMonth(),
+      endDate.getDate()
+    );
+    const strippedToday = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
 
     // endDate가 오늘 이전이면 읽기 전용 상태로 전환
     setIsReadOnly(strippedEndDate < strippedToday);
@@ -180,13 +187,13 @@ export default function NoticeModify() {
   // 필요한 데이터를 준비
   const noticeData = {
     body: {
-      noticeNo: id || "",       //공지사항 번호
-      noticeSj: title,       //공지사항 제목
-      noticeCn: content,       //공지사항 내용
-      popupYn: isPopupChecked ? "Y" : "N",        //팝업 여부
+      noticeNo: id || "", //공지사항 번호
+      noticeSj: title, //공지사항 제목
+      noticeCn: content, //공지사항 내용
+      popupYn: isPopupChecked ? "Y" : "N", //팝업 여부
       popupBgnde: formatDate(startDate), // 팝업 유지 시작일
-      popupEndde: formatDate(endDate),  // 팝업 유지 종료일
-      regDe: formatDate(new Date()),          //등록일
+      popupEndde: formatDate(endDate), // 팝업 유지 종료일
+      regDe: formatDate(new Date()), //등록일
       userId: loginId,
     },
   };
@@ -217,7 +224,6 @@ export default function NoticeModify() {
     } else {
       emptyDataModal();
     }
-
   };
 
   //----------삭제---------------
@@ -265,7 +271,15 @@ export default function NoticeModify() {
   return (
     <>
       <Stack bgcolor={"white"} width={"100%"} height={"100%"}>
-        <Stack direction={"row"} padding={1} width={"100%"} height={"5%"} gap={2} alignItems={"center"} marginTop={1}>
+        <Stack
+          direction={"row"}
+          padding={1}
+          width={"100%"}
+          height={"5%"}
+          gap={2}
+          alignItems={"center"}
+          marginTop={1}
+        >
           <Typography>제목</Typography>
           <Box>
             <BasicInput
@@ -290,8 +304,19 @@ export default function NoticeModify() {
             }}
           />
         </Box>
-        <Stack justifyContent={"space-between"} width={"100%"} direction={"row"} alignItems={"center"}>
-          <Stack direction={"row"} padding={1} alignItems={"center"} width={"80%"} gap={1}>
+        <Stack
+          justifyContent={"space-between"}
+          width={"100%"}
+          direction={"row"}
+          alignItems={"center"}
+        >
+          <Stack
+            direction={"row"}
+            padding={1}
+            alignItems={"center"}
+            width={"80%"}
+            gap={1}
+          >
             <Typography>팝업 유지 기간</Typography>
             {/* 캘린더 시작 ~ 끝 날짜 이거 너무 자주나와서 복붙해두면 편함 */}
             <div

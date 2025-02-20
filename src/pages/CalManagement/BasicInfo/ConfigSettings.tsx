@@ -22,7 +22,7 @@ import {
 import { useAuthStore } from "../../../stores/authStore";
 import { useApiRes } from "../../../utils/useApiRes";
 import useModal from "../../../hooks/useModal";
-import { BasicDeleteConfirmModal } from "../../../components/layout/modal/BasicDeleteConfirmModal";
+import { BasicDeleteConfirmModal } from "../../../components/Modal/modal/BasicDeleteConfirmModal";
 import useDidMountEffect from "../../../hooks/useDidMountEffect";
 import BasicInput from "../../../components/Input/BasicInput";
 import CenteredBox from "../../../components/Box/CenteredBox";

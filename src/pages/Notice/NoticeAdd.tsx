@@ -7,12 +7,11 @@ import BasicInput from "../../components/Input/BasicInput";
 import Calendar from "../../components/Calendar/Calendar";
 import { useAuthStore } from "../../stores/authStore";
 import useModal from "../../hooks/useModal";
-import { InsertCompletedModal } from "../../components/layout/modal/InsertCompletedModal";
-import { EmptyDataModal } from "../../components/layout/modal/EmptyDataModal";
+import { InsertCompletedModal } from "../../components/Modal/modal/InsertCompletedModal";
+import { EmptyDataModal } from "../../components/Modal/modal/EmptyDataModal";
 import { insertNotice } from "../../api/noticeList";
 
 export default function NoticeAdd() {
-
   const NoticeAdd = {
     url: PathConstants.Notice.NoticeAdd,
     windowName: "공지사항 등록",
@@ -52,8 +51,8 @@ export default function NoticeAdd() {
         if (window.opener) {
           window.opener.location.reload();
         }
-      }
-    })
+      },
+    });
   };
 
   //날짜 형식 재정의
@@ -74,15 +73,15 @@ export default function NoticeAdd() {
   //api 호출시 필요한 데이터 준비
   const insertData = {
     body: {
-      noticeNo: "",       //공지사항 번호
-      noticeSj: title,       //공지사항 제목
-      noticeCn: content,       //공지사항 내용
-      popupYn: isPopupChecked ? "Y" : "N",        //팝업 여부
-      popupBgnde: isPopupChecked ? formatDate(startDate) : "",     //팝업 유지 startdate
-      popupEndde: isPopupChecked ? formatDate(endDate) : "",     //팝업 유지 enddate
-      regDe: formatDate(new Date()),          //등록일
-      userId: loginId //userID
-    }
+      noticeNo: "", //공지사항 번호
+      noticeSj: title, //공지사항 제목
+      noticeCn: content, //공지사항 내용
+      popupYn: isPopupChecked ? "Y" : "N", //팝업 여부
+      popupBgnde: isPopupChecked ? formatDate(startDate) : "", //팝업 유지 startdate
+      popupEndde: isPopupChecked ? formatDate(endDate) : "", //팝업 유지 enddate
+      regDe: formatDate(new Date()), //등록일
+      userId: loginId, //userID
+    },
   };
 
   //입력한 값이 없을때
@@ -93,7 +92,7 @@ export default function NoticeAdd() {
       onClose: () => closeModal,
       onSubmit: () => {
         //window.close();
-      }
+      },
     });
   };
 
@@ -116,22 +115,28 @@ export default function NoticeAdd() {
         onError: (error) => {
           console.error("공지사항 추가 실패:", error);
         },
-      })
+      });
     } else {
       emptyDataModal();
     }
-
   };
 
   // useEffect(() => {
   //   console.log("content 상태 변경:", content);
   // }, [content]);
 
-
   return (
     <>
       <Stack bgcolor={"white"} width={"100%"} height={"100%"}>
-        <Stack direction={"row"} padding={1} width={"100%"} height={"5%"} gap={2} alignItems={"center"} marginTop={1}>
+        <Stack
+          direction={"row"}
+          padding={1}
+          width={"100%"}
+          height={"5%"}
+          gap={2}
+          alignItems={"center"}
+          marginTop={1}
+        >
           <Typography>제목</Typography>
           <Box>
             <BasicInput
@@ -159,8 +164,19 @@ export default function NoticeAdd() {
             }}
           />
         </Box>
-        <Stack justifyContent={"space-between"} width={"100%"} direction={"row"} alignItems={"center"}>
-          <Stack direction={"row"} padding={1} alignItems={"center"} width={"80%"} gap={1}>
+        <Stack
+          justifyContent={"space-between"}
+          width={"100%"}
+          direction={"row"}
+          alignItems={"center"}
+        >
+          <Stack
+            direction={"row"}
+            padding={1}
+            alignItems={"center"}
+            width={"80%"}
+            gap={1}
+          >
             <Typography>팝업 유지 기간</Typography>
             {/* 캘린더 시작 ~ 끝 날짜 이거 너무 자주나와서 복붙해두면 편함 */}
             <div

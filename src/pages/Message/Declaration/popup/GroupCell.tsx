@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import { useSptStore } from "../../../../stores/sptStore";
 import { useApiRes } from "../../../../utils/useApiRes";
 import useModal from "../../../../hooks/useModal";
-import { BasicCompletedModl } from "../../../../components/layout/modal/BasicCompletedModl";
+import { BasicCompletedModl } from "../../../../components/Modal/modal/BasicCompletedModl";
 import { DeleteModal } from "./Modal/DeleteModatl";
 import { DeleteCompleteModal } from "./Modal/DeleteCompleteModal";
 

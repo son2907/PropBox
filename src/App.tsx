@@ -18,7 +18,7 @@ function App() {
     let timeout: number | undefined;
 
     if (isLoading) {
-      timeout = window.setTimeout(() => setShowLoading(true), 500);
+      timeout = window.setTimeout(() => setShowLoading(true), 200);
     } else {
       setShowLoading(false);
       if (timeout !== undefined) {

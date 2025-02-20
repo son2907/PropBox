@@ -24,12 +24,15 @@ import LabelTypo from "../../../../components/Typography/LabelTypo";
 import Calendar from "../../../../components/Calendar/Calendar";
 import useToggleButtton from "../../../../hooks/useToggleButton";
 import { useAuthStore } from "../../../../stores/authStore";
-import { nonPermissionMenuInsert, permissionRevoke } from "../../../../api/authManagement";
+import {
+  nonPermissionMenuInsert,
+  permissionRevoke,
+} from "../../../../api/authManagement";
 import { PermissionRevokeType } from "../../../../types/authManagement";
 import useModal from "../../../../hooks/useModal";
-import { RevokeCompletedModal } from "../../../../components/layout/modal/RevokeCompletedModal";
-import { EmptyDataModal } from "../../../../components/layout/modal/EmptyDataModal";
-import { EmptySelectModal } from "../../../../components/layout/modal/EmptySelectModal";
+import { RevokeCompletedModal } from "../../../../components/Modal/modal/RevokeCompletedModal";
+import { EmptyDataModal } from "../../../../components/Modal/modal/EmptyDataModal";
+import { EmptySelectModal } from "../../../../components/Modal/modal/EmptySelectModal";
 
 interface Data {
   id: string;
@@ -44,7 +47,7 @@ export default function PermissionRevoke() {
   const slutnIdParam = queryParams.get("slutnId");
 
   // slutnId 문자열을 배열로 변환
-  const slutnIds = slutnIdParam ? slutnIdParam.split(',') : [];
+  const slutnIds = slutnIdParam ? slutnIdParam.split(",") : [];
 
   console.log("팝업으로 가져온 데이터:", { userNo, sptNo, slutnIds });
 
@@ -54,8 +57,8 @@ export default function PermissionRevoke() {
   //권한 회수
   const permissionReovekAPI = permissionRevoke();
 
-    //모달
-    const { openModal, closeModal } = useModal();
+  //모달
+  const { openModal, closeModal } = useModal();
 
   const {
     selectListData: sd_0,
@@ -78,7 +81,7 @@ export default function PermissionRevoke() {
       userNo: userNo || "",
       resn: revokeReason,
       userId: loginId || "",
-      slutnIdList: slutnIds.map((id) => ({ slutnId: id })) // 변환된 배열
+      slutnIdList: slutnIds.map((id) => ({ slutnId: id })), // 변환된 배열
     };
 
     console.log("보낼 데이터 확인좀: ", requestData);
@@ -88,18 +91,17 @@ export default function PermissionRevoke() {
         { body: requestData },
         {
           onSuccess: (response) => {
-            if(response.data.message === "SUCCESS") {
+            if (response.data.message === "SUCCESS") {
               console.log("response.data", response.data);
               revokeCompletedModal();
             }
-          }
+          },
         }
-      )
+      );
     } else {
       emptyDataModal();
     }
   };
-
 
   const revokeCompletedModal = () => {
     openModal(RevokeCompletedModal, {
@@ -131,8 +133,6 @@ export default function PermissionRevoke() {
     });
   };
 
-  
-
   return (
     <Stack
       width={"100%"}
@@ -151,7 +151,11 @@ export default function PermissionRevoke() {
           justifyContent={"space-between"}
         >
           <Typography>사용자아이디</Typography>
-          <BasicInput sx={{ width: "80%" }} value={loginId} disabled></BasicInput>
+          <BasicInput
+            sx={{ width: "80%" }}
+            value={loginId}
+            disabled
+          ></BasicInput>
         </Stack>
         <Stack
           direction={"row"}

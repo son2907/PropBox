@@ -17,8 +17,8 @@ import { useAuthStore } from "../../stores/authStore";
 import useModal from "../../hooks/useModal";
 import { myInfoDetail, myInfoUpdate } from "../../api/myInfo";
 import { MyInfoDetailType, MyInfoUpdateType } from "../../types/myInfo";
-import { PasswordCheckErrorModal } from "../../components/layout/modal/PasswordCheckErrorModal";
-import { UpdateCompletedModal } from "../../components/layout/modal/UpdateCompletedModal";
+import { PasswordCheckErrorModal } from "../../components/Modal/modal/PasswordCheckErrorModal";
+import { UpdateCompletedModal } from "../../components/Modal/modal/UpdateCompletedModal";
 import { useForm } from "react-hook-form";
 import PhoneInput from "../../components/Input/PhoneInput";
 
@@ -35,7 +35,6 @@ interface FormData {
 }
 
 export default function UserInfoPopup() {
-
   //api를 호출하기위해 userID 불러오기
   const { loginId } = useAuthStore(["loginId"]);
   const { userNo } = useAuthStore(["userNo"]);
@@ -72,7 +71,6 @@ export default function UserInfoPopup() {
     },
   });
 
-
   const myInfoUpdateAPI = myInfoUpdate();
 
   // useEffect(() => {
@@ -86,45 +84,38 @@ export default function UserInfoPopup() {
       userName: data?.data?.contents?.userNm,
       userID: data?.data?.contents?.loginId,
       phoneNum: data?.data?.contents?.mbtlNo,
-    })
+    });
   }, [data]);
 
-  const onSubmit = useCallback(
-    (data: any) => {
-      const myInfoReqData: MyInfoUpdateType = {
-        userNo: userNo,
-        userNm: getValues("userName") || "",
-        encptUserNm: "",
-        attlistUserNm: "",
-        pwdNo: getValues("password"),
-        mbtlNo: getValues("phoneNum") || "",
-        attlistMbtlNo: "",
-        encptMbtlNo: "",
-        userId: loginId || "",
-      };
+  const onSubmit = useCallback((data: any) => {
+    const myInfoReqData: MyInfoUpdateType = {
+      userNo: userNo,
+      userNm: getValues("userName") || "",
+      encptUserNm: "",
+      attlistUserNm: "",
+      pwdNo: getValues("password"),
+      mbtlNo: getValues("phoneNum") || "",
+      attlistMbtlNo: "",
+      encptMbtlNo: "",
+      userId: loginId || "",
+    };
 
-
-
-      if (!data.password || data.passwordCheck === data.password) {
-        console.log("보낼 데이터 확인 : ", myInfoReqData);
-        myInfoUpdateAPI.mutate(
-          { body: myInfoReqData },
-          {
-            onSuccess: (response) => {
-              if (response.data.message === "SUCCESS") {
-                updateCompletedModal();
-              }
+    if (!data.password || data.passwordCheck === data.password) {
+      console.log("보낼 데이터 확인 : ", myInfoReqData);
+      myInfoUpdateAPI.mutate(
+        { body: myInfoReqData },
+        {
+          onSuccess: (response) => {
+            if (response.data.message === "SUCCESS") {
+              updateCompletedModal();
             }
-          }
-        )
-      } else {
-        passwordCheckModal();
-      }
-
-    },
-    []
-  );
-
+          },
+        }
+      );
+    } else {
+      passwordCheckModal();
+    }
+  }, []);
 
   // useEffect(() => {
   //   if (myInfoDetailData) {
@@ -199,18 +190,19 @@ export default function UserInfoPopup() {
     });
   };
 
-
   return (
     <>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <Stack bgcolor={"white"} width={"100%"} height={"100%"} padding={"5%"} justifyContent={"space-between"}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Stack
+          bgcolor={"white"}
+          width={"100%"}
+          height={"100%"}
+          padding={"5%"}
+          justifyContent={"space-between"}
+        >
           <Stack padding={1} width={"100%"} height={"100%"} gap={1}>
             <Stack width={"100%"} gap={1}>
-              <Typography fontSize={"19px"}>
-                아이디
-              </Typography>
+              <Typography fontSize={"19px"}>아이디</Typography>
               <BasicInput
                 sx={{ height: "50px" }}
                 placeholder="아이디 입력"
@@ -218,13 +210,11 @@ export default function UserInfoPopup() {
                 autoComplete="current-password"
                 disabled
                 {...register("userID")}
-              //error={""}
+                //error={""}
               />
             </Stack>
             <Stack width={"100%"} gap={1}>
-              <Typography fontSize={"19px"}>
-                비밀번호
-              </Typography>
+              <Typography fontSize={"19px"}>비밀번호</Typography>
               <PasswordInput
                 sx={{ height: "50px" }}
                 fullWidth
@@ -232,13 +222,11 @@ export default function UserInfoPopup() {
                 // onChange={(e) => setPassword(e.target.value)}
                 // placeholder={password ? password : "비밀번호"}
                 {...register("password")}
-              //error={""}
+                //error={""}
               />
             </Stack>
             <Stack width={"100%"} gap={1}>
-              <Typography fontSize={"19px"}>
-                비밀번호 확인
-              </Typography>
+              <Typography fontSize={"19px"}>비밀번호 확인</Typography>
               <PasswordInput
                 sx={{ height: "50px" }}
                 fullWidth
@@ -246,13 +234,11 @@ export default function UserInfoPopup() {
                 // onChange={(e) => setPasswordCheck(e.target.value)}
                 // placeholder={passwordCheck ? passwordCheck : "비밀번호 확인"}
                 {...register("passwordCheck")}
-              //error={""}
+                //error={""}
               />
             </Stack>
             <Stack width={"100%"} gap={1}>
-              <Typography fontSize={"19px"}>
-                이름
-              </Typography>
+              <Typography fontSize={"19px"}>이름</Typography>
               <BasicInput
                 sx={{ height: "50px" }}
                 fullWidth
@@ -260,13 +246,11 @@ export default function UserInfoPopup() {
                 // onChange={(e) => setUserName(e.target.value)}
                 // placeholder={userName ? userName : "사용자 이름"}
                 {...register("userName")}
-              //error={""}
+                //error={""}
               />
             </Stack>
             <Stack width={"100%"} gap={1}>
-              <Typography fontSize={"19px"}>
-                전화번호
-              </Typography>
+              <Typography fontSize={"19px"}>전화번호</Typography>
               <PhoneInput
                 sx={{ height: "50px" }}
                 fullWidth
@@ -274,7 +258,7 @@ export default function UserInfoPopup() {
                 // onChange={(e) => setPhoneNum(e.target.value)}
                 // placeholder={phoneNum ? phoneNum : "휴대전화"}
                 {...register("phoneNum")}
-              //error={""}
+                //error={""}
               />
             </Stack>
             <Stack width={"100%"} marginTop={1}>
@@ -283,9 +267,7 @@ export default function UserInfoPopup() {
               </Typography>
             </Stack>
             <Stack width={"100%"} gap={1}>
-              <Typography fontSize={"19px"}>
-                회사 이름
-              </Typography>
+              <Typography fontSize={"19px"}>회사 이름</Typography>
               <BasicInput
                 sx={{ height: "50px" }}
                 fullWidth
@@ -294,13 +276,11 @@ export default function UserInfoPopup() {
                 // placeholder={companyName ? companyName : "회사 이름"}
                 {...register("companyName")}
                 disabled
-              //error={""}
+                //error={""}
               />
             </Stack>
             <Stack width={"100%"} gap={1}>
-              <Typography fontSize={"19px"}>
-                사업자 등록번호
-              </Typography>
+              <Typography fontSize={"19px"}>사업자 등록번호</Typography>
               <BasicInput
                 disabled
                 sx={{ height: "50px" }}
@@ -309,13 +289,11 @@ export default function UserInfoPopup() {
                 // onChange={(e) => setCompanyName(e.target.value)}
                 // placeholder={companyNum ? companyNum : "사업자 등록번호"}
                 {...register("companyNum")}
-              //error={""}
+                //error={""}
               />
             </Stack>
             <Stack width={"100%"} gap={1}>
-              <Typography fontSize={"19px"}>
-                대표자 이름
-              </Typography>
+              <Typography fontSize={"19px"}>대표자 이름</Typography>
               <BasicInput
                 disabled
                 sx={{ height: "50px" }}
@@ -324,14 +302,11 @@ export default function UserInfoPopup() {
                 // onChange={(e) => setCompanyName(e.target.value)}
                 // placeholder={rprsntvNm ? rprsntvNm : "대표자 이름"}
                 {...register("rprsntvNm")}
-              //error={""}
-
+                //error={""}
               />
             </Stack>
             <Stack width={"100%"} gap={1}>
-              <Typography fontSize={"19px"}>
-                사업장 소재지
-              </Typography>
+              <Typography fontSize={"19px"}>사업장 소재지</Typography>
               <BasicInput
                 disabled
                 sx={{ height: "50px" }}
@@ -340,17 +315,21 @@ export default function UserInfoPopup() {
                 // onChange={(e) => setCompanyName(e.target.value)}
                 // placeholder={adres ? adres : "사업장 소재지"}
                 {...register("adres")}
-              //error={""}
+                //error={""}
               />
             </Stack>
           </Stack>
           <Stack direction={"row"} gap={1}>
-            <BasicButton sx={{ width: "100%" }} onClick={() => window.close()}>취소</BasicButton>
+            <BasicButton sx={{ width: "100%" }} onClick={() => window.close()}>
+              취소
+            </BasicButton>
             <BasicButton
               sx={{ width: "100%" }}
               //onClick={handleSubmit}
               type="submit"
-            >확인</BasicButton>
+            >
+              확인
+            </BasicButton>
           </Stack>
         </Stack>
       </form>

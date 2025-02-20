@@ -14,10 +14,10 @@ import BasicInput from "../../components/Input/BasicInput";
 import Calendar from "../../components/Calendar/Calendar";
 import useModal from "../../hooks/useModal";
 import { useAuthStore } from "../../stores/authStore";
-import { ConfirmDeleteModal } from "../../components/layout/modal/ConfirmDeleteModal";
-import { EmptyDataModal } from "../../components/layout/modal/EmptyDataModal";
-import { UpdateCompletedModal } from "../../components/layout/modal/UpdateCompletedModal";
-import { DeleteCompletedModal } from "../../components/layout/modal/DeleteCompletedModal";
+import { ConfirmDeleteModal } from "../../components/Modal/modal/ConfirmDeleteModal";
+import { EmptyDataModal } from "../../components/Modal/modal/EmptyDataModal";
+import { UpdateCompletedModal } from "../../components/Modal/modal/UpdateCompletedModal";
+import { DeleteCompletedModal } from "../../components/Modal/modal/DeleteCompletedModal";
 import { useForm } from "react-hook-form";
 import { deleteFaq, updateFaq, useFaqDetail } from "../../api/faq";
 import { FaqDeleteType } from "../../types/faq";
@@ -43,7 +43,7 @@ export default function FAQModify() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const { register, handleSubmit, getValues, reset } = useForm<FormData>();
-  const {mutate: deleteFaqAPI} = deleteFaq();
+  const { mutate: deleteFaqAPI } = deleteFaq();
 
   // 여러개선택
   const {
@@ -68,12 +68,12 @@ export default function FAQModify() {
   const confirmDeleteModal = () => {
     openModal(ConfirmDeleteModal, {
       modalId: "noticeDelete",
-      stack: false,  //단일 모달 모드
+      stack: false, //단일 모달 모드
       onClose: () => closeModal,
       onSubmit: () => {
         handleDelete();
-      }
-    })
+      },
+    });
   };
 
   //입력한 값이 없을때
@@ -84,7 +84,7 @@ export default function FAQModify() {
       onClose: () => closeModal,
       onSubmit: () => {
         window.close();
-      }
+      },
     });
   };
 
@@ -100,7 +100,7 @@ export default function FAQModify() {
         if (window.opener) {
           window.opener.location.reload();
         }
-      }
+      },
     });
   };
 
@@ -111,8 +111,8 @@ export default function FAQModify() {
       onClose: () => closeModal,
       onSubmit: () => {
         window.close();
-      }
-    })
+      },
+    });
   };
 
   useEffect(() => {
@@ -133,9 +133,9 @@ export default function FAQModify() {
   // 필요한 데이터를 준비
   const faqUpdateReqData = {
     body: {
-      faqNo: id || "",       //공지사항 번호
-      faqSj: title,       //공지사항 제목
-      faqCn: content,       //공지사항 내용
+      faqNo: id || "", //공지사항 번호
+      faqSj: title, //공지사항 제목
+      faqCn: content, //공지사항 내용
       userId: loginId,
     },
   };
@@ -208,7 +208,15 @@ export default function FAQModify() {
   return (
     <>
       <Stack bgcolor={"white"} width={"100%"} height={"100%"}>
-        <Stack direction={"row"} padding={1} width={"100%"} height={"5%"} gap={2} alignItems={"center"} marginTop={1}>
+        <Stack
+          direction={"row"}
+          padding={1}
+          width={"100%"}
+          height={"5%"}
+          gap={2}
+          alignItems={"center"}
+          marginTop={1}
+        >
           <Typography>제목</Typography>
           <Box>
             <BasicInput
@@ -233,8 +241,19 @@ export default function FAQModify() {
             }}
           />
         </Box>
-        <Stack justifyContent={"space-between"} width={"100%"} direction={"row"} alignItems={"center"}>
-          <Stack direction={"row"} padding={1} alignItems={"center"} width={"80%"} gap={1}>
+        <Stack
+          justifyContent={"space-between"}
+          width={"100%"}
+          direction={"row"}
+          alignItems={"center"}
+        >
+          <Stack
+            direction={"row"}
+            padding={1}
+            alignItems={"center"}
+            width={"80%"}
+            gap={1}
+          >
             <BasicButton onClick={confirmDeleteModal}>
               <IconButton color="error">
                 <RiDeleteBinLine />

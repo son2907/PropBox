@@ -2,26 +2,37 @@ import { ApiResponseType } from "./apiResponse";
 
 // 방통위 목록 조회
 export type KccRequestType = {
-  groupNo: string | number;
+  mbtlNo?: string;
+  groupNo?: string;
+  page: number;
+  limit: number;
 };
 
 export type KccListType = {
+  idx: number;
   groupNo: number | null;
+  kccGroupNm: number | null;
   sttemntTelno: string | null;
   encptMbtlNo: string | number | null;
   mbtlNo: null;
   msgCnt: number | null;
   grpNm: string | null;
+  mgm: number;
+  event: number;
+  cnslt: number;
 };
 
 export interface KccListResponseType extends ApiResponseType {
   contents: KccListType[];
+  totalCnt: number | null;
+  totalPage: number | null;
 }
 
 // 방통위 신고 메세지 목록 조회
-
 export type KccMsgRequestType = {
-  encptMbtlNo: string | null;
+  mbtlNo: string | null;
+  page: number;
+  limit: number;
 };
 
 export type KccMsgType = {
@@ -32,19 +43,25 @@ export type KccMsgType = {
 
 export interface KccMsgResponseType extends ApiResponseType {
   contents: KccMsgType[];
+  totalCnt: number | null;
+  totalPage: number | null;
 }
 
 // 방통위 수신거부 등록
 export type KccRejectRequestType = {
   mbtlNo: string;
-  encptMbtlNo: string;
 };
 
 // 방통위 엑셀 업로드
 export type UploadKccExcelRequestType = {
-  groupNo: number; // 쿼리 파라미터
-  mbtlNoPos: number; // 쿼리 파라미터
-  file: File; // 업로드할 파일
+  sptNo: string;
+  groupNo: string;
+  mbtlNoList: [
+    {
+      id: number;
+      mbtlNo: string;
+    },
+  ];
 };
 
 // 방통위 신고 그룹 목록 조회(팝업)

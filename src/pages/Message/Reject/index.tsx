@@ -26,7 +26,7 @@ import useDidMountEffect from "../../../hooks/useDidMountEffect";
 import { GetRejectList } from "../../../types/messageReject";
 import { useAuthStore } from "../../../stores/authStore";
 import { useApiRes } from "../../../utils/useApiRes";
-import { BasicCompletedModl } from "../../../components/layout/modal/BasicCompletedModl";
+import { BasicCompletedModl } from "../../../components/Modal/modal/BasicCompletedModl";
 import { useSptStore } from "../../../stores/sptStore";
 import PhoneInput from "../../../components/Input/PhoneInput";
 import SearchIcon from "../../../assets/images/Search.png";

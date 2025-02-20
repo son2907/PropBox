@@ -13,38 +13,31 @@ import {
 } from "../types/kcc";
 import instance from "../utils/axiosInstance";
 import { spt } from "../utils/sptNo";
-import { AxiosResponse } from "axios";
 
 const API = {
   // 방통위 페이지 목록 조회
-  getKccList: async ({ groupNo }: KccRequestType) => {
-    const url = `/api/kcc/list?sptNo=${spt}&groupNo=${groupNo}`;
+  getKccList: async ({ groupNo, mbtlNo, page, limit }: KccRequestType) => {
+    let url = `/api/kcc/list?sptNo=${spt}&page=${page}&limit=${limit}`;
+    if (groupNo) url += `&groupNo=${groupNo}`;
+    if (mbtlNo) url += `&mbtlNo=${mbtlNo}`;
     return await instance.get<KccListResponseType>(url);
   },
   // 방통위 메세지 목록 조회
-  getKccMsg: async ({ encptMbtlNo }: KccMsgRequestType) => {
-    const url = `/api/kcc/msg?sptNo=${spt}&encptMbtlNo=${encptMbtlNo}`;
+  getKccMsg: async ({ mbtlNo, page, limit }: KccMsgRequestType) => {
+    const url = `/api/kcc/msg?sptNo=${spt}&mbtlNo=${mbtlNo}&page=${page}&limit=${limit}`;
     return await instance.get<KccMsgResponseType>(url);
   },
   // 방통위 신고 수신거부 등록
   postKccReject: async (requestData: { body: KccRejectRequestType[] }) => {
     const url = `/api/kcc/reject/${spt}`;
-    return await instance.post(url, requestData);
+    return await instance.post(url, requestData.body);
   },
   // 방통위 엑셀 업로드
-  uploadKccExcel: async (
-    requestData: UploadKccExcelRequestType
-  ): Promise<AxiosResponse> => {
-    const formData = new FormData();
-    formData.append("file", requestData.file); // file은 binary 형식
-    const headers = {
-      "Content-Type": "multipart/form-data", // multipart/form-data로 설정
-    };
-    const url = `/api/kcc/upload?groupNo=${requestData.groupNo}&mbtlNoPos=${requestData.mbtlNoPos}`;
-
-    return await instance.post(url, formData, { headers });
+  uploadKccExcel: async (requestData: { body: UploadKccExcelRequestType }) => {
+    const url = `/api/kcc`;
+    return await instance.post(url, requestData.body);
   },
-  // 방통위 팝업 그룹 목록 조회
+  // 방통위 그룹 조회
   getKccGroupList: async () => {
     const url = `/api/kcc/group/list?sptNo=${spt}`;
     return await instance.get<KccGroupListResponseType>(url);
@@ -57,7 +50,7 @@ const API = {
   // 방통위 그룹셀 수정
   putKccGroup: async (requestData: { body: KccGroupPutRequestType }) => {
     const url = `/api/kcc/group`;
-    return await instance.put(url, requestData);
+    return await instance.put(url, requestData.body);
   },
   // 방통위 그룹셀 삭제
   deleteKccGroup: async ({ groupNo }: KccGroupDeleteRequestType) => {
@@ -67,36 +60,50 @@ const API = {
 };
 
 const KEY = {
-  getKccList: ({ groupNo }: KccRequestType) => ["/api/kcc/list", groupNo, spt],
-  getKccMsg: ({ encptMbtlNo }: KccMsgRequestType) => [
+  getKccList: ({ groupNo, mbtlNo, page, limit }: KccRequestType) => [
+    "/api/kcc/list",
+    groupNo,
+    spt,
+    mbtlNo,
+    page,
+    limit,
+  ],
+  getKccMsg: ({ mbtlNo, page, limit }: KccMsgRequestType) => [
     "/api/kcc/msg",
-    encptMbtlNo,
+    mbtlNo,
+    page,
+    limit,
     spt,
   ],
   getKccGroupList: () => ["/api/kcc/group/list", spt],
 };
 
 // 방통위 페이지 목록 조회
-export const useGetKccList = ({ groupNo }: KccRequestType) => {
+export const useGetKccList = ({
+  groupNo,
+  mbtlNo,
+  page,
+  limit,
+}: KccRequestType) => {
   return useQuery({
-    queryKey: KEY.getKccList({ groupNo }),
+    queryKey: KEY.getKccList({ groupNo, mbtlNo, page, limit }),
     queryFn: async () => {
-      return await API.getKccList({ groupNo });
+      return await API.getKccList({ groupNo, mbtlNo, page, limit });
     },
     gcTime: 0,
-    enabled: !!groupNo,
+    enabled: !!page && !!limit,
   });
 };
 
 // 방통위 메세지 목록 조회
-export const useGetKccMsg = ({ encptMbtlNo }: KccMsgRequestType) => {
+export const useGetKccMsg = ({ mbtlNo, page, limit }: KccMsgRequestType) => {
   return useQuery({
-    queryKey: KEY.getKccMsg({ encptMbtlNo }),
+    queryKey: KEY.getKccMsg({ mbtlNo, page, limit }),
     queryFn: async () => {
-      return await API.getKccMsg({ encptMbtlNo });
+      return await API.getKccMsg({ mbtlNo, page, limit });
     },
     gcTime: 0,
-    enabled: !!encptMbtlNo,
+    enabled: !!mbtlNo && !!page && !!limit,
   });
 };
 
@@ -121,12 +128,9 @@ export const usePostKccReject = () => {
 
 // 엑셀 업로드
 export const useKccExcelUpload = () => {
-  return useMutation<
-    AxiosResponse,
-    Error,
-    { requestData: UploadKccExcelRequestType }
-  >({
-    mutationFn: ({ requestData }) => API.uploadKccExcel(requestData),
+  return useMutation({
+    mutationFn: (requestData: { body: UploadKccExcelRequestType }) =>
+      API.uploadKccExcel(requestData),
   });
 };
 

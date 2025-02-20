@@ -9,19 +9,24 @@ import BasicInput from "../../../components/Input/BasicInput";
 import { BasicButton, ToggleButton } from "../../../components/Button";
 import useToggleButtton from "../../../hooks/useToggleButton";
 import { useEffect, useState } from "react";
-import { deleteMember, insertMember, updateMember, useMemberDetail, useMemberList } from "../../../api/memberList";
+import {
+  deleteMember,
+  insertMember,
+  updateMember,
+  useMemberDetail,
+  useMemberList,
+} from "../../../api/memberList";
 import api from "../../../api";
 import { useAuthStore } from "../../../stores/authStore";
-import { EmptyDataModal } from "../../../components/layout/modal/EmptyDataModal";
-import { InsertCompletedModal } from "../../../components/layout/modal/InsertCompletedModal";
-import { UpdateCompletedModal } from "../../../components/layout/modal/UpdateCompletedModal";
+import { EmptyDataModal } from "../../../components/Modal/modal/EmptyDataModal";
+import { InsertCompletedModal } from "../../../components/Modal/modal/InsertCompletedModal";
+import { UpdateCompletedModal } from "../../../components/Modal/modal/UpdateCompletedModal";
 import useModal from "../../../hooks/useModal";
-import { EmptySelectModal } from "../../../components/layout/modal/EmptySelectModal";
-import { DeleteCompletedModal } from "../../../components/layout/modal/DeleteCompletedModal";
-import { ConfirmDeleteModal } from "../../../components/layout/modal/ConfirmDeleteModal";
+import { EmptySelectModal } from "../../../components/Modal/modal/EmptySelectModal";
+import { DeleteCompletedModal } from "../../../components/Modal/modal/DeleteCompletedModal";
+import { ConfirmDeleteModal } from "../../../components/Modal/modal/ConfirmDeleteModal";
 
 export default function MemberManagement() {
-
   //api를 호출하기위해 userID 불러오기
   const { loginId } = useAuthStore(["loginId"]);
 
@@ -37,15 +42,17 @@ export default function MemberManagement() {
   const { isSuccess, data } = api.UserList.useUserList(searchQuery);
   const [selectUserNo, setSelectUserNo] = useState("");
   const [selectMemberNo, setSelectMemberNo] = useState("");
-  const [userId, setUserID] = useState("")
+  const [userId, setUserID] = useState("");
 
   //구성원 리스트
-  const { data: memberListData, isLoading: isLoadingMemeber } = useMemberList(selectUserNo);
+  const { data: memberListData, isLoading: isLoadingMemeber } =
+    useMemberList(selectUserNo);
 
   //구성원 상세
-  const { data: memberDetailData, isSuccess: isMemberDetailData } = useMemberDetail(selectMemberNo);
+  const { data: memberDetailData, isSuccess: isMemberDetailData } =
+    useMemberDetail(selectMemberNo);
   const [memberId, setMemberId] = useState("");
-  const [memberPassword, setMemberPassword] = useState("")
+  const [memberPassword, setMemberPassword] = useState("");
   const [memberName, setMemberName] = useState("");
   const [isMemberUse, setIsMemberUse] = useState(true);
   const [memberRmk, setMemberRmk] = useState("");
@@ -59,27 +66,27 @@ export default function MemberManagement() {
       attlistUserNm: "",
       useYn: isMemberUse === true ? "Y" : "N",
       rmk: memberRmk,
-      userId: ""
-    }
+      userId: "",
+    },
   };
 
   //추가
   const memberInsertReqData = {
     body: {
-      userNo: "",             //구성원 또는 사용자 번호
-      userNm: memberName,             //이름
-      loginId: memberId,            //로그인 아이디
-      constntUserNo: selectUserNo,      //구성원 소유자 번호
-      userConstntSeCd: "",    //사용자 구성원 구분 102000 
-      loginIdPrefix: "",      //로그인 아이디 프리픽스
-      attlistUserNm: "",      //별문자 사용자 명
-      pwdNo: "",              //패스워드
-      advrtsAgreYn: "",       //광고동의여부
-      useYn: isMemberUse === true ? "Y" : "N",             //사용여부
-      rmk: memberRmk,                //비고
-      userId: ""              //등록 및 수정자
-    }
-  }
+      userNo: "", //구성원 또는 사용자 번호
+      userNm: memberName, //이름
+      loginId: memberId, //로그인 아이디
+      constntUserNo: selectUserNo, //구성원 소유자 번호
+      userConstntSeCd: "", //사용자 구성원 구분 102000
+      loginIdPrefix: "", //로그인 아이디 프리픽스
+      attlistUserNm: "", //별문자 사용자 명
+      pwdNo: "", //패스워드
+      advrtsAgreYn: "", //광고동의여부
+      useYn: isMemberUse === true ? "Y" : "N", //사용여부
+      rmk: memberRmk, //비고
+      userId: "", //등록 및 수정자
+    },
+  };
 
   const { mutate: updateMemberAPI } = updateMember(memberUpdateReqData); //수정
   const { mutate: insertMemberAPI } = insertMember(memberInsertReqData); //추가
@@ -97,7 +104,6 @@ export default function MemberManagement() {
     selectedRow: memberSelectedRow,
     toggleRowSelection: toggleMemberRowSelection,
   } = useSingleRowSelection();
-
 
   const { toggle, onChange: setToggle } = useToggleButtton({
     defaultValue: true,
@@ -118,7 +124,7 @@ export default function MemberManagement() {
       console.log("선택한 메뉴 아이디:", newId); // 선택된 ID를 콘솔에 출력
       return newId;
     });
-  }
+  };
 
   const handleSearch = () => {
     setSearchQuery(searchInput); // 검색어 업데이트
@@ -134,7 +140,7 @@ export default function MemberManagement() {
       onClose: () => closeModal,
       onSubmit: () => {
         window.close();
-      }
+      },
     });
   };
 
@@ -146,9 +152,9 @@ export default function MemberManagement() {
       onClose: () => closeModal,
       onSubmit: () => {
         window.close();
-      }
+      },
     });
-  }
+  };
 
   // 추가 완료 모달
   const insertCompletedModal = () => {
@@ -158,8 +164,8 @@ export default function MemberManagement() {
       onClose: () => closeModal,
       onSubmit: () => {
         window.location.reload();
-      }
-    })
+      },
+    });
   };
 
   //수정 완료 모달
@@ -170,7 +176,7 @@ export default function MemberManagement() {
       onClose: () => closeModal,
       onSubmit: () => {
         window.location.reload();
-      }
+      },
     });
   };
 
@@ -182,7 +188,7 @@ export default function MemberManagement() {
       onClose: () => closeModal,
       onSubmit: () => {
         window.location.reload();
-      }
+      },
     });
   };
 
@@ -195,12 +201,11 @@ export default function MemberManagement() {
         onClose: () => closeModal,
         onSubmit: () => {
           handleDelete();
-        }
+        },
       });
     } else {
       emptySelectionModal();
     }
-
   };
 
   // useEffect(() => {
@@ -220,14 +225,19 @@ export default function MemberManagement() {
     if (memberDetailData?.data?.contents) {
       setMemberId(memberDetailData?.data?.contents.loginId);
       setMemberName(memberDetailData?.data?.contents.userNm);
-      setIsMemberUse(memberDetailData?.data?.contents.useYn === "Y" ? true : false);
+      setIsMemberUse(
+        memberDetailData?.data?.contents.useYn === "Y" ? true : false
+      );
       setMemberRmk(memberDetailData?.data?.contents.rmk);
     }
   }, [memberDetailData, selectMemberNo]);
 
   const handleMemberDetail = () => {
     console.log("상위 구성원 번호가 뭔가요 : ", selectMemberNo);
-    console.log("구성원 추가인지 수정인지 false면 추가 true면 수정 : ", isUpdate);
+    console.log(
+      "구성원 추가인지 수정인지 false면 추가 true면 수정 : ",
+      isUpdate
+    );
     if (isUpdate) {
       console.log("구성원 수정을 위한 데이터 확인 : ", memberUpdateReqData);
       if (memberUpdateReqData) {
@@ -243,23 +253,26 @@ export default function MemberManagement() {
           onError: (error) => {
             console.error("공지사항 수정 실패:", error);
           },
-        })
+        });
       }
     } else {
       console.log("구성원 추가를 위한 데이터 확인 : ", memberInsertReqData);
-      if (memberInsertReqData.body.userNm && memberInsertReqData.body.loginId && memberInsertReqData.body.useYn) {
+      if (
+        memberInsertReqData.body.userNm &&
+        memberInsertReqData.body.loginId &&
+        memberInsertReqData.body.useYn
+      ) {
         insertMemberAPI(memberInsertReqData, {
           onSuccess: (response) => {
             if (response.data.message === "SUCCESS") {
               console.log("대답", response.data);
               insertCompletedModal();
             }
-          }
-        })
+          },
+        });
       } else if (selectUserNo == "") {
         emptySelectionModal();
-      } 
-      else {
+      } else {
         emptyDataModal();
         return;
       }
@@ -275,12 +288,12 @@ export default function MemberManagement() {
             console.log("대답", response.data);
             deleteCompletedModal();
           }
-        }
-      })
+        },
+      });
     } else {
       emptySelectionModal();
     }
-  }
+  };
 
   return (
     <>
@@ -329,7 +342,6 @@ export default function MemberManagement() {
                 </BasicTable.Tbody>
               </BasicTable>
             </TableBox.Inner>
-
           </Stack>
           <Stack width={"50%"}>
             <Stack width={"100%"} height={"70%"}>
@@ -340,20 +352,22 @@ export default function MemberManagement() {
                   <BasicTable.Th>구성원이름</BasicTable.Th>
                   <BasicTable.Th>사용여부</BasicTable.Th>
                   <BasicTable.Tbody>
-                    {(memberListData?.data?.contents || []).map((item, index) => {
-                      return (
-                        <BasicTable.Tr
-                          key={index}
-                          isClicked={selectMemberNo === item.userNo}
-                          onClick={() => handleMemberRowClick(item.userNo)}
-                        >
-                          <BasicTable.Td>{item.loginId}</BasicTable.Td>
-                          <BasicTable.Td>{item.userNo}</BasicTable.Td>
-                          <BasicTable.Td>{item.userNm}</BasicTable.Td>
-                          <BasicTable.Td>{item.useYn}</BasicTable.Td>
-                        </BasicTable.Tr>
-                      );
-                    })}
+                    {(memberListData?.data?.contents || []).map(
+                      (item, index) => {
+                        return (
+                          <BasicTable.Tr
+                            key={index}
+                            isClicked={selectMemberNo === item.userNo}
+                            onClick={() => handleMemberRowClick(item.userNo)}
+                          >
+                            <BasicTable.Td>{item.loginId}</BasicTable.Td>
+                            <BasicTable.Td>{item.userNo}</BasicTable.Td>
+                            <BasicTable.Td>{item.userNm}</BasicTable.Td>
+                            <BasicTable.Td>{item.useYn}</BasicTable.Td>
+                          </BasicTable.Tr>
+                        );
+                      }
+                    )}
                   </BasicTable.Tbody>
                 </BasicTable>
               </TableBox.Inner>
@@ -366,7 +380,9 @@ export default function MemberManagement() {
               alignItems="start"
             >
               <Box justifyContent={"start"} width={"100%"} marginBottom={1}>
-                <Typography fontWeight={"bold"} fontSize={"20px"}>상세정보</Typography>
+                <Typography fontWeight={"bold"} fontSize={"20px"}>
+                  상세정보
+                </Typography>
               </Box>
               <Box
                 display="flex"
@@ -445,7 +461,6 @@ export default function MemberManagement() {
               <BasicButton onClick={handleMemberDetail}>저장</BasicButton>
               <BasicButton onClick={confirmDeletionModal}>삭제</BasicButton>
             </GrayBox>
-
           </Stack>
         </TableBox>
       </Stack>

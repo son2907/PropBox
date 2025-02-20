@@ -28,7 +28,7 @@ import useDidMountEffect from "../../../../hooks/useDidMountEffect";
 import { useApiRes } from "../../../../utils/useApiRes";
 import { filterDataByValues } from "../../../../utils/filterDataByValues";
 import useModal from "../../../../hooks/useModal";
-import { ConfirmMultipleDeletionModal } from "../../../../components/layout/modal/ConfirmMultipleDeletionModal";
+import { ConfirmMultipleDeletionModal } from "../../../../components/Modal/modal/ConfirmMultipleDeletionModal";
 import { useSptStore } from "../../../../stores/sptStore";
 
 interface FormData {

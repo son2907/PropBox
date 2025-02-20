@@ -9,7 +9,7 @@ import { useState } from "react";
 import { openPopup } from "../../utils/openPopup";
 import PathConstants from "../../routers/path";
 import useModal from "../../hooks/useModal";
-import { LogoutModal } from "./modal/Logout";
+import { LogoutModal } from "../Modal/modal/Logout";
 import { useWebSocket } from "../../routers/guard/soketFn";
 import { WebSocketContext } from "../../routers/guard/SoketGuard";
 

@@ -26,13 +26,20 @@ import useToggleButtton from "../../../../hooks/useToggleButton";
 import { BiChevronLeft } from "react-icons/bi";
 import SearchInput from "../../../../components/Input/SearchInput";
 import { useAuthStore } from "../../../../stores/authStore";
-import { getMemberAuthDetail, permissionMenuCopy, permissionMenuCopyList } from "../../../../api/authManagement";
-import { MemberAuthDetailType, PermissionMenuListType } from "../../../../types/authManagement";
+import {
+  getMemberAuthDetail,
+  permissionMenuCopy,
+  permissionMenuCopyList,
+} from "../../../../api/authManagement";
+import {
+  MemberAuthDetailType,
+  PermissionMenuListType,
+} from "../../../../types/authManagement";
 import { useMemberPositionList } from "../../../../api/localManagement";
 import { MemberPositionType } from "../../../../types/localManagementType";
 import useModal from "../../../../hooks/useModal";
-import { BasicCompletedModl } from "../../../../components/layout/modal/BasicCompletedModl";
-import { InsertCompletedModal } from "../../../../components/layout/modal/InsertCompletedModal";
+import { BasicCompletedModl } from "../../../../components/Modal/modal/BasicCompletedModl";
+import { InsertCompletedModal } from "../../../../components/Modal/modal/InsertCompletedModal";
 
 interface Data {
   id: string;
@@ -40,7 +47,6 @@ interface Data {
 }
 
 export default function MenuPermissionCopy() {
-
   //팝업 페이지에서 id를 가져오려면 window.location.search를 사용하여 파라미터를 파싱
   const queryParams = new URLSearchParams(window.location.search);
   const userNo = queryParams.get("userNo");
@@ -57,9 +63,13 @@ export default function MenuPermissionCopy() {
   const permissionMenuCopyAPI = permissionMenuCopy();
 
   //상세 조회
-  const [menuListReqData, setMenuListReqData] = useState({ userNo: "", sptNo: "" })
+  const [menuListReqData, setMenuListReqData] = useState({
+    userNo: "",
+    sptNo: "",
+  });
   const { isSuccess, data } = getMemberAuthDetail(menuListReqData);
-  const [memberAuthDetail, setMemberAuthDetail] = useState<MemberAuthDetailType>();
+  const [memberAuthDetail, setMemberAuthDetail] =
+    useState<MemberAuthDetailType>();
   const [sptNum, setSptNo] = useState("");
   const [userNm, setUserNm] = useState("");
   const [constntUserNo, setConstntUserNo] = useState("");
@@ -69,8 +79,11 @@ export default function MenuPermissionCopy() {
   const [rmk, setRmk] = useState("");
 
   //구성원 직책 리스트
-  const { data: memberPositionListData, isSuccess: isMemberPositionListData } = useMemberPositionList("1004000");
-  const [memberPositionList, setMemberPositionList] = useState<MemberPositionType[]>([]);
+  const { data: memberPositionListData, isSuccess: isMemberPositionListData } =
+    useMemberPositionList("1004000");
+  const [memberPositionList, setMemberPositionList] = useState<
+    MemberPositionType[]
+  >([]);
   const [memberPositionKey, setMemberPositionKey] = useState("");
   const [memberPositionValue, setMemberPositionValue] = useState("");
 
@@ -88,9 +101,17 @@ export default function MenuPermissionCopy() {
 
   //목록
   const [menuSearchInput, setMenuSearchInput] = useState("");
-  const [menuCopyListReqData, setMenuCopyListReqData] = useState({ sptNo: "", userNo: "", userNm: "", rspofcCd: "" });
-  const { data : menuCopyList, refetch: refetchMenuCopyList } = permissionMenuCopyList(menuCopyListReqData);
-  const [menuCopyListData, setMenuCopyListData] = useState<PermissionMenuListType[]>([]);
+  const [menuCopyListReqData, setMenuCopyListReqData] = useState({
+    sptNo: "",
+    userNo: "",
+    userNm: "",
+    rspofcCd: "",
+  });
+  const { data: menuCopyList, refetch: refetchMenuCopyList } =
+    permissionMenuCopyList(menuCopyListReqData);
+  const [menuCopyListData, setMenuCopyListData] = useState<
+    PermissionMenuListType[]
+  >([]);
 
   const { selectedValues, handleSelectChange } = useMultiSelect<number>();
 
@@ -108,8 +129,6 @@ export default function MenuPermissionCopy() {
     defaultValue: true,
   });
 
-
-
   //useMultiRowSelection 분리해서 각 테이블에 독립적으로 selectedRows와 toggleRowsSelection을 전달하여 동작이 분리되도록 설정.
   // 권한 메뉴 - 선택 상태 관리
   const {
@@ -122,7 +141,7 @@ export default function MenuPermissionCopy() {
       ...prev,
       userNo: userNo || "",
       sptNo: sptNo || "",
-    }))
+    }));
   }, [userNo, sptNo]);
 
   useEffect(() => {
@@ -136,12 +155,11 @@ export default function MenuPermissionCopy() {
       setSptNo(memberAuthDetail.sptNo);
       setUserNm(memberAuthDetail.userNm);
       setConstntUserNo(memberAuthDetail.constntUserNo);
-      setUserConstntSeCd(memberAuthDetail.userConstntSeCd)
-      setRspofcCd(memberAuthDetail.rspofcCd)
-      setRspofcNm(memberAuthDetail.rspofcNm)
-      setRmk(memberAuthDetail.rmk)
+      setUserConstntSeCd(memberAuthDetail.userConstntSeCd);
+      setRspofcCd(memberAuthDetail.rspofcCd);
+      setRspofcNm(memberAuthDetail.rspofcNm);
+      setRmk(memberAuthDetail.rmk);
     }
-
   }, [memberAuthDetail]);
 
   useEffect(() => {
@@ -151,7 +169,7 @@ export default function MenuPermissionCopy() {
       userNo: userNo || "",
       userNm: menuSearchInput || "",
       rspofcCd: memberPositionKey,
-    }))
+    }));
   }, [memberPositionKey, memberPositionValue]);
 
   const handleLocalSearch = () => {
@@ -165,10 +183,10 @@ export default function MenuPermissionCopy() {
   };
 
   useEffect(() => {
-    if(menuCopyList?.data?.contents) {
+    if (menuCopyList?.data?.contents) {
       setMenuCopyListData(menuCopyList.data.contents);
     }
-  },[menuCopyList]);
+  }, [menuCopyList]);
 
   //권한 복사
   const handlePermissionCopy = () => {
@@ -178,22 +196,22 @@ export default function MenuPermissionCopy() {
       sptNo: sptNo || "",
       userId: loginId || "",
       userNo: userNo || "",
-      userList
+      userList,
     };
-    
+
     //console.log("requestData", requestData);
 
     permissionMenuCopyAPI.mutate(
-      {body : requestData},
+      { body: requestData },
       {
         onSuccess: (response) => {
           if (response.data.result === "SUCCESS") {
             console.log("response.data", response.data);
             completeModal();
           }
-        }
+        },
       }
-    )
+    );
   };
 
   const completeModal = () => {
@@ -346,7 +364,10 @@ export default function MenuPermissionCopy() {
                   <CheckboxTable.Tbody>
                     {(menuCopyList?.data.contents || []).map((item) => (
                       <CheckboxTable.Tr key={item.userNo} id={item.userNo}>
-                        <CheckboxTable.CheckboxTd item={item} keyName="userNo" />
+                        <CheckboxTable.CheckboxTd
+                          item={item}
+                          keyName="userNo"
+                        />
                         <CheckboxTable.Td>{item.userNo}</CheckboxTable.Td>
                         <CheckboxTable.Td>{item.userNm}</CheckboxTable.Td>
                         <CheckboxTable.Td>{item.rspofcNm}</CheckboxTable.Td>

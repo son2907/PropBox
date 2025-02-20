@@ -25,12 +25,20 @@ import Calendar from "../../../../components/Calendar/Calendar";
 import useToggleButtton from "../../../../hooks/useToggleButton";
 import { useAuthStore } from "../../../../stores/authStore";
 import useModal from "../../../../hooks/useModal";
-import { localDelete, localUpdate, useLocalDetail } from "../../../../api/localManagement";
-import { LocalDeleteType, LocalDetailType, LocalUpdateType } from "../../../../types/localManagementType";
-import { UpdateCompletedModal } from "../../../../components/layout/modal/UpdateCompletedModal";
+import {
+  localDelete,
+  localUpdate,
+  useLocalDetail,
+} from "../../../../api/localManagement";
+import {
+  LocalDeleteType,
+  LocalDetailType,
+  LocalUpdateType,
+} from "../../../../types/localManagementType";
+import { UpdateCompletedModal } from "../../../../components/Modal/modal/UpdateCompletedModal";
 import { id } from "date-fns/locale";
-import { ConfirmDeleteModal } from "../../../../components/layout/modal/ConfirmDeleteModal";
-import { DeleteCompletedModal } from "../../../../components/layout/modal/DeleteCompletedModal";
+import { ConfirmDeleteModal } from "../../../../components/Modal/modal/ConfirmDeleteModal";
+import { DeleteCompletedModal } from "../../../../components/Modal/modal/DeleteCompletedModal";
 
 interface Data {
   id: string;
@@ -38,7 +46,6 @@ interface Data {
 }
 
 export default function LocalUpdate() {
-
   //팝업 페이지에서 id를 가져오려면 window.location.search를 사용하여 파라미터를 파싱
   const queryParams = new URLSearchParams(window.location.search);
   const sptNo = queryParams.get("sptNo");
@@ -60,18 +67,17 @@ export default function LocalUpdate() {
   const { isSuccess, data } = useLocalDetail(sptNo || "");
   const [localDetail, setLocalDetail] = useState<LocalDetailType>();
 
-
   // 현장 수정
   const [localId, setLocalId] = useState("");
   const [localCode, setLocalCode] = useState("");
   const [localName, setLocalName] = useState("");
-  const [startDate, setStartDate] = useState<Date>(new Date());  //시작일
-  const [endDate, setEndDate] = useState<Date>(new Date());  //종료일
+  const [startDate, setStartDate] = useState<Date>(new Date()); //시작일
+  const [endDate, setEndDate] = useState<Date>(new Date()); //종료일
   const [isUse, setIsUse] = useState(true);
   const [progrsSeCd, setProgrsSeCd] = useState("");
   const [rmk, setRmk] = useState("");
 
-  const updateLocalAPI = localUpdate();  //현장 수정
+  const updateLocalAPI = localUpdate(); //현장 수정
   const deleteLocalAPI = localDelete();
 
   const {
@@ -140,12 +146,11 @@ export default function LocalUpdate() {
 
       // 변환된 값을 startDate와 endDate에 설정
       setStartDate(parseDate(localDetail.cntrctBgnde));
-      if(localDetail.cntrctEndde) {
+      if (localDetail.cntrctEndde) {
         setEndDate(parseDate(localDetail.cntrctEndde));
       } else {
-        setEndDate(parseDate("9999-12-31"))
+        setEndDate(parseDate("9999-12-31"));
       }
-      
     }
   }, [localDetail]);
 
@@ -155,13 +160,11 @@ export default function LocalUpdate() {
     //   progrsSeCd: value, // 선택한 값으로 isUse 업데이트
     // }));
     setProgrsSeCd(value);
-    console.log("선택값은? :", value)
+    console.log("선택값은? :", value);
   };
-
 
   //현장 수정
   const handleUpdate = () => {
-
     //api 호출시 전달할 데이터
     const localUpdateReqData: LocalUpdateType = {
       sptNo: sptNo || "",
@@ -187,20 +190,19 @@ export default function LocalUpdate() {
               console.log("response.data", response.data);
               updateCompletedModal();
             }
-          }
+          },
         }
-      )
+      );
     }
   };
 
   //현장 삭제
   const handleDelete = () => {
-
     //api 호출시 전달할 데이터
     const localDeleteReqData: LocalDeleteType = {
       sptNo: sptNo || "",
-      userId: loginId || ""
-    }
+      userId: loginId || "",
+    };
 
     console.log("삭제 데이터 확인:", localDeleteReqData);
 
@@ -213,11 +215,11 @@ export default function LocalUpdate() {
               console.log("response.data", response.data);
               deleteCompletedModal();
             }
-          }
+          },
         }
-      )
+      );
     }
-  }
+  };
 
   //수정 완료 모달
   const updateCompletedModal = () => {
@@ -231,19 +233,19 @@ export default function LocalUpdate() {
         if (window.opener) {
           window.opener.location.reload();
         }
-      }
+      },
     });
   };
 
   const confirmDeleteModal = () => {
     openModal(ConfirmDeleteModal, {
       modalId: "noticeDelete",
-      stack: false,  //단일 모달 모드
+      stack: false, //단일 모달 모드
       onClose: () => closeModal,
       onSubmit: () => {
         handleDelete();
-      }
-    })
+      },
+    });
   };
 
   const deleteCompletedModal = () => {
@@ -256,9 +258,9 @@ export default function LocalUpdate() {
         if (window.opener) {
           window.opener.location.reload();
         }
-      }
-    })
-  }
+      },
+    });
+  };
 
   return (
     <Stack
@@ -336,7 +338,10 @@ export default function LocalUpdate() {
         >
           <Typography>사용종료</Typography>
           <Box width={"80%"}>
-            <Calendar selectedDate={endDate || ""} setSelectedDate={setEndDate} />
+            <Calendar
+              selectedDate={endDate || ""}
+              setSelectedDate={setEndDate}
+            />
           </Box>
         </Stack>
         <Stack direction={"row"} gap={5} marginTop={1} alignItems={"center"}>
@@ -370,7 +375,9 @@ export default function LocalUpdate() {
               }}
               selectData={sd_0}
               sx={{ width: "204px" }}
-              placeholder={localDetail?.progrsSeCd === "1003005" ? "진행" : "종료"}
+              placeholder={
+                localDetail?.progrsSeCd === "1003005" ? "진행" : "종료"
+              }
               defaultValue={""}
             />
           </Box>

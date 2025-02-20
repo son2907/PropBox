@@ -25,11 +25,16 @@ import Calendar from "../../../../components/Calendar/Calendar";
 import useToggleButtton from "../../../../hooks/useToggleButton";
 import PasswordInput from "../../../../components/Input/PasswordInput";
 import useModal from "../../../../hooks/useModal";
-import { ConfirmDeleteModal } from "../../../../components/layout/modal/ConfirmDeleteModal";
-import { deleteUser, insertUser, updateUser, useUserDetail } from "../../../../api/userList";
-import { DeleteCompletedModal } from "../../../../components/layout/modal/DeleteCompletedModal";
+import { ConfirmDeleteModal } from "../../../../components/Modal/modal/ConfirmDeleteModal";
+import {
+  deleteUser,
+  insertUser,
+  updateUser,
+  useUserDetail,
+} from "../../../../api/userList";
+import { DeleteCompletedModal } from "../../../../components/Modal/modal/DeleteCompletedModal";
 import { UserDetailType, UserInsertType } from "../../../../types/userList";
-import { UpdateCompletedModal } from "../../../../components/layout/modal/UpdateCompletedModal";
+import { UpdateCompletedModal } from "../../../../components/Modal/modal/UpdateCompletedModal";
 
 interface Data {
   id: string;
@@ -37,7 +42,6 @@ interface Data {
 }
 
 export default function UpdateUSer() {
-
   //팝업 페이지에서 id를 가져오려면 window.location.search를 사용하여 파라미터를 파싱
   const queryParams = new URLSearchParams(window.location.search);
   const id = queryParams.get("id");
@@ -87,7 +91,7 @@ export default function UpdateUSer() {
     "data"
   );
 
-  const { mutate: userDeleteAPI } = deleteUser()
+  const { mutate: userDeleteAPI } = deleteUser();
 
   useEffect(() => {
     console.log("data확인", data);
@@ -111,13 +115,13 @@ export default function UpdateUSer() {
 
   const confirmDeleteModal = () => {
     openModal(ConfirmDeleteModal, {
-      modalId : "noticeDelete",
-      stack: false,  //단일 모달 모드
+      modalId: "noticeDelete",
+      stack: false, //단일 모달 모드
       onClose: () => closeModal,
       onSubmit: () => {
         handleDelete();
-      }
-    })
+      },
+    });
   };
 
   const deleteCompletedModal = () => {
@@ -127,14 +131,14 @@ export default function UpdateUSer() {
       onClose: () => closeModal,
       onSubmit: () => {
         window.close();
-      }
-    })
+      },
+    });
   };
 
   const handleDelete = () => {
-    if(id) {
+    if (id) {
       userDeleteAPI(id, {
-        onSuccess:(response) => {
+        onSuccess: (response) => {
           if (response.data.message === "SUCCESS") {
             console.log("response", response.data);
             deleteCompletedModal();
@@ -147,12 +151,11 @@ export default function UpdateUSer() {
           console.error("API 호출 실패:", error);
           // 에러 처리 로직 추가
         },
-      })
+      });
     }
   };
 
   const handleSubmit = () => {
-
     const userUpdateData: UserInsertType = {
       user: {
         userNo: id || "", // 사용자 번호 (비워두거나 기본값)
@@ -188,20 +191,20 @@ export default function UpdateUSer() {
       },
     };
 
-    console.log("데이터 확인좀 : ",userUpdateData);
+    console.log("데이터 확인좀 : ", userUpdateData);
     //insertUser({ body: userInsertData });
-    if(userUpdateData.user.userNm || userUpdateData.user.userNo) {
+    if (userUpdateData.user.userNm || userUpdateData.user.userNo) {
       userUpdateAPI.mutate(
-        {body : userUpdateData},
+        { body: userUpdateData },
         {
           onSuccess: (response) => {
-            if(response.data.message === "SUCCESS") {
+            if (response.data.message === "SUCCESS") {
               console.log("response.data", response.data);
               updateCompletedModal();
             }
-          }
+          },
         }
-      )
+      );
     }
   };
 
@@ -330,7 +333,8 @@ export default function UpdateUSer() {
               setIsUse(newValue); // solutionIsUes 상태 업데이트
               console.log("solutionIsUes 값 변경:", newValue); // 콘솔 출력
             }}
-            label="" />
+            label=""
+          />
         </Stack>
         <Stack
           direction={"row"}

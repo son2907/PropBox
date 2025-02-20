@@ -25,12 +25,16 @@ import Calendar from "../../../../components/Calendar/Calendar";
 import useToggleButtton from "../../../../hooks/useToggleButton";
 import PasswordInput from "../../../../components/Input/PasswordInput";
 import useModal from "../../../../hooks/useModal";
-import { ConfirmDeleteModal } from "../../../../components/layout/modal/ConfirmDeleteModal";
-import { deleteUser, insertUser, useUserDetail } from "../../../../api/userList";
-import { DeleteCompletedModal } from "../../../../components/layout/modal/DeleteCompletedModal";
+import { ConfirmDeleteModal } from "../../../../components/Modal/modal/ConfirmDeleteModal";
+import {
+  deleteUser,
+  insertUser,
+  useUserDetail,
+} from "../../../../api/userList";
+import { DeleteCompletedModal } from "../../../../components/Modal/modal/DeleteCompletedModal";
 import { UserDetailType, UserInsertType } from "../../../../types/userList";
-import { PasswordCheckErrorModal } from "../../../../components/layout/modal/PasswordCheckErrorModal";
-import { InsertCompletedModal } from "../../../../components/layout/modal/InsertCompletedModal";
+import { PasswordCheckErrorModal } from "../../../../components/Modal/modal/PasswordCheckErrorModal";
+import { InsertCompletedModal } from "../../../../components/Modal/modal/InsertCompletedModal";
 
 interface Data {
   id: string;
@@ -38,7 +42,6 @@ interface Data {
 }
 
 export default function UserUpload() {
-
   //팝업 페이지에서 id를 가져오려면 window.location.search를 사용하여 파라미터를 파싱
   const queryParams = new URLSearchParams(window.location.search);
   const id = queryParams.get("id");
@@ -63,7 +66,7 @@ export default function UserUpload() {
   const [rmk, setRmk] = useState("");
   const [companyNum, setCompanyNum] = useState("");
 
-  const [isUpdate, setIsUpdate] = useState(false);  //수정을 눌러서 들어온건지 추가를 눌러서 들어온건지 확인 필요
+  const [isUpdate, setIsUpdate] = useState(false); //수정을 눌러서 들어온건지 추가를 눌러서 들어온건지 확인 필요
   const {
     selectListData: sd_0,
     selectValue: s_0,
@@ -91,7 +94,6 @@ export default function UserUpload() {
   //const { mutate: userInsertAPI } = insertUser({ body: userInsertData })
 
   const handleSubmit = () => {
-
     const userInsertData: UserInsertType = {
       user: {
         userNo: "", // 사용자 번호 (비워두거나 기본값)
@@ -127,31 +129,31 @@ export default function UserUpload() {
       },
     };
 
-    if(password == passwordCheck) {
-      console.log("데이터 확인좀 : ",userInsertData);
+    if (password == passwordCheck) {
+      console.log("데이터 확인좀 : ", userInsertData);
       userInsertAPI.mutate(
-        {body: userInsertData},
+        { body: userInsertData },
         {
           onSuccess: (response) => {
-            if(response.data.message === "SUCCESS") {
+            if (response.data.message === "SUCCESS") {
               console.log("response.data", response.data);
               insertCompletedModal();
             }
-          }
+          },
         }
-      )
+      );
     } else {
-      passwordCheckModal()
+      passwordCheckModal();
     }
   };
 
   const passwordCheckModal = () => {
     openModal(PasswordCheckErrorModal, {
-      modalId : "passwordcheck",
-      stack: false,  //단일 모달 모드
+      modalId: "passwordcheck",
+      stack: false, //단일 모달 모드
       onClose: () => closeModal,
-      onSubmit: () => closeModal
-    })
+      onSubmit: () => closeModal,
+    });
   };
 
   // 추가 완료 모달
@@ -279,7 +281,8 @@ export default function UserUpload() {
               setIsUse(newValue); // solutionIsUes 상태 업데이트
               console.log("solutionIsUes 값 변경:", newValue); // 콘솔 출력
             }}
-            label="" />
+            label=""
+          />
         </Stack>
         <Stack
           direction={"row"}

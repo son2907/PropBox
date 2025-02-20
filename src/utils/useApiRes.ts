@@ -1,4 +1,4 @@
-import { FailModal } from "../components/layout/modal/FailModal";
+import { FailModal } from "../components/Modal/modal/FailModal";
 import useModal from "../hooks/useModal";
 
 export const useApiRes = () => {
