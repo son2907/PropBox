@@ -109,7 +109,12 @@ export default function ResultMessage() {
         )}
       </GrayBox>
       <TableBox gap={1}>
-        <Stack width={"60%"} height={"100%"}>
+        <Stack
+          width={"60%"}
+          height={"100%"}
+          border="1px solid #E5E5E5"
+          borderRadius="8px"
+        >
           <TableBox.Inner>
             <BasicTable data={tableTestData}>
               <BasicTable.Th>전송그룹</BasicTable.Th>
@@ -160,7 +165,12 @@ export default function ResultMessage() {
           </CenteredBox>
         </Stack>
 
-        <Stack width={"40%"} height={"100%"}>
+        <Stack
+          width={"40%"}
+          height={"100%"}
+          border="1px solid #E5E5E5"
+          borderRadius="8px"
+        >
           <TableBox.Inner>
             <BasicTable data={tableTestData}>
               <BasicTable.Th>전송시간</BasicTable.Th>

@@ -29,7 +29,7 @@ const MainMenu = styled(ListItemButton, {
       ? theme.palette.sidebar.menuItemActiveBg
       : theme.palette.sidebar.menuBg,
   padding: 0,
-  margin: "0px 12px 0px 12px",
+  margin: "0px 12px 6px 12px",
 }));
 
 const SolutionIcon = styled(ListItemIcon, {

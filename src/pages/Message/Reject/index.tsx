@@ -229,7 +229,13 @@ export default function RejectMessage() {
         <BasicButton>엑셀다운로드</BasicButton>
       </GrayBox>
       <TableBox width="100%" gap={2}>
-        <Stack width="100%" minWidth={"900px"} height={"100%"}>
+        <Stack
+          width="100%"
+          minWidth={"900px"}
+          height={"100%"}
+          border="1px solid #E5E5E5"
+          borderRadius="8px"
+        >
           <TableBox.Inner>
             <BasicTable data={tableTestData}>
               <BasicTable.Th>휴대전화</BasicTable.Th>
@@ -270,7 +276,12 @@ export default function RejectMessage() {
           </CenteredBox>
         </Stack>
         <Stack width={"700px"} height={"300px"} marginRight={1}>
-          <GrayBox width={"100%"} height={"100%"}>
+          <GrayBox
+            width={"100%"}
+            height={"100%"}
+            border="1px solid #E5E5E5"
+            borderRadius="8px"
+          >
             <Stack width={"100%"} gap={1}>
               <Typography variant="h3" marginBottom={2}>
                 수신거부 등록정보

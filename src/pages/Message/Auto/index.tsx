@@ -125,7 +125,15 @@ export default function AutoMessage() {
         <TableBox gap={2} marginTop={1}>
           {/*  가장 왼쪽의 '자동문자 발송메세지' 영역 */}
           {/* width를 적절한 %값으로 주되 무한정 줄어들지 않도록 minWidth로 px를 준다(적당히) */}
-          <Stack width={"30%"} minWidth={"350px"} height={"100%"} gap={5}>
+          <Stack
+            width={"30%"}
+            minWidth={"350px"}
+            height={"100%"}
+            gap={5}
+            border="1px solid #E5E5E5"
+            borderRadius="8px"
+            padding={2}
+          >
             {/* 자동문자 발송메세지 */}
             <Stack gap={1} margin={1}>
               {/* 세로 기준 중앙 정렬 되어 있는 가로로 배치된 아이템들은 */}
@@ -220,13 +228,21 @@ export default function AutoMessage() {
           </Stack>
 
           {/* 중앙 테이블 영역 */}
-          <Stack width={"30%"} minWidth={"350px"} height={"100%"} gap={2}>
+          <Stack
+            width={"30%"}
+            minWidth={"350px"}
+            height={"100%"}
+            gap={2}
+            border="1px solid #E5E5E5"
+            borderRadius="8px"
+            padding={1.5}
+          >
             <TableBox height="80%">
               <TableBox.Inner>
                 <BasicTable data={tableTestData}>
-                  <BasicTable.Th>이름</BasicTable.Th>
-                  <BasicTable.Th>상담전화</BasicTable.Th>
-                  <BasicTable.Th>상담일시</BasicTable.Th>
+                  <BasicTable.Th radius>이름</BasicTable.Th>
+                  <BasicTable.Th radius>상담전화</BasicTable.Th>
+                  <BasicTable.Th radius>상담일시</BasicTable.Th>
                   <BasicTable.Tbody>
                     {tableTestData.map((item, index) => {
                       return (
@@ -245,7 +261,11 @@ export default function AutoMessage() {
                 </BasicTable>
               </TableBox.Inner>
             </TableBox>
-            <GrayBox height={"30%"}>
+            <GrayBox
+              height={"30%"}
+              border="1px solid #E5E5E5"
+              borderRadius="8px"
+            >
               <Stack gap={1} width={"100%"}>
                 <CenteredBox gap={1}>
                   <Typography variant="h3">발송대상</Typography>
@@ -264,7 +284,16 @@ export default function AutoMessage() {
           </Stack>
 
           {/* 오른쪽 수신동의 고객 확인 문자 영역 */}
-          <Stack width={"40%"} minWidth={"400px"} height={"100%"} gap={1}>
+          <Stack
+            width={"40%"}
+            minWidth={"400px"}
+            height={"100%"}
+            gap={1}
+            border="1px solid #E5E5E5"
+            borderRadius="8px"
+            paddingLeft={2}
+            paddingRight={2}
+          >
             <Typography variant="h3" marginTop={3} marginBottom={3}>
               수신동의 고객 확인 문자
             </Typography>

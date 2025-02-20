@@ -101,12 +101,23 @@ export default function BulkMessage() {
       </GrayBox>
 
       <TableBox gap={2}>
-        <Stack width={"30%"} minWidth={"450px"} height={"100%"} gap={1}>
+        <Stack
+          minWidth={"400px"}
+          height={"100%"}
+          gap={1}
+          border="1px solid #E5E5E5"
+          borderRadius="8px"
+          padding={2}
+        >
           <Typography variant="h3">메시지 작성</Typography>
-          <Stack width={"100%"} height={"100%"} overflow={"auto"} gap={1}>
+          <Stack width={"100%"} height={"100%"} overflow={"auto"} gap={2}>
             <Stack direction={"row"} alignItems={"center"}>
               {/* 라디오 그룹 */}
-              <RadioGroup value={selectedValue} onChange={handleRadioChange} row>
+              <RadioGroup
+                value={selectedValue}
+                onChange={handleRadioChange}
+                row
+              >
                 <FormControlLabel
                   value="sms"
                   control={<Radio size="small" />}
@@ -151,7 +162,12 @@ export default function BulkMessage() {
               <BasicInput placeholder="수신 거부 번호" />
               <BasicButton>복사하기</BasicButton>
             </Stack>
-            <Stack gap={1} marginBottom={1} direction={"row"} alignItems={"center"}>
+            <Stack
+              gap={1}
+              marginBottom={1}
+              direction={"row"}
+              alignItems={"center"}
+            >
               <FormControlLabel control={<Checkbox />} label="예약문자" />
               <Stack width={"100%"} gap={1}>
                 <Calendar selectedDate={date} setSelectedDate={setDate} />
@@ -178,11 +194,19 @@ export default function BulkMessage() {
             </Stack>
 
             <Typography variant="h3">매크로</Typography>
-            <TextArea resize="none" height="300px" />
+            <TextArea resize="none" height="180px" />
           </Stack>
         </Stack>
 
-        <Stack width={"30%"} minWidth={"350px"} height={"100%"} gap={1}>
+        <Stack
+          width={"30%"}
+          minWidth={"350px"}
+          height={"100%"}
+          gap={1}
+          border="1px solid #E5E5E5"
+          borderRadius="8px"
+          padding={1.5}
+        >
           <TabMenus value={value} handleChange={tabChange}>
             <TabMenus.Tab label="전송대상" />
             <TabMenus.Tab label="임시대상" />
@@ -296,7 +320,15 @@ export default function BulkMessage() {
             </Stack>
           </TabPanel>
         </Stack>
-        <Stack width={"40%"} minWidth={"650px"} height={"100%"} gap={1}>
+        <Stack
+          width={"40%"}
+          minWidth={"650px"}
+          height={"100%"}
+          gap={1}
+          border="1px solid #E5E5E5"
+          borderRadius="8px"
+          padding={2}
+        >
           <CenteredBox gap={1} margin={1}>
             <Typography variant="h3">저장 메시지</Typography>
             <BasicButton sx={{ marginLeft: "auto" }}>문자 저장</BasicButton>
