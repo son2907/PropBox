@@ -40,6 +40,7 @@ export interface CompanyLocalListResponse extends ApiResponseType {
 
 //회사와 구성원 리스트 5번째 테이블 리스트
 export type MemeberLocalListType = {
+    idx: string,
     userNo: string,
     cmpnm: string,
     sptNo: string,

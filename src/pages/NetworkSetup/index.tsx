@@ -21,10 +21,11 @@ import PathConstants from "../../routers/path";
 import { openPopup } from "../../utils/openPopup";
 import CenteredBox from "../../components/Box/CenteredBox";
 import TableSelect from "../../components/Select/TableSelect";
-import { getComapnyLocalList, getDeviceSection, getMemberLocalList, getMemNonPermissionList, getSptNonPermissionPhoneList, getSptPermissionPhoneList, getUserCompanyList, sptNonPermissionPhone, sptPermissionPhone } from "../../api/networkSetup";
+import { getComapnyLocalList, getDeviceSection, getMemberLocalList, getMemNonPermissionList, getMemPermissionPhoneList, getSptNonPermissionPhoneList, getSptPermissionPhoneList, getUserCompanyList, sptNonPermissionPhone, sptPermissionPhone } from "../../api/networkSetup";
 import { CompanyLocalListType, DeviceSectionListType, SptPermissionPhoneListType, UserCompanyListType } from "../../types/networkSetup";
 import useModal from "../../hooks/useModal";
 import { useAuthStore } from "../../stores/authStore";
+import { string } from "yup";
 
 export default function NetworkSetup() {
   //모달
@@ -118,6 +119,11 @@ export default function NetworkSetup() {
   const [searchQueryMem, setSearchQueryMem] = useState({ userNo: "", constntNm: "" });
   const { data: memberLocalList, refetch: refetchMemberLocalList } = getMemberLocalList(searchQueryMem);
   const [selectMemberNo, setSelectMemberNo] = useState("");
+  const [idx, setIdx] = useState("");
+
+  //6번 테이블 - 구성원에게 할당된 전화기 조회
+  const [memPermissionPhoneReqData, setMemPermissionPhoneReqData] = useState({ userNo: "", commnSeNo: "", telNo: "" });
+  const { data: memPermissionPhoneListData, refetch: refetchMemPermissionPhoneListData } = getMemPermissionPhoneList(memPermissionPhoneReqData);
 
   //7번 테이블 - 구성원에게 미할당된 전화기 조회
   const [memNonPermissionPhoneNo, setMemNonPermissionPhoneNo] = useState("");
@@ -379,10 +385,10 @@ export default function NetworkSetup() {
 
 
 
-  // 날짜 변경될 때마다 콘솔 출력
-  // useEffect(() => {
-  //   console.log("현재 선택된 날짜:", formatDate(date));
-  // }, [date]);
+   //날짜 변경될 때마다 콘솔 출력
+   useEffect(() => {
+     console.log("현재 선택된:", selectMemberNo);
+   }, [selectMemberNo]);
 
   // 이전 날짜로 이동
   const handlePrevDate = () => {
@@ -766,8 +772,16 @@ export default function NetworkSetup() {
                         return (
                           <BasicTable.Tr
                             key={index}
-                            isClicked={companySelectedRow.has(item.constntNo)}
-                            onClick={() => toggleCompanyRowSelection(item.constntNo)}
+                            isClicked={idx === item.constntNo}
+                            onClick={() => {
+                              if (idx === item.constntNo) {
+                                setIdx(""); // 선택 해제
+                                setSelectMemberNo(""); // 선택 해제 시 userNo도 초기화
+                              } else {
+                                setIdx(item.constntNo); // 새로운 idx 선택
+                                setSelectMemberNo(item.constntNo); // 선택한 idx에 해당하는 userNo 저장
+                              }
+                            }}
                           >
                             <BasicTable.Td>{item.cmpnm}</BasicTable.Td>
                             <BasicTable.Td>{item.sptNm}</BasicTable.Td>
@@ -829,20 +843,20 @@ export default function NetworkSetup() {
                   </GrayBox>
                   {/* 6번 테이블 */}
                   <TableBox.Inner>
-                    <BasicTable data={tableTestData}>
+                    <BasicTable data={memPermissionPhoneListData?.data.contents || []}>
                       <BasicTable.Th>사용자ID</BasicTable.Th>
                       <BasicTable.Th>사용자이름</BasicTable.Th>
 
                       <BasicTable.Tbody>
-                        {tableTestData.map((item, index) => {
+                        {(memPermissionPhoneListData?.data.contents || []).map((item, index) => {
                           return (
                             <BasicTable.Tr
                               key={index}
-                              isClicked={memPermissionPhoneRews.has(item.id)}
-                              onClick={() => togglememPermissionPhone(item.id)}
+                              isClicked={memPermissionPhoneRews.has(item.telId)}
+                              onClick={() => togglememPermissionPhone(item.telId)}
                             >
-                              <BasicTable.Td>{item.id}</BasicTable.Td>
-                              <BasicTable.Td>{item.phone}</BasicTable.Td>
+                              <BasicTable.Td>{item.userNo}</BasicTable.Td>
+                              <BasicTable.Td>{item.commnSeNm}</BasicTable.Td>
                             </BasicTable.Tr>
                           );
                         })}

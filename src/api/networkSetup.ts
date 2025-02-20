@@ -119,7 +119,7 @@ export const getMemberLocalList = (requestData: { userNo: string, constntNm: str
         queryFn: async () => {
             //console.log("5번째 테이블 보낸값값:", requestData);
             const result = await API.getMemberLocalList(requestData);
-            console.log("받은데이터 : ", result);
+            console.log("5번 받은데이터 : ", result);
             return result;
         },
         enabled: !!requestData.userNo
