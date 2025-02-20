@@ -29,10 +29,13 @@ import useModal from "../../../../hooks/useModal";
 import { useForm } from "react-hook-form";
 import { getDeviceSection, insertPhone } from "../../../../api/networkSetup";
 import PhoneInput from "../../../../components/Input/PhoneInput";
-import { DeviceSectionListType, InsertPhone } from "../../../../types/networkSetup";
+import {
+  DeviceSectionListType,
+  InsertPhone,
+} from "../../../../types/networkSetup";
 import { useAuthStore } from "../../../../stores/authStore";
-import { EmptyDataModal } from "../../../../components/layout/modal/EmptyDataModal";
-import { InsertCompletedModal } from "../../../../components/layout/modal/InsertCompletedModal";
+import { EmptyDataModal } from "../../../../components/Modal/modal/EmptyDataModal";
+import { InsertCompletedModal } from "../../../../components/Modal/modal/InsertCompletedModal";
 
 interface Data {
   id: string;
@@ -40,7 +43,6 @@ interface Data {
 }
 
 export default function PhoneAdd() {
-
   const { loginId } = useAuthStore(["loginId"]);
 
   //모달
@@ -55,15 +57,18 @@ export default function PhoneAdd() {
       id: "",
       pwdNo: "",
       rmk: "",
-    }
+    },
   });
 
   //전화기 추가 api
   const insertPhoneAPI = insertPhone();
 
   //장치구분
-  const { data: deviceSection, refetch: refetchDeviceSection } = getDeviceSection();
-  const [deviceSectionData, setDeviceSection] = useState<DeviceSectionListType[]>([]);
+  const { data: deviceSection, refetch: refetchDeviceSection } =
+    getDeviceSection();
+  const [deviceSectionData, setDeviceSection] = useState<
+    DeviceSectionListType[]
+  >([]);
   const [deviceSectionDataKey, setDeviceSectionDataKey] = useState("");
   const [deviceSectionDataValue, setDeviceSectionDataValue] = useState("");
 
@@ -95,8 +100,6 @@ export default function PhoneAdd() {
     defaultValue: true,
   });
 
-
-
   //장치구분관리
   const deviceType = {
     url: PathConstants.System.DeviceType,
@@ -111,36 +114,40 @@ export default function PhoneAdd() {
   }, [deviceSection]);
 
   //전화기 추가
-  const onSubmit = useCallback(
-    (data: any) => {
-      const phoneInsertReqData: InsertPhone = {
-        telno: getValues("telno") || "",
-        commnSeNo: deviceSectionDataKey || "",
-        lxtnNo: getValues("lxtnNo") || "",
-        id: getValues("id") || "",
-        pwdNo: getValues("pwdNo") || "",
-        rmk: getValues("rmk") || "",
-        userId: loginId || ""
-      };
+  const onSubmit = useCallback((data: any) => {
+    const phoneInsertReqData: InsertPhone = {
+      telno: getValues("telno") || "",
+      commnSeNo: deviceSectionDataKey || "",
+      lxtnNo: getValues("lxtnNo") || "",
+      id: getValues("id") || "",
+      pwdNo: getValues("pwdNo") || "",
+      rmk: getValues("rmk") || "",
+      userId: loginId || "",
+    };
 
-      if (!data.telno || !deviceSectionDataKey || !data.lxtnNo || !data.id || !data.pwdNo) {
-        emptyDataModal();
-      } else {
-        console.log("보낼 데이터 확인 : ", phoneInsertReqData);
+    if (
+      !data.telno ||
+      !deviceSectionDataKey ||
+      !data.lxtnNo ||
+      !data.id ||
+      !data.pwdNo
+    ) {
+      emptyDataModal();
+    } else {
+      console.log("보낼 데이터 확인 : ", phoneInsertReqData);
 
-        insertPhoneAPI.mutate(
-          { body: phoneInsertReqData },
-          {
-            onSuccess: (response) => {
-              if (response.data.message === "SUCCESS") {
-                insertCompletedModal();
-              }
+      insertPhoneAPI.mutate(
+        { body: phoneInsertReqData },
+        {
+          onSuccess: (response) => {
+            if (response.data.message === "SUCCESS") {
+              insertCompletedModal();
             }
-          }
-        )
-      }
-    }, []
-  );
+          },
+        }
+      );
+    }
+  }, []);
 
   //모달
   const emptyDataModal = () => {
@@ -167,11 +174,8 @@ export default function PhoneAdd() {
     });
   };
 
-
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-    >
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Stack
         width={"100%"}
         height={"100%"}
