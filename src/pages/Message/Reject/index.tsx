@@ -1,6 +1,5 @@
 import { Stack, Typography } from "@mui/material";
 import GrayBox from "../../../components/Box/GrayBox";
-import SearchInput from "../../../components/Input/SearchInput";
 import { BasicButton } from "../../../components/Button";
 import TableBox from "../../../components/Box/TableBox";
 import BasicTable from "../../../components/Table/BasicTable";
@@ -13,7 +12,6 @@ import BasicInput from "../../../components/Input/BasicInput";
 import { openPopup } from "../../../utils/openPopup";
 import PathConstants from "../../../routers/path";
 import useModal from "../../../hooks/useModal";
-// import BasicAlert from "../../../components/Alert/BasicAlert";
 import CustomAlert from "../../../components/Alert/CustomAlert";
 import {
   useDeletetReject,
@@ -28,8 +26,11 @@ import useDidMountEffect from "../../../hooks/useDidMountEffect";
 import { GetRejectList } from "../../../types/messageReject";
 import { useAuthStore } from "../../../stores/authStore";
 import { useApiRes } from "../../../utils/useApiRes";
-import { BasicCompletedModl } from "../../../components/layout/modal/BasicCompletedModl";
+import { BasicCompletedModl } from "../../../components/Modal/modal/BasicCompletedModl";
 import { useSptStore } from "../../../stores/sptStore";
+import PhoneInput from "../../../components/Input/PhoneInput";
+import SearchIcon from "../../../assets/images/Search.png";
+import { useRef } from "react";
 
 const DeleteAlert = ({
   onClose,
@@ -60,6 +61,8 @@ const DeleteAlert = ({
 export default function RejectMessage() {
   const { countValues, selectValue, handleChange } = useTableSelect();
   const { currentPage, onChangePage } = usePagination();
+  const searchRef = useRef<HTMLInputElement>(null);
+
   const { selectedRow, toggleRowSelection } =
     useSingleRowData<GetRejectList>("rejectNo");
   const { loginId } = useAuthStore(["loginId"]);
@@ -74,9 +77,11 @@ export default function RejectMessage() {
   const { data: rejectList, refetch: rejectRefetch } = useRejectList({
     page: currentPage,
     limit: selectValue,
+    rejectTelNo: searchRef.current?.value,
   });
 
-  console.log("응답:", rejectList);
+  console.log("rejectList:", rejectList);
+
   const { register, reset, getValues } = useForm({
     defaultValues: {
       rejectTelNo: "",
@@ -85,11 +90,16 @@ export default function RejectMessage() {
   });
 
   useDidMountEffect(() => {
+    if (!selectedRow) return;
     reset({
-      rejectTelNo: selectedRow?.rejectTelNo ?? "",
-      rmk: selectedRow?.rmk ?? "",
+      rejectTelNo: selectedRow.rejectTelNo ?? "",
+      rmk: selectedRow.rmk ?? "",
     });
   }, [selectedRow]);
+
+  const searchFn = () => {
+    rejectRefetch();
+  };
 
   const checkApiFail = useApiRes();
 
@@ -97,10 +107,18 @@ export default function RejectMessage() {
   const { mutate: put } = usePutReject();
   const onPut = () => {
     if (!selectedRow) return;
-    const formData = getValues();
+    const body = {
+      rejectNo: selectedRow.rejectNo,
+      sptNo: selectedRow.sptNo,
+      rejectTelNo: getValues("rejectTelNo"),
+      useYn: selectedRow.useYn,
+      rmk: getValues("rmk"),
+      userId: loginId || "",
+    };
+    console.log("수정 보내는 정보 : ", body);
     put(
       {
-        body: { ...selectedRow, ...formData, userId: loginId || "" },
+        body: body,
       },
       {
         onSuccess: (res) => {
@@ -122,15 +140,16 @@ export default function RejectMessage() {
   // 추가
   const { mutate: post } = usePostReject();
   const onPost = () => {
-    const formData = getValues();
-    console.log("추가 데이터:", {
+    const body = {
       sptNo: sptNo,
-      ...formData,
+      rejectTelNo: getValues("rejectTelNo"),
+      rmk: getValues("rmk"),
       userId: loginId || "",
-    });
+    };
+    console.log("추가 보내는 정보 : ", body);
     post(
       {
-        body: { sptNo: sptNo, ...formData, userId: loginId || "" },
+        body: body,
       },
       {
         onSuccess: (res) => {
@@ -187,7 +206,16 @@ export default function RejectMessage() {
   return (
     <Stack width={"100%"} height={"100%"} gap={2}>
       <GrayBox gap={1}>
-        <SearchInput type="number" />
+        <PhoneInput
+          endAdornment={<img src={SearchIcon} alt="search-icon" />}
+          placeholder="검색"
+          ref={searchRef}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              searchFn();
+            }
+          }}
+        />
         <BasicButton
           sx={{
             marginLeft: "auto",
@@ -201,7 +229,13 @@ export default function RejectMessage() {
         <BasicButton>엑셀다운로드</BasicButton>
       </GrayBox>
       <TableBox width="100%" gap={2}>
-        <Stack width="100%" minWidth={"900px"} height={"100%"}>
+        <Stack
+          width="100%"
+          minWidth={"900px"}
+          height={"100%"}
+          border="1px solid #E5E5E5"
+          borderRadius="8px"
+        >
           <TableBox.Inner>
             <BasicTable data={tableTestData}>
               <BasicTable.Th>휴대전화</BasicTable.Th>
@@ -210,7 +244,7 @@ export default function RejectMessage() {
               <BasicTable.Th>등록일시</BasicTable.Th>
 
               <BasicTable.Tbody>
-                {rejectList?.data.contents.map((item, index) => {
+                {rejectList?.data?.contents?.map((item, index) => {
                   return (
                     <BasicTable.Tr
                       key={index}
@@ -242,12 +276,18 @@ export default function RejectMessage() {
           </CenteredBox>
         </Stack>
         <Stack width={"700px"} height={"300px"} marginRight={1}>
-          <GrayBox width={"100%"} height={"100%"}>
+          <GrayBox
+            width={"100%"}
+            height={"100%"}
+            border="1px solid #E5E5E5"
+            borderRadius="8px"
+          >
             <Stack width={"100%"} gap={1}>
               <Typography variant="h3" marginBottom={2}>
                 수신거부 등록정보
               </Typography>
               <Typography>휴대전화</Typography>
+              {/* <PhoneInput {...register("rejectTelNo")} /> */}
               <BasicInput {...register("rejectTelNo")} />
               <Typography>비고(거부사유)</Typography>
               <BasicInput {...register("rmk")} />

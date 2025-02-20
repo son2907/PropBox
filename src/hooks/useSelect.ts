@@ -3,6 +3,8 @@ import { SelectChangeEvent } from "@mui/material";
 import { Data, transformSelectData } from "../utils/transformSelectData";
 import useDidMountEffect from "./useDidMountEffect";
 
+// valueKey = value값이 될 것 (selectValue에 담김)
+// dataKey = 눈에 보이는 데이터가 될 것
 export default function useSelect<T extends Data>(
   data: T[] | undefined,
   valueKey: string,

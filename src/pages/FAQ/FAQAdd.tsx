@@ -14,8 +14,8 @@ import BasicInput from "../../components/Input/BasicInput";
 import Calendar from "../../components/Calendar/Calendar";
 import { useAuthStore } from "../../stores/authStore";
 import useModal from "../../hooks/useModal";
-import { InsertCompletedModal } from "../../components/layout/modal/InsertCompletedModal";
-import { EmptyDataModal } from "../../components/layout/modal/EmptyDataModal";
+import { InsertCompletedModal } from "../../components/Modal/modal/InsertCompletedModal";
+import { EmptyDataModal } from "../../components/Modal/modal/EmptyDataModal";
 import { insertFaq } from "../../api/faq";
 
 interface FormData {
@@ -25,7 +25,6 @@ interface FormData {
 }
 
 export default function FAQAdd() {
-
   //api를 호출하기위해 userID 불러오기
   const { loginId } = useAuthStore(["loginId"]);
 
@@ -53,11 +52,11 @@ export default function FAQAdd() {
   //api 호출시 필요한 데이터 준비
   const insertData = {
     body: {
-      faqNo: "",       //공지사항 번호
-      faqSj: title,       //공지사항 제목
-      faqCn: content,       //공지사항 내용
-      userId: loginId //userID
-    }
+      faqNo: "", //공지사항 번호
+      faqSj: title, //공지사항 제목
+      faqCn: content, //공지사항 내용
+      userId: loginId, //userID
+    },
   };
 
   //api 호출
@@ -79,7 +78,7 @@ export default function FAQAdd() {
         onError: (error) => {
           console.error("FAQ 추가 실패:", error);
         },
-      })
+      });
     } else {
       emptyDataModal();
     }
@@ -93,7 +92,7 @@ export default function FAQAdd() {
       onClose: () => closeModal,
       onSubmit: () => {
         //window.close();
-      }
+      },
     });
   };
 
@@ -109,14 +108,22 @@ export default function FAQAdd() {
         if (window.opener) {
           window.opener.location.reload();
         }
-      }
-    })
+      },
+    });
   };
 
   return (
     <>
       <Stack bgcolor={"white"} width={"100%"} height={"100%"}>
-        <Stack direction={"row"} padding={1} width={"100%"} height={"5%"} gap={2} alignItems={"center"} marginTop={1}>
+        <Stack
+          direction={"row"}
+          padding={1}
+          width={"100%"}
+          height={"5%"}
+          gap={2}
+          alignItems={"center"}
+          marginTop={1}
+        >
           <Typography>제목</Typography>
           <Box>
             <BasicInput
@@ -143,7 +150,12 @@ export default function FAQAdd() {
             }}
           />
         </Box>
-        <Stack justifyContent={"end"} width={"100%"} direction={"row"} alignItems={"center"}>
+        <Stack
+          justifyContent={"end"}
+          width={"100%"}
+          direction={"row"}
+          alignItems={"center"}
+        >
           <Stack direction={"row"} gap={1} margin={1}>
             <BasicButton onClick={handleInsert}>저장</BasicButton>
             <BasicButton onClick={() => window.close()}>닫기</BasicButton>

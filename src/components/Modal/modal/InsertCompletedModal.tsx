@@ -11,7 +11,7 @@ export const InsertCompletedModal = ({
 }) => {
     return (
         <CustomAlert onClose={onClose}>
-            <CustomAlert.Title>추가가 완료되었습니다.</CustomAlert.Title>
+            <CustomAlert.Title>등록이 완료되었습니다.</CustomAlert.Title>
             <CustomAlert.Content></CustomAlert.Content>
             <CustomAlert.ButtonZone>
                 <BlackButton onClick={onSubmit} variant="outlined">

@@ -19,11 +19,17 @@ interface CheckboxTdProps {
   keyName: string;
 }
 
-const Th: React.FC<TableItemProps> = ({ children, ...rest }) => {
+const Th: React.FC<TableItemProps & { radius?: boolean }> = ({
+  children,
+  radius = false,
+  ...rest
+}) => {
   return (
     <th
       {...rest}
-      className="border-solid bg-gray-200 border border-gray-300 border-b-0 border-t-0 last:border-0 text-left whitespace-nowrap py-3"
+      className={`border-solid bg-tableHeader border border-tableBorder border-t-0 first:border-l-0 last:border-r-0 text-center whitespace-nowrap py-3 sticky top-0 z-10 ${
+        radius ? "first:rounded-tl-lg last:rounded-tr-lg" : ""
+      }`}
     >
       {children}
     </th>
@@ -49,7 +55,7 @@ const CheckboxTh = ({ keyName }: { keyName: string }) => {
   };
 
   return (
-    <Th key="checkbox-header">
+    <Th key="checkbox-header text-center">
       <Checkbox checked={allSelected} onChange={handleSelectAllChange} />
     </Th>
   );
@@ -57,7 +63,10 @@ const CheckboxTh = ({ keyName }: { keyName: string }) => {
 
 const Td: React.FC<TableItemProps> = ({ children, ...rest }) => {
   return (
-    <td className="py-1 px-1" {...rest}>
+    <td
+      className="py-3 px-3 border-tableBorder border-solid border border-b-0 border-t-0 first:border-l-0 last:border-r-0 "
+      {...rest}
+    >
       {children}
     </td>
   );
@@ -91,10 +100,10 @@ const Thead: React.FC<TableItemProps> = ({ children, ...rest }) => {
 };
 const EmptyTable = () => {
   return (
-    <table className="table-auto w-full border-collapse">
+    <table className="table-auto overflow-hidden w-full border-collapse border-r-4 bg-white">
       <thead>
         <tr>
-          <th className="border-solid flex justify-center bg-gray-200 border border-gray-300 border-b-0 border-t-0 p-2 text-left last:border-0">
+          <th className="border-solid bg-tableHeader border border-tableBorder border-t-0 first:border-l-0 last:border-r-0 text-center whitespace-nowrap py-3 sticky top-0 z-10">
             조회 데이터가 존재하지 않습니다.
           </th>
         </tr>
@@ -141,7 +150,7 @@ const CheckboxTable: React.FC<TableProps> & {
 } = ({ data, selectedRows, toggleRowsSelection, children }) => {
   return (
     <>
-      {!data ? (
+      {!data || data.length == 0 ? (
         <EmptyTable /> // data가 없을 경우 EmptyTable 렌더링
       ) : (
         <TableProvider
@@ -149,7 +158,7 @@ const CheckboxTable: React.FC<TableProps> & {
           selectedRows={selectedRows}
           toggleRowsSelection={toggleRowsSelection}
         >
-          <table className="table-auto w-full border-gray-300 border-collapse">
+          <table className="w-full border-gray-300 border-collapse ">
             {React.Children.map(children, (child) => {
               if (
                 (child as React.ReactElement<any>).type === CheckboxTable.Thead

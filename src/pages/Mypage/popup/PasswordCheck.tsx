@@ -8,10 +8,9 @@ import { useEffect, useState } from "react";
 import { useAuthStore } from "../../../stores/authStore";
 import { passwordCheck } from "../../../api/myInfo";
 import useModal from "../../../hooks/useModal";
-import { PasswordCheckErrorModal } from "../../../components/layout/modal/PasswordCheckErrorModal";
+import { PasswordCheckErrorModal } from "../../../components/Modal/modal/PasswordCheckErrorModal";
 
 export default function PasswordCheck() {
-
   //모달
   const { openModal, closeModal } = useModal();
 
@@ -26,14 +25,13 @@ export default function PasswordCheck() {
   const [userCode, setUserCode] = useState("2");
 
   const handleSearch = () => {
-
     const passwordCheckData = {
       body: {
         loginId: loginId || "",
         pwdNo: searchInput,
         chkResult: "",
-        userConstntSeCd: ""
-      }
+        userConstntSeCd: "",
+      },
     };
 
     console.log("보낼 데이터 확인:", passwordCheckData);
@@ -52,17 +50,17 @@ export default function PasswordCheck() {
         } else {
           passwordCheckModal();
         }
-      }
-    })
+      },
+    });
   };
 
-   //모달
-   const passwordCheckModal = () => {
+  //모달
+  const passwordCheckModal = () => {
     openModal(PasswordCheckErrorModal, {
       modalId: "PasswordCheckErrorModal",
       stack: false,
       onClose: () => closeModal,
-      onSubmit: () =>closeModal,
+      onSubmit: () => closeModal,
     });
   };
 
@@ -84,11 +82,15 @@ export default function PasswordCheck() {
 
   return (
     <>
-      <Stack bgcolor={"white"} width={"100%"} height={"100%"} padding={"5%"} justifyContent={"space-between"}>
+      <Stack
+        bgcolor={"white"}
+        width={"100%"}
+        height={"100%"}
+        padding={"5%"}
+        justifyContent={"space-between"}
+      >
         <Stack width={"100%"} height={"28%"} gap={1}>
-          <Typography>
-            비밀번호 확인
-          </Typography>
+          <Typography>비밀번호 확인</Typography>
           <PasswordInput
             placeholder="비밀번호를 입력하세요"
             fullWidth
@@ -100,34 +102,35 @@ export default function PasswordCheck() {
                 handleSearch(); // 검색 실행 함수 호출
               }
             }}
-          //autoComplete="current-password"
-          //error={""}
+            //autoComplete="current-password"
+            //error={""}
           />
         </Stack>
         <Stack direction={"row"} gap={1}>
-          <BasicButton
-            sx={{ width: "100%" }}
-            onClick={() => window.close()}
-          >취소</BasicButton>
+          <BasicButton sx={{ width: "100%" }} onClick={() => window.close()}>
+            취소
+          </BasicButton>
           <BasicButton
             sx={{ width: "100%" }}
             onClick={handleSearch}
-          // onClick={() => {
-          //   if (userCode == "1") {
-          //     openPopup({
-          //       url: AdminInfoPopup.url,
-          //       windowName: AdminInfoPopup.windowName,
-          //       windowFeatures: AdminInfoPopup.windowFeatures,
-          //     });
-          //   } else {
-          //     openPopup({
-          //       url: UserInfoPopup.url,
-          //       windowName: UserInfoPopup.windowName,
-          //       windowFeatures: UserInfoPopup.windowFeatures,
-          //     });
-          //   }
-          // }}
-          >확인</BasicButton>
+            // onClick={() => {
+            //   if (userCode == "1") {
+            //     openPopup({
+            //       url: AdminInfoPopup.url,
+            //       windowName: AdminInfoPopup.windowName,
+            //       windowFeatures: AdminInfoPopup.windowFeatures,
+            //     });
+            //   } else {
+            //     openPopup({
+            //       url: UserInfoPopup.url,
+            //       windowName: UserInfoPopup.windowName,
+            //       windowFeatures: UserInfoPopup.windowFeatures,
+            //     });
+            //   }
+            // }}
+          >
+            확인
+          </BasicButton>
         </Stack>
       </Stack>
     </>

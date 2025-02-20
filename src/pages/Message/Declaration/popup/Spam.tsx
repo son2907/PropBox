@@ -3,28 +3,135 @@ import GrayBox from "../../../../components/Box/GrayBox";
 import { BasicButton } from "../../../../components/Button";
 import { Select } from "../../../../components/Select";
 import useSelect from "../../../../hooks/useSelect";
-import { selectTestData, tableTestData } from "../../../../utils/testData";
 import TableBox from "../../../../components/Box/TableBox";
-import BasicTable from "../../../../components/Table/BasicTable";
 import { useMultiRowSelection } from "../../../../hooks/useMultiRowSelection";
 import CheckboxTable from "../../../../components/Table/CheckboxTable";
+import { useGetKccGroupList, useKccExcelUpload } from "../../../../api/kcc";
+import HardcodingBasicTable from "../../../../components/Table/HardcodingBasicTable";
+import { useRef, useState } from "react";
+import { filterDataByValues } from "../../../../utils/filterDataByValues";
+import { useApiRes } from "../../../../utils/useApiRes";
+import useModal from "../../../../hooks/useModal";
+import { BasicCompletedModl } from "../../../../components/Modal/modal/BasicCompletedModl";
+import { ConfirmMultipleDeletionModal } from "../../../../components/Modal/modal/ConfirmMultipleDeletionModal";
+import { ExcelToTable } from "../../../../utils/ExcelToTable";
+import { useSptStore } from "../../../../stores/sptStore";
 
 export default function Spam() {
+  const {
+    selectedRows: ts_1,
+    toggleRowsSelection: tt_1,
+    resetSelectedRows,
+  } = useMultiRowSelection();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [tableHeader, setTableHeader] = useState<any[]>([]);
+  const [tableData, setTableData] = useState<any>([]);
+
+  const { data: groupList } = useGetKccGroupList(); // 그룹 목록
+
   const {
     selectListData: sd_0,
     selectValue: s_0,
     handleChange: o_0,
-  } = useSelect(selectTestData, "value", "data");
-  const { selectedRows: ts_1, toggleRowsSelection: tt_1 } =
-    useMultiRowSelection();
-  const { selectedRows: ts_2, toggleRowsSelection: tt_2 } =
-    useMultiRowSelection();
+  } = useSelect(groupList?.data.contents, "groupNo", "groupNm");
+
+  const { mutate: uploadExcel } = useKccExcelUpload();
+  const checkApiFail = useApiRes();
+  const { openModal, closeModal } = useModal();
+  const { sptNo } = useSptStore();
+
+  const onClickUpload = () => {
+    const file = fileInputRef.current?.files?.[0];
+    if (!file) return;
+
+    const body = {
+      sptNo: sptNo,
+      groupNo: s_0,
+      mbtlNoList: tableData.map(({ id, 스팸문자 }) => ({
+        id,
+        mbtlNo: 스팸문자,
+      })),
+    };
+
+    console.log("body:", body);
+
+    uploadExcel(
+      {
+        body: body,
+      },
+      {
+        onSuccess: (res) => {
+          console.log("업로드 결과:", res);
+          const result = checkApiFail(res);
+          if (result.data.message === "SUCCESS") {
+            console.log("업로드 성공:", res);
+            openModal(BasicCompletedModl, {
+              modalId: "excelComplete",
+              stack: false,
+              onClose: () => closeModal,
+            });
+          }
+        },
+      }
+    );
+  };
+
+  const onClickDelete = () => {
+    openModal(ConfirmMultipleDeletionModal, {
+      itemCount: ts_1.size,
+      modalId: "deleteMsg",
+      stack: false, //단일 모달 모드
+      onClose: () => closeModal,
+      onSubmit: () => {
+        const selectedTableData = filterDataByValues({
+          data: tableData,
+          key: "id",
+          values: Array.from(ts_1),
+        });
+        const filteredTableData = tableData.filter(
+          (item) =>
+            !new Set(selectedTableData.map((item) => item.id)).has(item.id)
+        ); // 전체 배열에서 선택한 아이템 제거
+        setTableData(filteredTableData);
+      },
+    });
+  };
+
   return (
     <Stack width={"100%"} height={"100%"}>
       <GrayBox gap={1}>
-        <BasicButton>엑셀불러오기</BasicButton>
-        <BasicButton>삭제</BasicButton>
-        <BasicButton sx={{ marginRight: "auto" }}>컬럼보기</BasicButton>
+        <input
+          type="file"
+          accept=".xlsx, .xls"
+          style={{ display: "none" }}
+          id="upload-file"
+          ref={fileInputRef} // ref 연결
+          onChange={async (e) => {
+            try {
+              const { headers, dataWithId } = await ExcelToTable(e);
+              setTableHeader(headers);
+              setTableData(dataWithId);
+            } catch (error) {
+              console.error(error);
+            }
+          }}
+        />
+        <BasicButton
+          onClick={() => {
+            if (fileInputRef.current) {
+              fileInputRef.current.value = "";
+              setTableHeader([]);
+              setTableData([]);
+              resetSelectedRows();
+            }
+            fileInputRef.current?.click();
+          }}
+        >
+          엑셀불러오기
+        </BasicButton>
+        <BasicButton sx={{ marginRight: "auto" }} onClick={onClickDelete}>
+          삭제
+        </BasicButton>
 
         <Select
           selectData={sd_0}
@@ -32,61 +139,57 @@ export default function Spam() {
           onChange={o_0}
           sx={{ width: "200px" }}
         />
-        <BasicButton>저장</BasicButton>
+        <BasicButton onClick={onClickUpload}>저장</BasicButton>
       </GrayBox>
       <TableBox gap={1}>
         <TableBox.Inner width={"40%"} minWidth={"100px"}>
-          <BasicTable data={tableTestData}>
-            <BasicTable.Th>전송일시</BasicTable.Th>
-            <BasicTable.Th>구분</BasicTable.Th>
-            <BasicTable.Th>메시지</BasicTable.Th>
+          <HardcodingBasicTable>
+            <HardcodingBasicTable.Th>엑셀항목</HardcodingBasicTable.Th>
+            <HardcodingBasicTable.Th>칼럼위치</HardcodingBasicTable.Th>
 
-            <BasicTable.Tbody>
-              {tableTestData.map((item, index) => {
-                return (
-                  <BasicTable.Tr
-                    key={index}
-                    isClicked={ts_2.has(item.id)}
-                    onClick={() => tt_2(item.id)}
-                  >
-                    <BasicTable.Td>{item.name}</BasicTable.Td>
-                    <BasicTable.Td>{item.age}</BasicTable.Td>
-                    <BasicTable.Td>{item.age}</BasicTable.Td>
-                  </BasicTable.Tr>
-                );
-              })}
-            </BasicTable.Tbody>
-          </BasicTable>
+            <HardcodingBasicTable.Tbody>
+              <HardcodingBasicTable.Tr>
+                <HardcodingBasicTable.Td>스팸</HardcodingBasicTable.Td>
+                <HardcodingBasicTable.Td>1</HardcodingBasicTable.Td>
+              </HardcodingBasicTable.Tr>
+            </HardcodingBasicTable.Tbody>
+          </HardcodingBasicTable>
         </TableBox.Inner>
         <Stack width={"60%"} height={"100%"}>
           <TableBox.Inner minWidth={"200px"}>
             <CheckboxTable
-              data={tableTestData}
+              data={tableData}
               selectedRows={ts_1}
               toggleRowsSelection={tt_1}
             >
               <CheckboxTable.Thead>
                 <CheckboxTable.Tr>
                   <CheckboxTable.CheckboxTh keyName="id" />
-                  <CheckboxTable.Th>이름</CheckboxTable.Th>
-                  <CheckboxTable.Th>휴대전화</CheckboxTable.Th>
-                  <CheckboxTable.Th>집전화</CheckboxTable.Th>
+                  {tableHeader.map((item, index) => {
+                    return (
+                      <CheckboxTable.Th key={index}>{item}</CheckboxTable.Th>
+                    );
+                  })}
                 </CheckboxTable.Tr>
               </CheckboxTable.Thead>
               <CheckboxTable.Tbody>
-                {tableTestData.map((item) => (
-                  <CheckboxTable.Tr key={item.id} id={item.id}>
-                    <CheckboxTable.CheckboxTd item={item} keyName="id" />
-                    <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                    <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                    <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
+                {tableData.map((row, rowIndex) => (
+                  <CheckboxTable.Tr key={rowIndex} id={row.id}>
+                    <CheckboxTable.CheckboxTd item={row} keyName="id" />
+                    {Object.keys(row)
+                      .filter((key) => key !== "id")
+                      .map((key, cellIndex) => (
+                        <CheckboxTable.Td key={cellIndex}>
+                          {row[key]}
+                        </CheckboxTable.Td>
+                      ))}
                   </CheckboxTable.Tr>
                 ))}
               </CheckboxTable.Tbody>
             </CheckboxTable>
           </TableBox.Inner>
           <GrayBox>
-            <Typography>전체:5678</Typography>
+            <Typography>전체:{tableData.length}</Typography>
           </GrayBox>
         </Stack>
       </TableBox>

@@ -23,6 +23,16 @@ import { RiDeleteBinLine } from "react-icons/ri";
 import LabelTypo from "../../../../components/Typography/LabelTypo";
 import Calendar from "../../../../components/Calendar/Calendar";
 import useToggleButtton from "../../../../hooks/useToggleButton";
+import { useAuthStore } from "../../../../stores/authStore";
+import {
+  nonPermissionMenuInsert,
+  permissionRevoke,
+} from "../../../../api/authManagement";
+import { PermissionRevokeType } from "../../../../types/authManagement";
+import useModal from "../../../../hooks/useModal";
+import { RevokeCompletedModal } from "../../../../components/Modal/modal/RevokeCompletedModal";
+import { EmptyDataModal } from "../../../../components/Modal/modal/EmptyDataModal";
+import { EmptySelectModal } from "../../../../components/Modal/modal/EmptySelectModal";
 
 interface Data {
   id: string;
@@ -30,6 +40,26 @@ interface Data {
 }
 
 export default function PermissionRevoke() {
+  // 팝업 페이지에서 파라미터 파싱
+  const queryParams = new URLSearchParams(window.location.search);
+  const userNo = queryParams.get("userNo");
+  const sptNo = queryParams.get("sptNo");
+  const slutnIdParam = queryParams.get("slutnId");
+
+  // slutnId 문자열을 배열로 변환
+  const slutnIds = slutnIdParam ? slutnIdParam.split(",") : [];
+
+  console.log("팝업으로 가져온 데이터:", { userNo, sptNo, slutnIds });
+
+  //api를 호출하기위해 userID 불러오기
+  const { loginId } = useAuthStore(["loginId"]);
+
+  //권한 회수
+  const permissionReovekAPI = permissionRevoke();
+
+  //모달
+  const { openModal, closeModal } = useModal();
+
   const {
     selectListData: sd_0,
     selectValue: s_0,
@@ -37,32 +67,72 @@ export default function PermissionRevoke() {
   } = useSelect(selectTestData, "value", "data");
 
   const { selectedValues, handleSelectChange } = useMultiSelect<number>();
-  const [data, setData] = useState<Data[]>(tableTestData);
-
-  const { selectedRows: s_1, toggleRowsSelection: t_1 } =
-    useMultiRowSelection();
-  const { selectedRows: s_3, toggleRowsSelection: t_3 } =
-    useMultiRowSelection();
+  const [revokeReason, setRevokeReason] = useState("");
 
   const topicPopupInfo = {
     url: PathConstants.Call.TopicRegistration,
     windowName: "현장 등록 및 수정",
   };
 
-  const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함
+  //회수 사유 api 데이터 전달
+  const handleRevoke = () => {
+    const requestData: PermissionRevokeType = {
+      sptNo: sptNo || "",
+      userNo: userNo || "",
+      resn: revokeReason,
+      userId: loginId || "",
+      slutnIdList: slutnIds.map((id) => ({ slutnId: id })), // 변환된 배열
+    };
 
-  const [startDate, setStartDate] = useState<Date>(new Date());
-  const [endDate, setEndDate] = useState<Date>(new Date());
+    console.log("보낼 데이터 확인좀: ", requestData);
 
-  const { toggle, onChange: setToggle } = useToggleButtton({
-    defaultValue: true,
-  });
+    if (revokeReason !== "") {
+      permissionReovekAPI.mutate(
+        { body: requestData },
+        {
+          onSuccess: (response) => {
+            if (response.data.message === "SUCCESS") {
+              console.log("response.data", response.data);
+              revokeCompletedModal();
+            }
+          },
+        }
+      );
+    } else {
+      emptyDataModal();
+    }
+  };
 
-  const { selectListData, selectValue, handleChange } = useSelect(
-    selectTestData,
-    "value",
-    "data"
-  );
+  const revokeCompletedModal = () => {
+    openModal(RevokeCompletedModal, {
+      modalId: "RevokeCompletedModal",
+      stack: false,
+      onClose: () => closeModal,
+      onSubmit: () => {
+        window.close();
+        // 이전 창 새로 고침
+        if (window.opener) {
+          window.opener.location.reload();
+        }
+      },
+    });
+  };
+
+  const emptyDataModal = () => {
+    openModal(EmptyDataModal, {
+      modalId: "EmptyDataModal",
+      stack: false,
+      onClose: () => closeModal,
+      onSubmit: () => {
+        window.close();
+        // 이전 창 새로 고침
+        if (window.opener) {
+          window.opener.location.reload();
+        }
+      },
+    });
+  };
+
   return (
     <Stack
       width={"100%"}
@@ -81,7 +151,11 @@ export default function PermissionRevoke() {
           justifyContent={"space-between"}
         >
           <Typography>사용자아이디</Typography>
-          <BasicInput sx={{ width: "80%" }}></BasicInput>
+          <BasicInput
+            sx={{ width: "80%" }}
+            value={loginId}
+            disabled
+          ></BasicInput>
         </Stack>
         <Stack
           direction={"row"}
@@ -91,12 +165,17 @@ export default function PermissionRevoke() {
           justifyContent={"space-between"}
         >
           <Typography>회수사유</Typography>
-          <BasicInput sx={{ width: "80%", height: "100px" }}></BasicInput>
+          <BasicInput
+            sx={{ width: "80%", height: "100px" }}
+            value={revokeReason}
+            onChange={(e) => setRevokeReason(e.target.value)}
+            placeholder={"회수사유"}
+          ></BasicInput>
         </Stack>
       </Stack>
       <GrayBox width={"100%"}>
         <Box sx={{ marginLeft: "auto" }}>
-          <BasicButton>저장</BasicButton>
+          <BasicButton onClick={handleRevoke}>저장</BasicButton>
         </Box>
       </GrayBox>
     </Stack>

@@ -12,7 +12,10 @@ export default function MenuItem({ label, url, fold }: MenuType) {
     addMenu(label, url);
   };
   return (
-    <ListItemButton sx={{ pl: 7 }} onClick={onClick}>
+    <ListItemButton
+      sx={{ pl: 7, paddingBottom: 0.5, paddingTop: 0.5 }}
+      onClick={onClick}
+    >
       {!fold && <ListItemText primary={label} />}
     </ListItemButton>
   );

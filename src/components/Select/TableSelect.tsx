@@ -21,6 +21,7 @@ export default function TableSelect({
         value={selectValue}
         onChange={handleChange}
         selectData={countValues}
+        sx={{ height: "2rem" }}
       ></Select>
       <Typography>전체:{total}</Typography>
     </Box>

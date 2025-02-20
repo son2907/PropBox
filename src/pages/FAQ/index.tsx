@@ -13,10 +13,10 @@ import { openPopup } from "../../utils/openPopup";
 import { useAuthStore } from "../../stores/authStore";
 import api from "../../api";
 import useModal from "../../hooks/useModal";
-import { ConfirmMultipleDeletionModal } from "../../components/layout/modal/ConfirmMultipleDeletionModal";
-import { EmptySelectModal } from "../../components/layout/modal/EmptySelectModal";
+import { ConfirmMultipleDeletionModal } from "../../components/Modal/modal/ConfirmMultipleDeletionModal";
+import { EmptySelectModal } from "../../components/Modal/modal/EmptySelectModal";
 import { deleteFaq } from "../../api/faq";
-import { DeleteCompletedModal } from "../../components/layout/modal/DeleteCompletedModal";
+import { DeleteCompletedModal } from "../../components/Modal/modal/DeleteCompletedModal";
 
 export default function FAQList() {
   // 구성원 1002015, 사용자 1002010, 시스템관리자 1002005
@@ -271,9 +271,7 @@ export default function FAQList() {
                 <CheckboxTable.Tbody>
                   {(data?.data?.contents || []).map((item) => (
                     <CheckboxTable.Tr key={item.faqNo} id={item.faqNo}>
-                      <CheckboxTable.CheckboxTd
-                        item={item}
-                        keyName="faqNo" />
+                      <CheckboxTable.CheckboxTd item={item} keyName="faqNo" />
                       <CheckboxTable.Td>{item.faqSj}</CheckboxTable.Td>
                       <CheckboxTable.Td>{item.faqCn}</CheckboxTable.Td>
                       <CheckboxTable.Td>

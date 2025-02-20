@@ -25,16 +25,29 @@ import Calendar from "../../../components/Calendar/Calendar";
 import SelectInput from "@mui/material/Select/SelectInput";
 import useModal from "../../../hooks/useModal";
 import api from "../../../api";
-import { memberDeleteLocal, memberLocalInsert, updateMemberPosition, useLocalList, useLocalMemberList, useMemberList, useMemberPositionList } from "../../../api/localManagement";
-import { LocalListType, localMemberListType, MemberInsertListType, MemberPositionType, MemeberList } from "../../../types/localManagementType";
+import {
+  memberDeleteLocal,
+  memberLocalInsert,
+  updateMemberPosition,
+  useLocalList,
+  useLocalMemberList,
+  useMemberList,
+  useMemberPositionList,
+} from "../../../api/localManagement";
+import {
+  LocalListType,
+  localMemberListType,
+  MemberInsertListType,
+  MemberPositionType,
+  MemeberList,
+} from "../../../types/localManagementType";
 import useDidMountEffect from "../../../hooks/useDidMountEffect";
 import { UserListType } from "../../../types/userList";
-import { EmptySelectModal } from "../../../components/layout/modal/EmptySelectModal";
+import { EmptySelectModal } from "../../../components/Modal/modal/EmptySelectModal";
 import { useAuthStore } from "../../../stores/authStore";
 
 //현장별구성원관리
 export default function LocalmemberManagement() {
-
   //api를 호출하기위해 userID 불러오기
   const { loginId } = useAuthStore(["loginId"]);
 
@@ -54,18 +67,35 @@ export default function LocalmemberManagement() {
   const [selectUserNo, setSelectUserNo] = useState("");
 
   //현장 리스트
-  const [localListReqData, setLocalListReqData] = useState({ sptNm: "", progrsSeCd: "", userNo: "", cntrctBgnde: "", cntrctEndde: "" });
-  const { data: localListData, isSuccess: isLocalListData } = useLocalList(localListReqData);
+  const [localListReqData, setLocalListReqData] = useState({
+    sptNm: "",
+    progrsSeCd: "",
+    userNo: "",
+    cntrctBgnde: "",
+    cntrctEndde: "",
+  });
+  const { data: localListData, isSuccess: isLocalListData } =
+    useLocalList(localListReqData);
   const [selectLocalNo, setSelectLocalNo] = useState("");
 
   //현장 구성원 리스트
-  const [localMemberReqData, setLocalMemberReqData] = useState({ sptNo: "", userNm: "", rspofcNm: "" });
-  const { data: localMemberListData, refetch: localMemberListDataRefetch } = useLocalMemberList(localMemberReqData);
-  const [localMemberList, setLocalMemberList] = useState<localMemberListType[]>([]);
+  const [localMemberReqData, setLocalMemberReqData] = useState({
+    sptNo: "",
+    userNm: "",
+    rspofcNm: "",
+  });
+  const { data: localMemberListData, refetch: localMemberListDataRefetch } =
+    useLocalMemberList(localMemberReqData);
+  const [localMemberList, setLocalMemberList] = useState<localMemberListType[]>(
+    []
+  );
 
   //구성원 직책 리스트
-  const { data: memberPositionListData, isSuccess: isMemberPositionListData } = useMemberPositionList("1004000");
-  const [memberPositionList, setMemberPositionList] = useState<MemberPositionType[]>([]);
+  const { data: memberPositionListData, isSuccess: isMemberPositionListData } =
+    useMemberPositionList("1004000");
+  const [memberPositionList, setMemberPositionList] = useState<
+    MemberPositionType[]
+  >([]);
   const [memberPositionKey, setMemberPositionKey] = useState("");
   const [memberPositionValue, setMemberPositionValue] = useState("");
 
@@ -76,14 +106,16 @@ export default function LocalmemberManagement() {
       sptNo: selectLocalNo,
       rspofcCd: memberPositionKey,
       userId: loginId || "",
-    }
+    },
   };
 
-  const { mutate: changePositionAPI } = updateMemberPosition(changePositionReqData);
-
+  const { mutate: changePositionAPI } = updateMemberPosition(
+    changePositionReqData
+  );
 
   //구성원 리스트
-  const { data: memberListData, refetch: memberListDataRefetch } = useMemberList(selectUserNo);
+  const { data: memberListData, refetch: memberListDataRefetch } =
+    useMemberList(selectUserNo);
   const [memberList, setMemberList] = useState<MemeberList[]>([]);
 
   const { selectListData, selectValue, handleChange } = useSelect(
@@ -158,8 +190,8 @@ export default function LocalmemberManagement() {
   useEffect(() => {
     setLocalMemberReqData((prev) => ({
       ...prev,
-      sptNo: selectLocalNo
-    }))
+      sptNo: selectLocalNo,
+    }));
   }, [selectLocalNo]);
   useDidMountEffect(() => {
     if (localMemberListData?.data.contents) {
@@ -188,9 +220,9 @@ export default function LocalmemberManagement() {
     setLocalListReqData((prev) => ({
       ...prev,
       sptNm: localSearchInput, // 선택한 값으로 isUse 업데이트
-      userNo: selectUserNo
+      userNo: selectUserNo,
     }));
-  }
+  };
 
   //구성원 직책 변경
   const handleChangePosition = (position: string, userNo: string) => {
@@ -200,7 +232,7 @@ export default function LocalmemberManagement() {
         sptNo: selectLocalNo,
         rspofcCd: position,
         userId: loginId || "",
-      }
+      },
     };
 
     console.log("직책변경을 위한 요청 데이터", changePositionReqData);
@@ -212,7 +244,7 @@ export default function LocalmemberManagement() {
             console.log("대답", response.data);
             localMemberListDataRefetch();
           }
-        }
+        },
       });
     } else {
       emptySelectionModal();
@@ -230,15 +262,15 @@ export default function LocalmemberManagement() {
     });
 
     const requestData = {
-      sptNo : selectLocalNo,
+      sptNo: selectLocalNo,
       userId: loginId || "",
       userNoList,
     };
 
-    console.log("할당제외데이터",requestData);
+    console.log("할당제외데이터", requestData);
 
     deleteLocalMember.mutate(
-      {body: requestData},
+      { body: requestData },
       {
         onSuccess: (response) => {
           console.log("이동성공");
@@ -247,23 +279,21 @@ export default function LocalmemberManagement() {
             localMemberListDataRefetch();
             memberListDataRefetch();
           }
-        }
+        },
       }
-    )
+    );
   };
 
   //구성원 -> 현장 구성원 할당
   const handleInertLocalMember = () => {
     const constntList = Array.from(localUnuseSelectedRows).map((rowId) => {
-      const selectedItem = memberList.find(
-        (item) => item.userNo === rowId
-      );
+      const selectedItem = memberList.find((item) => item.userNo === rowId);
       return {
         userNo: selectedItem?.userNo || "",
         rspofcCd: "0",
         memo: "",
         rmk: "",
-      }
+      };
     });
 
     //api 호출 데이터 생성
@@ -273,10 +303,10 @@ export default function LocalmemberManagement() {
       constntList,
     };
 
-    console.log("구성원등록할때 보내는 데이터 :",requestData);
+    console.log("구성원등록할때 보내는 데이터 :", requestData);
 
     insertLocalMember.mutate(
-      {body: requestData},
+      { body: requestData },
       {
         onSuccess: (response) => {
           console.log("이동성공");
@@ -290,9 +320,8 @@ export default function LocalmemberManagement() {
           console.error("이동 실패:", error);
         },
       }
-    )
-  }
-
+    );
+  };
 
   const emptySelectionModal = () => {
     openModal(EmptySelectModal, {
@@ -350,7 +379,6 @@ export default function LocalmemberManagement() {
                               setSelectUserNo(item.userNo);
                             }
                           }}
-
                         >
                           <BasicTable.Td>{item.loginId}</BasicTable.Td>
                           <BasicTable.Td>{item.userNm}</BasicTable.Td>
@@ -383,7 +411,9 @@ export default function LocalmemberManagement() {
                         >
                           <BasicTable.Td>{item.sptNo}</BasicTable.Td>
                           <BasicTable.Td>{item.sptNm}</BasicTable.Td>
-                          <BasicTable.Td>{item.cntrctBgnde} ~ {item.cntrctEndde}</BasicTable.Td>
+                          <BasicTable.Td>
+                            {item.cntrctBgnde} ~ {item.cntrctEndde}
+                          </BasicTable.Td>
                         </BasicTable.Tr>
                       );
                     })}
@@ -433,11 +463,16 @@ export default function LocalmemberManagement() {
                               );
                               if (selectedOption) {
                                 console.log("직책변경:", selectedOption.cdNm);
-                                console.log(`직책 키 변경: ${selectedOption.cd}`); // cd 콘솔 출력
+                                console.log(
+                                  `직책 키 변경: ${selectedOption.cd}`
+                                ); // cd 콘솔 출력
                                 setMemberPositionKey(selectedOption.cd);
                                 setMemberPositionValue(selectedOption.cdNm);
 
-                                handleChangePosition(selectedOption.cd, item.userNo);
+                                handleChangePosition(
+                                  selectedOption.cd,
+                                  item.userNo
+                                );
                               }
                             }}
                             selectData={memberPositionList.map((item) => ({
@@ -453,10 +488,17 @@ export default function LocalmemberManagement() {
                 </CheckboxTable>
               </TableBox.Inner>
               <GrayBox justifyContent={"end"}>
-                <BasicButton onClick={() => localMemberListDataRefetch()}>새로고침</BasicButton>
+                <BasicButton onClick={() => localMemberListDataRefetch()}>
+                  새로고침
+                </BasicButton>
               </GrayBox>
             </Stack>
-            <Stack width={"2%"} bgcolor={"white"} justifyContent={"space-between"} height={"100%"}>
+            <Stack
+              width={"2%"}
+              bgcolor={"white"}
+              justifyContent={"space-between"}
+              height={"100%"}
+            >
               <BasicButton
                 sx={{
                   backgroundColor: "primary.A100",
@@ -517,7 +559,9 @@ export default function LocalmemberManagement() {
                 </CheckboxTable>
               </TableBox.Inner>
               <GrayBox justifyContent={"end"}>
-                <BasicButton onClick={() => memberListDataRefetch()}>새로고침</BasicButton>
+                <BasicButton onClick={() => memberListDataRefetch()}>
+                  새로고침
+                </BasicButton>
               </GrayBox>
             </Stack>
           </TableBox>

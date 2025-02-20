@@ -16,7 +16,12 @@ export function useMultiRowSelection() {
     });
   };
 
-  return { selectedRows, toggleRowsSelection };
+  // 선택된 행 초기화
+  const resetSelectedRows = () => {
+    setSelectedRows(new Set());
+  };
+
+  return { selectedRows, toggleRowsSelection, resetSelectedRows };
 }
 
 //아래와 같이 사용

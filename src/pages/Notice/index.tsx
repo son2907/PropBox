@@ -13,9 +13,9 @@ import { openPopup } from "../../utils/openPopup";
 import api from "../../api";
 import { useAuthStore } from "../../stores/authStore";
 import useModal from "../../hooks/useModal";
-import { ConfirmMultipleDeletionModal } from "../../components/layout/modal/ConfirmMultipleDeletionModal";
-import { DeleteCompletedModal } from "../../components/layout/modal/DeleteCompletedModal";
-import { EmptySelectModal } from "../../components/layout/modal/EmptySelectModal";
+import { ConfirmMultipleDeletionModal } from "../../components/Modal/modal/ConfirmMultipleDeletionModal";
+import { DeleteCompletedModal } from "../../components/Modal/modal/DeleteCompletedModal";
+import { EmptySelectModal } from "../../components/Modal/modal/EmptySelectModal";
 import { deleteNotice } from "../../api/noticeList";
 
 export default function NoticeList() {
