@@ -22,6 +22,7 @@ export interface UserCompanyListResponse extends ApiResponseType {
 export type CompanyLocalListType = {
     userNo: string,
     cmpnm: string,
+    sptNo: string,
     sptNm: string,
     telCnt: string,
 };
@@ -37,7 +38,7 @@ export interface CompanyLocalListResponse extends ApiResponseType {
     refreshToken: null;
 };
 
-//회사와 구성원 리스트
+//회사와 구성원 리스트 5번째 테이블 리스트
 export type MemeberLocalListType = {
     userNo: string,
     cmpnm: string,
@@ -90,3 +91,110 @@ export interface DeviceSectionListResponse extends ApiResponseType {
     accessToken: null;
     refreshToken: null;
 }
+
+//통신환경설정 3번째 테이블 리스트
+export type SptPermissionPhoneListType = {
+    userNo: string,
+    sptNo: string,
+    telId: string,
+    commnSeNo: string,
+    commnSeNm: string,
+    telNo: string,
+    cntrctBgnde: string,
+    cntrctEndde: string
+};
+export interface SptPermissionPhoneListResponse extends ApiResponseType {
+    code: number;
+    result: string;
+    message: string;
+    totalCnt: number | null;
+    contents: SptPermissionPhoneListType[];
+    params: null;
+    errorCode: null;
+    accessToken: null;
+    refreshToken: null;
+};
+
+//통신환경설정 4번째 테이블 리스트
+export type SptNonPermissionPhoneListType = {
+    userNo: string,
+    telId: string,
+    commnSeNo: string,
+    commnSeNm: string,
+    telNo: string,
+    sptNo: string,
+    sptYn: string,
+    sptNm: string,
+};
+export interface SptNonPermissionPhoneListResponse extends ApiResponseType {
+    code: number;
+    result: string;
+    message: string;
+    totalCnt: number | null;
+    contents: SptNonPermissionPhoneListType[];
+    params: null;
+    errorCode: null;
+    accessToken: null;
+    refreshToken: null;
+};
+
+//통신환경설정 4번테이블에서 3번테이블로 전화기 등록
+export type SptPermissionPhoneType = {
+    sptNo: string,
+    telId: string,
+    cntrctBgnde: string,
+    cntrctEndde: string,
+    userId: string,
+}[];
+
+//통신환경설정 3번테이블에서 4번으로 전화기 삭제
+export type SptNonPermissionPhoneType = {
+    sptNo: string,
+    telId: string,
+    userId: string
+}[];
+
+//통신환경설정 7번 테이블 목록 조회
+export type MemNonPermissionListType = {
+    sptNo: string,
+    telId: string,
+    commnSeNo: string,
+    commnSeNm: string
+    telNo: string,
+    constntYN: string,
+    constntNm: string
+};
+export interface MemNonPermissionListResponse extends ApiResponseType {
+    code: number;
+    result: string;
+    message: string;
+    totalCnt: number | null;
+    contents: MemNonPermissionListType[];
+    params: null;
+    errorCode: null;
+    accessToken: null;
+    refreshToken: null;
+};
+
+//통신환경설정 6번 테이블 목록 조회
+export type MemPermissionListType = {
+    userNo: string,
+    sptNo: string,
+    telId: string,
+    telNo: string,
+    commnSeNo: string,
+    commnSeNm: string,
+    cntrctBgnde: string,
+    cntrctEndde: string
+};
+export interface MemPermissionListResponse extends ApiResponseType {
+    code: number;
+    result: string;
+    message: string;
+    totalCnt: number | null;
+    contents: MemPermissionListType[];
+    params: null;
+    errorCode: null;
+    accessToken: null;
+    refreshToken: null;
+};

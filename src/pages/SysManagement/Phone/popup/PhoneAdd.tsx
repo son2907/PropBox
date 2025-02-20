@@ -32,6 +32,7 @@ import PhoneInput from "../../../../components/Input/PhoneInput";
 import { DeviceSectionListType, InsertPhone } from "../../../../types/networkSetup";
 import { useAuthStore } from "../../../../stores/authStore";
 import { EmptyDataModal } from "../../../../components/layout/modal/EmptyDataModal";
+import { InsertCompletedModal } from "../../../../components/layout/modal/InsertCompletedModal";
 
 interface Data {
   id: string;
@@ -126,6 +127,17 @@ export default function PhoneAdd() {
         emptyDataModal();
       } else {
         console.log("보낼 데이터 확인 : ", phoneInsertReqData);
+
+        insertPhoneAPI.mutate(
+          { body: phoneInsertReqData },
+          {
+            onSuccess: (response) => {
+              if (response.data.message === "SUCCESS") {
+                insertCompletedModal();
+              }
+            }
+          }
+        )
       }
     }, []
   );
@@ -139,6 +151,22 @@ export default function PhoneAdd() {
       onSubmit: () => closeModal,
     });
   };
+
+  const insertCompletedModal = () => {
+    openModal(InsertCompletedModal, {
+      modalId: "InsertCompletedModal",
+      stack: false,
+      onClose: () => closeModal,
+      onSubmit: () => {
+        window.close();
+        // 이전 창 새로 고침
+        if (window.opener) {
+          window.opener.location.reload();
+        }
+      },
+    });
+  };
+
 
   return (
     <form
@@ -175,7 +203,7 @@ export default function PhoneAdd() {
             justifyContent={"space-between"}
           >
             <Typography>내선번호</Typography>
-            <PhoneInput
+            <BasicInput
               sx={{ width: "80%" }}
               placeholder={"내선번호 입력"}
               {...register("lxtnNo")}
