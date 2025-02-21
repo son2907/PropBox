@@ -21,6 +21,11 @@ input[type="file"]::file-selector-button {
   border: none;
 }
 
+textarea {
+  font-family: "Noto Sans KR", sans-serif !important; /* 우선순위 강제 적용 */
+  padding: 0.3rem 0 0 0.5rem;
+}
+
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

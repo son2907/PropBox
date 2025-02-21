@@ -13,7 +13,7 @@ import {
 } from "../../../components/Button";
 import CenteredBox from "../../../components/Box/CenteredBox";
 import TextArea from "../../../components/TextArea/TextArea";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Select } from "../../../components/Select";
 import { selectTestData } from "../../../utils/testData";
 import useSelect from "../../../hooks/useSelect";
@@ -76,6 +76,11 @@ const selectData = [
   },
 ];
 
+const autoKey = "1008005";
+const yKey = "1008010";
+const nKey = "1008015";
+const noneKey = "1008020";
+
 export default function AutoMessage() {
   const defaultValues = {
     autoMessage: "",
@@ -120,24 +125,17 @@ export default function AutoMessage() {
   };
 
   const {
-    selectListData: sd_0,
-    selectValue: s_0,
-    handleChange: o_0,
-  } = useSelect(selectTestData, "value", "data"); // 발신번호 목록
-
-  const {
     selectListData: sd_1,
     selectValue: s_1,
     handleChange: o_1,
   } = useSelect(selectData, "value", "data");
 
-  const { selectedRow, toggleRowSelection } =
+  const { selectedRow, toggleRowSelection, resetSelection } =
     useSingleRowData<SmsTelList>("mbtlNo");
 
   const { toggle: receive, onChange: receiveToggle } = useToggleButtton({
     defaultValue: true,
   });
-  console.log("###receive:", receive);
 
   const { toggle: out, onChange: outToggle } = useToggleButtton({
     defaultValue: true,
@@ -162,9 +160,6 @@ export default function AutoMessage() {
   const { data: numberList } = useCrtfcList({ cid: "" }); // 발신번호 리스트
   const { data: autoGet } = useGetSmsMng(); // 자동문자 발송 조회
   const { data: smstelList, refetch: refetchTelList } = useGetSmsTelList(); // 발송대상 목록
-  const { data: smstelDetail } = useGetSmsTelSelect({
-    mbtlNo: selectedRow?.mbtlNo || "",
-  }); // 발송대상 상세보기
 
   const { mutate: postSmsTel } = usePostSmsTel();
   const { mutate: putSmsTel } = usePutSmsTel();
@@ -172,7 +167,18 @@ export default function AutoMessage() {
   const { loginId } = useAuthStore(["loginId"]);
   const checkApiFail = useApiRes();
 
-  const queryClient = useQueryClient();
+  const {
+    selectListData: sd_0,
+    selectValue: s_0,
+    handleChange: o_0,
+  } = useSelect(numberList?.data?.contents, "cid", "cid"); // 발신번호 목록
+
+  const refresh = () => {
+    refetchTelList();
+    setValue("mbtlNo", "");
+    setValue("cstmrNm", "");
+    // resetSelection();
+  };
 
   // 등록
   const onPost = () => {
@@ -196,7 +202,7 @@ export default function AutoMessage() {
               stack: false,
               onClose: () => closeModal,
             });
-            basicRefetch();
+            refresh();
           }
         },
       }
@@ -225,7 +231,7 @@ export default function AutoMessage() {
               stack: false,
               onClose: () => closeModal,
             });
-            basicRefetch();
+            refresh();
           }
         },
       }
@@ -266,7 +272,7 @@ export default function AutoMessage() {
                   stack: false,
                   onClose: () => closeModal,
                 });
-                basicRefetch();
+                refresh();
               }
             },
           }
@@ -275,54 +281,45 @@ export default function AutoMessage() {
     });
   };
 
-  console.log("basicMessage:", basicMessage);
-  console.log("numberList:", numberList);
-  console.log("autoGet:", autoGet);
-  console.log("smstelDetail:", smstelDetail);
-
   const onClickAutoBasic = (smsSeCd) => {
     basicRefetch();
     setSmsSeCd(smsSeCd);
   };
 
+  //  <------------------ 페이지 로드 시 정보 바인딩 ------------------>
   const enable = useRef(true);
-
-  const smsSeCdList = ["1008005", "1008010", "1008015", "1008020"]; // 여러 SMS 세션 코드 목록
-  const [resetValues, setResetValues] = useState({}); // reset에 사용될 값들 저장
+  const smsSeCdList = [autoKey, yKey, nKey, noneKey];
+  const [resetValues, setResetValues] = useState({});
 
   const mySmsQuery = useQueries({
     queries: smsSeCdList.map((smsSeCd) => ({
-      queryKey: ["/api/smsbass/auto", smsSeCd], // 고유한 queryKey 설정
-      queryFn: () => API.getSmsBase({ smsSeCd }), // useGetSmsBase를 사용하여 데이터 가져오기
+      queryKey: ["/api/smsbass/auto", smsSeCd],
+      queryFn: () => API.getSmsBase({ smsSeCd }),
       enable: enable.current,
     })),
   });
-  const responses = mySmsQuery.map((query) => query.data?.data); // 각 smsSeCd에 대한 데이터
+
+  const responses = useMemo(() => {
+    return mySmsQuery.map((query) => query.data?.data);
+  }, [mySmsQuery]);
 
   useEffect(() => {
     if (!responses[0]) return;
-    if (!enable.current) return; // 이미 쿼리가 실행되었으면 return
+    if (!enable.current) return;
     if (responses[0]) {
-      enable.current = false; // 첫 번째 실행 후 enable.current 값을 true로 설정
+      enable.current = false;
 
-      console.log("엥!!!!!!!!!!!!!!:", responses);
-      // const currentValues = getValues();
-      const autoMessage = convertBrToNewLine(
-        responses.find((item) => item?.contents.smsSeCd === "1008005")?.contents
-          .mssage || ""
-      );
-      const Ymessage = convertBrToNewLine(
-        responses.find((item) => item?.contents.smsSeCd === "1008010")?.contents
-          .mssage || ""
-      );
-      const Nmessage = convertBrToNewLine(
-        responses.find((item) => item?.contents.smsSeCd === "1008015")?.contents
-          .mssage || ""
-      );
-      const noneMessage = convertBrToNewLine(
-        responses.find((item) => item?.contents.smsSeCd === "1008020")?.contents
-          .mssage || ""
-      );
+      const findMessage = (responses, key) => {
+        return convertBrToNewLine(
+          responses.find((item) => item?.contents.smsSeCd === key)?.contents
+            .mssage || ""
+        );
+      };
+
+      const autoMessage = findMessage(responses, autoKey);
+      const Ymessage = findMessage(responses, yKey);
+      const Nmessage = findMessage(responses, nKey);
+      const noneMessage = findMessage(responses, noneKey);
 
       setResetValues({
         autoMessage,
@@ -337,23 +334,24 @@ export default function AutoMessage() {
     reset({ ...getValues(), ...resetValues });
   }, [resetValues]);
 
-  // 기본메시지 버튼을 클릭했을 때 다시 정보를 불러오기 위함
+  //  <------------------------------------------------------>
+
+  // 기본메시지 버튼을 클릭했을 때 query 호출
   useEffect(() => {
     if (!smsSeCd) return;
 
-    const currentValues = getValues();
     const message = convertBrToNewLine(
       basicMessage?.data?.contents?.mssage || ""
     );
 
     const updatedValues = {
-      "1008005": { autoMessage: message },
-      "1008010": { Ymessage: message },
-      "1008015": { Nmessage: message },
-      "1008020": { noneMessage: message },
+      autoKey: { autoMessage: message },
+      yKey: { Ymessage: message },
+      nKey: { Nmessage: message },
+      noneKey: { noneMessage: message },
     };
 
-    reset({ ...currentValues, ...updatedValues[smsSeCd] });
+    reset({ ...getValues(), ...updatedValues[smsSeCd] });
   }, [smsSeCd, basicMessage]);
 
   // 매크로 데이터가 불러져오면 매크로 정보만 바인딩 함
@@ -381,12 +379,6 @@ export default function AutoMessage() {
       stack: false, //단일 모달 모드
       onClose: () => closeModal,
     });
-  };
-
-  const refresh = () => {
-    refetchTelList();
-    setValue("mbtlNo", "");
-    setValue("cstmrNm", "");
   };
 
   return (
@@ -430,7 +422,7 @@ export default function AutoMessage() {
                   <TextArea
                     {...field}
                     maxBytes={80}
-                    height="100px"
+                    height="130px"
                     resize="none"
                     placeholder="자동문자 메시지를 입력하세요"
                     onChange={(e) => {
@@ -444,12 +436,7 @@ export default function AutoMessage() {
             <Stack gap={2} margin={1}>
               <Typography variant="h3">발신번호</Typography>
               <CenteredBox>
-                <Select
-                  selectData={selectTestData}
-                  value={s_0}
-                  onChange={o_0}
-                />
-
+                <Select selectData={sd_0} value={s_0} onChange={o_0} />
                 <IconButton sx={{ color: "root.mainBlue" }}>
                   <IoSettingsOutline />
                 </IconButton>
@@ -508,7 +495,7 @@ export default function AutoMessage() {
                 render={({ field }) => (
                   <TextArea
                     {...field}
-                    height="100px"
+                    height="130px"
                     resize="none"
                     placeholder="매크로를 입력하세요"
                     onChange={(e) => {
@@ -563,10 +550,11 @@ export default function AutoMessage() {
                     새로고침
                   </BasicButton>
                   <BasicButton onClick={onClickSave}>저장</BasicButton>
-                  <BasicButton>삭제</BasicButton>
+                  <BasicButton onClick={onDelete}>삭제</BasicButton>
                 </CenteredBox>
                 <Typography>휴대전화</Typography>
-                <PhoneInput {...register("mbtlNo")} />
+                {/* <PhoneInput {...register("mbtlNo")} /> */}
+                <BasicInput {...register("mbtlNo")} />
                 <Typography>고객정보</Typography>
                 <BasicInput {...register("cstmrNm")} />
               </Stack>
