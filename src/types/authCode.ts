@@ -6,11 +6,12 @@ export type AuthCodeListType = {
     eno: string,
     regDtm: string,
 };
-export interface AuthCodeListResponseType extends ApiResponseType {
+export interface AuthCodeListResponse extends ApiResponseType {
     code: number;
     result: string;
     message: string;
     totalCnt: number | null;
+    totalPage:number,
     contents: AuthCodeListType[];
     params: null;
     errorCode: null;

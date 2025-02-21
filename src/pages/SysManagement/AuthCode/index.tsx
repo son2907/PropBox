@@ -34,12 +34,11 @@ export default function AuthCode() {
 
   //인증번호 목록 조회
   const [authCodeReqData, setAuthCodeReqData] = useState({
-    cid: "",
-    page: "0",
-    limit: "20",
+    cid: searchQuery,
+    page: currentPage,
+    limit: selectValue,
   });
-  const { data: authCodeListData, isSuccess: isAuthCodeListData } =
-    useAuthCodeList(authCodeReqData);
+  const { data: authCodeListData, isSuccess: isAuthCodeListData } = useAuthCodeList(authCodeReqData);
   const [authCodeList, setAuthCodeList] = useState<AuthCodeListType[]>([]);
 
   const handleSearch = () => {
@@ -77,12 +76,12 @@ export default function AuthCode() {
         </GrayBox>
         <Stack width={"100%"} height={"95%"} gap={1} overflow={"auto"}>
           <TableBox.Inner>
-            <BasicTable data={authCodeList}>
+            <BasicTable data={authCodeListData?.data.contents || []}>
               <BasicTable.Th>발신전화번호</BasicTable.Th>
               <BasicTable.Th>상담전화</BasicTable.Th>
               <BasicTable.Th>상담일시</BasicTable.Th>
               <BasicTable.Tbody>
-                {authCodeList.map((item, index) => {
+                {(authCodeListData?.data.contents || []).map((item, index) => {
                   return (
                     <BasicTable.Tr
                       key={index}
@@ -104,9 +103,13 @@ export default function AuthCode() {
             marginRight={2}
             justifyContent={"space-between"}
           >
-            <Pagination count={25} page={currentPage} onChange={onChangePage} />
+            <Pagination
+              count={authCodeListData?.data.totalPage || 1}
+              page={currentPage}
+              onChange={onChangePage}
+            />
             <TableSelect
-              total={100}
+              total={authCodeListData?.data.totalCnt || 10}
               countValues={countValues}
               selectValue={selectValue}
               handleChange={handleChange}
