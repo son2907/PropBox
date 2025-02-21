@@ -1,11 +1,12 @@
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Select, { SelectChangeEvent, SelectProps } from "@mui/material/Select";
 import { selectType } from "../../types/Select";
 import { MdOutlineUnfoldMore } from "react-icons/md";
 
-interface SelectProps {
+interface SProps extends Omit<SelectProps, "value" | "onChange"> {
+  // 'value'와 'onChange'는 별도로 다룸
   selectData: { value: number | string; data: string }[];
   defaultValue?: selectType;
   value: selectType;
@@ -29,14 +30,16 @@ export default function PSelect({
   onChange,
   placeholder = "항목을 선택해주세요",
   ...rest
-}: SelectProps) {
+}: SProps) {
   return (
     <FormControl size="small" fullWidth sx={{ ...(rest.sx || {}) }}>
       <InputLabel shrink={false} style={{ display: value ? "none" : "block" }}>
         {placeholder}
       </InputLabel>
       <Select
-        className="bg-white"
+        sx={{
+          backgroundColor: "white", // 기본 배경색
+        }}
         {...rest}
         defaultValue={defaultValue}
         value={value}

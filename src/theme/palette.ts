@@ -29,6 +29,7 @@ const _palette: PaletteOptions = {
   modal: {
     modalBg: "#37404a",
     modalBorderColor: "#dee2e6",
+    moadlBlueBg: "#CBE0FF",
   },
   heading: "#6c757d",
 

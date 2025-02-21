@@ -1,7 +1,11 @@
 import React, { ReactNode } from "react";
-import { Box, Stack } from "@mui/material";
+import { Box, BoxProps, Stack } from "@mui/material";
 
-export default function ModalBox({ children }: { children: ReactNode }) {
+interface ModalBoxProps extends BoxProps {
+  children: ReactNode;
+}
+
+export default function ModalBox({ children, ...rest }: ModalBoxProps) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 pointer-events-auto">
       <Box
@@ -11,11 +15,12 @@ export default function ModalBox({ children }: { children: ReactNode }) {
           left: "50%",
           transform: "translate(-50%, -50%)", // 중앙 정렬
           padding: "10px",
-          width: "400px",
           textAlign: "center",
           backgroundColor: "primary.light",
-          zIndex: 1300, // MUI의 기본 모달 z-index
+          zIndex: 1300,
         }}
+        width={"400px"}
+        {...rest}
       >
         <Box sx={{ position: "relative" }}>
           <Stack>{children}</Stack>

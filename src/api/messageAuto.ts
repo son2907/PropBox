@@ -5,16 +5,18 @@ import {
   DeleteSmstelRequestType,
   GetCommonCodeRequestType,
   GetSmsbaseRequestType,
+  GetSmsbaseResponseType,
+  GetSmsTelListResponseType,
   GetSmstelSelectRequestType,
   PostSmstelRequestType,
   PutSmstelRequestType,
 } from "../types/messageAuto";
 
-const API = {
+export const API = {
   // 기본메세지 조회
   getSmsBase: async ({ smsSeCd }: GetSmsbaseRequestType) => {
     const url = `/api/smsbass/auto/${spt}/${smsSeCd}`;
-    return await instance.get<any>(url);
+    return await instance.get<GetSmsbaseResponseType>(url);
   },
   // 자동문자 발송 조회
   getSmsmng: async () => {
@@ -24,7 +26,7 @@ const API = {
   // 발송대상 목록보기
   getSmstelList: async () => {
     const url = `/api/spt/smstel/list/${spt}`;
-    return await instance.get<any>(url);
+    return await instance.get<GetSmsTelListResponseType>(url);
   },
   // 발송대상 상세보기
   getSmstelSelect: async ({ mbtlNo }: GetSmstelSelectRequestType) => {
@@ -106,6 +108,7 @@ export const useGetSmsTelSelect = ({ mbtlNo }: GetSmstelSelectRequestType) => {
   return useQuery({
     queryKey: KEY.getSmstelSelect({ mbtlNo }),
     queryFn: async () => await API.getSmstelSelect({ mbtlNo }),
+    enabled: !!mbtlNo,
   });
 };
 

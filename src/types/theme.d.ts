@@ -31,6 +31,7 @@ declare module "@mui/material/styles" {
     modal: {
       modalBg: string;
       modalBorderColor: string;
+      moadlBlueBg: string;
     };
     heading: string;
     root: {
@@ -76,6 +77,7 @@ declare module "@mui/material/styles" {
     modal: {
       modalBg: string;
       modalBorderColor: string;
+      moadlBlueBg: string;
     };
     heading: string;
     root: {
