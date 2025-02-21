@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { CompanyLocalListResponse, DeviceSectionListResponse, InsertPhone, MemeberLocalListResponse, MemNonPermissionListResponse, MemPermissionListResponse, SptNonPermissionPhoneListResponse, SptNonPermissionPhoneType, SptPermissionPhoneListResponse, SptPermissionPhoneType, UserCompanyListResponse } from "../types/networkSetup";
+import { CompanyLocalListResponse, DeviceSectionListResponse, InsertPhone, MemberNonPermissionPhoneType, MemberPermissionPhoneType, MemeberLocalListResponse, MemNonPermissionListResponse, MemPermissionListResponse, SptNonPermissionPhoneListResponse, SptNonPermissionPhoneType, SptPermissionPhoneListResponse, SptPermissionPhoneType, UserCompanyListResponse } from "../types/networkSetup";
 import instance from "../utils/axiosInstance";
 
 const API = {
@@ -29,8 +29,8 @@ const API = {
         return await instance.get<MemeberLocalListResponse>(url);
     },
     //통신환경설정 6번째 테이블 리스트
-    getMemPermissionPhoneList: async (requestData: { userNo: string, commnSeNo: string, telNo: string }) => {
-        const url = `/api/tel/Constnt/list/${requestData.userNo}?commnSeNo=${requestData.commnSeNo}&telNo=${requestData.telNo}`
+    getMemPermissionPhoneList: async (requestData: { userNo: string, commnSeNo: string, cntrctBgnde: string }) => {
+        const url = `/api/tel/Constnt/list/${requestData.userNo}?commnSeNo=${requestData.commnSeNo}&cntrctBgnde=${requestData.cntrctBgnde}`
         return await instance.get<MemPermissionListResponse>(url);
     },
     //통신환경설정 7번 테이블 리스트
@@ -58,6 +58,16 @@ const API = {
         const url = '/api/tel/spt/phone/remove';
         return await instance.put(url, requestData.body);
     },
+    //6번에서 7번으로 권한 이동
+    memNonPermissionPhone: async (requestData: {body: MemberNonPermissionPhoneType})=>{
+        const url = 'api/tel/Constnt/remove';
+        return await instance.post(url, requestData.body);
+    },
+    //7번에서 6번으로 권한이동
+    memPermissionPhone: async (requestData: {body: MemberPermissionPhoneType}) => {
+        const url = 'api/tel/Constnt';
+        return await instance.post(url, requestData.body);
+    },
 }
 
 const KEY = {
@@ -82,7 +92,11 @@ const KEY = {
     //통신환경설정 7번 테이블 리스트
     getMemNonPermissionList: (requestData: { sptNo: string, commnSeNo: string, telNo: string }) => [`/api/tel/Constnt/phone/list/${requestData.sptNo}?commnSeNo=${requestData.commnSeNo}&telNo=${requestData.telNo}`],
     //통신환경설정 6번째 테이블 리스트
-    getMemPermissionPhoneList : (requestData: { userNo: string, commnSeNo: string, telNo: string }) => [`/api/tel/Constnt/list/${requestData.userNo}?commnSeNo=${requestData.commnSeNo}&telNo=${requestData.telNo}`],
+    getMemPermissionPhoneList : (requestData: { userNo: string, commnSeNo: string, cntrctBgnde: string }) => [`/api/tel/Constnt/list/${requestData.userNo}?commnSeNo=${requestData.commnSeNo}&cntrctBgnde=${requestData.cntrctBgnde}`],
+    //6번에서 7번으로 권한 이동
+    memNonPermissionPhone: () => ['api/tel/Constnt/remove'],
+    //7번에서 6번으로 권한이동
+    memPermissionPhone: () => [`api/tel/Constnt`],
 }
 
 //사용자 아이디 및 회사 조회
@@ -231,14 +245,48 @@ export const getMemNonPermissionList = (requestData: { sptNo: string, commnSeNo:
 };
 
 //통신환경설정 6번 테이블 리스트
-export const getMemPermissionPhoneList = (requestData: { userNo: string, commnSeNo: string, telNo: string }) => {
+export const getMemPermissionPhoneList = (requestData: { userNo: string, commnSeNo: string, cntrctBgnde: string }) => {
     return useQuery({
         queryKey: KEY.getMemPermissionPhoneList(requestData),
         queryFn: async () => {
-            console.log("6번째 테이블 데이터 조회 보낸데이터:", requestData);
+            //console.log("6번째 테이블 데이터 조회 보낸데이터:", requestData);
             const result = await API.getMemPermissionPhoneList(requestData);
-            console.log("6번째 테이블 데이터:", result);
+            //console.log("6번째 테이블 데이터:", result);
             return result;
         }
+    })
+};
+
+//6번에서 7번으로 권한 이동
+export const memNonPermissionPhone = () => {
+    return useMutation({
+        mutationKey : KEY.memNonPermissionPhone(),
+        mutationFn: async (requestData: {body: MemberNonPermissionPhoneType}) => {
+            const result = await API.memNonPermissionPhone(requestData);
+            return result;
+        },
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    })
+};
+
+//7번에서 9번으로 권한 이동
+export const memPermissionPhone = () => {
+    return useMutation({
+        mutationKey : KEY.memPermissionPhone(),
+        mutationFn: async (requestData: {body: MemberPermissionPhoneType}) => {
+            const result = await API.memPermissionPhone(requestData);
+            return result;
+        },
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
     })
 };
