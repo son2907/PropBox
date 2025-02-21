@@ -13,9 +13,9 @@ import {
 } from "../../../components/Button";
 import CenteredBox from "../../../components/Box/CenteredBox";
 import TextArea from "../../../components/TextArea/TextArea";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Select } from "../../../components/Select";
-import { selectTestData, tableTestData } from "../../../utils/testData";
+import { selectTestData } from "../../../utils/testData";
 import useSelect from "../../../hooks/useSelect";
 import { IoSettingsOutline } from "react-icons/io5";
 import Calendar from "../../../components/Calendar/Calendar";
@@ -23,21 +23,76 @@ import TimeInputGroup from "./components/TimeInputGroup";
 import useMultiInputValue from "../../../hooks/useMultiInputValue";
 import TableBox from "../../../components/Box/TableBox";
 import BasicTable from "../../../components/Table/BasicTable";
-import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
 import BasicInput from "../../../components/Input/BasicInput";
 import useToggleButtton from "../../../hooks/useToggleButton";
-import { openPopup } from "../../../utils/openPopup";
 import PathConstants from "../../../routers/path";
 import { useRadioGroup } from "../../../hooks/useRadioGroup";
+import {
+  API,
+  useDeleteSmsTel,
+  useGetSmsBase,
+  useGetSmsMng,
+  useGetSmsTelList,
+  useGetSmsTelSelect,
+  usePostSmsTel,
+  usePutSmsTel,
+} from "../../../api/messageAuto";
+import { useCrtfcList } from "../../../api/crtfc";
+import { Controller, useForm } from "react-hook-form";
+import { convertBrToNewLine } from "../../../utils/convertBrToNewLine";
+import { useSingleRowData } from "../../../hooks/useTest";
+import useModal from "../../../hooks/useModal";
+import TelInput from "../../../components/Modal/modal/TelInput";
+import PhoneInput from "../../../components/Input/PhoneInput";
+import { SmsTelList } from "../../../types/messageAuto";
+import { useSptStore } from "../../../stores/sptStore";
+import { useAuthStore } from "../../../stores/authStore";
+import { useApiRes } from "../../../utils/useApiRes";
+import { BasicCompletedModl } from "../../../components/Modal/modal/BasicCompletedModl";
+import { se } from "date-fns/locale";
+import { MultipleDeleteModal } from "../../../components/Modal/modal/MultipleDeleteModal";
+import { useQueries, useQueryClient } from "@tanstack/react-query";
+
+const selectData = [
+  {
+    value: 1,
+    data: "즉시",
+  },
+  {
+    value: 5,
+    data: "5분 후",
+  },
+  {
+    value: 10,
+    data: "10분 후",
+  },
+  {
+    value: 30,
+    data: "30분 후",
+  },
+  {
+    value: 60,
+    data: "1시간 후",
+  },
+];
 
 export default function AutoMessage() {
-  // 이 ref를 통해 textArea에 입력된 값에 접근할 수 있음
-  const tRef1 = useRef<HTMLTextAreaElement>(null); // textArea에 연결해 줄 ref
-  const tRef2 = useRef<HTMLTextAreaElement>(null); // textArea에 연결해 줄 ref2
+  const defaultValues = {
+    autoMessage: "",
+    macro: "",
+    mbtlNo: "",
+    cstmrNm: "",
+    Ymessage: "",
+    Nmessage: "",
+    noneMessage: "",
+  };
+  const [smsSeCd, setSmsSeCd] = useState<string>("");
 
-  // Basicinput에 연결할 ref, 값은 bRef1.current?.value 에 들어있습니다.
-  const bRef1 = useRef<HTMLInputElement>(null); //
-  const bRef2 = useRef<HTMLInputElement>(null); // HTMLInputElement로 타입 지정
+  const { register, reset, control, getValues, setValue } = useForm({
+    defaultValues: defaultValues,
+  });
+
+  const { sptNo } = useSptStore();
 
   // 시작 날짜
   const [startDate, setStartDate] = useState<Date>(new Date());
@@ -47,36 +102,42 @@ export default function AutoMessage() {
   // 체크박스 그룹에 연결할 ref 배열
   const { inputRefs } = useMultiInputValue();
 
+  const getCheckedValues = () => {
+    return inputRefs.current
+      .filter((input) => input !== null && input.checked)
+      .map((input) => input!.value);
+  };
+
   // 체크된 데이터 가져옴
-  // const handleSubmit = () => {
-  //   const checkedValues = getInputValues().filter((value) => {
-  //     // 체크된 항목만 필터링
-  //     const input = inputRefs.current.find((ref) => ref?.value === value);
-  //     return input?.checked;
-  //   });
+  const handleSubmit = () => {
+    const checkedValues = getCheckedValues().filter((value) => {
+      // 체크된 항목만 필터링
+      const input = inputRefs.current.find((ref) => ref?.value === value);
+      return input?.checked;
+    });
 
-  //   console.log("Selected Times:", checkedValues); // 선택된 시간 출력
-  // };
+    console.log("Selected Times:", checkedValues); // 선택된 시간 출력
+  };
 
-  // select 쓸땐 useSelect 같이 쓴다고 생각하면 됨
   const {
     selectListData: sd_0,
     selectValue: s_0,
     handleChange: o_0,
-  } = useSelect(selectTestData, "value", "data"); //   수신동의 고객 select
+  } = useSelect(selectTestData, "value", "data"); // 발신번호 목록
+
   const {
     selectListData: sd_1,
     selectValue: s_1,
     handleChange: o_1,
-  } = useSelect(selectTestData, "value", "data");
+  } = useSelect(selectData, "value", "data");
 
-  // BasicTable에 연결할 한 행만 선택 가능하게 하는거(BasicTable 수정을 해야겐네요..)
-  const { selectedRow, toggleRowSelection } = useSingleRowSelection();
+  const { selectedRow, toggleRowSelection } =
+    useSingleRowData<SmsTelList>("mbtlNo");
 
-  // 토글에 쓰이는거, defaultValue로 초기 클릭 여부 선택 가능
   const { toggle: receive, onChange: receiveToggle } = useToggleButtton({
     defaultValue: true,
   });
+  console.log("###receive:", receive);
 
   const { toggle: out, onChange: outToggle } = useToggleButtton({
     defaultValue: true,
@@ -93,38 +154,252 @@ export default function AutoMessage() {
   const { selectedValue: radioValue3, handleRadioChange: setRadioValue3 } =
     useRadioGroup(""); // 초기값은 빈 문자열
 
-  const smsPopuppInfo = {
-    url: PathConstants.Message.PhoneNumber,
-    windowName: "전화번호 입력",
-    windowFeatures: "width=400,height=150,scrollbars=yes,resizable=no",
-  };
-
   // <------------------------------- API ------------------------------->
 
+  const { data: basicMessage, refetch: basicRefetch } = useGetSmsBase({
+    smsSeCd: smsSeCd,
+  }); // 자동문자 기본 메세지
+  const { data: numberList } = useCrtfcList({ cid: "" }); // 발신번호 리스트
+  const { data: autoGet } = useGetSmsMng(); // 자동문자 발송 조회
+  const { data: smstelList, refetch: refetchTelList } = useGetSmsTelList(); // 발송대상 목록
+  const { data: smstelDetail } = useGetSmsTelSelect({
+    mbtlNo: selectedRow?.mbtlNo || "",
+  }); // 발송대상 상세보기
+
+  const { mutate: postSmsTel } = usePostSmsTel();
+  const { mutate: putSmsTel } = usePutSmsTel();
+  const { mutate: deleteSmsTel } = useDeleteSmsTel();
+  const { loginId } = useAuthStore(["loginId"]);
+  const checkApiFail = useApiRes();
+
+  const queryClient = useQueryClient();
+
+  // 등록
+  const onPost = () => {
+    postSmsTel(
+      {
+        body: {
+          sptNo: sptNo,
+          userId: loginId,
+          mbtlNo: getValues("mbtlNo"),
+          cstmrNm: getValues("cstmrNm"),
+        },
+      },
+      {
+        onSuccess: (res) => {
+          console.log("업로드 결과:", res);
+          const result = checkApiFail(res);
+          if (result.data.message === "SUCCESS") {
+            console.log("업로드 성공:", res);
+            openModal(BasicCompletedModl, {
+              modalId: "excelComplete",
+              stack: false,
+              onClose: () => closeModal,
+            });
+            basicRefetch();
+          }
+        },
+      }
+    );
+  };
+
+  // // 수정
+  const onPut = () => {
+    putSmsTel(
+      {
+        body: {
+          sptNo: sptNo,
+          userId: loginId,
+          mbtlNo: getValues("mbtlNo"),
+          cstmrNm: getValues("cstmrNm"),
+        },
+      },
+      {
+        onSuccess: (res) => {
+          console.log("수정 결과:", res);
+          const result = checkApiFail(res);
+          if (result.data.message === "SUCCESS") {
+            console.log("수정 성공:", res);
+            openModal(BasicCompletedModl, {
+              modalId: "excelComplete",
+              stack: false,
+              onClose: () => closeModal,
+            });
+            basicRefetch();
+          }
+        },
+      }
+    );
+  };
+
+  const onClickSave = () => {
+    if (selectedRow) {
+      onPut();
+    } else {
+      onPost();
+    }
+  };
+
+  // // 삭제
+  const onDelete = () => {
+    openModal(MultipleDeleteModal, {
+      number: 1,
+      stack: false,
+      onClose: () => closeModal,
+      onSubmit: () => {
+        deleteSmsTel(
+          {
+            body: {
+              sptNo: sptNo,
+              userId: loginId,
+              mbtlNo: getValues("mbtlNo"),
+            },
+          },
+          {
+            onSuccess: (res) => {
+              console.log("삭제 결과:", res);
+              const result = checkApiFail(res);
+              if (result.data.message === "SUCCESS") {
+                console.log("삭제 성공:", res);
+                openModal(BasicCompletedModl, {
+                  modalId: "excelComplete",
+                  stack: false,
+                  onClose: () => closeModal,
+                });
+                basicRefetch();
+              }
+            },
+          }
+        );
+      },
+    });
+  };
+
+  console.log("basicMessage:", basicMessage);
+  console.log("numberList:", numberList);
+  console.log("autoGet:", autoGet);
+  console.log("smstelDetail:", smstelDetail);
+
+  const onClickAutoBasic = (smsSeCd) => {
+    basicRefetch();
+    setSmsSeCd(smsSeCd);
+  };
+
+  const enable = useRef(true);
+
+  const smsSeCdList = ["1008005", "1008010", "1008015", "1008020"]; // 여러 SMS 세션 코드 목록
+  const [resetValues, setResetValues] = useState({}); // reset에 사용될 값들 저장
+
+  const mySmsQuery = useQueries({
+    queries: smsSeCdList.map((smsSeCd) => ({
+      queryKey: ["/api/smsbass/auto", smsSeCd], // 고유한 queryKey 설정
+      queryFn: () => API.getSmsBase({ smsSeCd }), // useGetSmsBase를 사용하여 데이터 가져오기
+      enable: enable.current,
+    })),
+  });
+  const responses = mySmsQuery.map((query) => query.data?.data); // 각 smsSeCd에 대한 데이터
+
+  useEffect(() => {
+    if (!responses[0]) return;
+    if (!enable.current) return; // 이미 쿼리가 실행되었으면 return
+    if (responses[0]) {
+      enable.current = false; // 첫 번째 실행 후 enable.current 값을 true로 설정
+
+      console.log("엥!!!!!!!!!!!!!!:", responses);
+      // const currentValues = getValues();
+      const autoMessage = convertBrToNewLine(
+        responses.find((item) => item?.contents.smsSeCd === "1008005")?.contents
+          .mssage || ""
+      );
+      const Ymessage = convertBrToNewLine(
+        responses.find((item) => item?.contents.smsSeCd === "1008010")?.contents
+          .mssage || ""
+      );
+      const Nmessage = convertBrToNewLine(
+        responses.find((item) => item?.contents.smsSeCd === "1008015")?.contents
+          .mssage || ""
+      );
+      const noneMessage = convertBrToNewLine(
+        responses.find((item) => item?.contents.smsSeCd === "1008020")?.contents
+          .mssage || ""
+      );
+
+      setResetValues({
+        autoMessage,
+        Ymessage,
+        Nmessage,
+        noneMessage,
+      });
+    }
+  }, [responses, enable, reset]);
+
+  useEffect(() => {
+    reset({ ...getValues(), ...resetValues });
+  }, [resetValues]);
+
+  // 기본메시지 버튼을 클릭했을 때 다시 정보를 불러오기 위함
+  useEffect(() => {
+    if (!smsSeCd) return;
+
+    const currentValues = getValues();
+    const message = convertBrToNewLine(
+      basicMessage?.data?.contents?.mssage || ""
+    );
+
+    const updatedValues = {
+      "1008005": { autoMessage: message },
+      "1008010": { Ymessage: message },
+      "1008015": { Nmessage: message },
+      "1008020": { noneMessage: message },
+    };
+
+    reset({ ...currentValues, ...updatedValues[smsSeCd] });
+  }, [smsSeCd, basicMessage]);
+
+  // 매크로 데이터가 불러져오면 매크로 정보만 바인딩 함
+  useEffect(() => {
+    if (autoGet?.data.contents) {
+      setValue("macro", convertBrToNewLine(autoGet.data.contents.mssage));
+    }
+  }, [autoGet]);
+
+  useEffect(() => {
+    if (!selectedRow) {
+      setValue("mbtlNo", "");
+      setValue("cstmrNm", "");
+      return;
+    }
+
+    setValue("mbtlNo", selectedRow.mbtlNo);
+    setValue("cstmrNm", selectedRow.cstmrNm);
+  }, [selectedRow]);
+
+  const { openModal, closeModal } = useModal();
+
+  const openTelModal = () => {
+    openModal(TelInput, {
+      stack: false, //단일 모달 모드
+      onClose: () => closeModal,
+    });
+  };
+
+  const refresh = () => {
+    refetchTelList();
+    setValue("mbtlNo", "");
+    setValue("cstmrNm", "");
+  };
+
   return (
-    // 그냥 <> 로 시작하면 만든것들이 가로로 쌓임
-    // 이유 : layout 폴더의 Content 내에 이 페이지가 들어가는데
-    // Box display 가 부모이기 때문
-    // 그러니 세로로 쌓고싶으면 Stack을 써야함
     <>
       <Stack width={"100%"} height={"100%"} gap={1}>
-        {/* 회색 박스 내 오른쪽 정렬된 버튼들 */}
-        {/* GrayBox안에 있는 아이템, 즉 버튼 사이에 일정 간격을 주고 싶으면 gap을 쓴다 */}
         <GrayBox gap={1}>
-          {/* 가장 왼쪽 버튼에 marginLeft:"auto를 준다." */}
           <BasicButton sx={{ marginLeft: "auto" }}>
             불법스팸 방지관련법
           </BasicButton>
           <BasicButton>저장</BasicButton>
         </GrayBox>
 
-        {/* 내부에 테이블이 들어간, 맨 윗 display:flex 박스를 추가로 사용할 때에는 */}
-        {/* 아래에서 TableBox를 써도 엿을 먹이기 때문에 */}
-        {/* display="flex" 이되 overflow={"hidden"} 를 작성해 주어야 함 */}
-        {/* 근데 이게 TableBox랑 똑같이 생겨서 이 자리에 TableBox 써도 됨 */}
         <TableBox gap={2} marginTop={1}>
-          {/*  가장 왼쪽의 '자동문자 발송메세지' 영역 */}
-          {/* width를 적절한 %값으로 주되 무한정 줄어들지 않도록 minWidth로 px를 준다(적당히) */}
           <Stack
             width={"30%"}
             minWidth={"350px"}
@@ -136,40 +411,49 @@ export default function AutoMessage() {
           >
             {/* 자동문자 발송메세지 */}
             <Stack gap={1} margin={1}>
-              {/* 세로 기준 중앙 정렬 되어 있는 가로로 배치된 아이템들은 */}
-              {/* 편하게 CenteredBox를 쓰면 됨  */}
-
               <CenteredBox>
                 <Typography variant="h3">자동문자 발송메시지</Typography>
-                <BasicButton sx={{ marginLeft: "auto" }}>
+                <BasicButton
+                  sx={{ marginLeft: "auto" }}
+                  onClick={() => {
+                    onClickAutoBasic("1008005");
+                  }}
+                >
                   기본메시지
                 </BasicButton>
               </CenteredBox>
-              <TextArea
-                height="100px"
-                resize="none"
-                ref={tRef1}
-                placeholder="자동문자 메시지를 입력하세요"
+              <Controller
+                name="autoMessage"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <TextArea
+                    {...field}
+                    maxBytes={80}
+                    height="100px"
+                    resize="none"
+                    placeholder="자동문자 메시지를 입력하세요"
+                    onChange={(e) => {
+                      field.onChange(e);
+                    }}
+                  />
+                )}
               />
             </Stack>
             {/* 발신번호 */}
             <Stack gap={2} margin={1}>
               <Typography variant="h3">발신번호</Typography>
-              {/* 가로배치 */}
               <CenteredBox>
                 <Select
                   selectData={selectTestData}
                   value={s_0}
                   onChange={o_0}
                 />
-                {/* 아이콘만 있는건 아이콘 버튼, 컬러는 팔레트에서 쓰되 회색이면 걍두고 파랑이면 root.mainBlue하면 됨 */}
 
                 <IconButton sx={{ color: "root.mainBlue" }}>
-                  {/* react-icon 사이트에서 아이콘 찾아서 이용함 */}
                   <IoSettingsOutline />
                 </IconButton>
-                <BasicButton>실험발송</BasicButton>
-                {/*  */}
+                <BasicButton onClick={openTelModal}>실험발송</BasicButton>
               </CenteredBox>
             </Stack>
             {/* 발송일시 */}
@@ -177,7 +461,6 @@ export default function AutoMessage() {
               <Typography variant="h3">발송일시</Typography>
               <CenteredBox gap={1}>
                 <Typography>기간</Typography>
-                {/* 캘린더 시작 ~ 끝 날짜 이거 너무 자주나와서 복붙해두면 편함 */}
                 <Calendar
                   selectedDate={startDate}
                   setSelectedDate={setStartDate}
@@ -213,16 +496,26 @@ export default function AutoMessage() {
                 </Stack>
               </CenteredBox>
 
-              {/* <button onClick={handleSubmit}>테스트 버튼</button> */}
+              <button onClick={handleSubmit}>테스트 버튼</button>
             </Stack>
 
             <Stack gap={2} margin={1}>
               <Typography variant="h3">매크로</Typography>
-              <TextArea
-                height="100px"
-                resize="none"
-                ref={tRef2}
-                placeholder="매크로를 입력하세요"
+              <Controller
+                name="macro"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <TextArea
+                    {...field}
+                    height="100px"
+                    resize="none"
+                    placeholder="매크로를 입력하세요"
+                    onChange={(e) => {
+                      field.onChange(e);
+                    }}
+                  />
+                )}
               />
             </Stack>
           </Stack>
@@ -235,25 +528,22 @@ export default function AutoMessage() {
             gap={2}
             border="1px solid #E5E5E5"
             borderRadius="8px"
-            padding={1.5}
           >
             <TableBox height="80%">
               <TableBox.Inner>
-                <BasicTable data={tableTestData}>
-                  <BasicTable.Th radius>이름</BasicTable.Th>
-                  <BasicTable.Th radius>상담전화</BasicTable.Th>
-                  <BasicTable.Th radius>상담일시</BasicTable.Th>
+                <BasicTable data={smstelList?.data?.contents}>
+                  <BasicTable.Th radius>휴대전화</BasicTable.Th>
+                  <BasicTable.Th radius>고객정보</BasicTable.Th>
                   <BasicTable.Tbody>
-                    {tableTestData.map((item, index) => {
+                    {smstelList?.data?.contents?.map((item, index) => {
                       return (
                         <BasicTable.Tr
                           key={index}
-                          isClicked={selectedRow.has(item.id)}
-                          onClick={() => toggleRowSelection(item.id)}
+                          isClicked={selectedRow?.mbtlNo === item.mbtlNo}
+                          onClick={() => toggleRowSelection(item)}
                         >
-                          <BasicTable.Td>{item.name}</BasicTable.Td>
-                          <BasicTable.Td>{item.age}</BasicTable.Td>
-                          <BasicTable.Td>{item.job}</BasicTable.Td>
+                          <BasicTable.Td>{item.mbtlNo}</BasicTable.Td>
+                          <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
                         </BasicTable.Tr>
                       );
                     })}
@@ -269,16 +559,16 @@ export default function AutoMessage() {
               <Stack gap={1} width={"100%"}>
                 <CenteredBox gap={1}>
                   <Typography variant="h3">발송대상</Typography>
-                  <BasicButton sx={{ marginLeft: "auto" }}>
+                  <BasicButton sx={{ marginLeft: "auto" }} onClick={refresh}>
                     새로고침
                   </BasicButton>
-                  <BasicButton>저장</BasicButton>
+                  <BasicButton onClick={onClickSave}>저장</BasicButton>
                   <BasicButton>삭제</BasicButton>
                 </CenteredBox>
                 <Typography>휴대전화</Typography>
-                <BasicInput ref={bRef1} />
+                <PhoneInput {...register("mbtlNo")} />
                 <Typography>고객정보</Typography>
-                <BasicInput ref={bRef2} />
+                <BasicInput {...register("cstmrNm")} />
               </Stack>
             </GrayBox>
           </Stack>
@@ -288,7 +578,7 @@ export default function AutoMessage() {
             width={"40%"}
             minWidth={"400px"}
             height={"100%"}
-            gap={1}
+            gap={2}
             border="1px solid #E5E5E5"
             borderRadius="8px"
             paddingLeft={2}
@@ -306,21 +596,38 @@ export default function AutoMessage() {
             <CenteredBox gap={1}>
               <Select
                 sx={{ width: "200px" }}
-                selectData={selectTestData}
+                selectData={sd_1}
                 value={s_1}
                 onChange={o_1}
+                disabled={!receive}
               />
-              <BasicButton
-                sx={{ marginLeft: "auto" }}
-                onClick={() => {
-                  openPopup(smsPopuppInfo);
-                }}
-              >
+              <BasicButton sx={{ marginLeft: "auto" }} onClick={openTelModal}>
                 실험발송
               </BasicButton>
-              <BasicButton>기본메시지</BasicButton>
+              <BasicButton
+                onClick={() => {
+                  onClickAutoBasic("1008010");
+                }}
+              >
+                기본메시지
+              </BasicButton>
             </CenteredBox>
-            <TextArea resize="none" height="100px" />
+            <Controller
+              name="Ymessage"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextArea
+                  {...field}
+                  height="100px"
+                  resize="none"
+                  placeholder="메세지를 입력하세요"
+                  onChange={(e) => {
+                    field.onChange(e);
+                  }}
+                />
+              )}
+            />
             <CenteredBox>
               <RadioGroup value={radioValue} onChange={setRadioValue} row>
                 <FormControlLabel
@@ -346,21 +653,38 @@ export default function AutoMessage() {
             <CenteredBox gap={1}>
               <Select
                 sx={{ width: "200px" }}
-                selectData={selectTestData}
+                selectData={sd_1}
                 value={s_1}
                 onChange={o_1}
+                disabled={!out}
               />
-              <BasicButton
-                sx={{ marginLeft: "auto" }}
-                onClick={() => {
-                  openPopup(smsPopuppInfo);
-                }}
-              >
+              <BasicButton sx={{ marginLeft: "auto" }} onClick={openTelModal}>
                 실험발송
               </BasicButton>
-              <BasicButton>기본메시지</BasicButton>
+              <BasicButton
+                onClick={() => {
+                  onClickAutoBasic("1008015");
+                }}
+              >
+                기본메시지
+              </BasicButton>
             </CenteredBox>
-            <TextArea resize="none" height="100px" />
+            <Controller
+              name="Nmessage"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextArea
+                  {...field}
+                  height="100px"
+                  resize="none"
+                  placeholder="메세지를 입력하세요"
+                  onChange={(e) => {
+                    field.onChange(e);
+                  }}
+                />
+              )}
+            />
             <CenteredBox>
               <RadioGroup value={radioValue2} onChange={setRadioValue2} row>
                 <FormControlLabel
@@ -386,21 +710,38 @@ export default function AutoMessage() {
             <CenteredBox gap={1}>
               <Select
                 sx={{ width: "200px" }}
-                selectData={selectTestData}
+                selectData={sd_1}
                 value={s_1}
                 onChange={o_1}
+                disabled={!none}
               />
-              <BasicButton
-                sx={{ marginLeft: "auto" }}
-                onClick={() => {
-                  openPopup(smsPopuppInfo);
-                }}
-              >
+              <BasicButton sx={{ marginLeft: "auto" }} onClick={openTelModal}>
                 실험발송
               </BasicButton>
-              <BasicButton>기본메시지</BasicButton>
+              <BasicButton
+                onClick={() => {
+                  onClickAutoBasic("1008020");
+                }}
+              >
+                기본메시지
+              </BasicButton>
             </CenteredBox>
-            <TextArea resize="none" height="100px" />
+            <Controller
+              name="noneMessage"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextArea
+                  {...field}
+                  height="100px"
+                  resize="none"
+                  placeholder="메세지를 입력하세요"
+                  onChange={(e) => {
+                    field.onChange(e);
+                  }}
+                />
+              )}
+            />
             <CenteredBox>
               <RadioGroup value={radioValue3} onChange={setRadioValue3} row>
                 <FormControlLabel
