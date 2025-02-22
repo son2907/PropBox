@@ -21,11 +21,12 @@ import PathConstants from "../../routers/path";
 import { openPopup } from "../../utils/openPopup";
 import CenteredBox from "../../components/Box/CenteredBox";
 import TableSelect from "../../components/Select/TableSelect";
-import { getComapnyLocalList, getDeviceSection, getMemberLocalList, getMemNonPermissionList, getMemPermissionPhoneList, getSptNonPermissionPhoneList, getSptPermissionPhoneList, getUserCompanyList, sptNonPermissionPhone, sptPermissionPhone } from "../../api/networkSetup";
+import { getComapnyLocalList, getDeviceSection, getMemberLocalList, getMemNonPermissionList, getMemPermissionPhoneList, getSptNonPermissionPhoneList, getSptPermissionPhoneList, getUserCompanyList, memNonPermissionPhone, memPermissionPhone, sptNonPermissionPhone, sptPermissionPhone } from "../../api/networkSetup";
 import { CompanyLocalListType, DeviceSectionListType, SptPermissionPhoneListType, UserCompanyListType } from "../../types/networkSetup";
 import useModal from "../../hooks/useModal";
 import { useAuthStore } from "../../stores/authStore";
 import { string } from "yup";
+import { newDate } from "react-datepicker/dist/date_utils";
 
 export default function NetworkSetup() {
   //모달
@@ -122,18 +123,23 @@ export default function NetworkSetup() {
   const [idx, setIdx] = useState("");
 
   //6번 테이블 - 구성원에게 할당된 전화기 조회
-  const [memPermissionPhoneReqData, setMemPermissionPhoneReqData] = useState({ userNo: "", commnSeNo: "", telNo: "" });
+  const [memPermissionPhoneReqData, setMemPermissionPhoneReqData] = useState({ userNo: "", commnSeNo: "", cntrctBgnde: "" });
   const { data: memPermissionPhoneListData, refetch: refetchMemPermissionPhoneListData } = getMemPermissionPhoneList(memPermissionPhoneReqData);
 
   //7번 테이블 - 구성원에게 미할당된 전화기 조회
   const [memNonPermissionPhoneNo, setMemNonPermissionPhoneNo] = useState("");
   const [memNonPermissionPhoneReqData, setMemNonPermissionPhoneReqData] = useState({ sptNo: "", commnSeNo: "", telNo: "" });
   const { data: memNonPermissionPhoneData, refetch: refetchMemNonPermissionPhoneData } = getMemNonPermissionList(memNonPermissionPhoneReqData);
+  const [selectMemNonPhone, setSelectMemNonPhone] = useState("");
 
   //4번테이블 -> 3번테이블 전화기 등록
   const sptPermissionPhoneAPI = sptPermissionPhone();
   //3번 테이블 -> 4번 테이블 전화기 삭제
   const sptNonPermissionPhoneAPI = sptNonPermissionPhone();
+  //6->7
+  const memPermissionPhoneAPI = memPermissionPhone();
+  //7->6
+  const memNonPermissionPhoneAPI = memNonPermissionPhone();
 
   //useMultiRowSelection 분리해서 각 테이블에 독립적으로 selectedRows와 toggleRowsSelection을 전달하여 동작이 분리되도록 설정.
   // 사용자 리스트 - 선택 상태 관리
@@ -172,13 +178,11 @@ export default function NetworkSetup() {
     toggleRowSelection: togglememPermissionPhone,
   } = useSingleRowSelection();
 
-
-  // 현장 미허가 솔루션 - 선택 상태 관리
+  //7번 테이블 row 선택
   const {
-    selectedRows: localUnuseSelectedRows,
-    toggleRowsSelection: toggleLocalUnuseRowsSelection,
-  } = useMultiRowSelection();
-
+    selectedRow: memNonPermissionPhoneRews,
+    toggleRowSelection: togglememNonPermissionPhone,
+  } = useSingleRowSelection();
 
   const [date, setDate] = useState<Date>(new Date());
   const [date6, setDate6] = useState<Date>(new Date());
@@ -259,6 +263,11 @@ export default function NetworkSetup() {
       telNo: nonPermissionPhoneNo ? nonPermissionPhoneNo : ""
     }));
     setSelectSptNo("");
+    datePicker2.current = false;
+    setDate(new Date());
+    setSelectMemberNo("");
+    datePicker6.current = false;
+    setDate6(new Date());
   }, [selectUserNo]);
 
   //2번테이블 현장 선택시
@@ -278,7 +287,7 @@ export default function NetworkSetup() {
       commnSeNo: deviceSectionDataKey_7 ? deviceSectionDataKey_7 : "", // datePicker 값에 따라 설정
       telNo: memNonPermissionPhoneNo
     }));
-  }, [selectSptNo]);
+  }, [selectSptNo, deviceSectionDataKey_7]);
 
   //3번 테이블 구분 필터링
   useEffect(() => {
@@ -304,6 +313,16 @@ export default function NetworkSetup() {
       telNo: nonPermissionPhoneNo
     }))
   }, [deviceSectionDataKey_4]);
+
+  //5번 테이블 구성원 선택시 6번 테이블 출력
+  useEffect(() => {
+    setMemPermissionPhoneReqData((prev) => ({
+      ...prev,
+      userNo: selectMemberNo,
+      commnSeNo: deviceSectionDataKey_6 ? deviceSectionDataKey_6 : "",
+      cntrctBgnde: datePicker6.current ? formatDate(date6) : ""
+    }));
+  }, [selectMemberNo, deviceSectionDataKey_6, date6]);
 
   useEffect(() => {
     if (deviceSection?.data?.contents) {
@@ -383,12 +402,79 @@ export default function NetworkSetup() {
     )
   };
 
+  const handleMemNonPermissonPhone = () => {
+    const selectedData = Array.from(memNonPermissionPhoneRews).map(
+      (selectedId: string) => {
+        const selectedItem = memNonPermissionPhoneData?.data?.contents.find(
+          (item) => item.telId === selectedId
+        );
+        return {
+          userNo: selectMemberNo || "",
+          sptNo: selectedItem?.sptNo || "",
+          telId: selectedItem?.telId || "",
+          cntrctBgnde: "",
+          cntrctEndde: "",
+          useYn: "",
+          nowUseYn: "",
+          userId: loginId || ""
+        };
+      }
+    )
+
+    console.log("6->7로 보낼데이터 확인:", selectedData);
+
+    //memNonPermissionPhoneAPI
+  };
+
+  //7->6
+  const handleMemPermissonPhone = () => {
+    const selectedData = Array.from(memNonPermissionPhoneRews).map(
+      (selectedId: string) => {
+        const selectedItem = memNonPermissionPhoneData?.data?.contents.find(
+          (item) => item.telId === selectedId
+        );
+        return {
+          userNo: selectMemberNo || "",
+          sptNo: selectedItem?.sptNo || "",
+          telId: selectedItem?.telId || "",
+          cntrctBgnde: "",
+          cntrctEndde: "",
+          useYn: "",
+          nowUseYn: "",
+          userId: loginId || ""
+        };
+      }
+    );
+
+    if (selectedData.length === 0) {
+        console.warn("선택된 데이터가 없습니다.");
+        return;
+    }
+
+    const singleData = selectedData[0]; // 첫 번째 데이터만 전송
+
+    console.log("7->6로 보낼 데이터 확인:", singleData);
+
+    memPermissionPhoneAPI.mutate(
+      {body: singleData},
+      {
+        onSuccess: (response) => {
+          if (response.data.result === "SUCCESS") {
+            console.log("response.data", response.data);
+            refetchMemPermissionPhoneListData();
+            refetchMemNonPermissionPhoneData();
+          }
+        }
+      }
+    )
+  }
 
 
-   //날짜 변경될 때마다 콘솔 출력
-   useEffect(() => {
-     console.log("현재 선택된:", selectMemberNo);
-   }, [selectMemberNo]);
+
+  //변경될 때마다 콘솔 출력
+  useEffect(() => {
+    console.log("현재 선택된:", date6, datePicker6);
+  }, [date6, datePicker6]);
 
   // 이전 날짜로 이동
   const handlePrevDate = () => {
@@ -475,7 +561,7 @@ export default function NetworkSetup() {
           </BasicButton>
         </GrayBox>
         <TableBox gap={1}>
-          <Stack width={"20%"} height={"100%"}>
+          <Stack width={"15%"} height={"100%"}>
             <TableBox.Inner>
               {/* 1번 테이블 */}
               <BasicTable data={userCompanyList?.data.contents || []}>
@@ -509,9 +595,9 @@ export default function NetworkSetup() {
               <SearchResult total={userCompanyList?.data.totalCnt || 0} />
             </CenteredBox>
           </Stack>
-          <Stack width={"80%"} height={"100%"} gap={1}>
+          <Stack width={"85%"} height={"100%"} gap={1}>
             <TableBox width={"100%"} height={"50%"} gap={1}>
-              <Stack width={"20%"} height={"100%"} gap={1} borderBottom={2} borderColor={"primary.A100"}>
+              <Stack width={"25%"} height={"100%"} gap={1} borderBottom={2} borderColor={"primary.A100"}>
                 <SearchInput
                   placeholder="현장명 검색"
                   sx={{ width: "200px", height: "40px" }}
@@ -538,6 +624,12 @@ export default function NetworkSetup() {
                             onClick={() => {
                               if (selectSptNo === item.sptNo) {
                                 setSelectSptNo("");
+                                datePicker2.current = false;
+                                setDate(new Date());
+                              } else if (selectSptNo !== item.sptNo) {
+                                setSelectSptNo(item.sptNo);
+                                datePicker2.current = false;
+                                setDate(new Date());
                               } else {
                                 setSelectSptNo(item.sptNo);
                               }
@@ -749,7 +841,7 @@ export default function NetworkSetup() {
               </TableBox>
             </TableBox>
             <TableBox width={"100%"} height={"50%"} gap={1}>
-              <Stack width={"20%"} height={"100%"} gap={1}>
+              <Stack width={"25%"} height={"100%"} gap={1}>
                 <SearchInput
                   placeholder="구성원이름 검색"
                   sx={{ width: "200px", height: "40px" }}
@@ -772,15 +864,23 @@ export default function NetworkSetup() {
                         return (
                           <BasicTable.Tr
                             key={index}
-                            isClicked={idx === item.constntNo}
+                            isClicked={idx === item.idx}
                             onClick={() => {
-                              if (idx === item.constntNo) {
+                              if (idx === item.idx) {
                                 setIdx(""); // 선택 해제
                                 setSelectMemberNo(""); // 선택 해제 시 userNo도 초기화
+                                datePicker6.current = false;
+                                setDate6(new Date());
+                              } else if (idx !== item.idx) {
+                                setIdx(item.idx); // 새로운 idx 선택
+                                setSelectMemberNo(item.constntNo); // 선택한 idx에 해당하는 userNo 저장
+                                datePicker6.current = false;
+                                setDate6(new Date());
                               } else {
-                                setIdx(item.constntNo); // 새로운 idx 선택
+                                setIdx(item.idx); // 새로운 idx 선택
                                 setSelectMemberNo(item.constntNo); // 선택한 idx에 해당하는 userNo 저장
                               }
+                              console.log("selectMemberNo",selectMemberNo)
                             }}
                           >
                             <BasicTable.Td>{item.cmpnm}</BasicTable.Td>
@@ -844,9 +944,10 @@ export default function NetworkSetup() {
                   {/* 6번 테이블 */}
                   <TableBox.Inner>
                     <BasicTable data={memPermissionPhoneListData?.data.contents || []}>
-                      <BasicTable.Th>사용자ID</BasicTable.Th>
-                      <BasicTable.Th>사용자이름</BasicTable.Th>
-
+                      <BasicTable.Th>구분</BasicTable.Th>
+                      <BasicTable.Th>전화번호</BasicTable.Th>
+                      <BasicTable.Th>시작일</BasicTable.Th>
+                      <BasicTable.Th>종료일</BasicTable.Th>
                       <BasicTable.Tbody>
                         {(memPermissionPhoneListData?.data.contents || []).map((item, index) => {
                           return (
@@ -855,8 +956,10 @@ export default function NetworkSetup() {
                               isClicked={memPermissionPhoneRews.has(item.telId)}
                               onClick={() => togglememPermissionPhone(item.telId)}
                             >
-                              <BasicTable.Td>{item.userNo}</BasicTable.Td>
                               <BasicTable.Td>{item.commnSeNm}</BasicTable.Td>
+                              <BasicTable.Td>{item.telNo}</BasicTable.Td>
+                              <BasicTable.Td>{item.cntrctBgnde}</BasicTable.Td>
+                              <BasicTable.Td>{item.cntrctEndde}</BasicTable.Td>
                             </BasicTable.Tr>
                           );
                         })}
@@ -878,6 +981,7 @@ export default function NetworkSetup() {
                       margin: "0",
                       minWidth: "unset", // 기본 minWidth 해제
                     }}
+                    onClick={handleMemPermissonPhone}
                   >
                     <BiChevronLeft size={"24px"} />
                   </BasicButton>
@@ -890,6 +994,7 @@ export default function NetworkSetup() {
                       margin: "0",
                       minWidth: "unset", // 기본 minWidth 해제
                     }}
+                    onClick={handleMemNonPermissonPhone}
                   >
                     <BiChevronRight size={"24px"} />
                   </BasicButton>
@@ -943,8 +1048,18 @@ export default function NetworkSetup() {
                           return (
                             <BasicTable.Tr
                               key={index}
-                              isClicked={userSelectedRow.has(item.telId)}
-                              onClick={() => toggleUserRowSelection(item.telId)}
+                              // isClicked={selectMemNonPhone === item.telId}
+                              // onClick={() => {
+                              //   if (selectMemNonPhone === item.telId) {
+                              //     setSelectMemNonPhone(""); // 선택 해제 시 userNo도 초기화
+                              //   } else if (selectMemNonPhone !== item.telId) {
+                              //     setSelectMemNonPhone(item.telId); // 선택한 idx에 해당하는 userNo 저장
+                              //   } else {
+                              //     setSelectMemNonPhone(item.telId); // 선택한 idx에 해당하는 userNo 저장
+                              //   }
+                              // }}
+                              isClicked={memNonPermissionPhoneRews.has(item.telId)}
+                              onClick={() => togglememNonPermissionPhone(item.telId)}
                             >
                               <BasicTable.Td>{item.commnSeNm}</BasicTable.Td>
                               <BasicTable.Td>{item.telNo}</BasicTable.Td>

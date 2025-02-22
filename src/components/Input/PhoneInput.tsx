@@ -1,7 +1,10 @@
 import { forwardRef, useState } from "react";
 import { OutlinedInput, OutlinedInputProps } from "@mui/material";
+import { Controller } from "react-hook-form";
 
 interface InputProps extends OutlinedInputProps {
+  control: any;
+  name: string;
   placeholder?: string;
   value?: string;
   onChange?: (
