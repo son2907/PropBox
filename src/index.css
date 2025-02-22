@@ -21,6 +21,11 @@ input[type="file"]::file-selector-button {
   border: none;
 }
 
+textarea {
+  font-family: "Noto Sans KR", sans-serif !important; /* 우선순위 강제 적용 */
+  padding: 0.3rem 0 0 0.5rem;
+}
+
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -31,4 +36,12 @@ input::-webkit-inner-spin-button {
 /* Firefox  */
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+.Mui-disabled .MuiSelect-select {
+  background-color: #f1f1f1 !important;
+}
+
+.Mui-disabled .MuiInputBase-input {
+  background-color: #f1f1f1 !important;
 }

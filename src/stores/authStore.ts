@@ -7,7 +7,7 @@ import { useShallow } from "../hooks/useShallow";
 type AuthStoreType = {
   uuid?: string; // 사용자 고유 ID
   userNo: string; // 사용자 번호
-  loginId?: string; // 로그인 ID
+  loginId: string; // 로그인 ID
   userNm?: string; // 사용자 이름
   attlistUserNm?: string; // 상세 사용자 이름
   attlistMbtlNo?: string | null; // 상세 사용자 연락처
@@ -37,6 +37,7 @@ export const store = createWithEqualityFn<AuthStoreType>(
   (persist as PersistAuthStoreType)(
     (set) => ({
       userNo: "",
+      loginId: "",
       // 상태 변경 함수들 구현
       setAuthData: (data) => set((state) => ({ ...state, ...data })),
       setAuthToken: (accessToken) => set({ accessToken }),

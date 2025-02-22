@@ -2,19 +2,23 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import instance from "../utils/axiosInstance";
 import { spt } from "../utils/sptNo";
 import {
+  CommonCodeResponseType,
   DeleteSmstelRequestType,
   GetCommonCodeRequestType,
   GetSmsbaseRequestType,
+  GetSmsbaseResponseType,
+  GetSmsTelListResponseType,
   GetSmstelSelectRequestType,
+  PostSmsmngAutoRequestType,
   PostSmstelRequestType,
   PutSmstelRequestType,
 } from "../types/messageAuto";
 
-const API = {
+export const API = {
   // 기본메세지 조회
   getSmsBase: async ({ smsSeCd }: GetSmsbaseRequestType) => {
     const url = `/api/smsbass/auto/${spt}/${smsSeCd}`;
-    return await instance.get<any>(url);
+    return await instance.get<GetSmsbaseResponseType>(url);
   },
   // 자동문자 발송 조회
   getSmsmng: async () => {
@@ -24,17 +28,22 @@ const API = {
   // 발송대상 목록보기
   getSmstelList: async () => {
     const url = `/api/spt/smstel/list/${spt}`;
-    return await instance.get<any>(url);
+    return await instance.get<GetSmsTelListResponseType>(url);
   },
   // 발송대상 상세보기
   getSmstelSelect: async ({ mbtlNo }: GetSmstelSelectRequestType) => {
     const url = `/api/spt/smstel/select/${spt}/${mbtlNo}`;
     return await instance.get<any>(url);
   },
+  // 자동문자 전체 저장
+  postSmsAutoSave: async (requestData: { body: PostSmsmngAutoRequestType }) => {
+    const url = `/api/spt/smsmng/auto`;
+    return await instance.post(url, requestData.body);
+  },
   // 공통코드 조회
   getCommonCode: async ({ upCd }: GetCommonCodeRequestType) => {
     const url = `/api/common/code/simpleList?upCd=${upCd}`;
-    return await instance.get<any>(url);
+    return await instance.get<CommonCodeResponseType>(url);
   },
   // 자동문자 수신동의 고객 외 고객문자 조회
   getSmsmngCstmr: async () => {
@@ -106,6 +115,7 @@ export const useGetSmsTelSelect = ({ mbtlNo }: GetSmstelSelectRequestType) => {
   return useQuery({
     queryKey: KEY.getSmstelSelect({ mbtlNo }),
     queryFn: async () => await API.getSmstelSelect({ mbtlNo }),
+    enabled: !!mbtlNo,
   });
 };
 
@@ -146,5 +156,13 @@ export const useDeleteSmsTel = () => {
   return useMutation({
     mutationFn: (requstData: { body: DeleteSmstelRequestType }) =>
       API.deleteSmstel(requstData),
+  });
+};
+
+// 전체 저장
+export const usePostSmsAutoSave = () => {
+  return useMutation({
+    mutationFn: (requstData: { body: PostSmsmngAutoRequestType }) =>
+      API.postSmsAutoSave(requstData),
   });
 };

@@ -55,7 +55,7 @@ export default function CustomerData() {
             {/* 체크한 데이터에 따라 표시 */}
             <CheckboxTable.Thead>
               <CheckboxTable.Tr>
-                <CheckboxTable.Th colspan={5}>고객이름</CheckboxTable.Th>
+                <CheckboxTable.Th colSpan={5}>고객이름</CheckboxTable.Th>
               </CheckboxTable.Tr>
             </CheckboxTable.Thead>
             <CheckboxTable.Tbody>
