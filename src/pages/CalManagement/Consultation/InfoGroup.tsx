@@ -118,7 +118,7 @@ export default function InfoGroup({ tabType }: TabType) {
   );
 
   // input 할당 useForm
-  const { register, handleSubmit, reset, getValues } = useForm({
+  const { register, handleSubmit, reset, getValues, control } = useForm({
     defaultValues: defaultValue,
   });
 
@@ -529,7 +529,8 @@ export default function InfoGroup({ tabType }: TabType) {
               </CenteredBox>
               <CenteredBox>
                 <LabelTypo>휴대전화</LabelTypo>
-                <PhoneInput {...register("mbtlNo")} />
+                {/* <PhoneInput {...register("mbtlNo")} /> */}
+                <PhoneInput control={control} name="mbtlNo"></PhoneInput>
                 {tabType ? (
                   <IconSquareButton
                     tabIndex={-1}
@@ -541,7 +542,8 @@ export default function InfoGroup({ tabType }: TabType) {
                   </IconSquareButton>
                 ) : null}
                 <LabelTypo marginLeft={2}>일반전화</LabelTypo>
-                <PhoneInput {...register("telNo")} />
+                {/* <PhoneInput {...register("telNo")} /> */}
+                <PhoneInput control={control} name="telNo"></PhoneInput>
                 {tabType ? (
                   <IconSquareButton
                     tabIndex={-1}

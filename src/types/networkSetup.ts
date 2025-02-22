@@ -199,3 +199,27 @@ export interface MemPermissionListResponse extends ApiResponseType {
     accessToken: null;
     refreshToken: null;
 };
+
+//6번에서 7번으로 권한 이동
+export type MemberNonPermissionPhoneType = {
+    userNo: string,
+    sptNo: string,
+    telId: string,
+    cntrctBgnde: string,
+    cntrctEndde: string,
+    useYn: string,
+    nowUseYn: string,
+    userId: string
+};
+
+//7번에서 6번으로 권한 이동
+export type MemberPermissionPhoneType = {
+    userNo: string,
+    sptNo: string,
+    telId: string,
+    cntrctBgnde: string,
+    cntrctEndde: string,
+    useYn: string,
+    nowUseYn: string,
+    userId: string
+};
