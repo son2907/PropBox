@@ -15,7 +15,6 @@ import CenteredBox from "../../../components/Box/CenteredBox";
 import TextArea from "../../../components/TextArea/TextArea";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Select } from "../../../components/Select";
-import { selectTestData } from "../../../utils/testData";
 import useSelect from "../../../hooks/useSelect";
 import { IoSettingsOutline } from "react-icons/io5";
 import Calendar from "../../../components/Calendar/Calendar";
@@ -25,15 +24,15 @@ import TableBox from "../../../components/Box/TableBox";
 import BasicTable from "../../../components/Table/BasicTable";
 import BasicInput from "../../../components/Input/BasicInput";
 import useToggleButtton from "../../../hooks/useToggleButton";
-import PathConstants from "../../../routers/path";
 import { useRadioGroup } from "../../../hooks/useRadioGroup";
 import {
   API,
   useDeleteSmsTel,
+  useGetCommonCode,
   useGetSmsBase,
   useGetSmsMng,
   useGetSmsTelList,
-  useGetSmsTelSelect,
+  usePostSmsAutoSave,
   usePostSmsTel,
   usePutSmsTel,
 } from "../../../api/messageAuto";
@@ -49,32 +48,9 @@ import { useSptStore } from "../../../stores/sptStore";
 import { useAuthStore } from "../../../stores/authStore";
 import { useApiRes } from "../../../utils/useApiRes";
 import { BasicCompletedModl } from "../../../components/Modal/modal/BasicCompletedModl";
-import { se } from "date-fns/locale";
 import { MultipleDeleteModal } from "../../../components/Modal/modal/MultipleDeleteModal";
-import { useQueries, useQueryClient } from "@tanstack/react-query";
-
-const selectData = [
-  {
-    value: 1,
-    data: "즉시",
-  },
-  {
-    value: 5,
-    data: "5분 후",
-  },
-  {
-    value: 10,
-    data: "10분 후",
-  },
-  {
-    value: 30,
-    data: "30분 후",
-  },
-  {
-    value: 60,
-    data: "1시간 후",
-  },
-];
+import { useQueries } from "@tanstack/react-query";
+import { getFormattedDate } from "../../../utils/getFormattedDate";
 
 const autoKey = "1008005";
 const yKey = "1008010";
@@ -124,12 +100,6 @@ export default function AutoMessage() {
     console.log("Selected Times:", checkedValues); // 선택된 시간 출력
   };
 
-  const {
-    selectListData: sd_1,
-    selectValue: s_1,
-    handleChange: o_1,
-  } = useSelect(selectData, "value", "data");
-
   const { selectedRow, toggleRowSelection, resetSelection } =
     useSingleRowData<SmsTelList>("mbtlNo");
 
@@ -146,11 +116,11 @@ export default function AutoMessage() {
   });
 
   const { selectedValue: radioValue, handleRadioChange: setRadioValue } =
-    useRadioGroup(""); // 초기값은 빈 문자열
+    useRadioGroup("S");
   const { selectedValue: radioValue2, handleRadioChange: setRadioValue2 } =
-    useRadioGroup(""); // 초기값은 빈 문자열
+    useRadioGroup("S");
   const { selectedValue: radioValue3, handleRadioChange: setRadioValue3 } =
-    useRadioGroup(""); // 초기값은 빈 문자열
+    useRadioGroup("S");
 
   // <------------------------------- API ------------------------------->
 
@@ -160,24 +130,35 @@ export default function AutoMessage() {
   const { data: numberList } = useCrtfcList({ cid: "" }); // 발신번호 리스트
   const { data: autoGet } = useGetSmsMng(); // 자동문자 발송 조회
   const { data: smstelList, refetch: refetchTelList } = useGetSmsTelList(); // 발송대상 목록
+  const { data: commonCode } = useGetCommonCode({ upCd: "1009000" });
 
   const { mutate: postSmsTel } = usePostSmsTel();
   const { mutate: putSmsTel } = usePutSmsTel();
   const { mutate: deleteSmsTel } = useDeleteSmsTel();
+  const { mutate: saveall } = usePostSmsAutoSave();
   const { loginId } = useAuthStore(["loginId"]);
   const checkApiFail = useApiRes();
 
+  // 시간
+  const {
+    selectListData: sd_1,
+    selectValue: s_1,
+    handleChange: o_1,
+  } = useSelect(commonCode?.data?.contents, "numRef1", "cdNm");
+
+  // 발신번호 목록
   const {
     selectListData: sd_0,
     selectValue: s_0,
     handleChange: o_0,
-  } = useSelect(numberList?.data?.contents, "cid", "cid"); // 발신번호 목록
+  } = useSelect(numberList?.data?.contents, "cid", "cid");
 
+  // 새로고침
   const refresh = () => {
     refetchTelList();
     setValue("mbtlNo", "");
     setValue("cstmrNm", "");
-    // resetSelection();
+    resetSelection();
   };
 
   // 등록
@@ -246,7 +227,7 @@ export default function AutoMessage() {
     }
   };
 
-  // // 삭제
+  // 삭제
   const onDelete = () => {
     openModal(MultipleDeleteModal, {
       number: 1,
@@ -303,6 +284,7 @@ export default function AutoMessage() {
     return mySmsQuery.map((query) => query.data?.data);
   }, [mySmsQuery]);
 
+  console.log("responses:", responses);
   useEffect(() => {
     if (!responses[0]) return;
     if (!enable.current) return;
@@ -381,6 +363,38 @@ export default function AutoMessage() {
     });
   };
 
+  const onSaveAll = () => {
+    console.log(getValues());
+    // text.replace(/\n/g, "<br>");
+    // saveall;
+    const body = {
+      sptNo: sptNo,
+      mssage: getValues("autoMessage").replace(/\n/g, "<br>"), // 자동문자 메세지
+      dsptchNo: s_0, // 발신번호
+      dsptchBgnde: getFormattedDate(startDate),
+      dsptchEndde: getFormattedDate(endDate),
+      userId: loginId,
+      smsBassList: [
+        {
+          sptNo: "string",
+          smsSeCd: "string",
+          smsKnd: "string",
+          mssage: "string",
+          useYn: "string",
+          userId: "string",
+        },
+      ],
+      smsTMZonList: [
+        {
+          sptNo: "string",
+          tmZon: "string",
+          useYn: "string",
+          userId: "string",
+        },
+      ],
+    };
+  };
+
   return (
     <>
       <Stack width={"100%"} height={"100%"} gap={1}>
@@ -388,7 +402,7 @@ export default function AutoMessage() {
           <BasicButton sx={{ marginLeft: "auto" }}>
             불법스팸 방지관련법
           </BasicButton>
-          <BasicButton>저장</BasicButton>
+          <BasicButton onClick={onSaveAll}>저장</BasicButton>
         </GrayBox>
 
         <TableBox gap={2} marginTop={1}>
@@ -553,8 +567,7 @@ export default function AutoMessage() {
                   <BasicButton onClick={onDelete}>삭제</BasicButton>
                 </CenteredBox>
                 <Typography>휴대전화</Typography>
-                {/* <PhoneInput {...register("mbtlNo")} /> */}
-                <BasicInput {...register("mbtlNo")} />
+                <PhoneInput {...register("mbtlNo")} />
                 <Typography>고객정보</Typography>
                 <BasicInput {...register("cstmrNm")} />
               </Stack>
@@ -619,12 +632,12 @@ export default function AutoMessage() {
             <CenteredBox>
               <RadioGroup value={radioValue} onChange={setRadioValue} row>
                 <FormControlLabel
-                  value="sms"
+                  value="S"
                   control={<Radio size="small" />}
                   label="SMS"
                 />
                 <FormControlLabel
-                  value="lms"
+                  value="L"
                   control={<Radio size="small" />}
                   label="LMS"
                 />
@@ -676,12 +689,12 @@ export default function AutoMessage() {
             <CenteredBox>
               <RadioGroup value={radioValue2} onChange={setRadioValue2} row>
                 <FormControlLabel
-                  value="sms"
+                  value="S"
                   control={<Radio size="small" />}
                   label="SMS"
                 />
                 <FormControlLabel
-                  value="lms"
+                  value="L"
                   control={<Radio size="small" />}
                   label="LMS"
                 />
@@ -733,12 +746,12 @@ export default function AutoMessage() {
             <CenteredBox>
               <RadioGroup value={radioValue3} onChange={setRadioValue3} row>
                 <FormControlLabel
-                  value="sms"
+                  value="S"
                   control={<Radio size="small" />}
                   label="SMS"
                 />
                 <FormControlLabel
-                  value="lms"
+                  value="L"
                   control={<Radio size="small" />}
                   label="LMS"
                 />
