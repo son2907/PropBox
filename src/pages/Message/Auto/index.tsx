@@ -138,12 +138,25 @@ export default function AutoMessage() {
   const { mutate: saveall } = usePostSmsAutoSave();
   const { loginId } = useAuthStore(["loginId"]);
   const checkApiFail = useApiRes();
+  console.log("smstelList:", smstelList);
 
   // 시간
   const {
     selectListData: sd_1,
     selectValue: s_1,
     handleChange: o_1,
+  } = useSelect(commonCode?.data?.contents, "numRef1", "cdNm");
+
+  const {
+    selectListData: sd_2,
+    selectValue: s_2,
+    handleChange: o_2,
+  } = useSelect(commonCode?.data?.contents, "numRef1", "cdNm");
+
+  const {
+    selectListData: sd_3,
+    selectValue: s_3,
+    handleChange: o_3,
   } = useSelect(commonCode?.data?.contents, "numRef1", "cdNm");
 
   // 발신번호 목록
@@ -192,6 +205,7 @@ export default function AutoMessage() {
 
   // // 수정
   const onPut = () => {
+    if (!selectedRow) return;
     putSmsTel(
       {
         body: {
@@ -199,6 +213,7 @@ export default function AutoMessage() {
           userId: loginId,
           mbtlNo: getValues("mbtlNo"),
           cstmrNm: getValues("cstmrNm"),
+          recptnNo: selectedRow.recptnNo,
         },
       },
       {
@@ -654,9 +669,9 @@ export default function AutoMessage() {
             <CenteredBox gap={1}>
               <Select
                 sx={{ width: "200px" }}
-                selectData={sd_1}
-                value={s_1}
-                onChange={o_1}
+                selectData={sd_2}
+                value={s_2}
+                onChange={o_2}
                 disabled={!out}
               />
               <BasicButton sx={{ marginLeft: "auto" }} onClick={openTelModal}>
@@ -711,9 +726,9 @@ export default function AutoMessage() {
             <CenteredBox gap={1}>
               <Select
                 sx={{ width: "200px" }}
-                selectData={sd_1}
-                value={s_1}
-                onChange={o_1}
+                selectData={sd_3}
+                value={s_3}
+                onChange={o_3}
                 disabled={!none}
               />
               <BasicButton sx={{ marginLeft: "auto" }} onClick={openTelModal}>

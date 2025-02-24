@@ -20,6 +20,7 @@ export type SmsTelList = {
   sptNo: string;
   mbtlNo: string;
   cstmrNm: string;
+  recptnNo: string;
 };
 
 export interface GetSmsTelListResponseType extends ApiResponseType {
@@ -72,6 +73,7 @@ export type PutSmstelRequestType = {
   mbtlNo: string;
   cstmrNm: string;
   userId: string;
+  recptnNo: string;
 };
 
 export type DeleteSmstelRequestType = {

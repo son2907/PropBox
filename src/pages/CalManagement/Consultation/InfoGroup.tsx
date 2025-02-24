@@ -43,6 +43,7 @@ import { WebSocketContext } from "../../../routers/guard/SoketGuard";
 import { getKoreanTime } from "../../../utils/getKoreanTime";
 import { useSptStore } from "../../../stores/sptStore";
 import PhoneInput from "../../../components/Input/PhoneInput";
+import { regPhoneNumber } from "../../../utils/regPhoneNumber";
 
 export default function InfoGroup({ tabType }: TabType) {
   const [smsPopup, setSmsPopup] = useState<any>();
@@ -69,6 +70,8 @@ export default function InfoGroup({ tabType }: TabType) {
     socketTrsmYn,
     clear,
   } = useCnsltStore();
+
+  console.log("다줘:", cnsltTelno);
 
   // 상담 일자
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -118,7 +121,7 @@ export default function InfoGroup({ tabType }: TabType) {
   );
 
   // input 할당 useForm
-  const { register, handleSubmit, reset, getValues, control } = useForm({
+  const { register, handleSubmit, reset, getValues } = useForm({
     defaultValues: defaultValue,
   });
 
@@ -275,7 +278,12 @@ export default function InfoGroup({ tabType }: TabType) {
   useDidMountEffect(() => {
     if (fromSocket) return;
     if (cunsltDetailList?.data?.contents && !fromSocket) {
-      reset({ ...cunsltDetailList.data.contents });
+      reset({
+        ...cunsltDetailList.data.contents,
+        cnsltTelno: regPhoneNumber(cunsltDetailList.data.contents.cnsltTelno),
+        mbtlNo: regPhoneNumber(cunsltDetailList.data.contents.mbtlNo),
+        telNo: regPhoneNumber(cunsltDetailList.data.contents.telNo),
+      });
     } else {
       reset(defaultValue);
       setDetailItem("");
@@ -492,7 +500,7 @@ export default function InfoGroup({ tabType }: TabType) {
                   <Typography color="error.main">*</Typography>
                   상담전화
                 </LabelTypo>
-                <BasicInput {...register("cnsltTelno")} />
+                <PhoneInput {...register("cnsltTelno")} />
                 <IconSquareButton
                   tabIndex={-1}
                   onClick={() => {
@@ -529,8 +537,7 @@ export default function InfoGroup({ tabType }: TabType) {
               </CenteredBox>
               <CenteredBox>
                 <LabelTypo>휴대전화</LabelTypo>
-                {/* <PhoneInput {...register("mbtlNo")} /> */}
-                <PhoneInput control={control} name="mbtlNo"></PhoneInput>
+                <PhoneInput {...register("mbtlNo")} />
                 {tabType ? (
                   <IconSquareButton
                     tabIndex={-1}
@@ -542,8 +549,7 @@ export default function InfoGroup({ tabType }: TabType) {
                   </IconSquareButton>
                 ) : null}
                 <LabelTypo marginLeft={2}>일반전화</LabelTypo>
-                {/* <PhoneInput {...register("telNo")} /> */}
-                <PhoneInput control={control} name="telNo"></PhoneInput>
+                <PhoneInput {...register("telNo")} />
                 {tabType ? (
                   <IconSquareButton
                     tabIndex={-1}
