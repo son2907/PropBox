@@ -177,7 +177,7 @@ export default function LocalRegistration() {
       alignContent={"center"}
     >
       <Stack width={"80%"}>
-        <Stack
+        {/* <Stack
           direction={"row"}
           gap={1}
           marginTop={1}
@@ -191,7 +191,7 @@ export default function LocalRegistration() {
             onChange={(e) => setLocalId(e.target.value)}
             placeholder={"현장아이디"}
           />
-        </Stack>
+        </Stack> */}
         <Stack
           direction={"row"}
           gap={1}
@@ -276,9 +276,14 @@ export default function LocalRegistration() {
                 handleIsUseChange(selectedValue); // isUse 값 업데이트
               }}
               selectData={sd_1}
-              sx={{ width: "204px" }}
               placeholder="종료 구분 선택"
               defaultValue={""}
+              sx={{
+                width: "204px",
+                "& .MuiSelect-select": {
+                  backgroundColor: "primary.light", // 선택 박스만 흰색으로
+                },
+              }}
             />
           </Box>
         </Stack>

@@ -136,12 +136,7 @@ export default function LocalUpdate() {
 
       //기간 설정
       const parseDate = (dateString: string) => {
-        const year = parseInt(dateString.slice(0, 4), 10);
-        const month = parseInt(dateString.slice(4, 6), 10) - 1; // JavaScript의 월은 0부터 시작
-        const day = parseInt(dateString.slice(6, 8), 10);
-
-        // 로컬 타임존으로 설정
-        return new Date(year, month, day);
+        return new Date(dateString); // YYYY-MM-DD 형식의 문자열을 직접 변환
       };
 
       // 변환된 값을 startDate와 endDate에 설정
@@ -279,12 +274,13 @@ export default function LocalUpdate() {
           alignItems={"center"}
           justifyContent={"space-between"}
         >
-          <Typography>현장아이디</Typography>
+          <Typography>현장번호</Typography>
           <BasicInput
             sx={{ width: "80%" }}
             value={localId}
             onChange={(e) => setLocalId(e.target.value)}
             placeholder={"현장아이디"}
+            disabled
           />
         </Stack>
         <Stack
