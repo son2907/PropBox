@@ -6,9 +6,12 @@ export type LocalListType = {
     userNo: string,
     sptNm: string,
     progrsSeCd: string,
+    progrsSeNm: string,
     cntrctBgnde: string,
     cntrctEndde: string,
-    useYn: string
+    useYn: string,
+    storeCd: string,
+    rmk: string
 };
 export interface LocalListResponseType extends ApiResponseType {
     code: number;
@@ -212,7 +215,7 @@ export type LocalDetailType = {
     cntrctEndde: string,
     useYn: string,
     storeCd: string,
-    rmk : string,
+    rmk: string,
 };
 export interface LocalDetailResponse extends ApiResponseType {
     contents: LocalDetailType

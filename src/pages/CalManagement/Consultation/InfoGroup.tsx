@@ -118,7 +118,7 @@ export default function InfoGroup({ tabType }: TabType) {
   );
 
   // input 할당 useForm
-  const { register, handleSubmit, reset, getValues } = useForm({
+  const { register, handleSubmit, reset, getValues, control } = useForm({
     defaultValues: defaultValue,
   });
 
@@ -434,7 +434,12 @@ export default function InfoGroup({ tabType }: TabType) {
       >
         <Stack width={"100%"} height={"50%"} paddingBottom={1}>
           {/* 상단 회색박스 ********************************************** */}
-          <GrayBox height={"50px"} width={"100%"} marginBottom={1}>
+          <GrayBox
+            height={"50px"}
+            width={"100%"}
+            marginBottom={1}
+            borderRadius={0}
+          >
             <LabelTypo>상담일자</LabelTypo>
             <Box width={"250px"}>
               <Calendar
@@ -524,7 +529,8 @@ export default function InfoGroup({ tabType }: TabType) {
               </CenteredBox>
               <CenteredBox>
                 <LabelTypo>휴대전화</LabelTypo>
-                <PhoneInput {...register("mbtlNo")} />
+                {/* <PhoneInput {...register("mbtlNo")} /> */}
+                <PhoneInput control={control} name="mbtlNo"></PhoneInput>
                 {tabType ? (
                   <IconSquareButton
                     tabIndex={-1}
@@ -536,7 +542,8 @@ export default function InfoGroup({ tabType }: TabType) {
                   </IconSquareButton>
                 ) : null}
                 <LabelTypo marginLeft={2}>일반전화</LabelTypo>
-                <PhoneInput {...register("telNo")} />
+                {/* <PhoneInput {...register("telNo")} /> */}
+                <PhoneInput control={control} name="telNo"></PhoneInput>
                 {tabType ? (
                   <IconSquareButton
                     tabIndex={-1}
@@ -610,7 +617,13 @@ export default function InfoGroup({ tabType }: TabType) {
         </Stack>
 
         {/* 상담항목, 세부항목 회색 인풋 영역 */}
-        <Box display="flex" overflow="hidden" height={"100%"} gap={1}>
+        <Box
+          display="flex"
+          overflow="hidden"
+          height={"100%"}
+          gap={1}
+          margin={1}
+        >
           {/* 상담항목 세부항목 */}
           <GrayBox
             flexDirection={"column"}
@@ -685,11 +698,18 @@ export default function InfoGroup({ tabType }: TabType) {
             </BasicTable>
           </Box>
         </Box>
-        <GrayBox height={"40px"} marginTop={1} marginBlock={1}>
-          특기사항
-        </GrayBox>
-        <TextArea height="140px" {...register("spcmnt")} />
-        <GrayBox height={"40px"} marginTop={1} justifyContent={"flex-end"}>
+        <Stack gap={1} marginRight={1} marginLeft={1}>
+          <GrayBox height={"40px"} borderRadius={0}>
+            특기사항
+          </GrayBox>
+          <TextArea height="140px" {...register("spcmnt")} />
+        </Stack>
+        <GrayBox
+          height={"40px"}
+          marginTop={1}
+          justifyContent={"flex-end"}
+          borderRadius={0}
+        >
           <BasicButton type="submit">저장</BasicButton>
         </GrayBox>
       </form>

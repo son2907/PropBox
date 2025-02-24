@@ -27,6 +27,9 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
 
       if (!maxBytes || byteSize <= maxBytes) {
         setCurrentBytes(byteSize);
+        if (onChange) {
+          onChange(event); // 정상적으로 onChange를 호출
+        }
       } else {
         const truncatedText = truncateText(inputText, maxBytes);
         setCurrentBytes(new Blob([truncatedText]).size);

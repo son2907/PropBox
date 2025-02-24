@@ -314,9 +314,14 @@ export default function LocalManagement() {
                 handleIsUseChange(selectedValue); // isUse 값 업데이트
               }}
               selectData={sd_1}
-              sx={{ width: "204px" }}
               placeholder="종료 구분 선택"
               defaultValue={""}
+              sx={{
+                width: "204px",
+                "& .MuiSelect-select": {
+                  backgroundColor: "primary.light", // 선택 박스만 흰색으로
+                },
+              }}
             />
             <Box width={"200px"}>
               <Calendar
@@ -404,12 +409,12 @@ export default function LocalManagement() {
                             }
                           }}
                         >
-                          <BasicTable.Td>{item.sptNm}</BasicTable.Td>
                           <BasicTable.Td>{item.sptNo}</BasicTable.Td>
+                          <BasicTable.Td>{item.sptNm}</BasicTable.Td>
                           <BasicTable.Td>
                             {item.cntrctBgnde} ~ {item.cntrctEndde}
                           </BasicTable.Td>
-                          <BasicTable.Td>{item.progrsSeCd}</BasicTable.Td>
+                          <BasicTable.Td>{item.progrsSeNm}</BasicTable.Td>
                           <BasicTable.Td>
                             <BasicButton
                               onClick={() => {
