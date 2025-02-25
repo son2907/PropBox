@@ -256,7 +256,7 @@ export default function UserInfoPopup() {
                 // value={phoneNum}
                 // onChange={(e) => setPhoneNum(e.target.value)}
                 // placeholder={phoneNum ? phoneNum : "휴대전화"}
-                control={control} name="phoneNum" placeholder="휴대전화"
+                {...register("phoneNum")}
               //error={""}
               />
             </Stack>
