@@ -78,7 +78,7 @@ export type PutSmstelRequestType = {
 
 export type DeleteSmstelRequestType = {
   sptNo: string;
-  mbtlNo: string;
+  recptnNo: string;
   userId: string;
 };
 
@@ -109,12 +109,10 @@ export type PostSmsmngAutoRequestType = {
 };
 
 export type TestMsgRequestType = {
-  param: {
-    sptNo: string | null;
-    smsKnd: string | null;
-    mssage: string | null;
-    trnsmitTxt: string | null;
-    mbtlNo: string | null;
-    dsptchNo: string | null;
-  };
+  sptNo: string | null;
+  smsKnd: string | null;
+  mssage: string | null;
+  trnsmitTxt: string | null;
+  mbtlNo: string | null;
+  dsptchNo: string | null;
 };

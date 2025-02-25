@@ -70,8 +70,6 @@ export default function InfoGroup({ tabType }: TabType) {
     clear,
   } = useCnsltStore();
 
-  console.log("다줘:", cnsltTelno);
-
   // 상담 일자
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 

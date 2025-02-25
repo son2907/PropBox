@@ -186,7 +186,7 @@ export default function AutoMessage() {
             console.log("업로드 성공:", res);
             openModal(BasicCompletedModl, {
               modalId: "excelComplete",
-              stack: false,
+              stack: true,
               onClose: () => closeModal,
             });
             refresh();
@@ -217,7 +217,7 @@ export default function AutoMessage() {
             console.log("수정 성공:", res);
             openModal(BasicCompletedModl, {
               modalId: "excelComplete",
-              stack: false,
+              stack: true,
               onClose: () => closeModal,
             });
             refresh();
@@ -237,9 +237,10 @@ export default function AutoMessage() {
 
   // 삭제
   const onDelete = () => {
+    if (!selectedRow) return;
     openModal(MultipleDeleteModal, {
       number: 1,
-      stack: false,
+      stack: true,
       onClose: () => closeModal,
       onSubmit: () => {
         deleteSmsTel(
@@ -247,7 +248,7 @@ export default function AutoMessage() {
             body: {
               sptNo: sptNo,
               userId: loginId,
-              mbtlNo: getValues("mbtlNo"),
+              recptnNo: selectedRow.recptnNo,
             },
           },
           {
@@ -257,8 +258,8 @@ export default function AutoMessage() {
               if (result.data.message === "SUCCESS") {
                 console.log("삭제 성공:", res);
                 openModal(BasicCompletedModl, {
-                  modalId: "excelComplete",
-                  stack: false,
+                  modalId: "deleteComplete",
+                  stack: true,
                   onClose: () => closeModal,
                 });
                 refresh();
@@ -365,7 +366,7 @@ export default function AutoMessage() {
 
   const openTelModal = ({ smsKnd, mssage }) => {
     openModal(TelInput, {
-      stack: false, //단일 모달 모드
+      stack: true, //단일 모달 모드
       onClose: () => closeModal,
       smsKnd: smsKnd,
       mssage: mssage,
@@ -436,7 +437,7 @@ export default function AutoMessage() {
             console.log("저장 성공:", res);
             openModal(BasicCompletedModl, {
               modalId: "complete",
-              stack: false,
+              stack: true,
               onClose: () => closeModal,
             });
             refresh();
@@ -444,8 +445,6 @@ export default function AutoMessage() {
         },
       }
     );
-
-    console.log("body:", body);
   };
 
   return (
@@ -508,11 +507,12 @@ export default function AutoMessage() {
                   <IoSettingsOutline />
                 </IconButton>
                 <BasicButton
-                // onClick={()=> {
-                //   openTelModal({
-
-                //   });
-                // }}
+                  onClick={() => {
+                    openTelModal({
+                      mssage: getValues("autoMessage"),
+                      smsKnd: "S",
+                    });
+                  }}
                 >
                   실험발송
                 </BasicButton>

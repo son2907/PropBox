@@ -38,7 +38,7 @@ export default function TelInput({
   const { openModal, closeModal } = useModal();
 
   const onSend = () => {
-    const param = {
+    const body = {
       sptNo: sptNo,
       smsKnd: smsKnd,
       mssage: mssage,
@@ -47,11 +47,11 @@ export default function TelInput({
       dsptchNo: dsptchNo,
     };
 
+    console.log("전송 body:", body);
+
     sendTestMsg(
       {
-        body: {
-          param,
-        },
+        body: body,
       },
       {
         onSuccess: (res) => {
@@ -61,7 +61,7 @@ export default function TelInput({
             console.log("발송 성공:", res);
             openModal(BasicCompletedModl, {
               modalId: "complete",
-              stack: false,
+              stack: true,
               onClose: () => closeModal,
             });
           }

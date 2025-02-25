@@ -209,7 +209,7 @@ export default function UserInfoPopup() {
                 autoComplete="current-password"
                 disabled
                 {...register("userID")}
-              //error={""}
+                //error={""}
               />
             </Stack>
             <Stack width={"100%"} gap={1}>
@@ -221,7 +221,7 @@ export default function UserInfoPopup() {
                 // onChange={(e) => setPassword(e.target.value)}
                 // placeholder={password ? password : "비밀번호"}
                 {...register("password")}
-              //error={""}
+                //error={""}
               />
             </Stack>
             <Stack width={"100%"} gap={1}>
@@ -233,7 +233,7 @@ export default function UserInfoPopup() {
                 // onChange={(e) => setPasswordCheck(e.target.value)}
                 // placeholder={passwordCheck ? passwordCheck : "비밀번호 확인"}
                 {...register("passwordCheck")}
-              //error={""}
+                //error={""}
               />
             </Stack>
             <Stack width={"100%"} gap={1}>
@@ -245,7 +245,7 @@ export default function UserInfoPopup() {
                 // onChange={(e) => setUserName(e.target.value)}
                 // placeholder={userName ? userName : "사용자 이름"}
                 {...register("userName")}
-              //error={""}
+                //error={""}
               />
             </Stack>
             <Stack width={"100%"} gap={1}>
@@ -256,8 +256,7 @@ export default function UserInfoPopup() {
                 // value={phoneNum}
                 // onChange={(e) => setPhoneNum(e.target.value)}
                 // placeholder={phoneNum ? phoneNum : "휴대전화"}
-                control={control} name="phoneNum" placeholder="휴대전화"
-              //error={""}
+                //error={""}
               />
             </Stack>
             <Stack width={"100%"} marginTop={1}>
@@ -275,7 +274,7 @@ export default function UserInfoPopup() {
                 // placeholder={companyName ? companyName : "회사 이름"}
                 {...register("companyName")}
                 disabled
-              //error={""}
+                //error={""}
               />
             </Stack>
             <Stack width={"100%"} gap={1}>
@@ -288,7 +287,7 @@ export default function UserInfoPopup() {
                 // onChange={(e) => setCompanyName(e.target.value)}
                 // placeholder={companyNum ? companyNum : "사업자 등록번호"}
                 {...register("companyNum")}
-              //error={""}
+                //error={""}
               />
             </Stack>
             <Stack width={"100%"} gap={1}>
@@ -301,7 +300,7 @@ export default function UserInfoPopup() {
                 // onChange={(e) => setCompanyName(e.target.value)}
                 // placeholder={rprsntvNm ? rprsntvNm : "대표자 이름"}
                 {...register("rprsntvNm")}
-              //error={""}
+                //error={""}
               />
             </Stack>
             <Stack width={"100%"} gap={1}>
@@ -314,7 +313,7 @@ export default function UserInfoPopup() {
                 // onChange={(e) => setCompanyName(e.target.value)}
                 // placeholder={adres ? adres : "사업장 소재지"}
                 {...register("adres")}
-              //error={""}
+                //error={""}
               />
             </Stack>
           </Stack>
