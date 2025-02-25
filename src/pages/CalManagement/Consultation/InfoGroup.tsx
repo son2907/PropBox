@@ -529,8 +529,7 @@ export default function InfoGroup({ tabType }: TabType) {
               </CenteredBox>
               <CenteredBox>
                 <LabelTypo>휴대전화</LabelTypo>
-                {/* <PhoneInput {...register("mbtlNo")} /> */}
-                <PhoneInput name="mbtlNo"></PhoneInput>
+                <PhoneInput {...register("mbtlNo")} />
                 {tabType ? (
                   <IconSquareButton
                     tabIndex={-1}
@@ -542,8 +541,7 @@ export default function InfoGroup({ tabType }: TabType) {
                   </IconSquareButton>
                 ) : null}
                 <LabelTypo marginLeft={2}>일반전화</LabelTypo>
-                {/* <PhoneInput {...register("telNo")} /> */}
-                <PhoneInput name="telNo"></PhoneInput>
+                <PhoneInput {...register("telNo")} />
                 {tabType ? (
                   <IconSquareButton
                     tabIndex={-1}
