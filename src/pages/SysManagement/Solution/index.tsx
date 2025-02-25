@@ -745,8 +745,13 @@ export default function SolutionManagement() {
                         value: item.cdNm, // 표시될 이름
                         data: item.cdNm, // 선택될 값
                       }))}
-                      sx={{ width: "400px" }}
-                      placeholder={solutionLicenseName}
+                      sx={{
+                        width: "400px",
+                        "& .MuiSelect-select": {
+                          backgroundColor: "primary.light", // 선택 박스만 흰색으로
+                        },
+                      }}
+                      placeholder={solutionLicenseName ? solutionLicenseName : "항목 선택"}
                     />
                   </Stack>
                   <Stack gap={1}>
@@ -878,8 +883,13 @@ export default function SolutionManagement() {
                       value={menuLicenseCheck} // menuLicenseCheck 값을 바인딩
                       onChange={(e) => setMenuLicenseCheck(e.target.value)} // 상태 업데이트
                       selectData={sd_1}
-                      sx={{ width: "400px" }}
-                      placeholder={menuLicenseCheck}
+                      sx={{
+                        width: "400px",
+                        "& .MuiSelect-select": {
+                          backgroundColor: "primary.light", // 선택 박스만 흰색으로
+                        },
+                      }}
+                      placeholder={menuLicenseCheck ? menuLicenseCheck : "항목 선택"}
                     />
                   </Stack>
                   <Stack gap={1} marginRight={1}>
