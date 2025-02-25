@@ -43,7 +43,6 @@ import { WebSocketContext } from "../../../routers/guard/SoketGuard";
 import { getKoreanTime } from "../../../utils/getKoreanTime";
 import { useSptStore } from "../../../stores/sptStore";
 import PhoneInput from "../../../components/Input/PhoneInput";
-import { regPhoneNumber } from "../../../utils/regPhoneNumber";
 
 export default function InfoGroup({ tabType }: TabType) {
   const [smsPopup, setSmsPopup] = useState<any>();
@@ -280,9 +279,6 @@ export default function InfoGroup({ tabType }: TabType) {
     if (cunsltDetailList?.data?.contents && !fromSocket) {
       reset({
         ...cunsltDetailList.data.contents,
-        cnsltTelno: regPhoneNumber(cunsltDetailList.data.contents.cnsltTelno),
-        mbtlNo: regPhoneNumber(cunsltDetailList.data.contents.mbtlNo),
-        telNo: regPhoneNumber(cunsltDetailList.data.contents.telNo),
       });
     } else {
       reset(defaultValue);

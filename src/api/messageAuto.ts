@@ -12,6 +12,7 @@ import {
   PostSmsmngAutoRequestType,
   PostSmstelRequestType,
   PutSmstelRequestType,
+  TestMsgRequestType,
 } from "../types/messageAuto";
 
 export const API = {
@@ -63,6 +64,11 @@ export const API = {
   // 발송대상정보 삭제
   deleteSmstel: async (requestData: { body: DeleteSmstelRequestType }) => {
     const url = `/api/spt/smstel/remove`;
+    return await instance.post(url, requestData.body);
+  },
+  // 실험발송
+  sendTestMsg: async (requestData: { body: TestMsgRequestType }) => {
+    const url = `/api/msg/send/testmsg`;
     return await instance.post(url, requestData.body);
   },
 };
@@ -164,5 +170,13 @@ export const usePostSmsAutoSave = () => {
   return useMutation({
     mutationFn: (requstData: { body: PostSmsmngAutoRequestType }) =>
       API.postSmsAutoSave(requstData),
+  });
+};
+
+// 테스트 발송
+export const useSendTestMsg = () => {
+  return useMutation({
+    mutationFn: (requstData: { body: TestMsgRequestType }) =>
+      API.sendTestMsg(requstData),
   });
 };

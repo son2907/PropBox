@@ -6,13 +6,69 @@ import GrayBox from "../../Box/GrayBox";
 import { BasicButton, IconButton } from "../../Button";
 import ModalBox from "..";
 import { IoMdClose } from "react-icons/io";
+import { useSendTestMsg } from "../../../api/messageAuto";
+import { useSptStore } from "../../../stores/sptStore";
+import useModal from "../../../hooks/useModal";
+import { BasicCompletedModl } from "./BasicCompletedModl";
+import { useApiRes } from "../../../utils/useApiRes";
 
-export default function TelInput({ onClose }: { onClose: () => void }) {
-  const { register } = useForm({
+interface TelInputType {
+  onClose: () => void;
+  smsKnd: string;
+  mssage: string;
+  trnsmitTxt: string;
+  dsptchNo: string;
+}
+export default function TelInput({
+  smsKnd,
+  mssage,
+  trnsmitTxt,
+  dsptchNo,
+  onClose,
+}: TelInputType) {
+  const { register, getValues } = useForm({
     defaultValues: {
-      number: "",
+      mbtlNo: "",
     },
   });
+
+  const { mutate: sendTestMsg } = useSendTestMsg();
+  const { sptNo } = useSptStore();
+  const checkApiFail = useApiRes();
+  const { openModal, closeModal } = useModal();
+
+  const onSend = () => {
+    const param = {
+      sptNo: sptNo,
+      smsKnd: smsKnd,
+      mssage: mssage,
+      trnsmitTxt: trnsmitTxt,
+      mbtlNo: getValues("mbtlNo"),
+      dsptchNo: dsptchNo,
+    };
+
+    sendTestMsg(
+      {
+        body: {
+          param,
+        },
+      },
+      {
+        onSuccess: (res) => {
+          console.log("발송 결과:", res);
+          const result = checkApiFail(res);
+          if (result.data.message === "SUCCESS") {
+            console.log("발송 성공:", res);
+            openModal(BasicCompletedModl, {
+              modalId: "complete",
+              stack: false,
+              onClose: () => closeModal,
+            });
+          }
+        },
+      }
+    );
+  };
 
   return (
     <ModalBox width={"500px"}>
@@ -31,13 +87,15 @@ export default function TelInput({ onClose }: { onClose: () => void }) {
         <CenteredBox width={"100%"} padding={4} gap={4}>
           <Typography variant="h5">전화번호</Typography>
           <PhoneInput
-            {...register("number")}
+            {...register("mbtlNo")}
             sx={{ marginLeft: "auto" }}
             fullWidth
           />
         </CenteredBox>
         <GrayBox>
-          <BasicButton sx={{ marginLeft: "auto" }}>발송</BasicButton>
+          <BasicButton sx={{ marginLeft: "auto" }} onClick={onSend}>
+            발송
+          </BasicButton>
         </GrayBox>
       </Stack>
     </ModalBox>
