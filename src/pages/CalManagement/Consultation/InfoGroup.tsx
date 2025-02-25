@@ -118,7 +118,7 @@ export default function InfoGroup({ tabType }: TabType) {
   );
 
   // input 할당 useForm
-  const { register, handleSubmit, reset, getValues, control } = useForm({
+  const { register, handleSubmit, reset, getValues } = useForm({
     defaultValues: defaultValue,
   });
 
@@ -275,7 +275,9 @@ export default function InfoGroup({ tabType }: TabType) {
   useDidMountEffect(() => {
     if (fromSocket) return;
     if (cunsltDetailList?.data?.contents && !fromSocket) {
-      reset({ ...cunsltDetailList.data.contents });
+      reset({
+        ...cunsltDetailList.data.contents,
+      });
     } else {
       reset(defaultValue);
       setDetailItem("");
@@ -492,7 +494,7 @@ export default function InfoGroup({ tabType }: TabType) {
                   <Typography color="error.main">*</Typography>
                   상담전화
                 </LabelTypo>
-                <BasicInput {...register("cnsltTelno")} />
+                <PhoneInput {...register("cnsltTelno")} />
                 <IconSquareButton
                   tabIndex={-1}
                   onClick={() => {

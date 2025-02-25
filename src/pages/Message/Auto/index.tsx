@@ -89,17 +89,6 @@ export default function AutoMessage() {
       .map((input) => input!.value);
   };
 
-  // 체크된 데이터 가져옴
-  const handleSubmit = () => {
-    const checkedValues = getCheckedValues().filter((value) => {
-      // 체크된 항목만 필터링
-      const input = inputRefs.current.find((ref) => ref?.value === value);
-      return input?.checked;
-    });
-
-    console.log("Selected Times:", checkedValues); // 선택된 시간 출력
-  };
-
   const { selectedRow, toggleRowSelection, resetSelection } =
     useSingleRowData<SmsTelList>("mbtlNo");
 
@@ -135,7 +124,7 @@ export default function AutoMessage() {
   const { mutate: postSmsTel } = usePostSmsTel();
   const { mutate: putSmsTel } = usePutSmsTel();
   const { mutate: deleteSmsTel } = useDeleteSmsTel();
-  const { mutate: saveall } = usePostSmsAutoSave();
+  const { mutate: saveAll } = usePostSmsAutoSave();
   const { loginId } = useAuthStore(["loginId"]);
   const checkApiFail = useApiRes();
 
@@ -144,14 +133,31 @@ export default function AutoMessage() {
     selectListData: sd_1,
     selectValue: s_1,
     handleChange: o_1,
-  } = useSelect(commonCode?.data?.contents, "numRef1", "cdNm");
+  } = useSelect(commonCode?.data?.contents, "cd", "cdNm", "1009005");
+
+  const {
+    selectListData: sd_2,
+    selectValue: s_2,
+    handleChange: o_2,
+  } = useSelect(commonCode?.data?.contents, "cd", "cdNm", "1009005");
+
+  const {
+    selectListData: sd_3,
+    selectValue: s_3,
+    handleChange: o_3,
+  } = useSelect(commonCode?.data?.contents, "cd", "cdNm", "1009005");
 
   // 발신번호 목록
   const {
     selectListData: sd_0,
-    selectValue: s_0,
+    selectValue: dsptchNo,
     handleChange: o_0,
-  } = useSelect(numberList?.data?.contents, "cid", "cid");
+  } = useSelect(
+    numberList?.data?.contents,
+    "cid",
+    "cid",
+    numberList?.data?.contents[0].cid
+  );
 
   // 새로고침
   const refresh = () => {
@@ -180,7 +186,7 @@ export default function AutoMessage() {
             console.log("업로드 성공:", res);
             openModal(BasicCompletedModl, {
               modalId: "excelComplete",
-              stack: false,
+              stack: true,
               onClose: () => closeModal,
             });
             refresh();
@@ -192,6 +198,7 @@ export default function AutoMessage() {
 
   // // 수정
   const onPut = () => {
+    if (!selectedRow) return;
     putSmsTel(
       {
         body: {
@@ -199,6 +206,7 @@ export default function AutoMessage() {
           userId: loginId,
           mbtlNo: getValues("mbtlNo"),
           cstmrNm: getValues("cstmrNm"),
+          recptnNo: selectedRow.recptnNo,
         },
       },
       {
@@ -209,7 +217,7 @@ export default function AutoMessage() {
             console.log("수정 성공:", res);
             openModal(BasicCompletedModl, {
               modalId: "excelComplete",
-              stack: false,
+              stack: true,
               onClose: () => closeModal,
             });
             refresh();
@@ -229,9 +237,10 @@ export default function AutoMessage() {
 
   // 삭제
   const onDelete = () => {
+    if (!selectedRow) return;
     openModal(MultipleDeleteModal, {
       number: 1,
-      stack: false,
+      stack: true,
       onClose: () => closeModal,
       onSubmit: () => {
         deleteSmsTel(
@@ -239,7 +248,7 @@ export default function AutoMessage() {
             body: {
               sptNo: sptNo,
               userId: loginId,
-              mbtlNo: getValues("mbtlNo"),
+              recptnNo: selectedRow.recptnNo,
             },
           },
           {
@@ -249,8 +258,8 @@ export default function AutoMessage() {
               if (result.data.message === "SUCCESS") {
                 console.log("삭제 성공:", res);
                 openModal(BasicCompletedModl, {
-                  modalId: "excelComplete",
-                  stack: false,
+                  modalId: "deleteComplete",
+                  stack: true,
                   onClose: () => closeModal,
                 });
                 refresh();
@@ -284,7 +293,6 @@ export default function AutoMessage() {
     return mySmsQuery.map((query) => query.data?.data);
   }, [mySmsQuery]);
 
-  console.log("responses:", responses);
   useEffect(() => {
     if (!responses[0]) return;
     if (!enable.current) return;
@@ -356,43 +364,87 @@ export default function AutoMessage() {
 
   const { openModal, closeModal } = useModal();
 
-  const openTelModal = () => {
+  const openTelModal = ({ smsKnd, mssage }) => {
     openModal(TelInput, {
-      stack: false, //단일 모달 모드
+      stack: true, //단일 모달 모드
       onClose: () => closeModal,
+      smsKnd: smsKnd,
+      mssage: mssage,
+      trnsmitTxt: "",
+      dsptchNo: dsptchNo,
     });
   };
 
   const onSaveAll = () => {
-    console.log(getValues());
-    // text.replace(/\n/g, "<br>");
-    // saveall;
+    const checkedValues = getCheckedValues().filter((value) => {
+      const input = inputRefs.current.find((ref) => ref?.value === value);
+      return input?.checked;
+    });
+
+    const smsTMZonList = checkedValues.map((item) => ({
+      sptNo: sptNo,
+      tmZon: item,
+    }));
+
     const body = {
       sptNo: sptNo,
-      mssage: getValues("autoMessage").replace(/\n/g, "<br>"), // 자동문자 메세지
-      dsptchNo: s_0, // 발신번호
+      mssage: getValues("autoMessage").replace(/\n/g, "<br>"),
+      dsptchNo: dsptchNo,
       dsptchBgnde: getFormattedDate(startDate),
       dsptchEndde: getFormattedDate(endDate),
       userId: loginId,
       smsBassList: [
         {
-          sptNo: "string",
-          smsSeCd: "string",
-          smsKnd: "string",
-          mssage: "string",
-          useYn: "string",
-          userId: "string",
+          sptNo: sptNo,
+          smsSeCd: yKey,
+          smsKnd: radioValue,
+          mssage: getValues("Ymessage").replace(/\n/g, "<br>"),
+          recptnTm: receive ? s_1 : "",
+          useYn: receive ? "Y" : "N",
+          userId: loginId,
         },
-      ],
-      smsTMZonList: [
         {
-          sptNo: "string",
-          tmZon: "string",
-          useYn: "string",
-          userId: "string",
+          sptNo: sptNo,
+          smsSeCd: nKey,
+          smsKnd: radioValue2,
+          mssage: getValues("Nmessage").replace(/\n/g, "<br>"),
+          recptnTm: out ? s_2 : "",
+          useYn: out ? "Y" : "N",
+          userId: loginId,
+        },
+        {
+          sptNo: sptNo,
+          smsSeCd: noneKey,
+          smsKnd: radioValue3,
+          mssage: getValues("noneMessage").replace(/\n/g, "<br>"),
+          recptnTm: none ? s_3 : "",
+          useYn: none ? "Y" : "N",
+          userId: loginId,
         },
       ],
+      smsTMZonList: smsTMZonList,
     };
+
+    saveAll(
+      {
+        body: body,
+      },
+      {
+        onSuccess: (res) => {
+          console.log("저장 결과:", res);
+          const result = checkApiFail(res);
+          if (result.data.message === "SUCCESS") {
+            console.log("저장 성공:", res);
+            openModal(BasicCompletedModl, {
+              modalId: "complete",
+              stack: true,
+              onClose: () => closeModal,
+            });
+            refresh();
+          }
+        },
+      }
+    );
   };
 
   return (
@@ -450,11 +502,20 @@ export default function AutoMessage() {
             <Stack gap={2} margin={1}>
               <Typography variant="h3">발신번호</Typography>
               <CenteredBox>
-                <Select selectData={sd_0} value={s_0} onChange={o_0} />
+                <Select selectData={sd_0} value={dsptchNo} onChange={o_0} />
                 <IconButton sx={{ color: "root.mainBlue" }}>
                   <IoSettingsOutline />
                 </IconButton>
-                <BasicButton onClick={openTelModal}>실험발송</BasicButton>
+                <BasicButton
+                  onClick={() => {
+                    openTelModal({
+                      mssage: getValues("autoMessage"),
+                      smsKnd: "S",
+                    });
+                  }}
+                >
+                  실험발송
+                </BasicButton>
               </CenteredBox>
             </Stack>
             {/* 발송일시 */}
@@ -496,8 +557,6 @@ export default function AutoMessage() {
                   />
                 </Stack>
               </CenteredBox>
-
-              <button onClick={handleSubmit}>테스트 버튼</button>
             </Stack>
 
             <Stack gap={2} margin={1}>
@@ -602,7 +661,15 @@ export default function AutoMessage() {
                 onChange={o_1}
                 disabled={!receive}
               />
-              <BasicButton sx={{ marginLeft: "auto" }} onClick={openTelModal}>
+              <BasicButton
+                sx={{ marginLeft: "auto" }}
+                onClick={() => {
+                  openTelModal({
+                    smsKnd: radioValue,
+                    mssage: getValues("Ymessage"),
+                  });
+                }}
+              >
                 실험발송
               </BasicButton>
               <BasicButton
@@ -654,12 +721,20 @@ export default function AutoMessage() {
             <CenteredBox gap={1}>
               <Select
                 sx={{ width: "200px" }}
-                selectData={sd_1}
-                value={s_1}
-                onChange={o_1}
+                selectData={sd_2}
+                value={s_2}
+                onChange={o_2}
                 disabled={!out}
               />
-              <BasicButton sx={{ marginLeft: "auto" }} onClick={openTelModal}>
+              <BasicButton
+                sx={{ marginLeft: "auto" }}
+                onClick={() => {
+                  openTelModal({
+                    smsKnd: radioValue2,
+                    mssage: getValues("Nmessage"),
+                  });
+                }}
+              >
                 실험발송
               </BasicButton>
               <BasicButton
@@ -711,12 +786,20 @@ export default function AutoMessage() {
             <CenteredBox gap={1}>
               <Select
                 sx={{ width: "200px" }}
-                selectData={sd_1}
-                value={s_1}
-                onChange={o_1}
+                selectData={sd_3}
+                value={s_3}
+                onChange={o_3}
                 disabled={!none}
               />
-              <BasicButton sx={{ marginLeft: "auto" }} onClick={openTelModal}>
+              <BasicButton
+                sx={{ marginLeft: "auto" }}
+                onClick={() => {
+                  openTelModal({
+                    smsKnd: radioValue3,
+                    mssage: getValues("noneMessage"),
+                  });
+                }}
+              >
                 실험발송
               </BasicButton>
               <BasicButton
