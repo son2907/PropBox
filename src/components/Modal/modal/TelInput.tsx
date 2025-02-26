@@ -6,11 +6,11 @@ import GrayBox from "../../Box/GrayBox";
 import { BasicButton, IconButton } from "../../Button";
 import ModalBox from "..";
 import { IoMdClose } from "react-icons/io";
-import { useSendTestMsg } from "../../../api/messageAuto";
 import { useSptStore } from "../../../stores/sptStore";
 import useModal from "../../../hooks/useModal";
 import { BasicCompletedModl } from "./BasicCompletedModl";
 import { useApiRes } from "../../../utils/useApiRes";
+import { UseMutateFunction } from "@tanstack/react-query";
 
 interface TelInputType {
   onClose: () => void;
@@ -18,6 +18,7 @@ interface TelInputType {
   mssage: string;
   trnsmitTxt: string;
   dsptchNo: string;
+  mutate: UseMutateFunction<any, unknown, { body: any }, unknown>; // mutate를 props로 받음
 }
 export default function TelInput({
   smsKnd,
@@ -25,6 +26,7 @@ export default function TelInput({
   trnsmitTxt,
   dsptchNo,
   onClose,
+  mutate,
 }: TelInputType) {
   const { register, getValues } = useForm({
     defaultValues: {
@@ -32,7 +34,6 @@ export default function TelInput({
     },
   });
 
-  const { mutate: sendTestMsg } = useSendTestMsg();
   const { sptNo } = useSptStore();
   const checkApiFail = useApiRes();
   const { openModal, closeModal } = useModal();
@@ -49,7 +50,7 @@ export default function TelInput({
 
     console.log("전송 body:", body);
 
-    sendTestMsg(
+    mutate(
       {
         body: body,
       },

@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 
 interface TableProps {
-  data: { id: string; [key: string]: any }[] | undefined; // Table data
+  data: { [key: string]: any }[] | undefined; // Table data
   children: ReactNode;
 }
 
@@ -13,12 +13,13 @@ interface TableItemProps {
 interface CheckboxTdProps {
   selectedRows: Set<string>;
   toggleRowsSelection: (id: string) => void;
-  item: { id: string }; // item 객체의 id 속성 타입
+  item: any; // item 객체의 id 속성 타입
+  keyName: string;
   [property: string]: any;
 }
 
 interface CheckboxThProps extends CheckboxTdProps {
-  data: { id: string; [key: string]: any }[];
+  data: { [key: string]: any }[];
   [property: string]: any;
 }
 
@@ -44,6 +45,7 @@ const CheckboxTh = ({
   data,
   selectedRows,
   toggleRowsSelection,
+  keyName,
 }: CheckboxThProps) => {
   // 전체 선택 상태 관리
   const allSelected = selectedRows.size === data.length;
@@ -51,11 +53,11 @@ const CheckboxTh = ({
   // 전체 선택/해제 핸들러
   const handleSelectAllChange = () => {
     data.forEach((row: any) => {
-      const isSelected = selectedRows.has(row.id);
+      const isSelected = selectedRows.has(row[keyName]);
       if (allSelected && isSelected) {
-        toggleRowsSelection(row.id); // 이미 선택된 행 해제
+        toggleRowsSelection(row[keyName]); // 이미 선택된 행 해제
       } else if (!allSelected && !isSelected) {
-        toggleRowsSelection(row.id); // 선택되지 않은 행 선택
+        toggleRowsSelection(row[keyName]); // 선택되지 않은 행 선택
       }
     });
   };
@@ -109,14 +111,15 @@ const CheckboxTd = ({
   selectedRows,
   toggleRowsSelection,
   item,
+  keyName,
   ...rest
 }: CheckboxTdProps) => {
   return (
     <Td>
       <input
         type="checkbox"
-        checked={selectedRows.has(item.id)}
-        onChange={() => toggleRowsSelection(item.id)}
+        checked={selectedRows.has(item[keyName])}
+        onChange={() => toggleRowsSelection(item[keyName])}
         {...rest}
       />
     </Td>
