@@ -56,7 +56,7 @@ export default function UserInfoPopup() {
   // const [companyNum, setCompanyNum] = useState("");
 
   //초기값
-  const { register, handleSubmit, reset, getValues, control } = useForm({
+  const { register, handleSubmit, reset, getValues } = useForm({
     defaultValues: {
       userID: "",
       password: "",
@@ -256,9 +256,9 @@ export default function UserInfoPopup() {
                 // value={phoneNum}
                 // onChange={(e) => setPhoneNum(e.target.value)}
                 // placeholder={phoneNum ? phoneNum : "휴대전화"}
-                name="phoneNum"
-                placeholder="휴대전화"
-                //error={""}
+                //control={control} name="phoneNum" placeholder="휴대전화"
+                {...register("phoneNum")}
+              //error={""}
               />
             </Stack>
             <Stack width={"100%"} marginTop={1}>
