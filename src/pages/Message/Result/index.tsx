@@ -20,6 +20,14 @@ import RangeCalendar from "../../../components/Calendar/RangeCalendar";
 import PathConstants from "../../../routers/path";
 import { openPopup } from "../../../utils/openPopup";
 import { useTableSelect } from "../../../hooks/useTableSelect";
+import {
+  useMsgResult,
+  useMsgResultDetail,
+  useMsgResultDetailList,
+} from "../../../api/messageResult";
+import { useSptStore } from "../../../stores/sptStore";
+import { getFormattedDate } from "../../../utils/getFormattedDate";
+import { useSingleRowData } from "../../../hooks/useTest";
 
 export default function ResultMessage() {
   const [date, setDate] = useState<Date>(new Date());
@@ -27,11 +35,28 @@ export default function ResultMessage() {
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(new Date());
 
+  // 이전 날짜 이동
+  const handlePrevDate = () => {
+    setStartDate(new Date(startDate.setDate(startDate.getDate() - 1)));
+  };
+  const handleNextDate = () => {
+    setStartDate(new Date(startDate.setDate(startDate.getDate() + 1)));
+  };
+
+  const handleDateToday = () => {
+    setDate(new Date());
+  };
+
   const { selectedRow: ts_1, toggleRowSelection: tt_1 } =
     useSingleRowSelection();
+
+  // const { selectedRow: ts_1, toggleRowSelection: tt_1 } =
+  // useSingleRowData('');
+
   const { selectedRow: ts_2, toggleRowSelection: tt_2 } =
     useSingleRowSelection();
-  const { currentPage: c_1, onChangePage: cc_1 } = usePagination();
+  const { currentPage: resultPage, onChangePage: resultPageC } =
+    usePagination();
   const { currentPage: c_2, onChangePage: cc_2 } = usePagination();
 
   const [range, setRange] = useState<boolean>(false);
@@ -46,6 +71,25 @@ export default function ResultMessage() {
   };
 
   const { countValues, selectValue, handleChange } = useTableSelect();
+  const { sptNo } = useSptStore();
+
+  const { data: msgList } = useMsgResult({
+    sptNo: sptNo,
+    // fromDate: getFormattedDate(startDate),
+    fromDate: "20250201",
+    page: resultPage,
+    limit: selectValue,
+  });
+  const { data: detailList } = useMsgResultDetailList({
+    sptNo: sptNo,
+    msgKnd: "S",
+    sendGroup: "20250212040552",
+    limit: 1000,
+    page: 1,
+  });
+
+  console.log("msgList:", msgList);
+  console.log("detailList:", detailList);
 
   return (
     <Stack width={"100%"} height={"100%"} gap={1}>
@@ -93,8 +137,10 @@ export default function ResultMessage() {
               오늘
             </BasicButton>
             <BasicButton
-              onClick={() => {
+              onClick={(e) => {
                 setRange(!range);
+                e.preventDefault();
+                e.stopPropagation();
               }}
             >
               <LuArrowRightLeft />
@@ -155,7 +201,7 @@ export default function ResultMessage() {
             </BasicTable>
           </TableBox.Inner>
           <CenteredBox justifyContent={"space-between"} padding={1}>
-            <Pagination count={25} page={c_1} onChange={cc_1} />
+            <Pagination count={25} page={resultPage} onChange={resultPageC} />
             <TableSelect
               total={100}
               countValues={countValues}

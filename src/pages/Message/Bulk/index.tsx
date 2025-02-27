@@ -7,11 +7,11 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import GrayBox from "../../../components/Box/GrayBox";
 import TableBox from "../../../components/Box/TableBox";
 import BasicTable from "../../../components/Table/BasicTable";
-import { selectTestData, tableTestData } from "../../../utils/testData";
+import { tableTestData } from "../../../utils/testData";
 import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
 import TabMenus from "../../../components/Tab/TabMenus";
 import useTabs from "../../../hooks/useTabs";
@@ -41,12 +41,7 @@ import PathConstants from "../../../routers/path";
 import { openPopup } from "../../../utils/openPopup";
 import { useTableSelect } from "../../../hooks/useTableSelect";
 import { useGetBulkMsgList } from "../../../api/messageBulk";
-import {
-  useDeleteMsg,
-  useMsgList,
-  usePostMsg,
-  useSendMsg,
-} from "../../../api/callMessage";
+import { useDeleteMsg, useMsgList, usePostMsg } from "../../../api/callMessage";
 import { HiRefresh } from "react-icons/hi";
 import useModal from "../../../hooks/useModal";
 import { BasicDeleteConfirmModal } from "../../../components/Modal/modal/BasicDeleteConfirmModal";
