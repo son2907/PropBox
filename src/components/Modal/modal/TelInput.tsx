@@ -48,8 +48,6 @@ export default function TelInput({
       dsptchNo: dsptchNo,
     };
 
-    console.log("전송 body:", body);
-
     mutate(
       {
         body: body,
@@ -62,7 +60,7 @@ export default function TelInput({
             console.log("발송 성공:", res);
             openModal(BasicCompletedModl, {
               modalId: "complete",
-              stack: true,
+              stack: false,
               onClose: () => closeModal,
             });
           }

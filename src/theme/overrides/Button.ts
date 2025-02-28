@@ -60,7 +60,7 @@ export default function Button(theme: Theme) {
             ...containedButton({
               main: theme.palette.primary["A100"], // 주 색상
               text: theme.palette.primary.contrastText, // 텍스트 색상
-              hover: theme.palette.primary[100], // 호버 시 색상
+              hover: theme.palette.primary.dark, // 호버 시 색상
               ripple: theme.palette.primary[900], // Ripple 효과 색상
             }),
           },
@@ -72,7 +72,7 @@ export default function Button(theme: Theme) {
             ...outlinedButton({
               main: theme.palette.root.borderPrimary, // 테두리 색상
               text: theme.palette.primary.dark, // 텍스트 색상
-              hover: theme.palette.primary.light, // 호버 시 색상
+              hover: theme.palette.primary.dark, // 호버 시 색상
               ripple: theme.palette.primary[700], // Ripple 효과 색상
             }),
           },

@@ -6,8 +6,12 @@ import {
   GetResultDetailRequestType,
   GetResultExcelRequestType,
   GetResultRequestType,
+  ResultDetailListResponseType,
+  ResultDetailResponseType,
+  ResultResponseType,
 } from "../types/messageResult";
 import instance from "../utils/axiosInstance";
+import DownloadExcel from "../utils/download";
 
 export const API = {
   // 전송 결과 그룹 조회
@@ -21,8 +25,8 @@ export const API = {
   }: GetResultRequestType) => {
     let url = `/api/msg/result/list?sptNo=${sptNo}&fromDate=${fromDate}&page=${page}&limit=${limit}`;
     if (toDate) url += `&toDate=${toDate}`;
-    if (mbtlNo) url += `mbtlNo=${mbtlNo}`;
-    return await instance.get<any>(url);
+    if (mbtlNo) url += `&mbtlNo=${mbtlNo}`;
+    return await instance.get<ResultResponseType>(url);
   },
   // 전송 결과 그룹 조회 엑셀 저장
   getMsgResultExcel: async ({
@@ -33,8 +37,14 @@ export const API = {
   }: GetResultExcelRequestType) => {
     let url = `/api/msg/result/list/exceldownload?sptNo=${sptNo}&fromDate=${fromDate}`;
     if (toDate) url += `&toDate=${toDate}`;
-    if (mbtlNo) url += `mbtlNo=${mbtlNo}`;
-    return await instance.get<any>(url);
+    if (mbtlNo) url += `&mbtlNo=${mbtlNo}`;
+
+    const response = await instance.get(url, {
+      responseType: "blob",
+    });
+
+    DownloadExcel({ response });
+    return response;
   },
   // 전송 결과 목록 조회
   getMsgResultDetailList: async ({
@@ -45,7 +55,7 @@ export const API = {
     limit,
   }: GetResultDetaiListRequestType) => {
     const url = `/api/msg/result/list/detail/list?sptNo=${sptNo}&msgKnd=${msgKnd}&sendGroup=${sendGroup}&page=${page}&limit=${limit}`;
-    return await instance.get<any>(url);
+    return await instance.get<ResultDetailListResponseType>(url);
   },
   // 전송 결과 목록 엑셀
   getMsgResultDetailExcel: async ({
@@ -54,7 +64,12 @@ export const API = {
     sendGroup,
   }: GetResultDetailExcelRequestType) => {
     const url = `/api/msg/result/list/detail/list/exceldownload?sptNo=${sptNo}&msgKnd=${msgKnd}&sendGroup=${sendGroup}`;
-    return await instance.get<any>(url);
+    const response = await instance.get(url, {
+      responseType: "blob",
+    });
+
+    DownloadExcel({ response });
+    return response;
   },
   // 전송 결과 상세 조회
   getResultDetail: async ({
@@ -62,8 +77,8 @@ export const API = {
     yyyyMm,
     idx,
   }: GetResultDetailRequestType) => {
-    const url = `/api/msg/result/list/detail?sptNo=${msgKnd}&yyyyMm=${yyyyMm}&idx=${idx}`;
-    return await instance.get<any>(url);
+    const url = `/api/msg/result/list/detail?msgKnd=${msgKnd}&yyyyMm=${yyyyMm}&idx=${idx}`;
+    return await instance.get<ResultDetailResponseType>(url);
   },
   // 대기메세지 삭제
   deleteResultMsg: async ({ sptNo, msgKnd, sendGroup }: deleteRequestType) => {
@@ -177,6 +192,7 @@ export const useMsgResultExcel = ({
         toDate,
         mbtlNo,
       }),
+    enabled: false,
   });
 };
 
@@ -204,6 +220,7 @@ export const useMsgResultDetailList = ({
         page,
         limit,
       }),
+    enabled: !!msgKnd && !!sendGroup && !!page && !!limit,
   });
 };
 
@@ -225,6 +242,7 @@ export const useMsgResultDetailExcel = ({
         msgKnd,
         sendGroup,
       }),
+    enabled: false,
   });
 };
 

@@ -7,10 +7,22 @@ interface TextAreaProps
   maxBytes?: number;
   value?: string;
   onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  viewByte?: boolean;
 }
 
 const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
-  ({ resize = "both", height, maxBytes, value, onChange, ...rest }, ref) => {
+  (
+    {
+      resize = "both",
+      height,
+      maxBytes,
+      value,
+      onChange,
+      viewByte = true,
+      ...rest
+    },
+    ref
+  ) => {
     const [currentBytes, setCurrentBytes] = useState(0);
 
     // 바이트 계산 및 상태 관리
@@ -86,6 +98,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
         />
         <div
           style={{
+            display: viewByte ? "block" : "none",
             position: "absolute",
             bottom: "5px",
             right: "10px",
