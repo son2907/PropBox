@@ -46,7 +46,6 @@ const Tr: React.FC<
       onClick={onClick}
       style={{
         backgroundColor: isClicked ? "#F1F1F1" : "white",
-        border: isClicked ? "2px solid #6AA5FE" : "none",
         borderRadius: "8px",
       }}
       {...rest}

@@ -1,0 +1,134 @@
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  GetBulkMsgListResponseType,
+  GetBulkTotalCntResponseType,
+  PostBulkListChkRequestType,
+  PostBulkTmpMsgRequestType,
+} from "../types/messageBulk";
+import instance from "../utils/axiosInstance";
+import { spt } from "../utils/sptNo";
+
+export const API = {
+  // 문자관리 > 대량문자 > 전송대상 목록
+  getBulkMsgList: async () => {
+    const url = `/api/spt/smstel/alot/list/${spt}`;
+    return await instance.get<GetBulkMsgListResponseType>(url);
+  },
+  // 문자관리 > 대량문자 > 임시대상 목록
+  getBulkTmpList: async () => {
+    const url = `/api/spt/smstel/alot/tmp/${spt}`;
+    return await instance.get(url);
+  },
+  // 문자관리 > 대량문자 > 임시대상 확정인원 표시
+  getBulkTotalCnt: async () => {
+    const url = `/api/spt/smstel/alot/tmp/totalCnt/${spt}`;
+    return await instance.get<GetBulkTotalCntResponseType>(url);
+  },
+  // 전송 대상:임시대상 목록
+  postBulkTmp: async (requestData: { body: PostBulkTmpMsgRequestType }) => {
+    const url = `/api/spt/smstel/alot/tmp/${spt}`;
+    return await instance.post(url, requestData.body);
+  },
+  // 전송 대상:대상 확인 확정 목록
+  postBulkChk: async (requestData: { body: PostBulkListChkRequestType }) => {
+    const url = `/api/spt/smstel/alot/list/chk`;
+    return await instance.post(url, requestData.body);
+  },
+  // 전송 대상:대상 확인 각 탭별 총인원수
+  postBulkChkTotalCnt: async (requestData: {
+    body: PostBulkListChkRequestType;
+  }) => {
+    const url = `/api/spt/smstel/alot/list/chkTotalCnt`;
+    return await instance.post(url, requestData.body);
+  },
+  // 전송 대상:대상 확인 수신거부 목록
+  postBulkreject: async (requestData: { body: PostBulkListChkRequestType }) => {
+    const url = `/api/spt/smstel/alot/list/chk4`;
+    return await instance.post(url, requestData.body);
+  },
+  // 전송 대상:대상 확인 오류 목록
+  postBulkError: async (requestData: { body: PostBulkListChkRequestType }) => {
+    const url = `/api/spt/smstel/alot/list/chk3`;
+    return await instance.post(url, requestData.body);
+  },
+  // 전송 대상:대상 확인 중복 목록
+  postDup: async (requestData: { body: PostBulkListChkRequestType }) => {
+    const url = `/api/spt/smstel/alot/list/chk2`;
+    return await instance.post(url, requestData.body);
+  },
+};
+
+const KEY = {
+  getBulkMsgList: () => ["/api/spt/smstel/alot/list", spt],
+  getBulkTmpList: () => ["/api/spt/smstel/alot/list", spt],
+  getBulkTotalCnt: () => ["/api/spt/smstel/alot/list", spt],
+};
+
+// 문자관리 > 대량문자 > 전송대상 목록
+export const useGetBulkMsgList = () => {
+  return useQuery({
+    queryKey: KEY.getBulkMsgList(),
+    queryFn: async () => await API.getBulkMsgList(),
+    gcTime: 0,
+  });
+};
+
+// 문자관리 > 대량문자 > 임시대상 목록
+export const useGetBulkTmpList = () => {
+  return useQuery({
+    queryKey: KEY.getBulkTmpList(),
+    queryFn: async () => await API.getBulkTmpList(),
+    gcTime: 0,
+  });
+};
+// 문자관리 > 대량문자 > 임시대상 확정인원 표시
+export const useGetBulkTotalCnt = () => {
+  return useQuery({
+    queryKey: KEY.getBulkTotalCnt(),
+    queryFn: async () => await API.getBulkTotalCnt(),
+    gcTime: 0,
+  });
+};
+
+// 전송 대상:임시대상 목록
+export const usePostBulkTmp = () => {
+  return useMutation({
+    mutationFn: (requstData: { body: PostBulkTmpMsgRequestType }) =>
+      API.postBulkTmp(requstData),
+  });
+};
+// 전송 대상:대상 확인 확정 목록
+export const usePostBulkChk = () => {
+  return useMutation({
+    mutationFn: (requstData: { body: PostBulkListChkRequestType }) =>
+      API.postBulkChk(requstData),
+  });
+};
+// 전송 대상:대상 확인 각 탭별 총인원수
+export const usePostBulkChkTotalCnt = () => {
+  return useMutation({
+    mutationFn: (requstData: { body: PostBulkListChkRequestType }) =>
+      API.postBulkChkTotalCnt(requstData),
+  });
+};
+// 전송 대상:대상 확인 수신거부 목록
+export const usePostBulkreject = () => {
+  return useMutation({
+    mutationFn: (requstData: { body: PostBulkListChkRequestType }) =>
+      API.postBulkreject(requstData),
+  });
+};
+// 전송 대상:대상 확인 오류 목록
+export const usePostBulkError = () => {
+  return useMutation({
+    mutationFn: (requstData: { body: PostBulkListChkRequestType }) =>
+      API.postBulkError(requstData),
+  });
+};
+// 전송 대상:대상 확인 중복 목록
+export const usePostBulkDuplication = () => {
+  return useMutation({
+    mutationFn: (requstData: { body: PostBulkListChkRequestType }) =>
+      API.postDup(requstData),
+  });
+};
