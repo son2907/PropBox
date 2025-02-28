@@ -75,7 +75,7 @@ export default function SMSSending() {
   // 메세지 저장
   const { mutate: postMsg } = usePostMsg();
   // 메세지 삭제
-  const { mutate: deleteMsg } = useDeleteMsg({ saveNo: sr?.saveNo || "" });
+  const { mutate: deleteMsg } = useDeleteMsg();
   // 메세지 전송
   const { mutate: sendMsg } = useSendMsg();
 

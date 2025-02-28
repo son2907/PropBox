@@ -76,11 +76,7 @@ const KEY = {
   ],
   postMsg: () => ["/api/spt/msgsave", "post"],
   putMsg: () => ["/api/spt/msgsave", "put"],
-  deleteMsg: ({ saveNo }: MsgGetOneRequestType) => [
-    "/api/spt/msgsave",
-    "delete",
-    saveNo,
-  ],
+  deleteMsg: () => ["/api/spt/msgsave", "delete"],
   getMacroList: ({ cstmrNo }: MacroRequestType) => [
     "/api/msg/telcnslt/cstmr",
     cstmrNo,
@@ -148,10 +144,10 @@ export const usePutMsg = () => {
 };
 
 //메세지 삭제
-export const useDeleteMsg = ({ saveNo }: MsgGetOneRequestType) => {
+export const useDeleteMsg = () => {
   return useMutation({
     mutationFn: ({ saveNo }: MsgGetOneRequestType) => API.deleteMsg({ saveNo }),
-    mutationKey: KEY.deleteMsg({ saveNo }),
+    mutationKey: KEY.deleteMsg(),
   });
 };
 

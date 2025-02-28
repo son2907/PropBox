@@ -35,6 +35,8 @@ import {
   usePostSmsAutoSave,
   usePostSmsTel,
   usePutSmsTel,
+  useSendTestMsg,
+  useSendTestMsgYn,
 } from "../../../api/messageAuto";
 import { useCrtfcList } from "../../../api/crtfc";
 import { Controller, useForm } from "react-hook-form";
@@ -125,7 +127,12 @@ export default function AutoMessage() {
   const { mutate: putSmsTel } = usePutSmsTel();
   const { mutate: deleteSmsTel } = useDeleteSmsTel();
   const { mutate: saveAll } = usePostSmsAutoSave();
+
+  const { mutate: testMsg } = useSendTestMsg();
+  const { mutate: testYnMsg } = useSendTestMsgYn();
+
   const { loginId } = useAuthStore(["loginId"]);
+
   const checkApiFail = useApiRes();
 
   // 시간
@@ -364,7 +371,7 @@ export default function AutoMessage() {
 
   const { openModal, closeModal } = useModal();
 
-  const openTelModal = ({ smsKnd, mssage }) => {
+  const openTelModal = ({ smsKnd, mssage, isYnMsg }) => {
     openModal(TelInput, {
       stack: true, //단일 모달 모드
       onClose: () => closeModal,
@@ -372,6 +379,7 @@ export default function AutoMessage() {
       mssage: mssage,
       trnsmitTxt: "",
       dsptchNo: dsptchNo,
+      mutate: isYnMsg ? testYnMsg : testMsg,
     });
   };
 
@@ -511,6 +519,7 @@ export default function AutoMessage() {
                     openTelModal({
                       mssage: getValues("autoMessage"),
                       smsKnd: "S",
+                      isYnMsg: false,
                     });
                   }}
                 >
@@ -667,6 +676,7 @@ export default function AutoMessage() {
                   openTelModal({
                     smsKnd: radioValue,
                     mssage: getValues("Ymessage"),
+                    isYnMsg: true,
                   });
                 }}
               >
@@ -732,6 +742,7 @@ export default function AutoMessage() {
                   openTelModal({
                     smsKnd: radioValue2,
                     mssage: getValues("Nmessage"),
+                    isYnMsg: true,
                   });
                 }}
               >
@@ -797,6 +808,7 @@ export default function AutoMessage() {
                   openTelModal({
                     smsKnd: radioValue3,
                     mssage: getValues("noneMessage"),
+                    isYnMsg: true,
                   });
                 }}
               >

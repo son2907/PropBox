@@ -4,7 +4,7 @@
   box-sizing: border-box; /* padding, border 포함 */
 }
 .react-datepicker-popper {
-  z-index: 2;
+  z-index: 1300;
 }
 
 .react-datepicker__day {

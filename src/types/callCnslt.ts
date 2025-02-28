@@ -207,7 +207,7 @@ export type MsgSaveRequestType = {
   commUseYn: string;
   mssage: string;
   advYn: string;
-  advTxt: string;
+  advTxt?: string;
 };
 
 // 메세지 전송
