@@ -60,6 +60,19 @@ const nKey = "1008015";
 const noneKey = "1008020";
 
 export default function AutoMessage() {
+  const tableData = [
+    { text: "송신시간 ($T) 삽입" },
+    { text: "전일까지 인바운드누계($1)삽입" },
+    { text: "전일 인바운드 건수 ($Y) 삽입 " },
+    { text: "금일 인바운드 건수 ($2) 삽입" },
+    { text: "인바운드 총누계 건수 ($3) 삽입" },
+    { text: "전일까지 방문상담누계 (#1) 삽입" },
+    { text: "전일 방문상담 건수 (#Y) 삽입" },
+    { text: "전일 방문상담 건수 (#Y) 삽입" },
+    { text: "금일 방문상담 건수 (#2) 삽입" },
+    { text: "방문상담 총누계 건수 (#3) 삽입" },
+  ];
+
   const defaultValues = {
     autoMessage: "",
     macro: "",
@@ -569,26 +582,26 @@ export default function AutoMessage() {
                   />
                 </Stack>
               </CenteredBox>
+              <Typography variant="h3">매크로</Typography>
             </Stack>
 
-            <Stack gap={2} margin={1}>
-              <Typography variant="h3">매크로</Typography>
-              <Controller
-                name="macro"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <TextArea
-                    {...field}
-                    height="130px"
-                    resize="none"
-                    placeholder="매크로를 입력하세요"
-                    onChange={(e) => {
-                      field.onChange(e);
-                    }}
-                  />
-                )}
-              />
+            <Stack gap={2} margin={1} overflow={"hidden"}>
+              <TableBox width="100%" height="100%" overflow={"hidden"}>
+                <TableBox.Inner width="100%" height="100%" overflow={"auto"}>
+                  <BasicTable data={tableData}>
+                    <BasicTable.Th>매크로</BasicTable.Th>
+                    <BasicTable.Tbody>
+                      {tableData.map((item, index) => {
+                        return (
+                          <BasicTable.Tr key={index}>
+                            <BasicTable.Td>{item.text}</BasicTable.Td>
+                          </BasicTable.Tr>
+                        );
+                      })}
+                    </BasicTable.Tbody>
+                  </BasicTable>
+                </TableBox.Inner>
+              </TableBox>
             </Stack>
           </Stack>
 
