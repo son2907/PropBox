@@ -115,7 +115,7 @@ export default function AutoMessage() {
 
   // <------------------------------- API ------------------------------->
 
-  const { data: basicMessage, refetch: basicRefetch } = useGetSmsBase({
+  const { data: basicMessage, h } = useGetSmsBase({
     smsSeCd: smsSeCd,
   }); // 자동문자 기본 메세지
   const { data: numberList } = useCrtfcList({ cid: "" }); // 발신번호 리스트
@@ -278,8 +278,8 @@ export default function AutoMessage() {
     });
   };
 
-  const onClickAutoBasic = (smsSeCd) => {
-    basicRefetch();
+  // 기본메시지
+  const onClickAutoBasic = (smsSeCd: string) => {
     setSmsSeCd(smsSeCd);
   };
 
@@ -342,14 +342,17 @@ export default function AutoMessage() {
     );
 
     const updatedValues = {
-      autoKey: { autoMessage: message },
-      yKey: { Ymessage: message },
-      nKey: { Nmessage: message },
-      noneKey: { noneMessage: message },
+      "1008005": { autoMessage: message },
+      "1008010": { Ymessage: message },
+      "1008015": { Nmessage: message },
+      "1008020": { noneMessage: message },
     };
 
     reset({ ...getValues(), ...updatedValues[smsSeCd] });
+    setSmsSeCd("");
   }, [smsSeCd, basicMessage]);
+
+  console.log("basicMessage:", basicMessage);
 
   // 매크로 데이터가 불러져오면 매크로 정보만 바인딩 함
   useEffect(() => {

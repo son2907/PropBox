@@ -102,6 +102,7 @@ export const useGetSmsBase = ({ smsSeCd }: GetSmsbaseRequestType) => {
   return useQuery({
     queryKey: KEY.getSmsBase({ smsSeCd }),
     queryFn: async () => await API.getSmsBase({ smsSeCd }),
+    gcTime: 0,
   });
 };
 
