@@ -70,6 +70,7 @@ export default function Spam() {
               stack: false,
               onClose: () => closeModal,
             });
+            window.opener.location.reload();
           }
         },
       }

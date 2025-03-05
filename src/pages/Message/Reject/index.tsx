@@ -82,7 +82,7 @@ export default function RejectMessage() {
 
   console.log("rejectList:", rejectList);
 
-  const { register, reset, getValues } = useForm({
+  const { register, reset, getValues, setValue } = useForm({
     defaultValues: {
       rejectTelNo: "",
       rmk: "",
@@ -90,11 +90,12 @@ export default function RejectMessage() {
   });
 
   useDidMountEffect(() => {
-    if (!selectedRow) return;
-    reset({
-      rejectTelNo: selectedRow.rejectTelNo ?? "",
-      rmk: selectedRow.rmk ?? "",
-    });
+    if (!selectedRow) {
+      reset();
+      return;
+    }
+    setValue("rejectTelNo", selectedRow.rejectTelNo);
+    setValue("rmk", selectedRow.rmk);
   }, [selectedRow]);
 
   const searchFn = () => {

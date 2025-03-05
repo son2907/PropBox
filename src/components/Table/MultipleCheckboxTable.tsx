@@ -74,7 +74,14 @@ const CheckboxTh = ({
 };
 
 const Td: React.FC<TableItemProps> = ({ children, ...rest }) => {
-  return <td {...rest}>{children}</td>;
+  return (
+    <td
+      {...rest}
+      className="py-3 px-3 border-tableBorder border-solid border border-b-0 border-t-0 first:border-l-0 last:border-r-0 "
+    >
+      {children}
+    </td>
+  );
 };
 
 const Tr: React.FC<TableItemProps> = React.memo(({ children, ...rest }) => {

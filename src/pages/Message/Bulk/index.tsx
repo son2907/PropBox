@@ -58,6 +58,19 @@ import { WarningModal } from "../../../components/Modal/modal/WarningModal";
 import { combineDateAndTime } from "../../../utils/combineDateAndTime";
 
 export default function BulkMessage() {
+  const tableData = [
+    { text: "송신시간 ($T) 삽입" },
+    { text: "전일까지 인바운드누계($1)삽입" },
+    { text: "전일 인바운드 건수 ($Y) 삽입 " },
+    { text: "금일 인바운드 건수 ($2) 삽입" },
+    { text: "인바운드 총누계 건수 ($3) 삽입" },
+    { text: "전일까지 방문상담누계 (#1) 삽입" },
+    { text: "전일 방문상담 건수 (#Y) 삽입" },
+    { text: "전일 방문상담 건수 (#Y) 삽입" },
+    { text: "금일 방문상담 건수 (#2) 삽입" },
+    { text: "방문상담 총누계 건수 (#3) 삽입" },
+  ];
+
   const defaultValues = {
     subject: "",
     autoMessage: "",
@@ -454,7 +467,7 @@ export default function BulkMessage() {
             </Stack>
 
             <Typography variant="h3">매크로</Typography>
-            <Controller
+            {/* <Controller
               name="macro"
               control={control}
               defaultValue=""
@@ -469,13 +482,28 @@ export default function BulkMessage() {
                   }}
                 />
               )}
-            />
+            /> */}
+            <TableBox>
+              <TableBox.Inner>
+                <BasicTable data={tableData}>
+                  <BasicTable.Th>매크로</BasicTable.Th>
+                  <BasicTable.Tbody>
+                    {tableData.map((item, index) => {
+                      return (
+                        <BasicTable.Tr key={index}>
+                          <BasicTable.Td>{item.text}</BasicTable.Td>
+                        </BasicTable.Tr>
+                      );
+                    })}
+                  </BasicTable.Tbody>
+                </BasicTable>
+              </TableBox.Inner>
+            </TableBox>
           </Stack>
         </Stack>
 
         <Stack
-          minWidth={"350px"}
-          width={"100%"}
+          minWidth={"650px"}
           height={"100%"}
           gap={1}
           border="1px solid #E5E5E5"
@@ -646,9 +674,13 @@ export default function BulkMessage() {
             marginRight={2}
             justifyContent={"space-between"}
           >
-            <Pagination count={2} page={currentPage} onChange={onChangePage} />
+            <Pagination
+              count={msgSaveList?.data?.contents?.totalPage || 1}
+              page={currentPage}
+              onChange={onChangePage}
+            />
             <TableSelect
-              total={100}
+              total={msgSaveList?.data?.contents?.totalCnt}
               countValues={countValues}
               selectValue={selectValue}
               handleChange={handleChange}
