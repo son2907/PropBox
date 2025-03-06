@@ -128,7 +128,7 @@ export default function BulkMessage() {
     numberList?.data?.contents,
     "cid",
     "cid",
-    numberList?.data?.contents[0].cid
+    numberList?.data?.contents[0]?.cid
   );
 
   const { openModal, closeModal } = useModal();

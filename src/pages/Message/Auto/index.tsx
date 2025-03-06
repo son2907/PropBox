@@ -61,16 +61,16 @@ const noneKey = "1008020";
 
 export default function AutoMessage() {
   const tableData = [
-    { text: "송신시간 ($T) 삽입" },
-    { text: "전일까지 인바운드누계($1)삽입" },
-    { text: "전일 인바운드 건수 ($Y) 삽입 " },
-    { text: "금일 인바운드 건수 ($2) 삽입" },
-    { text: "인바운드 총누계 건수 ($3) 삽입" },
-    { text: "전일까지 방문상담누계 (#1) 삽입" },
-    { text: "전일 방문상담 건수 (#Y) 삽입" },
-    { text: "전일 방문상담 건수 (#Y) 삽입" },
-    { text: "금일 방문상담 건수 (#2) 삽입" },
-    { text: "방문상담 총누계 건수 (#3) 삽입" },
+    { text: "송신시간 ($T)" },
+    { text: "전일까지 인바운드누계($1)" },
+    { text: "전일 인바운드 건수 ($Y)" },
+    { text: "금일 인바운드 건수 ($2)" },
+    { text: "인바운드 총누계 건수 ($3)" },
+    { text: "전일까지 방문상담누계 (#1)" },
+    { text: "전일 방문상담 건수 (#Y)" },
+    { text: "전일 방문상담 건수 (#Y)" },
+    { text: "금일 방문상담 건수 (#2)" },
+    { text: "방문상담 총누계 건수 (#3)" },
   ];
 
   const defaultValues = {
@@ -176,7 +176,7 @@ export default function AutoMessage() {
     numberList?.data?.contents,
     "cid",
     "cid",
-    numberList?.data?.contents[0].cid
+    numberList?.data?.contents[0]?.cid
   );
 
   // 새로고침
@@ -471,6 +471,17 @@ export default function AutoMessage() {
     );
   };
 
+  const onClickMacro = (text: string) => {
+    console.log("onClickMacro:", text);
+    if (getValues("autoMessage") == "") {
+      const pattern = /\([^)]+\)/;
+      const result = text.match(pattern) || "";
+      setValue("autoMessage", result[0]);
+      return;
+    }
+    setValue("autoMessage", `${getValues("autoMessage")} ${text}`);
+  };
+
   return (
     <>
       <Stack width={"100%"} height={"100%"} gap={1}>
@@ -593,7 +604,12 @@ export default function AutoMessage() {
                     <BasicTable.Tbody>
                       {tableData.map((item, index) => {
                         return (
-                          <BasicTable.Tr key={index}>
+                          <BasicTable.Tr
+                            key={index}
+                            onClick={() => {
+                              onClickMacro(item.text);
+                            }}
+                          >
                             <BasicTable.Td>{item.text}</BasicTable.Td>
                           </BasicTable.Tr>
                         );
