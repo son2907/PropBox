@@ -3,7 +3,6 @@ import useTabs from "../../../hooks/useTabs";
 import TabPanel from "../../../components/Tab/TabPanel";
 import BasicTable from "../../../components/Table/BasicTable";
 import { tableTestData } from "../../../utils/testData";
-
 import TableBox from "../../../components/Box/TableBox";
 import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
 import { usePagination } from "../../../hooks/usePagination";

@@ -12,7 +12,7 @@ import CenteredBox from "../../../../components/Box/CenteredBox";
 import { useMultiRowSelection } from "../../../../hooks/useMultiRowSelection";
 import MultiSelect from "../../../../components/Select/MultiSelect";
 import { useMultiSelect } from "../../../../hooks/useMultiSselect";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import RowDragTable from "../../../../components/Table/RowDragTable";
 import { openPopup } from "../../../../utils/openPopup";
 import PathConstants from "../../../../routers/path";
@@ -21,11 +21,20 @@ import BasicTable from "../../../../components/Table/BasicTable";
 import { useSingleRowSelection } from "../../../../hooks/useSingleRowSelection";
 import { RiDeleteBinLine } from "react-icons/ri";
 import LabelTypo from "../../../../components/Typography/LabelTypo";
+import { getCustomerGroupHeaderList, getCustomerGroupList } from "../../../../api/CustomerManagement";
+import { CustomerGroupListHeaderListType } from "../../../../types/CustomerManagement";
 interface Data {
   id: string;
   [key: string]: any;
 }
 export default function GroupManagement() {
+
+  //팝업 페이지에서 id를 가져오려면 window.location.search를 사용하여 파라미터를 파싱
+  const queryParams = new URLSearchParams(window.location.search);
+  const sptNo = queryParams.get("sptNo");
+  const groupNo = queryParams.get("groupNo");
+  console.log("sptNo : ", sptNo);
+
   const { selectListData, selectValue, handleChange } = useSelect(
     selectTestData,
     "value",
@@ -46,11 +55,48 @@ export default function GroupManagement() {
 
   const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함
 
+  const { data: customerGroupListData, refetch: CustomerGroupList } = getCustomerGroupList("3001");
+  //const [headerListReqData, setHeaderListReqData] = useState({sptNo: "", groupNo: ""});
+  const [headerListReqData, setHeaderListReqData] = useState({ sptNo: "", groupNo: "" });
+  const { data: customerGroupHeaderListData, refetch: refetchCustomerGroupHeaderListData } = getCustomerGroupHeaderList(headerListReqData);
+  const [customerGroupHeaderList, setCustomerGroupHeaderList] = useState<CustomerGroupListHeaderListType[]>([]);
+
+  const [selectGroupName, setSelectGroupName] = useState("");
+  const [selectGroupNum, setSelectGroupNum] = useState("")
+
+  useEffect(() => {
+    if (sptNo || groupNo) {
+      setHeaderListReqData((prev) => ({
+        ...prev,
+        sptNo: sptNo || "",
+        groupNo: groupNo || "",
+      }));
+    }
+  }, [sptNo, groupNo]);
+
+  useEffect(() => {
+    console.log("데이터 확인:", selectGroupName);
+    setHeaderListReqData((prev) => ({
+      ...prev,
+      //sptNo: sptNo || "",
+      sptNo: "3001",
+      groupNo: selectGroupNum,
+    }));
+  }, [selectGroupName, selectGroupNum]);
+
+  useEffect(() => {
+    if(customerGroupHeaderListData?.data.contents) {
+      setCustomerGroupHeaderList(customerGroupHeaderListData.data.contents);
+    }
+  },[customerGroupHeaderListData])
+
+  //console.log("데이터 확인:",customerGroupHeaderListData);
+
   return (
     <Stack width={"100%"} height={"100%"} bgcolor={"white"}>
       <GrayBox gap={1}>
         <Typography>그룹명</Typography>
-        <BasicInput sx={{ minHeight: "24px", width: "20%" }} />
+        <BasicInput sx={{ minHeight: "24px", width: "20%" }} value={selectGroupName} />
         <BasicButton sx={{ marginLeft: "auto" }}>새로고침</BasicButton>
         <BasicButton>저장</BasicButton>
       </GrayBox>
@@ -64,18 +110,26 @@ export default function GroupManagement() {
               flexGrow: 1,
             }}
           >
-            <BasicTable data={tableTestData}>
+            <BasicTable data={customerGroupListData?.data.contents || []}>
               <BasicTable.Th>그룹명</BasicTable.Th>
               <BasicTable.Th>삭제</BasicTable.Th>
               <BasicTable.Tbody>
-                {tableTestData.map((item, index) => {
+                {(customerGroupListData?.data.contents || []).map((item, index) => {
                   return (
                     <BasicTable.Tr
                       key={index}
-                      isClicked={selectedRow.has(item.id)}
-                      onClick={() => toggleRowSelection(item.id)}
+                      isClicked={selectGroupNum === item.groupNo}
+                      onClick={() => {
+                        if (selectGroupNum === item.groupNo) {
+                          setSelectGroupNum("");
+                          setSelectGroupName("");
+                        } else {
+                          setSelectGroupNum(item.groupNo);
+                          setSelectGroupName(item.groupNm);
+                        }
+                      }}
                     >
-                      <BasicTable.Td>{item.email}</BasicTable.Td>
+                      <BasicTable.Td>{item.groupNm}</BasicTable.Td>
                       <BasicTable.Td>
                         <IconButton>
                           <RiDeleteBinLine color="#f4475f" />
@@ -110,7 +164,7 @@ export default function GroupManagement() {
             pr={2}
             height={"48px"}
           >
-            <Typography>기본정보1</Typography>
+            <Typography>{}</Typography>
           </Stack>
           <Stack
             width={"50%"}
