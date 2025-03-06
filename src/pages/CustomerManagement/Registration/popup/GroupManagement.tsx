@@ -55,11 +55,11 @@ export default function GroupManagement() {
 
   const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함
 
-  const { data: customerGroupListData, refetch: CustomerGroupList } = getCustomerGroupList("3001");
+  const { data: customerGroupListData, refetch: refetchCustomerGroupList } = getCustomerGroupList("3001");
   //const [headerListReqData, setHeaderListReqData] = useState({sptNo: "", groupNo: ""});
   const [headerListReqData, setHeaderListReqData] = useState({ sptNo: "", groupNo: "" });
   const { data: customerGroupHeaderListData, refetch: refetchCustomerGroupHeaderListData } = getCustomerGroupHeaderList(headerListReqData);
-  const [customerGroupHeaderList, setCustomerGroupHeaderList] = useState<CustomerGroupListHeaderListType[]>([]);
+  const [customerGroupHeaderList, setCustomerGroupHeaderList] = useState<CustomerGroupListHeaderListType>();
 
   const [selectGroupName, setSelectGroupName] = useState("");
   const [selectGroupNum, setSelectGroupNum] = useState("")
@@ -75,41 +75,36 @@ export default function GroupManagement() {
   }, [sptNo, groupNo]);
 
   useEffect(() => {
-    console.log("데이터 확인:", selectGroupName);
     setHeaderListReqData((prev) => ({
       ...prev,
       //sptNo: sptNo || "",
       sptNo: "3001",
       groupNo: selectGroupNum,
     }));
+    console.log("데이터 확인:", headerListReqData);
   }, [selectGroupName, selectGroupNum]);
 
   useEffect(() => {
-    if(customerGroupHeaderListData?.data.contents) {
+    if (customerGroupHeaderListData?.data.contents) {
       setCustomerGroupHeaderList(customerGroupHeaderListData.data.contents);
     }
-  },[customerGroupHeaderListData])
+  }, [customerGroupHeaderListData])
 
   //console.log("데이터 확인:",customerGroupHeaderListData);
 
   return (
     <Stack width={"100%"} height={"100%"} bgcolor={"white"}>
-      <GrayBox gap={1}>
-        <Typography>그룹명</Typography>
-        <BasicInput sx={{ minHeight: "24px", width: "20%" }} value={selectGroupName} />
-        <BasicButton sx={{ marginLeft: "auto" }}>새로고침</BasicButton>
-        <BasicButton>저장</BasicButton>
-      </GrayBox>
-      <TableBox>
-        <TableBox.Inner>
-          <Box
-            sx={{
-              width: "100%",
-              height: "50%",
-              marginBottom: 1,
-              flexGrow: 1,
-            }}
-          >
+      <Stack width={"100%"} height={"40%"}>
+        <Stack>
+          <GrayBox gap={1}>
+            <Typography>그룹명</Typography>
+            <BasicInput sx={{ minHeight: "24px", width: "20%" }} value={selectGroupName} />
+            <BasicButton sx={{ marginLeft: "auto" }} onClick={() => refetchCustomerGroupList()}>새로고침</BasicButton>
+            <BasicButton>저장</BasicButton>
+          </GrayBox>
+        </Stack>
+        <Stack overflow={"auto"}>
+          <TableBox.Inner>
             <BasicTable data={customerGroupListData?.data.contents || []}>
               <BasicTable.Th>그룹명</BasicTable.Th>
               <BasicTable.Th>삭제</BasicTable.Th>
@@ -140,161 +135,59 @@ export default function GroupManagement() {
                 })}
               </BasicTable.Tbody>
             </BasicTable>
-          </Box>
-        </TableBox.Inner>
-      </TableBox>
-      {/* 고정제목 */}
-      <GrayBox justifyContent={"space-between"}>
-        <Typography fontWeight="bold">그룹별 고정제목 관리</Typography>
-        <Stack direction={"row"} gap={1}>
-          <BasicButton>새로고침</BasicButton>
-          <BasicButton>저장</BasicButton>
+          </TableBox.Inner>
         </Stack>
-      </GrayBox>
-      <Stack direction={"row"} width={"100%"} height={"100%"} marginBottom={1}>
-        <Stack width={"100%"} gap={1}>
-          {/* 상담항목 */}
-          <GrayBox marginBottom={1}>
-            <Typography>고정 제목</Typography>
-          </GrayBox>
-          <Stack
-            width={"50%"}
-            alignItems="center"
-            justifyContent={"center"}
-            pr={2}
-            height={"48px"}
-          >
-            <Typography>{}</Typography>
-          </Stack>
-          <Stack
-            width={"50%"}
-            alignItems="center"
-            justifyContent={"center"}
-            pr={2}
-            height={"48px"}
-          >
-            <Typography>기본정보2</Typography>
-          </Stack>
-          <Stack
-            width={"50%"}
-            alignItems="center"
-            justifyContent={"center"}
-            pr={2}
-            height={"48px"}
-          >
-            <Typography>기본정보3</Typography>
-          </Stack>
-          <Stack
-            width={"50%"}
-            alignItems="center"
-            justifyContent={"center"}
-            pr={2}
-            height={"48px"}
-          >
-            <Typography>기본정보4</Typography>
-          </Stack>
-          <Stack
-            width={"50%"}
-            alignItems="center"
-            justifyContent={"center"}
-            pr={2}
-            height={"48px"}
-          >
-            <Typography>기본정보5</Typography>
-          </Stack>
-          <Stack
-            width={"50%"}
-            alignItems="center"
-            justifyContent={"center"}
-            pr={2}
-            height={"48px"}
-          >
-            <Typography>기본정보6</Typography>
-          </Stack>
-          <Stack
-            width={"50%"}
-            alignItems="center"
-            justifyContent={"center"}
-            pr={2}
-            height={"48px"}
-          >
-            <Typography>기본정보7</Typography>
-          </Stack>
-          <Stack
-            width={"50%"}
-            alignItems="center"
-            justifyContent={"center"}
-            pr={2}
-            height={"48px"}
-          >
-            <Typography>기본정보8</Typography>
-          </Stack>
-          <Stack
-            width={"50%"}
-            alignItems="center"
-            justifyContent={"center"}
-            pr={2}
-            height={"48px"}
-          >
-            <Typography>기본정보9</Typography>
-          </Stack>
-          <Stack
-            width={"50%"}
-            alignItems="center"
-            justifyContent={"center"}
-            pr={2}
-            height={"48px"}
-          >
-            <Typography>기본정보10</Typography>
-          </Stack>
-        </Stack>
-        <Stack width={"100%"} alignItems="flex-start" gap={1}>
-          {/* 상담항목 */}
-          <GrayBox marginBottom={1}>
-            <Typography>사용자 제목</Typography>
-          </GrayBox>
-          <Box>
-            <BasicInput sx={{ minHeight: "24px", width: "500px" }} />
-          </Box>
-          <Box>
-            <BasicInput sx={{ minHeight: "24px", width: "500px" }} />
-          </Box>
-          <Box>
-            <BasicInput sx={{ minHeight: "24px", width: "500px" }} />
-          </Box>
-          <Box>
-            <BasicInput sx={{ minHeight: "24px", width: "500px" }} />
-          </Box>
-          <Box>
-            <BasicInput sx={{ minHeight: "24px", width: "500px" }} />
-          </Box>
 
-          <Box>
-            <BasicInput sx={{ minHeight: "24px", width: "500px" }} />
-          </Box>
-          <Box>
-            <BasicInput sx={{ minHeight: "24px", width: "500px" }} />
-          </Box>
-          <Box>
-            <BasicInput sx={{ minHeight: "24px", width: "500px" }} />
-          </Box>
-          <Box>
-            <BasicInput sx={{ minHeight: "24px", width: "500px" }} />
-          </Box>
-          <Box>
-            <BasicInput sx={{ minHeight: "24px", width: "500px" }} />
-          </Box>
-          <Box>
-            <BasicInput sx={{ minHeight: "24px", width: "500px" }} />
-          </Box>
-          <Box>
-            <BasicInput sx={{ minHeight: "24px", width: "500px" }} />
-          </Box>
-          <Box>
-            <BasicInput sx={{ minHeight: "24px", width: "500px" }} />
-          </Box>
+      </Stack>
+      <Stack width={"100%"} height={"60%"}>
+        <Stack width={"100%"} height={"10%"}>
+          <GrayBox justifyContent={"space-between"}>
+            <Typography fontWeight="bold">그룹별 고정제목 관리</Typography>
+            <Stack direction={"row"} gap={1}>
+              <BasicButton>새로고침</BasicButton>
+              <BasicButton>저장</BasicButton>
+            </Stack>
+          </GrayBox>
+        </Stack>
+        <Stack direction={"row"} width={"100%"} height={"90%"} marginBottom={1}>
+          <Stack width={"100%"} height={"100%"}>
+            {/* 상담항목 */}
+            <GrayBox marginBottom={1}>
+              <Typography>고정 제목</Typography>
+            </GrayBox>
+            <Stack overflow={"auto"}>
+              {customerGroupHeaderList ? (
+                Object.keys(customerGroupHeaderList)
+                  .filter((key) => key.startsWith("hder")) // hder01~hder10만 필터링
+                  .sort() // 순서 정렬
+                  .map((key, index) => (
+                    <Stack
+                      key={index}
+                      direction="row"
+                      alignItems="center"
+                      gap={2}
+                      justifyContent={"space-between"}
+                      margin={1}
+                    >
+                      {/* 왼쪽 Typography */}
+                      <Stack width="150px" alignItems="center">
+                        <Typography>{customerGroupHeaderList[key]}</Typography>
+                      </Stack>
+
+                      {/* 오른쪽 Input */}
+                      <BasicInput sx={{ minHeight: "40px", width: "500px" }} />
+                    </Stack>
+                  ))
+              ) : (
+                <Typography>데이터를 불러오는 중...</Typography>
+              )}
+            </Stack>
+          </Stack>
+
         </Stack>
       </Stack>
+      {/* 고정제목 */}
+
     </Stack>
   );
 }

@@ -9,6 +9,8 @@ import TableSelect from "../../../components/Select/TableSelect";
 import { usePagination } from "../../../hooks/usePagination";
 import CheckboxTable from "../../../components/Table/CheckboxTable";
 import { useTableSelect } from "../../../hooks/useTableSelect";
+import { getCustomerGroupList } from "../../../api/CustomerManagement";
+import { useEffect, useState } from "react";
 
 // interface Data {
 //   id: string;
@@ -20,6 +22,11 @@ interface CustomerInfoProps {
 }
 
 export default function CustomerInfo({ selectedAge }: CustomerInfoProps) {
+  //팝업 페이지에서 id를 가져오려면 window.location.search를 사용하여 파라미터를 파싱
+  const queryParams = new URLSearchParams(window.location.search);
+  const sptNo = queryParams.get("sptNo");
+  console.log("팝업으로 가져온 데이터 : ", sptNo);
+
   const { value, handleChange: tabChange } = useTabs(0);
 
   const { selectedRows, toggleRowsSelection } = useMultiRowSelection(); // 체크박스는 보통 여러개가 가능하므로 useMultiRowSelection 권장
@@ -28,6 +35,19 @@ export default function CustomerInfo({ selectedAge }: CustomerInfoProps) {
   const { currentPage, onChangePage } = usePagination();
 
   const { countValues, selectValue, handleChange } = useTableSelect();
+
+  const [selectGropNum, setSelectGroupNum] = useState("");
+  const [selectGropNm, setSelectGroupNm] = useState("");
+  const [groupHeaderListReqData, setGroupHeaderListReqData] = useState({sptNo: "", groupNo: ""});
+  const {data : customerGroupList, refetch: refetchCustomerGroupList} = getCustomerGroupList(sptNo || "");
+
+  useEffect(() => {
+    setGroupHeaderListReqData((prev) => ({
+      ...prev,
+      sptNo: sptNo || "",
+      groupNo: ""
+    }))
+  },[sptNo])
 
   return (
     <>

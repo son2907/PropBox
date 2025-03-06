@@ -9,8 +9,9 @@ import { usePagination } from "../../../hooks/usePagination";
 import TableSelect from "../../../components/Select/TableSelect";
 import CheckboxTable from "../../../components/Table/CheckboxTable";
 import GrayBox from "../../../components/Box/GrayBox";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTableSelect } from "../../../hooks/useTableSelect";
+import { getCustomerGroupList } from "../../../api/CustomerManagement";
 
 interface Data {
   id: string;
@@ -22,6 +23,11 @@ interface GroupInfoProps {
 }
 
 export default function GroupInfo({ onSelect }: GroupInfoProps) {
+  //팝업 페이지에서 id를 가져오려면 window.location.search를 사용하여 파라미터를 파싱
+  const queryParams = new URLSearchParams(window.location.search);
+  const sptNo = queryParams.get("sptNo");
+  console.log("팝업으로 가져온 데이터 : ", sptNo);
+
   const { value, handleChange: tabChange } = useTabs(0);
 
   const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함
@@ -50,6 +56,24 @@ export default function GroupInfo({ onSelect }: GroupInfoProps) {
 
   const { countValues, selectValue, handleChange } = useTableSelect();
 
+  const [selectGropNum, setSelectGroupNum] = useState("");
+  const [selectGropNm, setSelectGroupNm] = useState("");
+  const [groupHeaderListReqData, setGroupHeaderListReqData] = useState({ sptNo: "", groupNo: "" });
+  //const { data: customerGroupList, refetch: refetchCustomerGroupList } = getCustomerGroupList(sptNo || "");
+  const { data: customerGroupList, refetch: refetchCustomerGroupList } = getCustomerGroupList("3001");
+
+  useEffect(() => {
+    setGroupHeaderListReqData((prev) => ({
+      ...prev,
+      sptNo: sptNo || "",
+      groupNo: ""
+    }))
+  }, [sptNo]);
+
+  useEffect(() => {
+    console.log("데이터 확인",customerGroupList?.data.contents);
+  },[customerGroupList])
+
   return (
     <>
       <TabPanel value={value} index={0}>
@@ -73,7 +97,7 @@ export default function GroupInfo({ onSelect }: GroupInfoProps) {
                     return (
                       <BasicTable.Tr
                         key={index}
-                        isClicked={selectedRow.has(item.id)}
+                        isClicked={selectGropNum === item.id}
                         onClick={() => toggleRowSelection(item.id)}
                       >
                         <BasicTable.Td>{item.phone}</BasicTable.Td>
