@@ -472,7 +472,6 @@ export default function AutoMessage() {
   };
 
   const onClickMacro = (text: string) => {
-    console.log("onClickMacro:", text);
     if (getValues("autoMessage") == "") {
       const pattern = /\([^)]+\)/;
       const result = text.match(pattern) || "";

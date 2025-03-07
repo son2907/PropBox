@@ -32,7 +32,11 @@ export default function PSelect({
   ...rest
 }: SProps) {
   return (
-    <FormControl size="small" fullWidth sx={{ ...(rest.sx || {}) }}>
+    <FormControl
+      size="small"
+      fullWidth
+      sx={{ backgroundColor: "white", ...(rest.sx || {}) }}
+    >
       <InputLabel shrink={false} style={{ display: value ? "none" : "block" }}>
         {placeholder}
       </InputLabel>

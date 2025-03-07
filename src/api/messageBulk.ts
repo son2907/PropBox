@@ -1,6 +1,9 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
+  BulksendMsgRequestType,
   GetBulkMsgListResponseType,
+  GetBulkSaveMsgListResponseType,
+  GetBulkSaveRequestType,
   GetBulkTotalCntResponseType,
   PostBulkListChkRequestType,
   PostBulkTmpMsgRequestType,
@@ -9,6 +12,11 @@ import instance from "../utils/axiosInstance";
 import { spt } from "../utils/sptNo";
 
 export const API = {
+  // 문자관리 > 대량문자 > 저장메시지 목록
+  getBulkSaveMsgList: async ({ page, limit }: GetBulkSaveRequestType) => {
+    const url = `/api/spt/smstel/alot/savedmsg/list/${spt}?page=${page}&limit=${limit}`;
+    return await instance.get<GetBulkSaveMsgListResponseType>(url);
+  },
   // 문자관리 > 대량문자 > 전송대상 목록
   getBulkMsgList: async () => {
     const url = `/api/spt/smstel/alot/list/${spt}`;
@@ -56,12 +64,39 @@ export const API = {
     const url = `/api/spt/smstel/alot/list/chk2`;
     return await instance.post(url, requestData.body);
   },
+  // 메세지 전송
+  sendMsg: async (requestData: { body: BulksendMsgRequestType }) => {
+    const url = `/api/spt/smstel/alot/msgsave`;
+    return await instance.post(url, requestData.body, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  },
 };
 
 const KEY = {
+  getBulkSaveMsgList: ({ page, limit }: GetBulkSaveRequestType) => [
+    "/api/spt/smstel/alot/savedmsg/list",
+    spt,
+    page,
+    limit,
+  ],
   getBulkMsgList: () => ["/api/spt/smstel/alot/list", spt],
   getBulkTmpList: () => ["/api/spt/smstel/alot/list", spt],
   getBulkTotalCnt: () => ["/api/spt/smstel/alot/list", spt],
+};
+
+// 문자관리 > 대량문자 > 저장메시지 목록
+export const useGetBulkSaveMsgList = ({
+  page,
+  limit,
+}: GetBulkSaveRequestType) => {
+  return useQuery({
+    queryKey: KEY.getBulkSaveMsgList({ page, limit }),
+    queryFn: async () => await API.getBulkSaveMsgList({ page, limit }),
+    gcTime: 0,
+  });
 };
 
 // 문자관리 > 대량문자 > 전송대상 목록
@@ -102,6 +137,7 @@ export const usePostBulkChk = () => {
   return useMutation({
     mutationFn: (requstData: { body: PostBulkListChkRequestType }) =>
       API.postBulkChk(requstData),
+    gcTime: 0,
   });
 };
 // 전송 대상:대상 확인 각 탭별 총인원수
@@ -109,6 +145,7 @@ export const usePostBulkChkTotalCnt = () => {
   return useMutation({
     mutationFn: (requstData: { body: PostBulkListChkRequestType }) =>
       API.postBulkChkTotalCnt(requstData),
+    gcTime: 0,
   });
 };
 // 전송 대상:대상 확인 수신거부 목록
@@ -116,6 +153,7 @@ export const usePostBulkreject = () => {
   return useMutation({
     mutationFn: (requstData: { body: PostBulkListChkRequestType }) =>
       API.postBulkreject(requstData),
+    gcTime: 0,
   });
 };
 // 전송 대상:대상 확인 오류 목록
@@ -123,6 +161,7 @@ export const usePostBulkError = () => {
   return useMutation({
     mutationFn: (requstData: { body: PostBulkListChkRequestType }) =>
       API.postBulkError(requstData),
+    gcTime: 0,
   });
 };
 // 전송 대상:대상 확인 중복 목록
@@ -130,5 +169,14 @@ export const usePostBulkDuplication = () => {
   return useMutation({
     mutationFn: (requstData: { body: PostBulkListChkRequestType }) =>
       API.postDup(requstData),
+    gcTime: 0,
+  });
+};
+
+// 문자 전송
+export const useBulkSendMsg = () => {
+  return useMutation({
+    mutationFn: (requstData: { body: BulksendMsgRequestType }) =>
+      API.sendMsg(requstData),
   });
 };

@@ -12,7 +12,7 @@ interface InputProps extends OutlinedInputProps {
 }
 
 const DeleteBtnInput = forwardRef<HTMLInputElement, InputProps>(
-  ({ placeholder = "검색", btnfn, children, ...rest }, ref) => {
+  ({ placeholder = "", btnfn, children, ...rest }, ref) => {
     const handleClear = () => {
       if (ref && typeof ref !== "string") {
         const input = (ref as React.RefObject<HTMLInputElement>).current; // 전달받은 ref 사용

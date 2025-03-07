@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { Box, BoxProps, Stack } from "@mui/material";
+import { Box, BoxProps } from "@mui/material";
 
 interface ModalBoxProps extends BoxProps {
   children: ReactNode;
@@ -19,12 +19,9 @@ export default function ModalBox({ children, ...rest }: ModalBoxProps) {
           backgroundColor: "primary.light",
           zIndex: 1300,
         }}
-        width={"400px"}
         {...rest}
       >
-        <Box sx={{ position: "relative" }}>
-          <Stack>{children}</Stack>
-        </Box>
+        {children}
       </Box>
     </div>
   );

@@ -7,47 +7,154 @@ import BasicTable from "../../../../components/Table/BasicTable";
 import { tableTestData } from "../../../../utils/testData";
 import { useMultiRowSelection } from "../../../../hooks/useMultiRowSelection";
 import GrayBox from "../../../../components/Box/GrayBox";
+import ModalBox from "../../../../components/Modal";
+import CenteredBox from "../../../../components/Box/CenteredBox";
+import { IconButton } from "../../../../components/Button";
+import { IoMdClose } from "react-icons/io";
+import { useEffect, useState } from "react";
+import {
+  usePostBulkChk,
+  usePostBulkDuplication,
+  usePostBulkError,
+  usePostBulkreject,
+  usePostBulkChkTotalCnt,
+  useBulkSendMsg,
+} from "../../../../api/messageBulk";
+import useModal from "../../../../hooks/useModal";
+import { SendMsgConfirm } from "./SendMsgConfirm";
+import { useModalStoreClear } from "../../../../stores/modalStore";
 
-export default function Preview() {
-  const { value, handleChange } = useTabs(0);
+export default function Preview({ onClose, body, msgData }) {
+  const { value: tabValue, handleChange } = useTabs(0);
+  const [tableData, setTableData] = useState([
+    {
+      mbtlNo: "",
+      cstmrNm: "",
+      groupNm: "",
+    },
+  ]);
 
-  const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
+  const [totalData, setTotalData] = useState({});
+
+  const { openModal } = useModal();
+  const clear = useModalStoreClear();
+
+  const { mutate: base } = usePostBulkChk(); // 확정 인원 목록
+  const { mutate: duplicate } = usePostBulkDuplication(); // 중복 인원 목록
+  const { mutate: error } = usePostBulkError(); // 형식 오류 인원 목록
+  const { mutate: reject } = usePostBulkreject(); // 수신 거부 인원 목록
+  const { mutate: total } = usePostBulkChkTotalCnt(); // 전체 인원
+
+  const { mutate: sendMsgApi } = useBulkSendMsg(); // 문자 발송
+
+  useEffect(() => {
+    base(
+      {
+        body: body,
+      },
+      {
+        onSuccess: (res) => {
+          if (res.data.code == 200) {
+            setTableData(res.data.contents);
+          }
+        },
+      }
+    );
+
+    total(
+      {
+        body: body,
+      },
+      {
+        onSuccess: (res) => {
+          if (res.data.code == 200) {
+            console.log(res);
+            setTotalData(res.data.contents);
+          }
+        },
+      }
+    );
+  }, []);
+
+  useEffect(() => {
+    let func = duplicate;
+
+    switch (tabValue) {
+      case 1:
+        func = duplicate;
+        break;
+      case 2:
+        func = error;
+        break;
+      case 3:
+        func = reject;
+        break;
+      default:
+        func = base;
+        break;
+    }
+    console.log("body:", body);
+    func(
+      {
+        body: body,
+      },
+      {
+        onSuccess: (res) => {
+          console.log("응답:", res);
+          if (res.data.code == 200) {
+            setTableData(res.data.contents);
+          }
+        },
+      }
+    );
+  }, [tabValue]);
+
+  const sendMsg = () => {
+    console.log("문자 전송");
+  };
+
+  const close = () => {
+    openModal(SendMsgConfirm, {
+      onClose: () => clear(),
+      onSubmit: () => sendMsg,
+      modalId: "confirm",
+    });
+  };
 
   return (
-    <Stack width={"100%"} height={"100%"} bgcolor={"primary.light"}>
-      <CustomTabs value={value} handleChange={handleChange}>
-        <Tab label="확정인원" />
-        <Tab label="중복인원" />
-        <Tab label="형식오류인원" />
-        <Tab label="수신거부인원" />
-      </CustomTabs>
-      <TabPanel index={0} value={value}>
+    <ModalBox>
+      <Stack width={"500px"} height={"100%"} bgcolor={"primary.light"}>
+        <CenteredBox
+          width="100%"
+          height="50px"
+          bgcolor={"modal.moadlBlueBg"}
+          padding={2}
+          marginBottom={1}
+        >
+          <Typography variant="h4">전송대상 미리보기</Typography>
+          <IconButton onClick={close} sx={{ marginLeft: "auto" }}>
+            <IoMdClose />
+          </IconButton>
+        </CenteredBox>
+        <CustomTabs value={tabValue} handleChange={handleChange}>
+          <Tab label="확정인원" />
+          <Tab label="중복인원" />
+          <Tab label="형식오류인원" />
+          <Tab label="수신거부인원" />
+        </CustomTabs>
         <TableBox>
-          <TableBox.Inner>
-            <BasicTable data={tableTestData}>
-              <BasicTable.Th>휴대전화</BasicTable.Th>
-              <BasicTable.Th>고객정보</BasicTable.Th>
-
+          <TableBox.Inner height="440px">
+            <BasicTable data={tableData}>
+              <BasicTable.Th>전화번호</BasicTable.Th>
+              <BasicTable.Th>이름</BasicTable.Th>
+              <BasicTable.Th>상담종류</BasicTable.Th>
               <BasicTable.Tbody>
-                {tableTestData.map((item, index) => {
+                {tableData.map((item, index) => {
                   return (
-                    <BasicTable.Tr
-                      key={index}
-                      isClicked={selectedRows.has(item.id)}
-                      onClick={() => toggleRowsSelection(item.id)}
-                    >
-                      <BasicTable.Td
-                      // 아래와 같이 조건에 따라 배경색을 다르게 줌,
-                      // 중복 여부는 api에서 판단하여 item에 넣어 보내줌
-                      // style={{
-                      //   backgroundColor: selectedRow.has(item.id)
-                      //     ? "red"
-                      //     : "white",
-                      // }}
-                      >
-                        {item.name}
-                      </BasicTable.Td>
-                      <BasicTable.Td>{item.age}</BasicTable.Td>
+                    <BasicTable.Tr key={index}>
+                      <BasicTable.Td>{item.mbtlNo}</BasicTable.Td>
+                      <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
+                      <BasicTable.Td>{item.groupNm}</BasicTable.Td>
                     </BasicTable.Tr>
                   );
                 })}
@@ -55,13 +162,13 @@ export default function Preview() {
             </BasicTable>
           </TableBox.Inner>
         </TableBox>
-      </TabPanel>
-      <GrayBox gap={3}>
-        <Typography>확정인원 : 306</Typography>
-        <Typography>중복인원 : 19</Typography>
-        <Typography>형식오류인원 : 18</Typography>
-        <Typography>수신거부인원 : 3</Typography>
-      </GrayBox>
-    </Stack>
+        <GrayBox gap={3}>
+          <Typography>확정인원 : {totalData.totalCnt1}</Typography>
+          <Typography>중복인원 : {totalData.totalCnt2}</Typography>
+          <Typography>형식오류인원 : {totalData.totalCnt3}</Typography>
+          <Typography>수신거부인원 : {totalData.totalCnt4}</Typography>
+        </GrayBox>
+      </Stack>
+    </ModalBox>
   );
 }
