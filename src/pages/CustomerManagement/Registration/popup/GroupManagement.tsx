@@ -88,7 +88,7 @@ export default function GroupManagement() {
     if (customerGroupHeaderListData?.data.contents) {
       setCustomerGroupHeaderList(customerGroupHeaderListData.data.contents);
     }
-  }, [customerGroupHeaderListData])
+  }, [customerGroupHeaderListData]);
 
   //console.log("데이터 확인:",customerGroupHeaderListData);
 
