@@ -153,7 +153,10 @@ export default function GroupManagement() {
           <Stack width={"100%"} height={"100%"}>
             {/* 상담항목 */}
             <GrayBox marginBottom={1}>
+              <Stack direction={"row"} justifyContent={"space-between"} marginRight={30} marginLeft={30} width={"100%"}>
               <Typography>고정 제목</Typography>
+              <Typography>사용자 제목</Typography>
+              </Stack>
             </GrayBox>
             <Stack overflow={"auto"}>
               {customerGroupHeaderList ? (

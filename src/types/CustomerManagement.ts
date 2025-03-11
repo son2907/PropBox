@@ -84,7 +84,7 @@ export interface CustomerListResponse extends ApiResponseType {
 
 //고객관리 고객 상세 테이블 조회 - 오른쪽 테이블
 export type CustomerDetailListType = {
-    cstmrNo: string,  
+    cstmrNo: string,
     cstmrNm: string,
     mbtlNo: string,
     telNo: string,
@@ -109,6 +109,62 @@ export interface CustomerDetailListResponse extends ApiResponseType {
     totalCnt: number | null;
     totalPage: number,
     contents: CustomerDetailListType[];
+    params: null;
+    errorCode: null;
+    accessToken: null;
+    refreshToken: null;
+};
+
+//고객관리 고객 상세 조회 - 오른쪽 input조회
+export type CustomerDetailType = {
+    cstmrNo: string,
+    cstmrNm: string,
+    mbtlNo: string,
+    telNo: string,
+    cstmrRmk: string,
+    addr: string,
+    regDtm: string,
+    hder01: string,
+    hder02: string,
+    hder03: string,
+    hder04: string,
+    hder05: string,
+    hder06: string,
+    hder07: string,
+    hder08: string,
+    hder09: string,
+    hder10: string
+};
+export interface CustomerDetailResponse extends ApiResponseType {
+    code: number;
+    result: string;
+    message: string;
+    totalCnt: number | null;
+    totalPage: number,
+    contents: CustomerDetailType;
+    params: null;
+    errorCode: null;
+    accessToken: null;
+    refreshToken: null;
+};
+
+//고객관리 고객 관리지역 리스트
+export type CustomerManagementAreaType = {
+    sptNo: string,
+    areaNo: string,
+    areaNm: string,
+    lnupOrd: string,
+    useYn: string,
+    delYn: string,
+    userId: string
+};
+export interface CustomerManagementAreaResponse extends ApiResponseType {
+    code: number;
+    result: string;
+    message: string;
+    totalCnt: number | null;
+    totalPage: number,
+    contents: CustomerManagementAreaType[];
     params: null;
     errorCode: null;
     accessToken: null;

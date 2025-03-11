@@ -22,15 +22,31 @@ import TableSelect from "../../../components/Select/TableSelect";
 import { useTableSelect } from "../../../hooks/useTableSelect";
 import CheckboxTable from "../../../components/Table/CheckboxTable";
 import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
-import { getCumstomerList, getCustomerDetailList, getCustomerGroupHeaderList } from "../../../api/CustomerManagement";
+import { getCumstomerList, getCustmoerDetail, getCustomerDetailList, getCustomerGroupHeaderList, getCustomerManagementArea } from "../../../api/CustomerManagement";
 import { useAuthStore } from "../../../stores/authStore";
 import { useSptStore } from "../../../stores/sptStore";
-import { CustomerGroupListHeaderListType } from "../../../types/CustomerManagement";
+import { CustomerGroupListHeaderListType, CustomerManagementAreaType } from "../../../types/CustomerManagement";
+import { object } from "yup";
+import { useForm } from "react-hook-form";
+import useModal from "../../../hooks/useModal";
 
 export default function Registration() {
 
+  //모달
+  const { openModal, closeModal } = useModal();
+
   //api를 호출하기위해 sptNo 불러오기
   const { sptNo } = useSptStore();
+
+  //input들 초기값
+  const [cstmrNm, setCstmrNm] = useState("");
+  const [mbtlNo, setMbtlNo] = useState("");
+  const [telNo, setTelNo] = useState("");
+  const [cstmrRmk, setCstmrRmk] = useState("");
+  const [addr, setAddr] = useState("");
+  const [headers, setHeaders] = useState<{ [key: string]: string }>({});
+
+
 
   //-------------------------왼쪽 테이블 조회
   // 왼쪽 테이블 페이징 기능
@@ -74,7 +90,7 @@ export default function Registration() {
   const { countValues: c_1, selectValue: s_1, handleChange: h_1 } = useTableSelect();
 
   const [coustomerDetailReqData, setCoustomerDetailReqData] = useState({ sptNo: sptNo, groupNo: selectCustomerGroupNum, cstmrNm: searchQuery, page: detailCurrentPage, limit: s_1 })
-  const { data: customerDetail, refetch: refetchCustomerDetail } = getCustomerDetailList(coustomerDetailReqData);
+  const { data: customerDetailList, refetch: refetchCustomerDetailList } = getCustomerDetailList(coustomerDetailReqData);
 
   const [category, setCategory] = useState("");
 
@@ -83,14 +99,38 @@ export default function Registration() {
   const { data: customerGroupHeaderListData, refetch: refetchCustomerGroupHeaderListData } = getCustomerGroupHeaderList(headerListReqData);
   const [customerGroupHeaderList, setCustomerGroupHeaderList] = useState<CustomerGroupListHeaderListType>();
 
-  const { selectListData, selectValue, handleChange } = useSelect(
-    selectTestData,
-    "value",
-    "data"
-  );
-  const [selectedAge, setSelectedAge] = useState<number | null>(null);
+  //------------------------오른쪽 고객 정보 조회
+  const { data: customerArea, refetch: refetchCustomerArea } = getCustomerManagementArea(sptNo);
+  const [customerAreaData, setCustomerAreaData] = useState<CustomerManagementAreaType[]>([]);
 
+  useEffect(() => {
+    if (customerArea?.data.contents) {
+      setCustomerAreaData(customerArea.data.contents);
+    }
+  }, [customerArea]);
+
+  //관리지역역
+  const { selectListData, selectValue, handleChange } = useSelect(
+    customerAreaData,
+    "areaNo",
+    "areaNm"
+  );
+
+  const [customerNum, setCustomerNum] = useState("")
+  const [customerDetailReqData, setCustomerDetailReqData] = useState({ sptNo: sptNo, groupNo: selectCustomerGroupNum, cstmrNo: customerNum });
+  const { data: customerDetail, refetch: refetchCustomerDetail } = getCustmoerDetail(customerDetailReqData);
   const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함
+
+  //기본일 경우 선택한 고객들
+  const {
+    selectedRows : nomalCustomerSelectedRows,
+    toggleRowsSelection: toggleNomalCustomerRowsSelection,
+  } = useMultiRowSelection();
+
+  const {
+    selectedRows : solutionCustomerSelectedRows,
+    toggleRowsSelection: toggleSolutionCustomerRowsSelection,
+  } = useMultiRowSelection();
 
   const { selectedRows, toggleRowsSelection } = useMultiRowSelection(); // 체크박스는 보통 여러개가 가능하므로 useMultiRowSelection 권장
 
@@ -110,7 +150,7 @@ export default function Registration() {
 
   //sms전송 팝업
   const smsSendPopup = {
-    url: PathConstants.Call.SmsSending,
+    url: PathConstants.Customer.CustomerSmsSending,
     windowFeatures: "width=1000,height=700,scrollbars=yes,resizable=yes",
     windowName: "sms 전송",
   }
@@ -126,15 +166,18 @@ export default function Registration() {
       cstmrNm: searchQuery,
       groupNo: selectCustomerGroupNum,
 
-    }))
-  }, [selectCustomerGroupNum]);
-
-  useEffect(() => {
+    }));
     setHeaderListReqData((prev) => ({
       ...prev,
       sptNo: sptNo,
       groupNo: selectCustomerGroupNum,
     }));
+    setCstmrNm("");
+    setMbtlNo("");
+    setTelNo("");
+    setCstmrRmk("");
+    setAddr("");
+    setCustomerNum(""); // groupNo가 변경될 때 customerNum 초기화
   }, [selectCustomerGroupNum]);
 
   useEffect(() => {
@@ -142,6 +185,54 @@ export default function Registration() {
       setCustomerGroupHeaderList(customerGroupHeaderListData.data.contents);
     }
   }, [customerGroupHeaderListData]);
+
+  useEffect(() => {
+    if (customerNum) {
+      setCustomerDetailReqData((prev) => ({
+        ...prev,
+        groupNo: selectCustomerGroupNum,
+        cstmrNo: customerNum
+      }));
+    } else {
+      setCustomerNum("");
+      setCustomerDetailReqData((prev) => ({
+        ...prev,
+        groupNo: selectCustomerGroupNum,
+        cstmrNo: ""
+      }));
+    }
+  }, [customerNum]);
+
+  useEffect(() => {
+    console.log("고객 상세 정보:", customerDetailReqData, selectCustomerGroupNum);
+  }, [customerDetailReqData, selectCustomerGroupNum]);
+
+
+  useEffect(() => {
+    if (customerDetail?.data?.contents) {
+      const initialHeaders = Object.keys(customerDetail.data.contents)
+        .filter((key) => key.startsWith("hder")) // "hder"로 시작하는 키만 선택
+        .reduce((acc, key) => {
+          acc[key] = customerDetail.data.contents[key] || ""; // 기존 값이 있으면 넣고 없으면 빈 문자열
+          return acc;
+        }, {} as { [key: string]: string });
+
+      setHeaders(initialHeaders);
+      setCstmrNm(customerDetail.data.contents.cstmrNm);
+      setMbtlNo(customerDetail.data.contents.mbtlNo);
+      setTelNo(customerDetail.data.contents.telNo);
+      setCstmrRmk(customerDetail.data.contents.cstmrRmk);
+      setAddr(customerDetail.data.contents.addr);
+    }
+  }, [customerDetail]); // customerGroupHeaderList 변경 시 초기화
+
+  // 특정 입력값 변경 핸들러
+  const handleInputChange = (key: string, value: string) => {
+    setHeaders((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
 
   return (
     <>
@@ -251,9 +342,9 @@ export default function Registration() {
                   <>
                     <TableBox.Inner>
                       <CheckboxTable
-                        data={customerDetail?.data?.contents || []}
-                        selectedRows={selectedRows}
-                        toggleRowsSelection={toggleRowsSelection}
+                        data={customerDetailList?.data?.contents || []}
+                        selectedRows={solutionCustomerSelectedRows}
+                        toggleRowsSelection={toggleSolutionCustomerRowsSelection}
                       >
                         <CheckboxTable.Thead>
                           <CheckboxTable.Tr>
@@ -264,11 +355,12 @@ export default function Registration() {
                             <CheckboxTable.Th>고객정보</CheckboxTable.Th>
                             <CheckboxTable.Th>주소</CheckboxTable.Th>
                             <CheckboxTable.Th>등록일자</CheckboxTable.Th>
+                            <CheckboxTable.Th>상세보기</CheckboxTable.Th>
                           </CheckboxTable.Tr>
                         </CheckboxTable.Thead>
 
                         <CheckboxTable.Tbody>
-                          {(customerDetail?.data?.contents || []).map((item) => (
+                          {(customerDetailList?.data?.contents || []).map((item) => (
                             <CheckboxTable.Tr key={item.cstmrNo} id={item.cstmrNo}>
                               <CheckboxTable.CheckboxTd item={item} keyName="cstmrNo" />
                               <CheckboxTable.Td>{item.cstmrNm}</CheckboxTable.Td>
@@ -277,6 +369,13 @@ export default function Registration() {
                               <CheckboxTable.Td>{item.cstmrRmk}</CheckboxTable.Td>
                               <CheckboxTable.Td>{item.addr}</CheckboxTable.Td>
                               <CheckboxTable.Td>{item.regDtm}</CheckboxTable.Td>
+                              <CheckboxTable.Td>
+                                <BasicButton onClick={() => {
+                                  setCustomerNum(item.cstmrNo);
+                                }}>
+                                  상세보기
+                                </BasicButton>
+                              </CheckboxTable.Td>
                             </CheckboxTable.Tr>
                           ))}
                         </CheckboxTable.Tbody>
@@ -284,12 +383,12 @@ export default function Registration() {
                     </TableBox.Inner>
                     <GrayBox gap={1} justifyContent={"space-between"}>
                       <Pagination
-                        count={customerDetail?.data?.totalPage || 1}
+                        count={customerDetailList?.data?.totalPage || 1}
                         page={detailCurrentPage}
                         onChange={onChangePagedetail}
                       />
                       <TableSelect
-                        total={customerDetail?.data?.totalCnt || 0}
+                        total={customerDetailList?.data?.totalCnt || 0}
                         countValues={c_1}
                         selectValue={s_1}
                         handleChange={h_1}
@@ -300,9 +399,9 @@ export default function Registration() {
                   <>
                     <TableBox.Inner style={{ overflowX: "auto", whiteSpace: "nowrap" }}>
                       <CheckboxTable
-                        data={customerDetail?.data?.contents || []}
-                        selectedRows={selectedRows}
-                        toggleRowsSelection={toggleRowsSelection}
+                        data={customerDetailList?.data?.contents || []}
+                        selectedRows={nomalCustomerSelectedRows}
+                        toggleRowsSelection={toggleNomalCustomerRowsSelection}
 
                       >
                         <CheckboxTable.Thead>
@@ -322,10 +421,11 @@ export default function Registration() {
                                     {customerGroupHeaderList[key as keyof CustomerGroupListHeaderListType]}
                                   </CheckboxTable.Th>
                                 ))}
+                            <CheckboxTable.Th style={{ minWidth: "100px" }}>상세보기</CheckboxTable.Th>
                           </CheckboxTable.Tr>
                         </CheckboxTable.Thead>
                         <CheckboxTable.Tbody>
-                          {(customerDetail?.data?.contents || []).map((item) => (
+                          {(customerDetailList?.data?.contents || []).map((item) => (
                             <CheckboxTable.Tr key={item.cstmrNo} id={item.cstmrNo}>
                               <CheckboxTable.CheckboxTd item={item} keyName="cstmrNo" />
                               <CheckboxTable.Td>{item.cstmrNm}</CheckboxTable.Td>
@@ -344,6 +444,15 @@ export default function Registration() {
                               <CheckboxTable.Td>{item.hder08}</CheckboxTable.Td>
                               <CheckboxTable.Td>{item.hder09}</CheckboxTable.Td>
                               <CheckboxTable.Td>{item.hder10}</CheckboxTable.Td>
+                              <CheckboxTable.Td>
+                                <BasicButton
+                                  onClick={() => {
+                                    setCustomerNum(item.cstmrNo);
+                                  }}
+                                >
+                                  상세보기
+                                </BasicButton>
+                              </CheckboxTable.Td>
                             </CheckboxTable.Tr>
                           ))}
                         </CheckboxTable.Tbody>
@@ -351,12 +460,12 @@ export default function Registration() {
                     </TableBox.Inner>
                     <GrayBox gap={1} justifyContent={"space-between"}>
                       <Pagination
-                        count={customerDetail?.data?.totalPage || 1}
+                        count={customerDetailList?.data?.totalPage || 1}
                         page={currentPage}
                         onChange={onChangePage}
                       />
                       <TableSelect
-                        total={customerDetail?.data?.totalCnt || 0}
+                        total={customerDetailList?.data?.totalCnt || 0}
                         countValues={c_1}
                         selectValue={s_1}
                         handleChange={h_1}
@@ -367,7 +476,7 @@ export default function Registration() {
               </Stack>
             </TableBox>
           </Stack>
-          <Stack width={"20%"} height={"100%"} gap={1}>
+          <Stack width={"20%"} height={"100%"} overflow={"auto"}>
             <GrayBox>
               <Typography fontSize={"20px"} fontWeight="bold">
                 고객 정보
@@ -393,7 +502,11 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>고객이름</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} />
+                    <BasicInput
+                      sx={{ minHeight: "24px", width: "60%" }}
+                      placeholder={customerDetail?.data.contents.cstmrNm}
+                      value={cstmrNm}
+                    />
                   </Box>
                   <Box
                     display="flex"
@@ -405,7 +518,10 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>휴대전화</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} />
+                    <BasicInput
+                      sx={{ minHeight: "24px", width: "60%" }}
+                      value={mbtlNo}
+                    />
                   </Box>
                   <Box
                     display="flex"
@@ -417,7 +533,10 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>일반전화</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} />
+                    <BasicInput 
+                    sx={{ minHeight: "24px", width: "60%" }} 
+                    value={telNo}
+                    />
                   </Box>
                   <Box
                     display="flex"
@@ -429,7 +548,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>고객정보</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} />
+                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={cstmrRmk}/>
                   </Box>
                   <Box
                     display="flex"
@@ -441,62 +560,29 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>주소</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} />
+                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={addr}/>
                   </Box>
-                  <Box
-                    display="flex"
-                    flexDirection="column" // 세로 방향 설정
-                    flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
-                    justifyContent="flex-start" // 가로 방향 왼쪽 정렬
-                    width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
-                    gap={1}
-                  >
-                    <LabelTypo width={"100%"}>관리지역</LabelTypo>
-                    {/* height: 24px */}
-                    <Select
-                      value={selectValue}
-                      onChange={handleChange}
-                      selectData={selectListData}
-                      sx={{ width: "80%" }}
-                    />
-                  </Box>
-                  <Box
-                    display="flex"
-                    flexDirection="column" // 세로 방향 설정
-                    flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
-                    justifyContent="flex-start" // 가로 방향 왼쪽 정렬
-                    width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
-                    gap={1}
-                  >
-                    <LabelTypo width={"100%"}>호응도</LabelTypo>
-                    {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} />
-                  </Box>
-                  <Box
-                    display="flex"
-                    flexDirection="column" // 세로 방향 설정
-                    flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
-                    justifyContent="flex-start" // 가로 방향 왼쪽 정렬
-                    width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
-                    gap={1}
-                  >
-                    <LabelTypo width={"100%"}>희망평형</LabelTypo>
-                    {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} />
-                  </Box>
-                  <Box
-                    display="flex"
-                    flexDirection="column" // 세로 방향 설정
-                    flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
-                    justifyContent="flex-start" // 가로 방향 왼쪽 정렬
-                    width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
-                    gap={1}
-                  >
-                    <LabelTypo width={"100%"}>특기사항</LabelTypo>
-                    {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} />
-                  </Box>
-
+                  {customerGroupHeaderList &&
+                    Object.keys(customerGroupHeaderList).filter((key) => key.startsWith("hder")).map((key, index) => (
+                      <Box
+                        key={index}
+                        display="flex"
+                        flexDirection="column" // 세로 방향 설정
+                        flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
+                        justifyContent="flex-start" // 가로 방향 왼쪽 정렬
+                        width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
+                        gap={1}
+                      >
+                        <LabelTypo>{customerGroupHeaderList[key as keyof CustomerGroupListHeaderListType]}</LabelTypo>
+                        {/* height: 24px */}
+                        <BasicInput
+                          sx={{ minHeight: "24px" }}
+                          value={headers[key] || ""}
+                          onChange={(e) => handleInputChange(key, e.target.value)}
+                        />
+                      </Box>
+                    ))
+                  }
                   {/* {Array.from({ length: 40 }).map((_, index) => (
                     <Box
                       key={index}
@@ -511,21 +597,6 @@ export default function Registration() {
                       <BasicInput sx={{ minHeight: "24px" }} />
                     </Box>
                   ))} */}
-                  {Array.from({ length: 40 }).map((_, index) => (
-                    <Box
-                      key={index}
-                      display="flex"
-                      flexDirection="column" // 세로 방향 설정
-                      flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
-                      justifyContent="flex-start" // 가로 방향 왼쪽 정렬
-                      width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
-                      gap={1}
-                    >
-                      <LabelTypo>기본정보</LabelTypo>
-                      {/* height: 24px */}
-                      <BasicInput sx={{ minHeight: "24px" }} />
-                    </Box>
-                  ))}
                 </GrayBox>
               </>
             ) : (
@@ -548,7 +619,11 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>고객이름</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} />
+                    <BasicInput
+                      sx={{ minHeight: "24px", width: "60%" }}
+                      placeholder={customerDetail?.data.contents.cstmrNm}
+                      value={cstmrNm}
+                    />
                   </Box>
                   <Box
                     display="flex"
@@ -559,7 +634,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>휴대전화</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} />
+                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} value={mbtlNo}/>
                   </Box>
                   <Box
                     display="flex"
@@ -570,7 +645,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>일반전화</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} />
+                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} value={telNo}/>
                   </Box>
                   <Box
                     display="flex"
@@ -581,7 +656,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>고객정보</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} />
+                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={cstmrRmk}/>
                   </Box>
                   <Box
                     display="flex"
@@ -592,7 +667,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>주소</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} />
+                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={addr}/>
                   </Box>
                   <Box
                     display="flex"
@@ -607,7 +682,12 @@ export default function Registration() {
                       value={selectValue}
                       onChange={handleChange}
                       selectData={selectListData}
-                      sx={{ width: "80%" }}
+                      sx={{
+                        width: "80%",
+                        "& .MuiSelect-select": {
+                          backgroundColor: "primary.light", // 선택 박스만 흰색으로
+                        },
+                      }}
                     />
                   </Box>
                   <Box
@@ -672,7 +752,13 @@ export default function Registration() {
                 </GrayBox>
               </>
             )}
-
+            <GrayBox width={"100%"}>
+              <Stack direction={"row"} width={"100%"} gap={1} justifyContent={"end"}>
+                <BasicButton>추가</BasicButton>
+                <BasicButton>저장</BasicButton>
+                <BasicButton>삭제</BasicButton>
+              </Stack>
+            </GrayBox>
           </Stack>
         </TableBox>
       </Stack>

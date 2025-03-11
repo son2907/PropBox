@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { CustomerDetailListResponse, CustomerGroupListHeaderListResponse, CustomerGroupListResponseType, CustomerListResponse, UpdateGroupHeader } from "../types/CustomerManagement";
+import { CustomerDetailListResponse, CustomerDetailResponse, CustomerGroupListHeaderListResponse, CustomerGroupListResponseType, CustomerListResponse, CustomerManagementAreaResponse, UpdateGroupHeader } from "../types/CustomerManagement";
 import instance from "../utils/axiosInstance";
 
 const API = {
@@ -28,6 +28,16 @@ const API = {
         const url = `/api/custom/detail/list?sptNo=${requestData.sptNo}&groupNo=${requestData.groupNo}&cstmrNm=${requestData.cstmrNm}&page=${requestData.page}&limit=${requestData.limit}`;
         return await instance.get<CustomerDetailListResponse>(url)
     },
+    //고객관리 고객 상세 조회 - 오른쪽 input조회
+    getCustmoerDetail: async (requestData : {sptNo:string,groupNo:string,cstmrNo:string }) => {
+        const url = `/api/custom/detail?sptNo=${requestData.sptNo}&groupNo=${requestData.groupNo}&cstmrNo=${requestData.cstmrNo}`;
+        return await instance.get<CustomerDetailResponse>(url);
+    },
+    //고객의 관리지역 목록
+    getCustomerManagementArea: async (sptNo: string) => {
+        const url = `/api/sptcnslt/area/list/${sptNo}`;
+        return await instance.get<CustomerManagementAreaResponse>(url);
+    },
 };
 
 const KEY = {
@@ -44,6 +54,10 @@ const KEY = {
     getCumstomerList: (requestData: { sptNo: string, cstmrNm: string, page: number, limit:any }) => [`/api/custom?sptNo=${requestData.sptNo}&cstmrNm=${requestData.cstmrNm}&page=${requestData.page}&limit=${requestData.limit}`],
     //고객관리 고객 상세 테이블 조회 - 오른쪽 테이블
     getCustomerDetailList: (requestData: {sptNo: string, groupNo: string, cstmrNm: string, page: number, limit:any}) => [`/api/custom/detail/list?sptNo=${requestData.sptNo}&groupNo=${requestData.groupNo}&cstmrNm=${requestData.cstmrNm}&page=${requestData.page}&limit=${requestData.limit}`],
+    //고객관리 고객 상세 조회 - 오른쪽 input조회
+    getCustmoerDetail: (requestData : {sptNo:string,groupNo:string,cstmrNo:string }) => [`/api/custom/detail?sptNo=${requestData.sptNo}&groupNo=${requestData.groupNo}&cstmrNo=${requestData.cstmrNo}`],
+    //고객의 관리지역 목록
+    getCustomerManagementArea: (sptNo: string) => [`/api/sptcnslt/area/list/${sptNo}`],
 };
 
 //고객 관리 그룹 목록 조회
@@ -107,11 +121,39 @@ export const getCustomerDetailList = (requestData: {sptNo: string, groupNo: stri
     return useQuery({
         queryKey: KEY.getCustomerDetailList(requestData),
         queryFn: async () => {
-            console.log("고객 상세 조회 보낸 데이터:", requestData);
+            //console.log("고객 상세 조회 보낸 데이터:", requestData);
             const result = await API.getCustomerDetailList(requestData);
-            console.log("고객 상세 조회 데이터:",result);
+            //console.log("고객 상세 조회 데이터:",result);
             return result;
         },
         enabled: !!requestData.groupNo
+    })
+};
+
+//고객관리 고객 상세 조회 - 오른쪽 input조회
+export const getCustmoerDetail = (requestData : {sptNo:string,groupNo:string,cstmrNo:string }) => {
+    return useQuery({
+        queryKey: KEY.getCustmoerDetail(requestData),
+        queryFn: async () => {
+            console.log("고객 상세 조회 보낸 데이터:", requestData);
+            const result = await API.getCustmoerDetail(requestData);
+            console.log("고객 상세 조회 데이터:",result);
+            return result;
+        },
+        enabled: !!requestData.cstmrNo
+    })
+};
+
+//고객의 관리지역 목록
+export const getCustomerManagementArea = (sptNo: string) => {
+    return useQuery({
+        queryKey: KEY.getCustomerManagementArea(sptNo),
+        queryFn: async () => {
+            console.log("고객 관리지역 보낸 데이터:", sptNo);
+            const result = await API.getCustomerManagementArea(sptNo);
+            console.log("고객 관리지역 데이터:",result);
+            return result;
+        },
+        enabled: !!sptNo,
     })
 };
