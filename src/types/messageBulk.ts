@@ -59,7 +59,6 @@ export type PostBulkListChkRequestType = {
 };
 
 // 메세지 전송
-
 export type BulksendMsgRequestType = {
   smsKnd: string;
   subject: string;
@@ -77,3 +76,30 @@ export type BulksendMsgRequestType = {
   grpList: string[];
   notGrpList: string[];
 };
+
+// 임시대상 > 메시지 전송
+export type BulksendTmpMsgRequestType = {
+  smsKnd: string;
+  subject: string;
+  mssage: string;
+  sptNo: string;
+  dsptchNo: string;
+  adYn: string;
+  recptnDt: string;
+  recptnTm: string;
+  sendDivYn: string;
+  sendDivCnt: string;
+  sendMinGap: string;
+  testYn: string;
+  list: [{ mbtlNo: string; cstmrNm: string }];
+};
+
+export interface BulkTotalCntType extends ApiResponseType {
+  contents: {
+    sptNo: string;
+    totalCnt1: string;
+    totalCnt2: string;
+    totalCnt3: string;
+    totalCnt4: string;
+  };
+}

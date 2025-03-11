@@ -389,7 +389,7 @@ export default function AutoMessage() {
 
   const openTelModal = ({ smsKnd, mssage, isYnMsg }) => {
     openModal(TelInput, {
-      stack: true, //단일 모달 모드
+      stack: true,
       onClose: () => closeModal,
       smsKnd: smsKnd,
       mssage: mssage,
@@ -549,7 +549,7 @@ export default function AutoMessage() {
                     });
                   }}
                 >
-                  실험발송
+                  <Typography>실험발송</Typography>
                 </BasicButton>
               </CenteredBox>
             </Stack>
@@ -711,7 +711,7 @@ export default function AutoMessage() {
                   });
                 }}
               >
-                실험발송
+                <Typography>실험발송</Typography>
               </BasicButton>
               <BasicButton
                 onClick={() => {
@@ -777,7 +777,7 @@ export default function AutoMessage() {
                   });
                 }}
               >
-                실험발송
+                <Typography>실험발송</Typography>
               </BasicButton>
               <BasicButton
                 onClick={() => {
@@ -843,7 +843,7 @@ export default function AutoMessage() {
                   });
                 }}
               >
-                실험발송
+                <Typography>실험발송</Typography>
               </BasicButton>
               <BasicButton
                 onClick={() => {

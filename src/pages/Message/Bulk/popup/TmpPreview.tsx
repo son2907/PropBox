@@ -10,12 +10,9 @@ import { IconButton } from "../../../../components/Button";
 import { IoMdClose } from "react-icons/io";
 import { useEffect, useState } from "react";
 import {
-  usePostBulkChk,
-  usePostBulkDuplication,
-  usePostBulkError,
-  usePostBulkreject,
-  usePostBulkChkTotalCnt,
-  useBulkSendMsg,
+  useBulkTmpSendMsg,
+  useGetBulkTmpChkTotal,
+  usePostBulkTmpChkList,
 } from "../../../../api/messageBulk";
 import useModal from "../../../../hooks/useModal";
 import { SendMsgConfirm } from "./SendMsgConfirm";
@@ -23,7 +20,7 @@ import { useModalStoreClear } from "../../../../stores/modalStore";
 import { useApiRes } from "../../../../utils/useApiRes";
 import { BasicCompletedModl } from "../../../../components/Modal/modal/BasicCompletedModl";
 
-export default function Preview({ body, msgData }) {
+export default function TmpPreview({ msgData }) {
   const { value: tabValue, handleChange } = useTabs(0);
   const [tableData, setTableData] = useState([
     {
@@ -33,83 +30,35 @@ export default function Preview({ body, msgData }) {
     },
   ]);
 
-  const [totalData, setTotalData] = useState({
-    totalCnt1: "",
-    totalCnt2: "",
-    totalCnt3: "",
-    totalCnt4: "",
-  });
-
   const { openModal, closeModal } = useModal();
   const clear = useModalStoreClear();
   const checkApiFail = useApiRes();
 
-  const { mutate: base } = usePostBulkChk(); // 확정 인원 목록
-  const { mutate: duplicate } = usePostBulkDuplication(); // 중복 인원 목록
-  const { mutate: error } = usePostBulkError(); // 형식 오류 인원 목록
-  const { mutate: reject } = usePostBulkreject(); // 수신 거부 인원 목록
-  const { mutate: total } = usePostBulkChkTotalCnt(); // 전체 인원
-
-  const { mutate: sendMsgApi } = useBulkSendMsg(); // 문자 발송
+  const { mutate: tabData } = usePostBulkTmpChkList();
+  const { data: total } = useGetBulkTmpChkTotal();
+  const { mutate: sendMsgApi } = useBulkTmpSendMsg(); // 문자 발송
 
   useEffect(() => {
-    base(
-      {
-        body: body,
+    // 테이블 데이터
+    tabData("1", {
+      onSuccess: (res) => {
+        if (res.data.message == "SUCCESS") {
+          setTableData(res.data.contents);
+        }
       },
-      {
-        onSuccess: (res) => {
-          if (res.data.code == 200) {
-            setTableData(res.data.contents);
-          }
-        },
-      }
-    );
+    });
 
-    total(
-      {
-        body: body,
-      },
-      {
-        onSuccess: (res) => {
-          if (res.data.code == 200) {
-            setTotalData(res.data.contents);
-          }
-        },
-      }
-    );
+    // 전체 인원 데이터
   }, []);
 
   useEffect(() => {
-    let func = duplicate;
-
-    switch (tabValue) {
-      case 1:
-        func = duplicate;
-        break;
-      case 2:
-        func = error;
-        break;
-      case 3:
-        func = reject;
-        break;
-      default:
-        func = base;
-        break;
-    }
-
-    func(
-      {
-        body: body,
+    tabData(`${tabValue + 1}`, {
+      onSuccess: (res) => {
+        if (res.data.message == "SUCCESS") {
+          setTableData(res.data.contents);
+        }
       },
-      {
-        onSuccess: (res) => {
-          if (res.data.code == 200) {
-            setTableData(res.data.contents);
-          }
-        },
-      }
-    );
+    });
   }, [tabValue]);
 
   const sendMsg = () => {
@@ -124,7 +73,7 @@ export default function Preview({ body, msgData }) {
           if (result.data.message === "SUCCESS") {
             openModal(BasicCompletedModl, {
               modalId: "excelComplete",
-              stack: true,
+              stack: false,
               onClose: () => closeModal,
             });
           }
@@ -183,10 +132,14 @@ export default function Preview({ body, msgData }) {
           </TableBox.Inner>
         </TableBox>
         <GrayBox gap={3}>
-          <Typography>확정인원 : {totalData.totalCnt1}</Typography>
-          <Typography>중복인원 : {totalData.totalCnt2}</Typography>
-          <Typography>형식오류인원 : {totalData.totalCnt3}</Typography>
-          <Typography>수신거부인원 : {totalData.totalCnt4}</Typography>
+          <Typography>확정인원 : {total?.data?.contents?.totalCnt1}</Typography>
+          <Typography>중복인원 : {total?.data?.contents?.totalCnt2}</Typography>
+          <Typography>
+            형식오류인원 : {total?.data?.contents?.totalCnt3}
+          </Typography>
+          <Typography>
+            수신거부인원 : {total?.data?.contents?.totalCnt4}
+          </Typography>
         </GrayBox>
       </Stack>
     </ModalBox>

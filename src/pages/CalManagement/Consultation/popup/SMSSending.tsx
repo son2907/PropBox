@@ -313,9 +313,8 @@ export default function SMSSending() {
     };
 
     const formData = new FormData();
-    formData.append("param", JSON.stringify(requestBody)); // JSON 데이터를 string으로 추가
+    formData.append("param", JSON.stringify(requestBody));
     if (file) formData.append("file", file);
-    console.log("requestBody:", requestBody);
 
     sendMsg(
       {

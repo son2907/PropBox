@@ -11,8 +11,6 @@ import React, { useRef, useState } from "react";
 import GrayBox from "../../../components/Box/GrayBox";
 import TableBox from "../../../components/Box/TableBox";
 import BasicTable from "../../../components/Table/BasicTable";
-import { tableTestData } from "../../../utils/testData";
-import { useSingleRowSelection } from "../../../hooks/useSingleRowSelection";
 import TabMenus from "../../../components/Tab/TabMenus";
 import useTabs from "../../../hooks/useTabs";
 import TabPanel from "../../../components/Tab/TabPanel";
@@ -28,10 +26,8 @@ import useSelect from "../../../hooks/useSelect";
 import { useRadioGroup } from "../../../hooks/useRadioGroup";
 import Calendar from "../../../components/Calendar/Calendar";
 import TimePicker from "../../../components/TimePicker";
-// import { combineDateAndTime } from "../../../utils/combineDateAndTime";
 import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
 import MultipleCheckboxTable from "../../../components/Table/MultipleCheckboxTable";
-// import { getCommonIds } from "../../../utils/getCommonIds";
 import { Pagination } from "../../../components/Pagination";
 import TableSelect from "../../../components/Select/TableSelect";
 import { usePagination } from "../../../hooks/usePagination";
@@ -41,6 +37,7 @@ import { useTableSelect } from "../../../hooks/useTableSelect";
 import {
   useGetBulkMsgList,
   useGetBulkSaveMsgList,
+  useGetBulkTotalCnt,
   usePostBulkTmpList,
 } from "../../../api/messageBulk";
 import { useDeleteMsg, usePostMsg } from "../../../api/callMessage";
@@ -56,13 +53,13 @@ import { FileModal } from "../../../components/Modal/modal/FIleModal";
 import { FailModal } from "../../../components/Modal/modal/FailModal";
 import { BasicCompletedModl } from "../../../components/Modal/modal/BasicCompletedModl";
 import { useSptStore } from "../../../stores/sptStore";
-import { WarningModal } from "../../../components/Modal/modal/WarningModal";
-import { combineDateAndTime } from "../../../utils/combineDateAndTime";
 import Preview from "./popup/Preview";
 import DeleteBtnInput from "../../../components/Input/DeleteBtnInput";
-import { filterDataByValues } from "../../../utils/filterDataByValues";
 import { getFormattedDate } from "../../../utils/getFormattedDate";
 import { getFormatTime } from "../../../utils/getFormatTime";
+import TmpPreview from "./popup/TmpPreview";
+import TelInput from "./popup/TelInput";
+import { useModalStoreClear } from "../../../stores/modalStore";
 
 export default function BulkMessage() {
   const tableData = [
@@ -130,7 +127,6 @@ export default function BulkMessage() {
 
   const [date, setDate] = useState<Date>(new Date()); // 날짜
   const [selectedTime, setSelectedTime] = useState(Date.now()); // 시간
-  console.log(selectedTime);
 
   // const isoDateTime = combineDateAndTime(date, selectedTime); // 시간과 날짜를 조합함
 
@@ -156,6 +152,8 @@ export default function BulkMessage() {
   const { data: numberList } = useCrtfcList(); // 발신번호 리스트
 
   const { mutate: tmpList } = usePostBulkTmpList();
+  const { data: tmpTotalCnt } = useGetBulkTotalCnt();
+  console.log("확정인원:", tmpTotalCnt);
 
   // 발신번호 목록
   const {
@@ -170,6 +168,7 @@ export default function BulkMessage() {
   );
 
   const { openModal, closeModal } = useModal();
+  const clear = useModalStoreClear();
   const checkApiFail = useApiRes();
 
   // 우측 메세지 목록 mutate
@@ -267,13 +266,8 @@ export default function BulkMessage() {
     );
   };
 
-  // 문자 전송
-
-  console.log("msgType:", msgType);
-
   // 대상확인
-  const openPreview = (testYn: boolean) => {
-    const file = fileRef.current?.files?.[0];
+  const openPreview = ({ testYn, isTmp }) => {
     const msgData = {
       smsKnd: msgType,
       subject: getValues("subject"),
@@ -287,13 +281,15 @@ export default function BulkMessage() {
       sendDivCnt: getValues("isInterval") ? getValues("countMsg") : "",
       sendMinGap: getValues("isInterval") ? getValues("interval") : "",
       testYn: testYn ? "Y" : "N",
-      grpList: Array.from(s_1),
-      notGrpList: Array.from(s_2),
     };
 
     const formData = new FormData();
-    formData.append("param", JSON.stringify(msgData)); // JSON 데이터를 string으로 추가
-    if (file) formData.append("file", file);
+    const files = fileRef.current?.files;
+    if (files) {
+      for (let i = 0; i < files.length; i++) {
+        formData.append("file", files[i]);
+      }
+    }
 
     const body = {
       sptNo: sptNo,
@@ -301,10 +297,31 @@ export default function BulkMessage() {
       notGroupNoList: Array.from(s_2),
     };
 
-    openModal(Preview, {
-      body: body,
-      msgData: msgData,
-    });
+    if (isTmp) {
+      // 임시대상 - 문자 전송
+      Object.assign(msgData, {
+        list: temporaryTable.map((item) => ({
+          mbtlNo: item.mbtlNo,
+          cstmrNm: item.cstmrNm,
+        })),
+      });
+      formData.append("param", JSON.stringify(msgData));
+
+      openModal(TmpPreview, {
+        msgData: formData,
+      });
+    } else {
+      // 전송대상 - 문자 전송
+      Object.assign(msgData, {
+        grpList: Array.from(s_1),
+        notGrpList: Array.from(s_2),
+      });
+      formData.append("param", JSON.stringify(msgData));
+      openModal(Preview, {
+        body: body,
+        msgData: formData,
+      });
+    }
   };
 
   const onDeleteFile = () => {
@@ -320,11 +337,26 @@ export default function BulkMessage() {
       const cursorPosition = autoMsgRef.current.selectionStart;
       const currentValue = autoMsgRef.current.value;
 
-      const before = currentValue.substring(0, cursorPosition); // 커서 앞 텍스트
-      const after = currentValue.substring(cursorPosition); // 커서 뒤 텍스트
+      const before = currentValue.substring(0, cursorPosition);
+      const after = currentValue.substring(cursorPosition);
       const newValue = before + value + after;
 
-      autoMsgRef.current.value = newValue;
+      setValue("autoMessage", newValue);
+    }
+  };
+
+  // 복사하기 클릭 시
+  const onClickClipboard = () => {
+    if (autoMsgRef.current) {
+      const value = getValues("rejectNumber");
+      const cursorPosition = autoMsgRef.current.selectionStart;
+      const currentValue = autoMsgRef.current.value;
+
+      const before = currentValue.substring(0, cursorPosition);
+      const after = currentValue.substring(cursorPosition);
+      const newValue = before + value + after;
+
+      setValue("autoMessage", newValue);
     }
   };
 
@@ -354,17 +386,45 @@ export default function BulkMessage() {
     );
   };
 
-  // 전화번호 형식 검사 (010-nnnn-nnnn)
-  const isValidPhoneNumber = (phoneNumber: string) => {
-    const regex = /^010-\d{4}-\d{4}$/;
-    return regex.test(phoneNumber);
+  // 실험발송
+  const testMsg = () => {
+    const msgData = {
+      smsKnd: msgType,
+      subject: getValues("subject"),
+      mssage: getValues("autoMessage"),
+      sptNo: sptNo,
+      dsptchNo: dsptchNo,
+      adYn: getValues("isAd") ? "Y" : "N",
+      recptnDt: getFormattedDate(date),
+      recptnTm: getFormatTime(selectedTime).slice(0, -3),
+      sendDivYn: getValues("isInterval") ? "Y" : "N",
+      sendDivCnt: getValues("isInterval") ? getValues("countMsg") : "",
+      sendMinGap: getValues("isInterval") ? getValues("interval") : "",
+      testYn: "Y",
+      grpList: Array.from(s_1),
+      notGrpList: Array.from(s_2),
+    };
+
+    const formData = new FormData();
+
+    formData.append("param", JSON.stringify(msgData));
+    const files = fileRef.current?.files;
+    if (files) {
+      for (let i = 0; i < files.length; i++) {
+        formData.append("file", files[i]);
+      }
+    }
+
+    openModal(TelInput, {
+      onClose: () => closeModal,
+      msgData: formData,
+    });
   };
 
-  // 중복 검사
-  const isDuplicatePhoneNumber = (phoneNumber: string, index: number) => {
-    return temporaryTable.some(
-      (item, i) => item.mbtlNo === phoneNumber && i !== index
-    );
+  const onDeleteGroup = () => {
+    s_1.forEach((id) => {
+      t_2(id);
+    });
   };
 
   return (
@@ -377,8 +437,12 @@ export default function BulkMessage() {
         <IconSquareButton>
           <LuPencil />
         </IconSquareButton>
-        <BasicButton sx={{ marginLeft: "auto" }}>실험발송</BasicButton>
-        <BasicButton>문자발송</BasicButton>
+        <BasicButton sx={{ marginLeft: "auto" }}>
+          <Typography onClick={testMsg}>실험발송</Typography>
+        </BasicButton>
+        <BasicButton>
+          <Typography>문자발송</Typography>
+        </BasicButton>
       </GrayBox>
 
       <TableBox gap={2}>
@@ -462,7 +526,7 @@ export default function BulkMessage() {
                   ref={autoMsgRef}
                   height="100px"
                   resize="none"
-                  placeholder="자동문자 메시지를 입력해 주십시오."
+                  placeholder="대량문자 메시지를 입력해 주십시오."
                   maxBytes={maxBytes}
                   onChange={(e) => {
                     field.onChange(e);
@@ -494,7 +558,7 @@ export default function BulkMessage() {
                 placeholder="수신 거부 번호"
                 {...register("rejectNumber")}
               />
-              <BasicButton>복사하기</BasicButton>
+              <BasicButton onClick={onClickClipboard}>복사하기</BasicButton>
             </Stack>
             <Stack
               gap={1}
@@ -579,13 +643,15 @@ export default function BulkMessage() {
           </TabMenus>
           <TabPanel value={value} index={0}>
             <CenteredBox justifyContent={"center"} gap={1} margin={1}>
-              <BasicButton onClick={() => openPreview(false)}>
+              <BasicButton
+                onClick={() => openPreview({ testYn: false, isTmp: false })}
+              >
                 대상확인
               </BasicButton>
               <IconSquareButton color="primary">
                 <HiRefresh />
               </IconSquareButton>
-              <BasicButton>제외</BasicButton>
+              <BasicButton onClick={onDeleteGroup}>제외</BasicButton>
             </CenteredBox>
 
             <TableBox>
@@ -657,7 +723,13 @@ export default function BulkMessage() {
                   borderRadius={1}
                 />
                 <Typography>형식오류</Typography>
-                <BasicButton onClick={openPreview}>대상확인</BasicButton>
+                <BasicButton
+                  onClick={() => {
+                    openPreview({ testYn: false, isTmp: true });
+                  }}
+                >
+                  대상확인
+                </BasicButton>
               </CenteredBox>
 
               <TableBox onPaste={onClipboard}>
@@ -678,7 +750,7 @@ export default function BulkMessage() {
                         return (
                           <BasicTable.Tr key={index}>
                             <BasicTable.Td style={{ backgroundColor }}>
-                              {item.mbtlNo}
+                              <BasicInput defaultValue={item.mbtlNo} />
                             </BasicTable.Td>
                             <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
                           </BasicTable.Tr>
@@ -689,6 +761,9 @@ export default function BulkMessage() {
                 </TableBox.Inner>
               </TableBox>
             </Stack>
+            <GrayBox height={"60px"} justifyContent={"center"} marginTop={1}>
+              <Typography>확정 인원 : 20명</Typography>
+            </GrayBox>
           </TabPanel>
         </Stack>
         <Stack

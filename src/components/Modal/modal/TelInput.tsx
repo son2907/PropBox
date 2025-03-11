@@ -47,10 +47,12 @@ export default function TelInput({
       mbtlNo: getValues("mbtlNo"),
       dsptchNo: dsptchNo,
     };
+    const formData = new FormData();
+    formData.append("param", JSON.stringify(body));
 
     mutate(
       {
-        param: body,
+        body: formData,
       },
       {
         onSuccess: (res) => {
@@ -60,7 +62,7 @@ export default function TelInput({
             console.log("발송 성공:", res);
             openModal(BasicCompletedModl, {
               modalId: "complete",
-              stack: false,
+              stack: true,
               onClose: () => closeModal,
             });
           }

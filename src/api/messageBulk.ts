@@ -1,6 +1,8 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   BulksendMsgRequestType,
+  BulksendTmpMsgRequestType,
+  BulkTotalCntType,
   GetBulkMsgListResponseType,
   GetBulkSaveMsgListResponseType,
   GetBulkSaveRequestType,
@@ -32,14 +34,14 @@ export const API = {
     return await instance.get<GetBulkTotalCntResponseType>(url);
   },
   // 문자관리 > 대량문자 > 임시대상 - 대상확인 탭별 목록
-  postBulkTmpChkList: async ({ tabFlag }) => {
+  postBulkTmpChkList: async ({ tabFlag }: { tabFlag: string }) => {
     const url = `/api/spt/smstel/alot/tmp/list/chk/${spt}/${tabFlag}`;
     return await instance.post(url);
   },
   // 문자관리 > 대량문자 > 임시대상 - 대상확인 탭별 총인원수
   getBulkTmpChekTotal: async () => {
     const url = `/api/spt/smstel/alot/tmp/list/chkTotalCnt/${spt}`;
-    return await instance.get(url);
+    return await instance.get<BulkTotalCntType>(url);
   },
   // 문자관리 > 대량문자 > 전송 대상:대상 확인 확정 목록
   postBulkChk: async (requestData: { body: PostBulkListChkRequestType }) => {
@@ -51,7 +53,7 @@ export const API = {
     body: PostBulkListChkRequestType;
   }) => {
     const url = `/api/spt/smstel/alot/list/chkTotalCnt`;
-    return await instance.post(url, requestData.body);
+    return await instance.post<BulkTotalCntType>(url, requestData.body);
   },
   // 문자관리 > 대량문자 > 전송 대상:대상 확인 수신거부 목록
   postBulkreject: async (requestData: { body: PostBulkListChkRequestType }) => {
@@ -71,6 +73,15 @@ export const API = {
   // 메세지 전송
   sendMsg: async (requestData: { body: BulksendMsgRequestType }) => {
     const url = `/api/spt/smstel/alot/msgsave`;
+    return await instance.post(url, requestData.body, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  },
+  // 메세지 전송
+  sendTmpMsg: async (requestData: { body: BulksendTmpMsgRequestType }) => {
+    const url = `/api/spt/smstel/alot/msgsavetmp`;
     return await instance.post(url, requestData.body, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -131,7 +142,7 @@ export const useGetBulkTotalCnt = () => {
 // 임시대상 > 탭별 목록
 export const usePostBulkTmpChkList = () => {
   return useMutation({
-    mutationFn: (tabFlag) => API.postBulkTmpChkList({ tabFlag }),
+    mutationFn: (tabFlag: string) => API.postBulkTmpChkList({ tabFlag }),
   });
 };
 
@@ -190,5 +201,13 @@ export const useBulkSendMsg = () => {
   return useMutation({
     mutationFn: (requstData: { body: BulksendMsgRequestType }) =>
       API.sendMsg(requstData),
+  });
+};
+
+// 문자 전송
+export const useBulkTmpSendMsg = () => {
+  return useMutation({
+    mutationFn: (requstData: { body: BulksendTmpMsgRequestType }) =>
+      API.sendTmpMsg(requstData),
   });
 };

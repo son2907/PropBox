@@ -1,8 +1,6 @@
 import { Stack, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { IoMdClose } from "react-icons/io";
-import { UseMutateFunction } from "@tanstack/react-query";
-import { useSptStore } from "../../../../stores/sptStore";
 import { useApiRes } from "../../../../utils/useApiRes";
 import useModal from "../../../../hooks/useModal";
 import { BasicCompletedModl } from "../../../../components/Modal/modal/BasicCompletedModl";
@@ -11,28 +9,13 @@ import CenteredBox from "../../../../components/Box/CenteredBox";
 import { BasicButton, IconButton } from "../../../../components/Button";
 import PhoneInput from "../../../../components/Input/PhoneInput";
 import GrayBox from "../../../../components/Box/GrayBox";
+import { useBulkSendMsg } from "../../../../api/messageBulk";
 
 interface TelInputType {
-  body: {
-    smsKnd: string;
-    subject: string;
-    mssage: string;
-    sptNo: string;
-    dsptchNo: string;
-    adYn: string;
-    recptnDt: string;
-    recptnTm: string;
-    sendDivYn: string;
-    sendDivCnt: string;
-    sendMinGap: string;
-    testYn: string;
-    mbtlNo: string;
-    grpList: string[];
-    notGrpList: string[];
-  };
+  msgData: any;
   onClose: () => void;
 }
-export default function TelInput({ body, onClose }: TelInputType) {
+export default function TelInput({ msgData, onClose }: TelInputType) {
   const { register, getValues } = useForm({
     defaultValues: {
       mbtlNo: "",
@@ -41,27 +24,32 @@ export default function TelInput({ body, onClose }: TelInputType) {
 
   const checkApiFail = useApiRes();
   const { openModal, closeModal } = useModal();
+  const { mutate } = useBulkSendMsg();
 
   const onSend = () => {
-    // mutate(
-    //   {
-    //     body: body,
-    //   },
-    //   {
-    //     onSuccess: (res) => {
-    //       console.log("발송 결과:", res);
-    //       const result = checkApiFail(res);
-    //       if (result.data.message === "SUCCESS") {
-    //         console.log("발송 성공:", res);
-    //         openModal(BasicCompletedModl, {
-    //           modalId: "complete",
-    //           stack: false,
-    //           onClose: () => closeModal,
-    //         });
-    //       }
-    //     },
-    //   }
-    // );
+    const param = JSON.parse(msgData.get("param"));
+    param.mbtlNo = getValues("mbtlNo");
+    msgData.set("param", JSON.stringify(param));
+
+    mutate(
+      {
+        body: msgData,
+      },
+      {
+        onSuccess: (res) => {
+          console.log("발송 결과:", res);
+          const result = checkApiFail(res);
+          if (result.data.message === "SUCCESS") {
+            console.log("발송 성공:", res);
+            openModal(BasicCompletedModl, {
+              modalId: "complete",
+              stack: true,
+              onClose: () => closeModal,
+            });
+          }
+        },
+      }
+    );
   };
 
   return (
