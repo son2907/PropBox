@@ -128,7 +128,7 @@ export default function AutoMessage() {
 
   // <------------------------------- API ------------------------------->
 
-  const { data: basicMessage, h } = useGetSmsBase({
+  const { data: basicMessage } = useGetSmsBase({
     smsSeCd: smsSeCd,
   }); // 자동문자 기본 메세지
   const { data: numberList } = useCrtfcList({ cid: "" }); // 발신번호 리스트

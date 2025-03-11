@@ -1,11 +1,8 @@
 import { Stack, Tab, Typography } from "@mui/material";
 import CustomTabs from "./components/CustomTabs";
 import useTabs from "../../../../hooks/useTabs";
-import TabPanel from "../../../../components/Tab/TabPanel";
 import TableBox from "../../../../components/Box/TableBox";
 import BasicTable from "../../../../components/Table/BasicTable";
-import { tableTestData } from "../../../../utils/testData";
-import { useMultiRowSelection } from "../../../../hooks/useMultiRowSelection";
 import GrayBox from "../../../../components/Box/GrayBox";
 import ModalBox from "../../../../components/Modal";
 import CenteredBox from "../../../../components/Box/CenteredBox";
@@ -23,8 +20,10 @@ import {
 import useModal from "../../../../hooks/useModal";
 import { SendMsgConfirm } from "./SendMsgConfirm";
 import { useModalStoreClear } from "../../../../stores/modalStore";
+import { useApiRes } from "../../../../utils/useApiRes";
+import { BasicCompletedModl } from "../../../../components/Modal/modal/BasicCompletedModl";
 
-export default function Preview({ onClose, body, msgData }) {
+export default function Preview({ body, msgData }) {
   const { value: tabValue, handleChange } = useTabs(0);
   const [tableData, setTableData] = useState([
     {
@@ -36,8 +35,9 @@ export default function Preview({ onClose, body, msgData }) {
 
   const [totalData, setTotalData] = useState({});
 
-  const { openModal } = useModal();
+  const { openModal, closeModal } = useModal();
   const clear = useModalStoreClear();
+  const checkApiFail = useApiRes();
 
   const { mutate: base } = usePostBulkChk(); // 확정 인원 목록
   const { mutate: duplicate } = usePostBulkDuplication(); // 중복 인원 목록
@@ -110,7 +110,24 @@ export default function Preview({ onClose, body, msgData }) {
   }, [tabValue]);
 
   const sendMsg = () => {
-    console.log("문자 전송");
+    sendMsgApi(
+      {
+        body: msgData,
+      },
+      {
+        onSuccess: (res) => {
+          console.log("문자 전송 결과:", res);
+          const result = checkApiFail(res);
+          if (result.data.message === "SUCCESS") {
+            openModal(BasicCompletedModl, {
+              modalId: "excelComplete",
+              stack: false,
+              onClose: () => closeModal,
+            });
+          }
+        },
+      }
+    );
   };
 
   const close = () => {

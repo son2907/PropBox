@@ -41,6 +41,7 @@ import { useTableSelect } from "../../../hooks/useTableSelect";
 import {
   useGetBulkMsgList,
   useGetBulkSaveMsgList,
+  usePostBulkTmpList,
 } from "../../../api/messageBulk";
 import { useDeleteMsg, usePostMsg } from "../../../api/callMessage";
 import { HiRefresh } from "react-icons/hi";
@@ -121,9 +122,6 @@ export default function BulkMessage() {
 
   const [maxBytes, setMaxBytes] = useState<number>(80);
 
-  const { selectedRow: ss_2, toggleRowSelection: tt_2 } =
-    useSingleRowSelection();
-
   // 전송대상, 임시대상 탭
   const { value, handleChange: tabChange } = useTabs(0);
 
@@ -151,14 +149,13 @@ export default function BulkMessage() {
 
   // ----------------- API -----------------
   const { data: BulkMsgList } = useGetBulkMsgList(); // 전송대상 테이블 리스트
-  console.log("BulkMsgList:", BulkMsgList);
   const { data: msgSaveList, refetch: refetchMsgSave } = useGetBulkSaveMsgList({
     page: currentPage,
     limit: limit,
   }); // 우측 메세지 리스트
-  console.log("msgSaveList:", msgSaveList);
-  const { data: numberList } = useCrtfcList({ cid: "" }); // 발신번호 리스트
-  console.log("numberList:", numberList);
+  const { data: numberList } = useCrtfcList(); // 발신번호 리스트
+
+  const { mutate: tmpList } = usePostBulkTmpList();
 
   // 발신번호 목록
   const {
@@ -285,7 +282,7 @@ export default function BulkMessage() {
       dsptchNo: dsptchNo,
       adYn: getValues("isAd") ? "Y" : "N",
       recptnDt: getFormattedDate(date),
-      recptnTm: getFormatTime(selectedTime),
+      recptnTm: getFormatTime(selectedTime).slice(0, -3),
       sendDivYn: getValues("isInterval") ? "Y" : "N",
       sendDivCnt: getValues("isInterval") ? getValues("countMsg") : "",
       sendMinGap: getValues("isInterval") ? getValues("interval") : "",
@@ -305,7 +302,6 @@ export default function BulkMessage() {
     };
 
     openModal(Preview, {
-      onClose: () => closeModal,
       body: body,
       msgData: msgData,
     });
@@ -340,11 +336,22 @@ export default function BulkMessage() {
     const parsedData = rows
       .map((row) => {
         const [mbtlNo, cstmrNm] = row.trim().split(/\s+/);
-        return mbtlNo && cstmrNm ? { mbtlNo, cstmrNm } : null;
+        return mbtlNo && cstmrNm ? { sptNo: sptNo, mbtlNo, cstmrNm } : null;
       })
       .filter(Boolean);
 
-    setTemporaryTable(parsedData);
+    tmpList(
+      { body: parsedData },
+      {
+        onSuccess: (res) => {
+          console.log("복붙 결과:", res);
+          checkApiFail(res);
+          if (res.data.message === "SUCCESS") {
+            setTemporaryTable(res.data.contents);
+          }
+        },
+      }
+    );
   };
 
   // 전화번호 형식 검사 (010-nnnn-nnnn)
@@ -572,7 +579,9 @@ export default function BulkMessage() {
           </TabMenus>
           <TabPanel value={value} index={0}>
             <CenteredBox justifyContent={"center"} gap={1} margin={1}>
-              <BasicButton onClick={openPreview}>대상확인</BasicButton>
+              <BasicButton onClick={() => openPreview(false)}>
+                대상확인
+              </BasicButton>
               <IconSquareButton color="primary">
                 <HiRefresh />
               </IconSquareButton>
@@ -659,16 +668,11 @@ export default function BulkMessage() {
 
                     <BasicTable.Tbody>
                       {temporaryTable.map((item, index) => {
-                        const isDuplicate = isDuplicatePhoneNumber(
-                          item.mbtlNo,
-                          index
-                        );
-                        const isValid = isValidPhoneNumber(item.mbtlNo);
                         // 배경색 설정
                         let backgroundColor = "transparent";
-                        if (isDuplicate) {
+                        if (item.dplctYn == "Y") {
                           backgroundColor = "#CBE0FF"; // 중복: 파란색
-                        } else if (!isValid) {
+                        } else if (item.validMbtlNo == "N") {
                           backgroundColor = "#FFA7A6"; // 형식 오류: 빨간색
                         }
                         return (

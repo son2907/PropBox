@@ -50,7 +50,7 @@ export default function TelInput({
 
     mutate(
       {
-        body: body,
+        param: body,
       },
       {
         onSuccess: (res) => {

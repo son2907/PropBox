@@ -69,12 +69,20 @@ export const API = {
   // 실험발송
   sendTestMsg: async (requestData: { body: TestMsgRequestType }) => {
     const url = `/api/msg/send/testmsg`;
-    return await instance.post(url, requestData.body);
+    return await instance.post(url, requestData.body, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   },
   // 수신동의 실험발송
   sendTestMsguseYn: async (requestData: { body: TestMsgRequestType }) => {
     const url = `/api/msg/send/custom/testmsg`;
-    return await instance.post(url, requestData.body);
+    return await instance.post(url, requestData.body, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   },
 };
 
@@ -187,6 +195,7 @@ export const useSendTestMsg = () => {
   });
 };
 
+// 수신동의 실험발송
 export const useSendTestMsgYn = () => {
   return useMutation({
     mutationFn: (requstData: { body: TestMsgRequestType }) =>

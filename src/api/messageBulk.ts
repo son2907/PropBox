@@ -6,7 +6,6 @@ import {
   GetBulkSaveRequestType,
   GetBulkTotalCntResponseType,
   PostBulkListChkRequestType,
-  PostBulkTmpMsgRequestType,
 } from "../types/messageBulk";
 import instance from "../utils/axiosInstance";
 import { spt } from "../utils/sptNo";
@@ -22,44 +21,49 @@ export const API = {
     const url = `/api/spt/smstel/alot/list/${spt}`;
     return await instance.get<GetBulkMsgListResponseType>(url);
   },
-  // 문자관리 > 대량문자 > 임시대상 목록
-  getBulkTmpList: async () => {
-    const url = `/api/spt/smstel/alot/tmp/${spt}`;
-    return await instance.get(url);
+  // 문자관리 > 대량문자 > 임시대상 > 임시대상 목록 (복붙데이터 input)
+  postBulkTmpList: async (requestData) => {
+    const url = `/api/spt/smstel/alot/tmp`;
+    return await instance.post(url, requestData.body);
   },
   // 문자관리 > 대량문자 > 임시대상 확정인원 표시
   getBulkTotalCnt: async () => {
     const url = `/api/spt/smstel/alot/tmp/totalCnt/${spt}`;
     return await instance.get<GetBulkTotalCntResponseType>(url);
   },
-  // 전송 대상:임시대상 목록
-  postBulkTmp: async (requestData: { body: PostBulkTmpMsgRequestType }) => {
-    const url = `/api/spt/smstel/alot/tmp/${spt}`;
-    return await instance.post(url, requestData.body);
+  // 문자관리 > 대량문자 > 임시대상 - 대상확인 탭별 목록
+  postBulkTmpChkList: async ({ tabFlag }) => {
+    const url = `/api/spt/smstel/alot/tmp/list/chk/${spt}/${tabFlag}`;
+    return await instance.post(url);
   },
-  // 전송 대상:대상 확인 확정 목록
+  // 문자관리 > 대량문자 > 임시대상 - 대상확인 탭별 총인원수
+  getBulkTmpChekTotal: async () => {
+    const url = `/api/spt/smstel/alot/tmp/list/chkTotalCnt/${spt}`;
+    return await instance.get(url);
+  },
+  // 문자관리 > 대량문자 > 전송 대상:대상 확인 확정 목록
   postBulkChk: async (requestData: { body: PostBulkListChkRequestType }) => {
     const url = `/api/spt/smstel/alot/list/chk`;
     return await instance.post(url, requestData.body);
   },
-  // 전송 대상:대상 확인 각 탭별 총인원수
+  // 문자관리 > 대량문자 > 전송 대상:대상 확인 각 탭별 총인원수
   postBulkChkTotalCnt: async (requestData: {
     body: PostBulkListChkRequestType;
   }) => {
     const url = `/api/spt/smstel/alot/list/chkTotalCnt`;
     return await instance.post(url, requestData.body);
   },
-  // 전송 대상:대상 확인 수신거부 목록
+  // 문자관리 > 대량문자 > 전송 대상:대상 확인 수신거부 목록
   postBulkreject: async (requestData: { body: PostBulkListChkRequestType }) => {
     const url = `/api/spt/smstel/alot/list/chk4`;
     return await instance.post(url, requestData.body);
   },
-  // 전송 대상:대상 확인 오류 목록
+  // 문자관리 > 대량문자 > 전송 대상:대상 확인 오류 목록
   postBulkError: async (requestData: { body: PostBulkListChkRequestType }) => {
     const url = `/api/spt/smstel/alot/list/chk3`;
     return await instance.post(url, requestData.body);
   },
-  // 전송 대상:대상 확인 중복 목록
+  // 문자관리 > 대량문자 > 전송 대상:대상 확인 중복 목록
   postDup: async (requestData: { body: PostBulkListChkRequestType }) => {
     const url = `/api/spt/smstel/alot/list/chk2`;
     return await instance.post(url, requestData.body);
@@ -83,8 +87,8 @@ const KEY = {
     limit,
   ],
   getBulkMsgList: () => ["/api/spt/smstel/alot/list", spt],
-  getBulkTmpList: () => ["/api/spt/smstel/alot/list", spt],
   getBulkTotalCnt: () => ["/api/spt/smstel/alot/list", spt],
+  getBulkTmpChekTotal: () => ["/api/spt/smstel/alot/tmp/list/chkTotalCnt", spt],
 };
 
 // 문자관리 > 대량문자 > 저장메시지 목록
@@ -108,14 +112,13 @@ export const useGetBulkMsgList = () => {
   });
 };
 
-// 문자관리 > 대량문자 > 임시대상 목록
-export const useGetBulkTmpList = () => {
-  return useQuery({
-    queryKey: KEY.getBulkTmpList(),
-    queryFn: async () => await API.getBulkTmpList(),
-    gcTime: 0,
+// 문자관리 > 대량문자 > 임시대상 - 임시대상 목록 (복붙데이터 input)
+export const usePostBulkTmpList = () => {
+  return useMutation({
+    mutationFn: (requstData: { body }) => API.postBulkTmpList(requstData),
   });
 };
+
 // 문자관리 > 대량문자 > 임시대상 확정인원 표시
 export const useGetBulkTotalCnt = () => {
   return useQuery({
@@ -125,13 +128,22 @@ export const useGetBulkTotalCnt = () => {
   });
 };
 
-// 전송 대상:임시대상 목록
-export const usePostBulkTmp = () => {
+// 임시대상 > 탭별 목록
+export const usePostBulkTmpChkList = () => {
   return useMutation({
-    mutationFn: (requstData: { body: PostBulkTmpMsgRequestType }) =>
-      API.postBulkTmp(requstData),
+    mutationFn: (tabFlag) => API.postBulkTmpChkList({ tabFlag }),
   });
 };
+
+// 임시대상 > 탭별 총 인원수
+export const useGetBulkTmpChkTotal = () => {
+  return useQuery({
+    queryKey: KEY.getBulkTmpChekTotal(),
+    queryFn: async () => await API.getBulkTmpChekTotal(),
+    gcTime: 0,
+  });
+};
+
 // 전송 대상:대상 확인 확정 목록
 export const usePostBulkChk = () => {
   return useMutation({
