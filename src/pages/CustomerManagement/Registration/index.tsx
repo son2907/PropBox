@@ -123,12 +123,12 @@ export default function Registration() {
 
   //기본일 경우 선택한 고객들
   const {
-    selectedRows : nomalCustomerSelectedRows,
+    selectedRows: nomalCustomerSelectedRows,
     toggleRowsSelection: toggleNomalCustomerRowsSelection,
   } = useMultiRowSelection();
 
   const {
-    selectedRows : solutionCustomerSelectedRows,
+    selectedRows: solutionCustomerSelectedRows,
     toggleRowsSelection: toggleSolutionCustomerRowsSelection,
   } = useMultiRowSelection();
 
@@ -253,11 +253,28 @@ export default function Registration() {
                 />
                 <BasicButton sx={{ color: "root.mainBlue", border: 1 }}
                   onClick={() => {
-                    openPopup({
-                      url: smsSendPopup.url,
-                      windowName: smsSendPopup.windowName,
-                      windowFeatures: smsSendPopup.windowFeatures,
-                    });
+                    // openPopup({
+                    //   url: smsSendPopup.url,
+                    //   windowName: smsSendPopup.windowName,
+                    //   windowFeatures: smsSendPopup.windowFeatures,
+                    // });
+                    const selectedCustomers = (customerDetailList?.data.contents || [])
+                      .filter((item) => solutionCustomerSelectedRows.has(item.cstmrNo)) // 선택된 고객 필터링
+                      .map((item) => ({
+                        customerNo: item.cstmrNo,
+                        phoneNum: item.mbtlNo
+                      }));
+
+                    console.log(selectedCustomers);
+
+                    // 고객번호 배열
+                    const customerNos = selectedCustomers.map(item => item.customerNo);
+
+                    // 고객 전화번호 배열
+                    const customerPhoneNums = selectedCustomers.map(item => item.phoneNum);
+
+                    console.log("선택된 고객번호 배열:", customerNos);
+                    console.log("선택된 전화번호 배열:", customerPhoneNums);
                   }}
                 >
                   SMS 전송
@@ -533,9 +550,9 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>일반전화</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput 
-                    sx={{ minHeight: "24px", width: "60%" }} 
-                    value={telNo}
+                    <BasicInput
+                      sx={{ minHeight: "24px", width: "60%" }}
+                      value={telNo}
                     />
                   </Box>
                   <Box
@@ -548,7 +565,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>고객정보</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={cstmrRmk}/>
+                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={cstmrRmk} />
                   </Box>
                   <Box
                     display="flex"
@@ -560,7 +577,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>주소</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={addr}/>
+                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={addr} />
                   </Box>
                   {customerGroupHeaderList &&
                     Object.keys(customerGroupHeaderList).filter((key) => key.startsWith("hder")).map((key, index) => (
@@ -623,6 +640,7 @@ export default function Registration() {
                       sx={{ minHeight: "24px", width: "60%" }}
                       placeholder={customerDetail?.data.contents.cstmrNm}
                       value={cstmrNm}
+                      disabled
                     />
                   </Box>
                   <Box
@@ -634,7 +652,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>휴대전화</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} value={mbtlNo}/>
+                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} value={mbtlNo} disabled/>
                   </Box>
                   <Box
                     display="flex"
@@ -645,7 +663,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>일반전화</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} value={telNo}/>
+                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} value={telNo} disabled/>
                   </Box>
                   <Box
                     display="flex"
@@ -656,7 +674,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>고객정보</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={cstmrRmk}/>
+                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={cstmrRmk} disabled/>
                   </Box>
                   <Box
                     display="flex"
@@ -667,7 +685,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>주소</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={addr}/>
+                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={addr} />
                   </Box>
                   <Box
                     display="flex"

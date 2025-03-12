@@ -170,3 +170,26 @@ export interface CustomerManagementAreaResponse extends ApiResponseType {
     accessToken: null;
     refreshToken: null;
 };
+
+//고객관리 - 고객 그룹 추가
+export type CustomerGroupInsertType = {
+    sptNo: string,
+    groupNo: string,
+    groupNm: string,
+    hder01: string,
+    hder02: string,
+    hder03: string,
+    hder04: string,
+    hder05: string,
+    hder06: string,
+    hder07: string,
+    hder08: string,
+    hder09: string,
+    hder10: string
+};
+
+//고객관리 - 고객 그룹 삭제
+export type CustomerGroupDeleteType = {
+    sptNo: string,
+    groupNo: string,
+};

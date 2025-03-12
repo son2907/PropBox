@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { CustomerDetailListResponse, CustomerDetailResponse, CustomerGroupListHeaderListResponse, CustomerGroupListResponseType, CustomerListResponse, CustomerManagementAreaResponse, UpdateGroupHeader } from "../types/CustomerManagement";
+import { CustomerDetailListResponse, CustomerDetailResponse, CustomerGroupDeleteType, CustomerGroupInsertType, CustomerGroupListHeaderListResponse, CustomerGroupListResponseType, CustomerListResponse, CustomerManagementAreaResponse, UpdateGroupHeader } from "../types/CustomerManagement";
 import instance from "../utils/axiosInstance";
 
 const API = {
@@ -38,6 +38,16 @@ const API = {
         const url = `/api/sptcnslt/area/list/${sptNo}`;
         return await instance.get<CustomerManagementAreaResponse>(url);
     },
+    //고객관리 - 고객 그룹 추가
+    customerGroupInsert: async (requestData: {body : CustomerGroupInsertType}) => {
+        const url = '/api/custom/group';
+        return await instance.post(url, requestData.body);
+    },
+    //고객관리 - 고객 그룹 관리 그룹 삭제
+    customerGroupDelete: async ({sptNo, groupNo}: CustomerGroupDeleteType) => {
+        const url = `/api/custom/group/${sptNo}/${groupNo}`;
+        return await instance.delete(url);
+    }
 };
 
 const KEY = {
@@ -58,6 +68,10 @@ const KEY = {
     getCustmoerDetail: (requestData : {sptNo:string,groupNo:string,cstmrNo:string }) => [`/api/custom/detail?sptNo=${requestData.sptNo}&groupNo=${requestData.groupNo}&cstmrNo=${requestData.cstmrNo}`],
     //고객의 관리지역 목록
     getCustomerManagementArea: (sptNo: string) => [`/api/sptcnslt/area/list/${sptNo}`],
+    //고객관리 - 고객 그룹 추가 또는 수정
+    customerGroupInsert: () => ['/api/custom/group'],
+    //고객관리 - 고객 그룹 관리 그룹 삭제
+    customerGroupDelete: () => ["/api/custom/group","delete"],
 };
 
 //고객 관리 그룹 목록 조회
@@ -156,4 +170,32 @@ export const getCustomerManagementArea = (sptNo: string) => {
         },
         enabled: !!sptNo,
     })
+};
+
+//고객관리 - 고객 그룹 추가 또는 수정
+export const customerGroupInsert = () => {
+    return useMutation({
+        mutationKey: KEY.customerGroupInsert(),
+        mutationFn: (requestData: {body : CustomerGroupInsertType}) => API.customerGroupInsert(requestData),
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    });
+};
+
+//고객관리 - 고객 그룹 관리 그룹 삭제
+export const customerGroupDelete = () => {
+    return useMutation({
+        mutationKey: KEY.customerGroupDelete(),
+        mutationFn: ({sptNo, groupNo}: CustomerGroupDeleteType) => API.customerGroupDelete({sptNo, groupNo}),
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    });
 };

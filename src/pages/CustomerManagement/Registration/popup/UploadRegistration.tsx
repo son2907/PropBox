@@ -106,39 +106,6 @@ export default function UploadRegistration() {
     const file = fileInputRef.current?.files?.[0];
     if (!file) return;
 
-    // const body = {
-    //   testDataList: tableData.map(
-    //     ({
-    //       id,
-    //       고객이름,
-    //       휴대전화,
-    //       일반전화,
-    //       고객정보,
-    //       주소,
-    //       ...기본정보
-    //     }) => ({
-    //       id,
-    //       testData: [
-    //         고객이름,
-    //         휴대전화,
-    //         일반전화,
-    //         고객정보,
-    //         주소,
-    //         기본정보["1"], // 숫자 키를 문자열로 접근
-    //         기본정보["2"],
-    //         기본정보["3"],
-    //         기본정보["4"],
-    //         기본정보["5"],
-    //         기본정보["6"],
-    //         기본정보["7"],
-    //         기본정보["8"],
-    //         기본정보["9"],
-    //         기본정보["10"],
-    //       ],
-    //     })
-    //   ),
-    // };
-
     const body = {
       testDataList: tableData.map(({ id, ...rest }) => ({
         id,
