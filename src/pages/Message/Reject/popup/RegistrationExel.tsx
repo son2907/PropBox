@@ -75,7 +75,7 @@ export default function RegistrationExel() {
     openModal(ConfirmMultipleDeletionModal, {
       itemCount: selectedRows.size,
       modalId: "deleteMsg",
-      stack: true, //단일 모달 모드
+      stack: true,
       onClose: () => closeModal,
       onSubmit: () => {
         const selectedTableData = filterDataByValues({
@@ -112,8 +112,6 @@ export default function RegistrationExel() {
       }
     );
   }, [s_0]);
-
-  console.log("tableData:", tableData);
 
   return (
     <Stack width={"100%"} height={"100%"}>
