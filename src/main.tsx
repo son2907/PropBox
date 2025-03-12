@@ -20,7 +20,7 @@ createRoot(document.getElementById("root")!).render(
     <StyledEngineProvider injectFirst>
       {/* <StrictMode> */}
       <App />
-      <ReactQueryDevtools initialIsOpen={false} />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       {/* </StrictMode> */}
     </StyledEngineProvider>
   </QueryClientProvider>

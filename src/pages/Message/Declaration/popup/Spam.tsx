@@ -52,9 +52,6 @@ export default function Spam() {
         mbtlNo: 스팸문자,
       })),
     };
-
-    console.log("body:", body);
-
     uploadExcel(
       {
         body: body,
@@ -94,6 +91,7 @@ export default function Spam() {
             !new Set(selectedTableData.map((item) => item.id)).has(item.id)
         ); // 전체 배열에서 선택한 아이템 제거
         setTableData(filteredTableData);
+        resetSelectedRows();
       },
     });
   };
