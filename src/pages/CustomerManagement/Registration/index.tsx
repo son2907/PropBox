@@ -50,11 +50,7 @@ export default function Registration() {
 
   //-------------------------왼쪽 테이블 조회
   // 왼쪽 테이블 페이징 기능
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const onChangePage = (event: React.ChangeEvent<unknown>, newPage: number) => {
-    setCurrentPage(newPage);
-    console.log(`현재 페이지: ${newPage}`); // 콘솔에 현재 페이지 출력
-  };
+  const { currentPage, onChangePage } = usePagination();
 
   const { countValues: c_0, selectValue: s_0, handleChange: h_0 } = useTableSelect();
 
@@ -81,11 +77,7 @@ export default function Registration() {
 
   //---------------------------오른쪽 테이블 조회
   //오른쪽 테이블 페이징 기능
-  const [detailCurrentPage, setDetailCurrentPage] = React.useState(1);
-  const onChangePagedetail = (event: React.ChangeEvent<unknown>, newPage: number) => {
-    setCurrentPage(newPage);
-    console.log(`현재 페이지: ${newPage}`); // 콘솔에 현재 페이지 출력
-  };
+  const { currentPage : detailCurrentPage, onChangePage: onChangePagedetail } = usePagination();
 
   const { countValues: c_1, selectValue: s_1, handleChange: h_1 } = useTableSelect();
 
@@ -180,6 +172,17 @@ export default function Registration() {
     setAddr("");
     setCustomerNum(""); // groupNo가 변경될 때 customerNum 초기화
   }, [selectCustomerGroupNum]);
+
+  useEffect(() => {
+    setCoustomerDetailReqData((prev) => ({
+      ...prev,
+      sptNo: sptNo,
+      cstmrNm: searchQuery,
+      groupNo: selectCustomerGroupNum,
+      page: detailCurrentPage,
+      limit: s_1
+    }));
+  },[detailCurrentPage, s_1])
 
   useEffect(() => {
     if (customerGroupHeaderListData?.data.contents) {
@@ -506,7 +509,6 @@ export default function Registration() {
                   <Box
                     display="flex"
                     flexDirection="column" // 세로 방향 설정
-                    flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
                     justifyContent="flex-start" // 가로 방향 왼쪽 정렬
                     width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
                     gap={1}
@@ -522,7 +524,6 @@ export default function Registration() {
                   <Box
                     display="flex"
                     flexDirection="column" // 세로 방향 설정
-                    flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
                     justifyContent="flex-start" // 가로 방향 왼쪽 정렬
                     width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
                     gap={1}
@@ -537,7 +538,6 @@ export default function Registration() {
                   <Box
                     display="flex"
                     flexDirection="column" // 세로 방향 설정
-                    flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
                     justifyContent="flex-start" // 가로 방향 왼쪽 정렬
                     width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
                     gap={1}
@@ -552,7 +552,6 @@ export default function Registration() {
                   <Box
                     display="flex"
                     flexDirection="column" // 세로 방향 설정
-                    flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
                     justifyContent="flex-start" // 가로 방향 왼쪽 정렬
                     width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
                     gap={1}
@@ -612,7 +611,6 @@ export default function Registration() {
                 </GrayBox>
               </>
             ) : (
-
               <>
                 <GrayBox
                   flexDirection={"column"}
