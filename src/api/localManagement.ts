@@ -126,7 +126,7 @@ export const useLocalList = (requestData: { sptNm: string; progrsSeCd: string; u
         queryKey: KEY.getLocalList(requestData),
         queryFn: async () => {
             const result = await API.getLocalList(requestData);
-            //console.log("결과는 :", result); // 쿼리 결과 로그 추가
+            console.log("사용자 선택했을때 결과는 :", result); // 쿼리 결과 로그 추가
             return result;
         },
         enabled: !!requestData.userNo, // 사용자 번호 선택안하면 실행 안함

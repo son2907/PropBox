@@ -56,7 +56,19 @@ interface Register {
   adString: string;
 }
 
-export default function SMSSending() {
+export default function CustomerSMSSending() {
+
+  // 팝업 페이지에서 파라미터 파싱
+  const queryParams = new URLSearchParams(window.location.search);
+  const userNo = queryParams.get("userNo");
+  const sptNoCustomer = queryParams.get("sptNo");
+  const slutnIdParam = queryParams.get("slutnId");
+
+  // slutnId 문자열을 배열로 변환
+  const slutnIds = slutnIdParam ? slutnIdParam.split(",") : [];
+
+  console.log("팝업으로 가져온 데이터:", { userNo, sptNoCustomer, slutnIds });
+
   const [custmrNo, setCustmrNo] = useState<any>("");
   const [cnsltTelno, setCnsltTelno] = useState<any>("");
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);

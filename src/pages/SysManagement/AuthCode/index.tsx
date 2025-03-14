@@ -22,7 +22,6 @@ export default function AuthCode() {
 
   const { countValues, selectValue, handleChange } = useTableSelect();
 
-  // BasicTable에 연결할 한 행만 선택 가능하게 하는거(BasicTable 수정을 해야겐네요..)
   const { selectedRow, toggleRowSelection } = useSingleRowSelection();
 
   const [currentPage, setCurrentPage] = React.useState(1);

@@ -59,7 +59,7 @@ export default function AuthManagement() {
   const [localListReqData, setLocalListReqData] = useState({
     sptNm: "",
     progrsSeCd: "",
-    userNo: "",
+    userNo: selectUserNo,
     cntrctBgnde: "",
     cntrctEndde: "",
   });
@@ -460,7 +460,7 @@ export default function AuthManagement() {
                         } else {
                           emptySelectModal();
                         }
-                      }}
+                      }}     
                     >
                       권한복사
                     </BasicButton>

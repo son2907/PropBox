@@ -72,7 +72,7 @@ const API = {
 
 const KEY = {
     //사용자 아이디 및 회사 조회
-    getUserCompanyList: (requestData: { userNo: string, cmpNm: string }) => [`api/tel/user/config/list?userNo=${requestData.userNo}&cmpNm=${requestData.cmpNm}`],
+    getUserCompanyList: (requestData: { userNo: string, cmpNm: string }) => [`/api/tel/user/config/list?userNo=${requestData.userNo}&cmpNm=${requestData.cmpNm}`],
     //회사와 현장 리스트 조회
     getComapnyLocalList: (requestData: { userNo: string, sptNm: string }) => [`/api/tel/user/config/spt/list/${requestData.userNo}?sptNm=${requestData.sptNm}`],
     //구성원과 현장 리스트 조회
@@ -105,8 +105,9 @@ export const getUserCompanyList = (requestData: { userNo: string, cmpNm: string 
     return useQuery({
         queryKey: KEY.getUserCompanyList(requestData),
         queryFn: async () => {
+            console.log("사용자 전화기 갯수 목록 보낸 데이터:",requestData)
             const result = await API.getUserCompanyList(requestData);
-            //console.log("받은데이터 : ", result);
+            console.log("받은데이터 : ", result);
             return result;
         }
     })
