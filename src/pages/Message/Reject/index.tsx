@@ -30,7 +30,6 @@ import { BasicCompletedModl } from "../../../components/Modal/modal/BasicComplet
 import { useSptStore } from "../../../stores/sptStore";
 import PhoneInput from "../../../components/Input/PhoneInput";
 import SearchIcon from "../../../assets/images/Search.png";
-import { useRef } from "react";
 
 const DeleteAlert = ({
   onClose,
