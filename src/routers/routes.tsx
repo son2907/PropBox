@@ -258,7 +258,7 @@ export const routes: RouteObject[] = [
   },
   {
     path: PathConstants.Message.SMSDetail,
-    element: <SMSDetail />,
+    element: <SMSDetail msgKnd="" yyyyMm="" idx={0} onClose={() => {}} modalId=""/>,
   },
   {
     path: PathConstants.Customer.RegistrationUpload,
