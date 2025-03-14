@@ -67,3 +67,22 @@ export type PostRejectRequestType = {
   rejectResn: string;
   userId: string;
 };
+
+// 수신거부 엑셀 업로드
+
+export type RejectExcelUpload = {
+  sptNo: string;
+  rejectList: {
+    mbtlNo: string;
+    rejectResn: string;
+    rmk: string;
+  }[];
+  userId: string;
+};
+
+// 엑셀 다운로드
+
+export type RejectExcelDownload = {
+  sptNo: string;
+  mbtlNo?: string;
+};

@@ -7,9 +7,12 @@ import {
   GetRejectDetRequestType,
   GetRejectDetResponseType,
   PostRejectRequestType,
+  RejectExcelUpload,
+  RejectExcelDownload,
 } from "../types/messageReject";
 import instance from "../utils/axiosInstance";
 import { spt } from "../utils/sptNo";
+import DownloadExcel from "../utils/download";
 
 const API = {
   // 수신거부 목록 조회
@@ -43,6 +46,23 @@ const API = {
     const url = `/api/reject/${spt}/${mbtlNo}`;
     return await instance.delete(url);
   },
+  // 일괄등록 (엑셀 업로드)
+  uploadRejectExcel: async (requestData: { body: RejectExcelUpload }) => {
+    const url = `/api/reject/create/list`;
+    return await instance.post(url, requestData.body);
+  },
+  // 엑셀 다운로드
+  rejectExcelDownload: async ({ mbtlNo, sptNo }: RejectExcelDownload) => {
+    let url = `/api/reject/exceldownload?sptNo=${sptNo}`;
+    if (mbtlNo) url += `&mbtlNo=${mbtlNo}`;
+
+    const response = await instance.get(url, {
+      responseType: "blob",
+    });
+
+    DownloadExcel({ response });
+    return response;
+  },
 };
 
 const KEY = {
@@ -64,6 +84,11 @@ const KEY = {
   ],
   postReject: () => ["/api/spt/reject", "post"],
   deleteRejectDet: () => ["/api/spt/reject", "delete"],
+  rejectExcelDownload: ({ mbtlNo }: RejectExcelDownload) => [
+    "/api/reject/exceldownload",
+    spt,
+    mbtlNo,
+  ],
 };
 
 // 수신거부 목록 조회
@@ -122,5 +147,27 @@ export const useDeletetReject = () => {
     mutationFn: ({ mbtlNo }: GetRejectDetRequestType) =>
       API.deleteRejectDet({ mbtlNo }),
     mutationKey: KEY.deleteRejectDet(),
+  });
+};
+
+//엑셀 업로드
+export const useRejectExcelUpload = () => {
+  return useMutation({
+    mutationFn: (requstData: { body: RejectExcelUpload }) =>
+      API.uploadRejectExcel(requstData),
+  });
+};
+
+export const useRejectExcelDownload = ({
+  mbtlNo,
+  sptNo,
+}: RejectExcelDownload) => {
+  return useQuery({
+    queryKey: KEY.rejectExcelDownload({ mbtlNo, sptNo }),
+    queryFn: async () => {
+      return await API.rejectExcelDownload({ mbtlNo, sptNo });
+    },
+    gcTime: 0,
+    enabled: false,
   });
 };

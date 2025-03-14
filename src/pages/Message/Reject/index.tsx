@@ -16,6 +16,7 @@ import CustomAlert from "../../../components/Alert/CustomAlert";
 import {
   useDeletetReject,
   usePostReject,
+  useRejectExcelDownload,
   useRejectList,
 } from "../../../api/messageReject";
 import { useTableSelect } from "../../../hooks/useTableSelect";
@@ -139,6 +140,10 @@ export default function RejectMessage() {
   const onSubmit = () => onPost();
 
   const { mutate: delete_ } = useDeletetReject();
+  const { refetch: downExcel } = useRejectExcelDownload({
+    sptNo: sptNo,
+    mbtlNo: getValues("mbtlNo"),
+  });
 
   const handleDelete = () => {
     openModal(DeleteAlert, {
@@ -168,6 +173,10 @@ export default function RejectMessage() {
     });
   };
 
+  const downloadExcel = () => {
+    downExcel();
+  };
+
   return (
     <Stack width={"100%"} height={"100%"} gap={2}>
       <GrayBox gap={1}>
@@ -191,7 +200,7 @@ export default function RejectMessage() {
         >
           거부일괄추가
         </BasicButton>
-        <BasicButton>엑셀다운로드</BasicButton>
+        <BasicButton onClick={downloadExcel}>엑셀다운로드</BasicButton>
       </GrayBox>
       <TableBox width="100%" gap={2}>
         <Stack

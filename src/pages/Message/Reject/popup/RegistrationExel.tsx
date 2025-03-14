@@ -12,35 +12,40 @@ import { ExcelToTableWithSheet } from "../../../../utils/ExcelToTableWithSheet";
 import { filterDataByValues } from "../../../../utils/filterDataByValues";
 import useModal from "../../../../hooks/useModal";
 import { ConfirmMultipleDeletionModal } from "../../../../components/Modal/modal/ConfirmMultipleDeletionModal";
+import { useSptStore } from "../../../../stores/sptStore";
+import { useApiRes } from "../../../../utils/useApiRes";
+import { BasicCompletedModl } from "../../../../components/Modal/modal/BasicCompletedModl";
+import { useRejectExcelUpload } from "../../../../api/messageReject";
+import { useAuthStore } from "../../../../stores/authStore";
 
 export default function RegistrationExel() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [tableHeader, setTableHeader] = useState<any>([]);
+  const [tableHeader, setTableHeader] = useState<any>([
+    {
+      id: 1,
+      content: "휴대전화",
+    },
+    {
+      id: 2,
+      content: "비고(사유)",
+    },
+  ]);
   const [tableData, setTableData] = useState<any>([]);
   const [sheetNames, setSheetNames] = useState<any>([]);
-
   const {
     selectListData: sd_0,
     selectValue: s_0,
     handleChange: o_0,
   } = useSelect(sheetNames, "sheetName", "sheetName");
 
+  const { sptNo } = useSptStore();
+  const { loginId } = useAuthStore(["loginId"]);
+
   const { selectedRows, toggleRowsSelection, resetSelectedRows } =
     useMultiRowSelection();
   const { openModal, closeModal } = useModal();
-
-  useEffect(() => {
-    setTableData((prevData) =>
-      prevData.map((row) => {
-        const newRow = { id: row.id }; // 기존 id 유지
-        tableHeader.forEach(({ content }) => {
-          newRow[content] = row[content];
-        });
-        return newRow;
-      })
-    );
-  }, [tableHeader]);
+  const { mutate: uploadExcel } = useRejectExcelUpload();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -48,19 +53,27 @@ export default function RegistrationExel() {
       ExcelToTableWithSheet(
         file,
         null,
-        ({ sheetNames, headers, dataWithId }) => {
+        ({ sheetNames, dataWithId }) => {
           const sheets = sheetNames.map((item) => ({
             id: item,
             sheetName: item,
           }));
+          console.log(dataWithId);
+
           setSheetNames(sheets);
 
-          const result = headers.map((content) => ({
-            id: content,
-            content: content,
-          }));
-          setTableHeader(result);
-          setTableData(dataWithId);
+          const newDataWithId = dataWithId.map(({ id, ...rest }) => {
+            const keys = Object.keys(rest).slice(0, 2); // 첫 번째, 두 번째 컬럼만 유지
+            const newRow = { id };
+
+            keys.forEach((key) => {
+              newRow[key] = rest[key];
+            });
+
+            return newRow;
+          });
+
+          setTableData(newDataWithId);
           event.preventDefault();
           event.stopPropagation();
         },
@@ -99,19 +112,75 @@ export default function RegistrationExel() {
     ExcelToTableWithSheet(
       file,
       s_0,
-      ({ headers, dataWithId }) => {
-        const result = headers.map((content) => ({
-          id: content,
-          content: content,
-        }));
-        setTableHeader(result);
-        setTableData(dataWithId);
+      ({ dataWithId }) => {
+        const newDataWithId = dataWithId.map(({ id, ...rest }) => {
+          const keys = Object.keys(rest).slice(0, 2); // 첫 번째, 두 번째 컬럼만 유지
+          const newRow = { id };
+
+          keys.forEach((key) => {
+            newRow[key] = rest[key];
+          });
+
+          return newRow;
+        });
+
+        setTableData(newDataWithId);
+        setTableHeader([
+          {
+            id: 1,
+            content: "엑셀항목",
+          },
+          {
+            id: 2,
+            content: "칼럼위치",
+          },
+        ]);
       },
       (error) => {
         console.error("엑셀 업로드 중 오류가 발생하였습니다.", error);
       }
     );
   }, [s_0]);
+
+  const checkApiFail = useApiRes();
+
+  const onClickUpload = () => {
+    const file = fileInputRef.current?.files?.[0];
+    if (!file) return;
+
+    const listData = tableData.map(({ 휴대전화, "비고(사유)": 비고 }) => ({
+      mbtlNo: 휴대전화,
+      rejectResn: 비고,
+    }));
+
+    const body = {
+      sptNo: sptNo,
+      userId: loginId,
+      rejectList: listData,
+    };
+    uploadExcel(
+      {
+        body: body,
+      },
+      {
+        onSuccess: (res) => {
+          console.log("업로드 결과:", res);
+          const result = checkApiFail(res);
+          if (result.data.message === "SUCCESS") {
+            console.log("업로드 성공:", res);
+            openModal(BasicCompletedModl, {
+              modalId: "excelComplete",
+              stack: false,
+              onClose: () => closeModal,
+            });
+            window.opener.location.reload();
+          }
+        },
+      }
+    );
+  };
+
+  console.log("tableData:", tableData);
 
   return (
     <Stack width={"100%"} height={"100%"}>
@@ -128,7 +197,6 @@ export default function RegistrationExel() {
           onClick={() => {
             if (fileInputRef.current) {
               fileInputRef.current.value = "";
-              setTableHeader([]);
               setTableData([]);
               resetSelectedRows();
             }
@@ -146,7 +214,7 @@ export default function RegistrationExel() {
         <BasicButton sx={{ marginLeft: "auto" }} onClick={onClickDelete}>
           삭제
         </BasicButton>
-        <BasicButton>저장</BasicButton>
+        <BasicButton onClick={onClickUpload}>저장</BasicButton>
       </GrayBox>
 
       <TableBox gap={1} padding={1}>
