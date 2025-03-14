@@ -37,7 +37,6 @@ export default function TelInput({ msgData, onClose }: TelInputType) {
       },
       {
         onSuccess: (res) => {
-          console.log("발송 결과:", res);
           const result = checkApiFail(res);
           if (result.data.message === "SUCCESS") {
             console.log("발송 성공:", res);

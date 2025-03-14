@@ -7,7 +7,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import GrayBox from "../../../components/Box/GrayBox";
 import TableBox from "../../../components/Box/TableBox";
 import BasicTable from "../../../components/Table/BasicTable";
@@ -39,6 +39,7 @@ import {
   useGetBulkSaveMsgList,
   useGetBulkTotalCnt,
   usePostBulkTmpList,
+  usePostBulkChkTotalCnt,
 } from "../../../api/messageBulk";
 import { useDeleteMsg, usePostMsg } from "../../../api/callMessage";
 import { HiRefresh } from "react-icons/hi";
@@ -59,7 +60,6 @@ import { getFormattedDate } from "../../../utils/getFormattedDate";
 import { getFormatTime } from "../../../utils/getFormatTime";
 import TmpPreview from "./popup/TmpPreview";
 import TelInput from "./popup/TelInput";
-import { useModalStoreClear } from "../../../stores/modalStore";
 
 export default function BulkMessage() {
   const tableData = [
@@ -93,8 +93,27 @@ export default function BulkMessage() {
   ];
 
   const [temporaryTable, setTemporaryTable] = useState<
-    { mbtlNo: string; cstmrNm: string }[]
+    {
+      mbtlNo: string;
+      cstmrNm: string;
+      sptNo: string;
+      userNo: string;
+      userId: string;
+      sn: string;
+      validMbtlNo: string;
+      dplctYn: string;
+    }[]
   >([]);
+
+  const [totalData, setTotalData] = useState({
+    totalCnt1: "0",
+    totalCnt2: "0",
+    totalCnt3: "0",
+    totalCnt4: "0",
+  });
+
+  const [fileNames, setFileNames] = useState<string>("");
+  const [maxBytes, setMaxBytes] = useState<number>(80);
 
   const defaultValues = {
     subject: "",
@@ -115,9 +134,6 @@ export default function BulkMessage() {
   });
 
   const fileRef = useRef<HTMLInputElement>(null); // 파일 담을 ref
-  const [fileNames, setFileNames] = useState<string>("");
-
-  const [maxBytes, setMaxBytes] = useState<number>(80);
 
   // 전송대상, 임시대상 탭
   const { value, handleChange: tabChange } = useTabs(0);
@@ -130,10 +146,16 @@ export default function BulkMessage() {
 
   // const isoDateTime = combineDateAndTime(date, selectedTime); // 시간과 날짜를 조합함
 
-  const { selectedRows: s_1, toggleRowsSelection: t_1 } =
-    useMultiRowSelection(); // 선택 컬럼 클릭 여부
-  const { selectedRows: s_2, toggleRowsSelection: t_2 } =
-    useMultiRowSelection(); // 제외 컬럼 클릭 여부
+  const {
+    selectedRows: s_1,
+    toggleRowsSelection: t_1,
+    resetSelectedRows: rs_1,
+  } = useMultiRowSelection(); // 선택 컬럼 클릭 여부
+  const {
+    selectedRows: s_2,
+    toggleRowsSelection: t_2,
+    resetSelectedRows: rs_2,
+  } = useMultiRowSelection(); // 제외 컬럼 클릭 여부
 
   const { currentPage, onChangePage } = usePagination();
 
@@ -144,7 +166,7 @@ export default function BulkMessage() {
   }, [msgType]);
 
   // ----------------- API -----------------
-  const { data: BulkMsgList } = useGetBulkMsgList(); // 전송대상 테이블 리스트
+  const { data: BulkMsgList, refetch } = useGetBulkMsgList(); // 전송대상 테이블 리스트
   const { data: msgSaveList, refetch: refetchMsgSave } = useGetBulkSaveMsgList({
     page: currentPage,
     limit: limit,
@@ -152,8 +174,8 @@ export default function BulkMessage() {
   const { data: numberList } = useCrtfcList(); // 발신번호 리스트
 
   const { mutate: tmpList } = usePostBulkTmpList();
-  const { data: tmpTotalCnt } = useGetBulkTotalCnt();
-  console.log("확정인원:", tmpTotalCnt);
+  const { mutate: totalCnt } = usePostBulkChkTotalCnt(); //전송대상 확정인원
+  const { data: tmpTotalCnt } = useGetBulkTotalCnt(); // 임시대상 확정인원
 
   // 발신번호 목록
   const {
@@ -168,7 +190,6 @@ export default function BulkMessage() {
   );
 
   const { openModal, closeModal } = useModal();
-  const clear = useModalStoreClear();
   const checkApiFail = useApiRes();
 
   // 우측 메세지 목록 mutate
@@ -242,7 +263,6 @@ export default function BulkMessage() {
       },
       {
         onSuccess: (res) => {
-          console.log("onSuccess:", res);
           const result = checkApiFail(res);
           if (result.data.message === "SUCCESS") {
             console.log("추가 성공:", res);
@@ -376,7 +396,6 @@ export default function BulkMessage() {
       { body: parsedData },
       {
         onSuccess: (res) => {
-          console.log("복붙 결과:", res);
           checkApiFail(res);
           if (res.data.message === "SUCCESS") {
             setTemporaryTable(res.data.contents);
@@ -427,6 +446,40 @@ export default function BulkMessage() {
     });
   };
 
+  useEffect(() => {
+    const body = {
+      sptNo: sptNo,
+      groupNoList: Array.from(s_1),
+      notGroupNoList: Array.from(s_2),
+    };
+
+    totalCnt(
+      {
+        body: body,
+      },
+      {
+        onSuccess: (res) => {
+          if (res.data.code == 200) {
+            setTotalData(res.data.contents);
+          } else {
+            setTotalData({
+              totalCnt1: "0",
+              totalCnt2: "0",
+              totalCnt3: "0",
+              totalCnt4: "0",
+            });
+          }
+        },
+      }
+    );
+  }, [s_1, s_2]);
+
+  const onRefresh = () => {
+    rs_1();
+    rs_2();
+    refetch();
+  };
+
   return (
     <Stack width={"100%"} height={"100%"} gap={1}>
       <GrayBox gap={1} marginBottom={2}>
@@ -440,7 +493,9 @@ export default function BulkMessage() {
         <BasicButton sx={{ marginLeft: "auto" }}>
           <Typography onClick={testMsg}>실험발송</Typography>
         </BasicButton>
-        <BasicButton>
+        <BasicButton
+          onClick={() => openPreview({ testYn: false, isTmp: false })}
+        >
           <Typography>문자발송</Typography>
         </BasicButton>
       </GrayBox>
@@ -648,7 +703,7 @@ export default function BulkMessage() {
               >
                 대상확인
               </BasicButton>
-              <IconSquareButton color="primary">
+              <IconSquareButton color="primary" onClick={onRefresh}>
                 <HiRefresh />
               </IconSquareButton>
               <BasicButton onClick={onDeleteGroup}>제외</BasicButton>
@@ -698,7 +753,7 @@ export default function BulkMessage() {
               </TableBox.Inner>
             </TableBox>
             <GrayBox height={"60px"} justifyContent={"center"} marginTop={1}>
-              <Typography>확정 인원 : 20명</Typography>
+              <Typography>확정 인원 : {totalData.totalCnt1 || 0}</Typography>
             </GrayBox>
           </TabPanel>
           <TabPanel value={value} index={1}>
@@ -750,7 +805,7 @@ export default function BulkMessage() {
                         return (
                           <BasicTable.Tr key={index}>
                             <BasicTable.Td style={{ backgroundColor }}>
-                              <BasicInput defaultValue={item.mbtlNo} />
+                              {item.mbtlNo}
                             </BasicTable.Td>
                             <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
                           </BasicTable.Tr>
@@ -762,7 +817,9 @@ export default function BulkMessage() {
               </TableBox>
             </Stack>
             <GrayBox height={"60px"} justifyContent={"center"} marginTop={1}>
-              <Typography>확정 인원 : 20명</Typography>
+              <Typography>
+                확정 인원 : {tmpTotalCnt?.data?.contents?.totalCnt}
+              </Typography>
             </GrayBox>
           </TabPanel>
         </Stack>

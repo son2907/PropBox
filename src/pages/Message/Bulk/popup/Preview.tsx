@@ -106,6 +106,8 @@ export default function Preview({ body, msgData }) {
         onSuccess: (res) => {
           if (res.data.code == 200) {
             setTableData(res.data.contents);
+          } else {
+            checkApiFail(res);
           }
         },
       }

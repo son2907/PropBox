@@ -98,7 +98,7 @@ const KEY = {
     limit,
   ],
   getBulkMsgList: () => ["/api/spt/smstel/alot/list", spt],
-  getBulkTotalCnt: () => ["/api/spt/smstel/alot/list", spt],
+  getBulkTotalCnt: () => ["/api/spt/smstel/alot/tmp/totalCnt", spt],
   getBulkTmpChekTotal: () => ["/api/spt/smstel/alot/tmp/list/chkTotalCnt", spt],
 };
 

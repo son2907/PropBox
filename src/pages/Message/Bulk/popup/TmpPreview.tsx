@@ -54,12 +54,15 @@ export default function TmpPreview({ msgData }) {
   useEffect(() => {
     tabData(`${tabValue + 1}`, {
       onSuccess: (res) => {
+        console.log("res:", res);
         if (res.data.message == "SUCCESS") {
           setTableData(res.data.contents);
+        } else {
+          checkApiFail(res);
         }
       },
     });
-  }, [tabValue]);
+  }, [tabValue, tabData]);
 
   const sendMsg = () => {
     sendMsgApi(
