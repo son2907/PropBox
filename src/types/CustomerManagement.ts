@@ -116,7 +116,7 @@ export interface CustomerDetailListResponse extends ApiResponseType {
 };
 
 //고객관리 고객 상세 조회 - 오른쪽 input조회
-export type CustomerDetailType = {
+export type CustomerDetailTopType = {
     cstmrNo: string,
     cstmrNm: string,
     mbtlNo: string,
@@ -124,24 +124,35 @@ export type CustomerDetailType = {
     cstmrRmk: string,
     addr: string,
     regDtm: string,
-    hder01: string,
-    hder02: string,
-    hder03: string,
-    hder04: string,
-    hder05: string,
-    hder06: string,
-    hder07: string,
-    hder08: string,
-    hder09: string,
-    hder10: string
+    validMbtlNo: string,
+    dupMbtlNo: string,
+    rctnRejectXyn: string
 };
-export interface CustomerDetailResponse extends ApiResponseType {
+export interface CustomerDetailTopResponse extends ApiResponseType {
     code: number;
     result: string;
     message: string;
     totalCnt: number | null;
     totalPage: number,
-    contents: CustomerDetailType;
+    contents: CustomerDetailTopType;
+    params: null;
+    errorCode: null;
+    accessToken: null;
+    refreshToken: null;
+};
+
+//고객관리 상세조회 - 오른쪽 input아래부분
+export type CustomerDetailBottomType = {
+    itemNm: string,
+    detailNm: string
+};
+export interface CustomerDetailBottomResponse extends ApiResponseType {
+    code: number;
+    result: string;
+    message: string;
+    totalCnt: number | null;
+    totalPage: number,
+    contents: CustomerDetailBottomType[];
     params: null;
     errorCode: null;
     accessToken: null;

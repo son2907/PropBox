@@ -106,15 +106,21 @@ export default function UploadRegistration() {
     const file = fileInputRef.current?.files?.[0];
     if (!file) return;
 
+    // 고정된 헤더 사용
+    const fixedHeaders = tableHeaderData.map((item) => item.header);
+
     const body = {
       testDataList: tableData.map(({ id, ...rest }) => ({
         id,
-        testData: tableHeader.map((header) => rest[header] || ""), // 헤더 순서대로 데이터 정렬
+        testData: fixedHeaders.reduce((acc, header) => {
+          acc[header] = rest[header]; // 값이 없으면 빈 문자열
+          return acc;
+        }, {}),
       })),
     };
 
     console.log("엑셀데이터좀 보자", body);
-    console.log(tableData)
+    console.log("현재 헤더:", fixedHeaders);
   };
 
   //선택한 열 제거
@@ -164,19 +170,32 @@ export default function UploadRegistration() {
               try {
                 const { headers, dataWithId } = await ExcelToTable(e);
 
-                // 엑셀 헤더 순서를 유지하면서 설정
-                setTableHeader(headers);
+                // 고정된 헤더 사용
+                const fixedHeaders = tableHeaderData.map((item) => item.header);
 
-                // headers에 맞게 data 정렬
+                // 엑셀 데이터의 헤더와 고정된 헤더 매핑
+                const headerMapping = fixedHeaders.map((header) => {
+                  // 엑셀 데이터에서 해당하는 헤더를 찾기
+                  const matchingHeader = headers.find((h) => h === header || h === "adr"); // 예: "adr"이 "주소"에 해당한다고 판단
+                  return matchingHeader || null; // 일치하는 헤더가 없으면 null
+                });
+
+                // 데이터 정렬 (엑셀 데이터 헤더와 맞지 않으면 빈값 "")
                 const orderedData = dataWithId.map((row) => {
-                  const orderedRow = { id: row.id }; // ID 유지
-                  headers.forEach((header) => {
-                    orderedRow[header] = row[header] || ""; // 값이 없으면 빈 값 설정
+                  const orderedRow = { id: row.id };
+                  fixedHeaders.forEach((header, index) => {
+                    // 엑셀 데이터에 해당 헤더가 있으면 값을, 없으면 ""로 채움
+                    const mappedHeader = headerMapping[index];
+                    if (mappedHeader) {
+                      orderedRow[header] = row[mappedHeader]; // 엑셀 데이터에 값이 있으면 그 값을 사용, 없으면 빈 문자열
+                    } 
                   });
                   return orderedRow;
                 });
 
-                setTableData(orderedData);
+                // 상태 업데이트
+                setTableHeader(fixedHeaders); // 고정된 헤더 설정
+                setTableData(orderedData); // 정렬된 데이터 설정
               } catch (error) {
                 console.error(error);
               }
@@ -246,9 +265,9 @@ export default function UploadRegistration() {
                 {tableData.map((row, rowIndex) => (
                   <CheckboxTable.Tr key={rowIndex} id={row.id}>
                     <CheckboxTable.CheckboxTd item={row} keyName="id" />
-                    {tableHeaderData.map((headerItem, cellIndex) => (
+                    {Object.keys(row).slice(1, 16).map((key, cellIndex) => (
                       <CheckboxTable.Td key={cellIndex}>
-                        {row[headerItem.header] || ""}
+                        {row[key] || ""}
                       </CheckboxTable.Td>
                     ))}
                   </CheckboxTable.Tr>
