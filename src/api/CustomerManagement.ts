@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { CustomerDetailListResponse, CustomerDetailResponse, CustomerGroupDeleteType, CustomerGroupInsertType, CustomerGroupListHeaderListResponse, CustomerGroupListResponseType, CustomerListResponse, CustomerManagementAreaResponse, UpdateGroupHeader } from "../types/CustomerManagement";
+import { CustomerDetailBottomResponse, CustomerDetailListResponse, CustomerDetailTopResponse, CustomerGroupDeleteType, CustomerGroupInsertType, CustomerGroupListHeaderListResponse, CustomerGroupListResponseType, CustomerListResponse, CustomerManagementAreaResponse, UpdateGroupHeader } from "../types/CustomerManagement";
 import instance from "../utils/axiosInstance";
 
 const API = {
@@ -28,10 +28,15 @@ const API = {
         const url = `/api/custom/detail/list?sptNo=${requestData.sptNo}&groupNo=${requestData.groupNo}&cstmrNm=${requestData.cstmrNm}&page=${requestData.page}&limit=${requestData.limit}`;
         return await instance.get<CustomerDetailListResponse>(url)
     },
-    //고객관리 고객 상세 조회 - 오른쪽 input조회
-    getCustmoerDetail: async (requestData : {sptNo:string,groupNo:string,cstmrNo:string }) => {
-        const url = `/api/custom/detail?sptNo=${requestData.sptNo}&groupNo=${requestData.groupNo}&cstmrNo=${requestData.cstmrNo}`;
-        return await instance.get<CustomerDetailResponse>(url);
+    //고객관리 고객 상세 조회 - 오른쪽 input (고객이름~주소)
+    getCustmoerDetailTop: async (requestData : {sptNo:string,groupNo:string,cstmrNo:string }) => {
+        const url = `/api/custom/detail/top?sptNo=${requestData.sptNo}&groupNo=${requestData.groupNo}&cstmrNo=${requestData.cstmrNo}`;
+        return await instance.get<CustomerDetailTopResponse>(url);
+    },
+    //고객 관리 - 고객 상세 조회 기본정보 or 상담항목
+    getCustomerDetailBottom: async (requestData : {sptNo:string,groupNo:string,cstmrNo:string }) => {
+        const url = `/api/custom/detail/bottom?sptNo=${requestData.sptNo}&groupNo=${requestData.groupNo}&cstmrNo=${requestData.cstmrNo}`
+        return await instance.get<CustomerDetailBottomResponse>(url);
     },
     //고객의 관리지역 목록
     getCustomerManagementArea: async (sptNo: string) => {
@@ -47,7 +52,7 @@ const API = {
     customerGroupDelete: async ({sptNo, groupNo}: CustomerGroupDeleteType) => {
         const url = `/api/custom/group/${sptNo}/${groupNo}`;
         return await instance.delete(url);
-    }
+    },
 };
 
 const KEY = {
@@ -65,7 +70,9 @@ const KEY = {
     //고객관리 고객 상세 테이블 조회 - 오른쪽 테이블
     getCustomerDetailList: (requestData: {sptNo: string, groupNo: string, cstmrNm: string, page: number, limit:any}) => [`/api/custom/detail/list?sptNo=${requestData.sptNo}&groupNo=${requestData.groupNo}&cstmrNm=${requestData.cstmrNm}&page=${requestData.page}&limit=${requestData.limit}`],
     //고객관리 고객 상세 조회 - 오른쪽 input조회
-    getCustmoerDetail: (requestData : {sptNo:string,groupNo:string,cstmrNo:string }) => [`/api/custom/detail?sptNo=${requestData.sptNo}&groupNo=${requestData.groupNo}&cstmrNo=${requestData.cstmrNo}`],
+    getCustmoerDetailTop: (requestData : {sptNo:string,groupNo:string,cstmrNo:string }) => [`/api/custom/detail?sptNo=${requestData.sptNo}&groupNo=${requestData.groupNo}&cstmrNo=${requestData.cstmrNo}`],
+    //고객 관리 - 고객 상세 조회 기본정보 or 상담항목
+    getCustomerDetailBottom: (requestData : {sptNo:string,groupNo:string,cstmrNo:string }) => [`/api/custom/detail/bottom?sptNo=${requestData.sptNo}&groupNo=${requestData.groupNo}&cstmrNo=${requestData.cstmrNo}`],
     //고객의 관리지역 목록
     getCustomerManagementArea: (sptNo: string) => [`/api/sptcnslt/area/list/${sptNo}`],
     //고객관리 - 고객 그룹 추가 또는 수정
@@ -145,17 +152,31 @@ export const getCustomerDetailList = (requestData: {sptNo: string, groupNo: stri
 };
 
 //고객관리 고객 상세 조회 - 오른쪽 input조회
-export const getCustmoerDetail = (requestData : {sptNo:string,groupNo:string,cstmrNo:string }) => {
+export const getCustmoerDetailTop = (requestData : {sptNo:string,groupNo:string,cstmrNo:string }) => {
     return useQuery({
-        queryKey: KEY.getCustmoerDetail(requestData),
+        queryKey: KEY.getCustmoerDetailTop(requestData),
         queryFn: async () => {
             console.log("고객 상세 조회 보낸 데이터:", requestData);
-            const result = await API.getCustmoerDetail(requestData);
+            const result = await API.getCustmoerDetailTop(requestData);
             console.log("고객 상세 조회 데이터:",result);
             return result;
         },
         enabled: !!requestData.cstmrNo
     })
+};
+
+//고객 관리 - 고객 상세 조회 기본정보 or 상담항목
+export const getCustomerDetailBottom = (requestData : {sptNo:string,groupNo:string,cstmrNo:string }) => {
+    return useQuery({
+        queryKey: KEY.getCustomerDetailBottom(requestData),
+        queryFn: async () => {
+            console.log("아래부분 보낸 데이터:",requestData);
+            const result = await API.getCustomerDetailBottom(requestData);
+            console.log("아래 데이터:",result);
+            return result;
+        },
+        enabled: !!requestData.cstmrNo
+    });
 };
 
 //고객의 관리지역 목록
