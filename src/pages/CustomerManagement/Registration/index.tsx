@@ -22,7 +22,7 @@ import TableSelect from "../../../components/Select/TableSelect";
 import { useTableSelect } from "../../../hooks/useTableSelect";
 import CheckboxTable from "../../../components/Table/CheckboxTable";
 import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
-import { getCumstomerList, getCustmoerDetail, getCustomerDetailList, getCustomerGroupHeaderList, getCustomerManagementArea } from "../../../api/CustomerManagement";
+import { getCumstomerList, getCustmoerDetailTop, getCustomerDetailBottom, getCustomerDetailList, getCustomerGroupHeaderList, getCustomerManagementArea } from "../../../api/CustomerManagement";
 import { useAuthStore } from "../../../stores/authStore";
 import { useSptStore } from "../../../stores/sptStore";
 import { CustomerGroupListHeaderListType, CustomerManagementAreaType } from "../../../types/CustomerManagement";
@@ -118,7 +118,8 @@ export default function Registration() {
 
   const [customerNum, setCustomerNum] = useState("")
   const [customerDetailReqData, setCustomerDetailReqData] = useState({ sptNo: sptNo, groupNo: selectCustomerGroupNum, cstmrNo: customerNum });
-  const { data: customerDetail, refetch: refetchCustomerDetail } = getCustmoerDetail(customerDetailReqData);
+  const { data: customerDetailTop, refetch: refetchCustomerDetailTop } = getCustmoerDetailTop(customerDetailReqData);
+  const { data: customerDetailBottom, refetch: refetchCustomerDetailBottom } = getCustomerDetailBottom(customerDetailReqData);
   const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함
 
   //기본일 경우 선택한 고객들
@@ -209,22 +210,15 @@ export default function Registration() {
 
 
   useEffect(() => {
-    if (customerDetail?.data?.contents) {
-      const initialHeaders = Object.keys(customerDetail.data.contents)
-        .filter((key) => key.startsWith("hder")) // "hder"로 시작하는 키만 선택
-        .reduce((acc, key) => {
-          acc[key] = customerDetail.data.contents[key] || ""; // 기존 값이 있으면 넣고 없으면 빈 문자열
-          return acc;
-        }, {} as { [key: string]: string });
-
-      setHeaders(initialHeaders);
-      setCstmrNm(customerDetail.data.contents.cstmrNm);
-      setMbtlNo(customerDetail.data.contents.mbtlNo);
-      setTelNo(customerDetail.data.contents.telNo);
-      setCstmrRmk(customerDetail.data.contents.cstmrRmk);
-      setAddr(customerDetail.data.contents.addr);
+    if (customerDetailTop?.data.contents) {
+      setMbtlNo(customerDetailTop.data.contents.mbtlNo);
+      setTelNo(customerDetailTop.data.contents.telNo);
+      setCstmrRmk(customerDetailTop.data.contents.cstmrRmk);
+      setAddr(customerDetailTop.data.contents.addr);
+      setCstmrNm(customerDetailTop.data.contents.cstmrNm)
     }
-  }, [customerDetail]); // customerGroupHeaderList 변경 시 초기화
+
+  }, [customerDetailTop, customerDetailBottom]); // customerGroupHeaderList 변경 시 초기화
 
   // 특정 입력값 변경 핸들러
   const handleInputChange = (key: string, value: string) => {
@@ -521,7 +515,7 @@ export default function Registration() {
                     {/* height: 24px */}
                     <BasicInput
                       sx={{ minHeight: "24px", width: "60%" }}
-                      placeholder={customerDetail?.data.contents.cstmrNm}
+                      placeholder={customerDetailTop?.data.contents.cstmrNm}
                       value={cstmrNm}
                     />
                   </Box>
@@ -579,27 +573,28 @@ export default function Registration() {
                     {/* height: 24px */}
                     <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={addr} />
                   </Box>
-                  {customerGroupHeaderList &&
-                    Object.keys(customerGroupHeaderList).filter((key) => key.startsWith("hder")).map((key, index) => (
-                      <Box
-                        key={index}
-                        display="flex"
-                        flexDirection="column" // 세로 방향 설정
-                        flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
-                        justifyContent="flex-start" // 가로 방향 왼쪽 정렬
-                        width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
-                        gap={1}
-                      >
-                        <LabelTypo>{customerGroupHeaderList[key as keyof CustomerGroupListHeaderListType]}</LabelTypo>
-                        {/* height: 24px */}
-                        <BasicInput
-                          sx={{ minHeight: "24px" }}
-                          value={headers[key] || ""}
-                          onChange={(e) => handleInputChange(key, e.target.value)}
-                        />
-                      </Box>
-                    ))
-                  }
+                  {customerDetailBottom?.data &&
+                    customerGroupHeaderList &&
+                    Object.keys(customerGroupHeaderList) // customerGroupHeaderList의 hder01~hder10 순서대로 가져옴
+                      .filter((key) => key.startsWith("hder"))
+                      .map((key, index) => (
+                        <Box
+                          key={index}
+                          display="flex"
+                          flexDirection="column"
+                          flexGrow={1}
+                          justifyContent="flex-start"
+                          width="100%"
+                          gap={1}
+                        >
+                          <LabelTypo>{customerGroupHeaderList[key] || key}</LabelTypo> {/* LabelTypo에 헤더명 출력 */}
+                          <BasicInput
+                            sx={{ minHeight: "24px" }}
+                            value={customerDetailBottom.data[key] ?? ""} // 해당 hder 값이 없으면 빈 문자열
+                            onChange={(e) => handleInputChange(key, e.target.value)}
+                          />
+                        </Box>
+                      ))}
                   {/* {Array.from({ length: 40 }).map((_, index) => (
                     <Box
                       key={index}
@@ -624,7 +619,7 @@ export default function Registration() {
                   width={"100%"}
                   height={"100%"}
                   gap={1}
-                  //overflow="auto"
+                  overflow="auto"
                   alignItems="start"
                 >
                   <Box
@@ -638,9 +633,9 @@ export default function Registration() {
                     {/* height: 24px */}
                     <BasicInput
                       sx={{ minHeight: "24px", width: "60%" }}
-                      placeholder={customerDetail?.data.contents.cstmrNm}
+                      placeholder={customerDetailTop?.data.contents.cstmrNm}
                       value={cstmrNm}
-                      disabled
+
                     />
                   </Box>
                   <Box
@@ -652,7 +647,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>휴대전화</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} value={mbtlNo} disabled/>
+                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} value={mbtlNo} />
                   </Box>
                   <Box
                     display="flex"
@@ -663,7 +658,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>일반전화</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} value={telNo} disabled/>
+                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} value={telNo} />
                   </Box>
                   <Box
                     display="flex"
@@ -674,7 +669,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>고객정보</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={cstmrRmk} disabled/>
+                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={cstmrRmk} />
                   </Box>
                   <Box
                     display="flex"
@@ -708,65 +703,20 @@ export default function Registration() {
                       }}
                     />
                   </Box>
-                  <Box
-                    display="flex"
-                    flexDirection="column" // 세로 방향 설정
-                    justifyContent="flex-start" // 가로 방향 왼쪽 정렬
-                    width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
-                    gap={1}
-                  >
-                    <LabelTypo width={"100%"}>상담사</LabelTypo>
-                    {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} />
-                  </Box>
-                  <Box
-                    display="flex"
-                    flexDirection="column" // 세로 방향 설정
-                    justifyContent="flex-start" // 가로 방향 왼쪽 정렬
-                    width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
-                    gap={1}
-                  >
-                    <LabelTypo width={"100%"}>희망평형</LabelTypo>
-                    {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} />
-                  </Box>
-                  <Box
-                    display="flex"
-                    flexDirection="column" // 세로 방향 설정
-                    justifyContent="flex-start" // 가로 방향 왼쪽 정렬
-                    width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
-                    gap={1}
-                  >
-                    <LabelTypo width={"100%"}>광고매체</LabelTypo>
-                    {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} />
-                  </Box>
-                  <Box
-                    display="flex"
-                    flexDirection="column" // 세로 방향 설정
-                    justifyContent="flex-start" // 가로 방향 왼쪽 정렬
-                    width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
-                    gap={1}
-                  >
-                    <LabelTypo width={"100%"}>예금종류</LabelTypo>
-                    {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} />
-                  </Box>
-                  {/* {Array.from({ length: 40 }).map((_, index) => (
-                  <Box
-                    key={index}
-                    display="flex"
-                    flexDirection="column" // 세로 방향 설정
-                    flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
-                    justifyContent="flex-start" // 가로 방향 왼쪽 정렬
-                    width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
-                    gap={1}
-                  >
-                    <LabelTypo>예금종류</LabelTypo>
-                    
-                    <BasicInput sx={{ minHeight: "24px" }} />
-                  </Box>
-                ))} */}
+                  {customerDetailBottom?.data.contents.map((item, index) => (
+                    <Box
+                      key={index}
+                      display="flex"
+                      flexDirection="column"
+                      flexGrow={1}
+                      justifyContent="flex-start"
+                      width="100%"
+                      gap={1}
+                    >
+                      <LabelTypo>{item.itemNm}</LabelTypo>
+                      <BasicInput sx={{ minHeight: "24px" }} value={item.detailNm} readOnly />
+                    </Box>
+                  ))}
                 </GrayBox>
               </>
             )}
