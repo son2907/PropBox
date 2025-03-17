@@ -21,6 +21,11 @@ export const API = {
     const url = `/api/smsbass/auto/${spt}/${smsSeCd}`;
     return await instance.get<GetSmsbaseResponseType>(url);
   },
+  // 불법스팸 방지관련법
+  getSpamPdf: async () => {
+    const url = `/api/msg/spam`;
+    return await instance.get(url);
+  },
   // 자동문자 발송 조회
   getSmsmng: async () => {
     const url = `/api/spt/smsmng/${spt}`;
@@ -87,6 +92,7 @@ export const API = {
 };
 
 const KEY = {
+  getSpamPdf: () => ["/api/msg/spam"],
   getSmsBase: ({ smsSeCd }: GetSmsbaseRequestType) => [
     "/api/smsbass/auto",
     smsSeCd,
@@ -111,6 +117,16 @@ export const useGetSmsBase = ({ smsSeCd }: GetSmsbaseRequestType) => {
     queryKey: KEY.getSmsBase({ smsSeCd }),
     queryFn: async () => await API.getSmsBase({ smsSeCd }),
     gcTime: 0,
+  });
+};
+
+// 불법스팸 방지관련범
+export const useGetPdf = () => {
+  return useQuery({
+    queryKey: KEY.getSpamPdf(),
+    queryFn: async () => await API.getSpamPdf(),
+    gcTime: 0,
+    enabled: false,
   });
 };
 

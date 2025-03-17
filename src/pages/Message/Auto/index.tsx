@@ -29,6 +29,7 @@ import {
   API,
   useDeleteSmsTel,
   useGetCommonCode,
+  useGetPdf,
   useGetSmsBase,
   useGetSmsMng,
   useGetSmsTelList,
@@ -127,6 +128,8 @@ export default function AutoMessage() {
     useRadioGroup("S");
 
   // <------------------------------- API ------------------------------->
+
+  const { refetch: downPdf } = useGetPdf();
 
   const { data: basicMessage } = useGetSmsBase({
     smsSeCd: smsSeCd,
@@ -481,11 +484,20 @@ export default function AutoMessage() {
     setValue("autoMessage", `${getValues("autoMessage")} ${text}`);
   };
 
+  const onOpenPdf = () => {
+    downPdf().then((res) => {
+      checkApiFail(res);
+      if (res.data?.data.result == "SUCCESS") {
+        window.open(res.data?.data.contents);
+      }
+    });
+  };
+
   return (
     <>
       <Stack width={"100%"} height={"100%"} gap={1}>
         <GrayBox gap={1}>
-          <BasicButton sx={{ marginLeft: "auto" }}>
+          <BasicButton sx={{ marginLeft: "auto" }} onClick={onOpenPdf}>
             불법스팸 방지관련법
           </BasicButton>
           <BasicButton onClick={onSaveAll}>저장</BasicButton>

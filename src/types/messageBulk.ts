@@ -58,6 +58,30 @@ export type PostBulkListChkRequestType = {
   notGroupNoList: string[];
 };
 
+// 대량문자 > 상단 메세지 Get 요청
+
+export type BrdGetRequestType = {
+  smsKnd: string;
+};
+
+// 대량문자 > 상단 메세지 Get 응답
+
+export interface BrdResponseType extends ApiResponseType {
+  contents: {
+    sptNo: null;
+    smsKnd: null;
+    ntcnWords: string;
+    userId: null;
+  };
+}
+// 대량문자 > 상단 메세지
+export type BrdMsgRequestType = {
+  sptNo: string;
+  smsKnd: string;
+  ntcnWords: string;
+  userId: string;
+};
+
 // 메세지 전송
 export type BulksendMsgRequestType = {
   smsKnd: string;

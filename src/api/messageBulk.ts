@@ -1,5 +1,8 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
+  BrdGetRequestType,
+  BrdMsgRequestType,
+  BrdResponseType,
   BulksendMsgRequestType,
   BulksendTmpMsgRequestType,
   BulkTotalCntType,
@@ -70,6 +73,16 @@ export const API = {
     const url = `/api/spt/smstel/alot/list/chk2`;
     return await instance.post(url, requestData.body);
   },
+  // 대량문자 > 상단 메세지 조회
+  getBulkBrd: async ({ smsKnd }: BrdGetRequestType) => {
+    const url = `/api/spt/smstel/alot/brd/${spt}/${smsKnd}`;
+    return await instance.get<BrdResponseType>(url);
+  },
+  // 대량문자 > 상단 메세지
+  postBrd: async (requestData: { body: BrdMsgRequestType }) => {
+    const url = `/api/spt/smstel/alot/brd`;
+    return await instance.post(url, requestData.body);
+  },
   // 메세지 전송
   sendMsg: async (requestData: { body: BulksendMsgRequestType }) => {
     const url = `/api/spt/smstel/alot/msgsave`;
@@ -96,6 +109,11 @@ const KEY = {
     spt,
     page,
     limit,
+  ],
+  getBulkBrd: ({ smsKnd }: BrdGetRequestType) => [
+    "/api/spt/smstel/alot/brd",
+    spt,
+    smsKnd,
   ],
   getBulkMsgList: () => ["/api/spt/smstel/alot/list", spt],
   getBulkTotalCnt: () => ["/api/spt/smstel/alot/tmp/totalCnt", spt],
@@ -192,6 +210,24 @@ export const usePostBulkDuplication = () => {
   return useMutation({
     mutationFn: (requstData: { body: PostBulkListChkRequestType }) =>
       API.postDup(requstData),
+    gcTime: 0,
+  });
+};
+
+// 대량문자 > 상단 메세지 조회
+export const useGetBrdMsg = ({ smsKnd }: BrdGetRequestType) => {
+  return useQuery({
+    queryKey: KEY.getBulkBrd({ smsKnd }),
+    queryFn: async () => await API.getBulkBrd({ smsKnd }),
+    gcTime: 0,
+  });
+};
+
+// 대량문자 > 상단 메세지 작성
+export const usePostBrd = () => {
+  return useMutation({
+    mutationFn: (requstData: { body: BrdMsgRequestType }) =>
+      API.postBrd(requstData),
     gcTime: 0,
   });
 };

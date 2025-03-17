@@ -40,6 +40,8 @@ import {
   useGetBulkTotalCnt,
   usePostBulkTmpList,
   usePostBulkChkTotalCnt,
+  usePostBrd,
+  useGetBrdMsg,
 } from "../../../api/messageBulk";
 import { useDeleteMsg, usePostMsg } from "../../../api/callMessage";
 import { HiRefresh } from "react-icons/hi";
@@ -60,6 +62,8 @@ import { getFormattedDate } from "../../../utils/getFormattedDate";
 import { getFormatTime } from "../../../utils/getFormatTime";
 import TmpPreview from "./popup/TmpPreview";
 import TelInput from "./popup/TelInput";
+import { useAuthStore } from "../../../stores/authStore";
+import { UpdateCompletedModal } from "../../../components/Modal/modal/UpdateCompletedModal";
 
 export default function BulkMessage() {
   const tableData = [
@@ -125,6 +129,7 @@ export default function BulkMessage() {
     isAd: false,
     isReg: false,
     isInterval: false,
+    brd: "",
   };
 
   const autoMsgRef = useRef<HTMLTextAreaElement | null>(null);
@@ -143,8 +148,7 @@ export default function BulkMessage() {
 
   const [date, setDate] = useState<Date>(new Date()); // 날짜
   const [selectedTime, setSelectedTime] = useState(Date.now()); // 시간
-
-  // const isoDateTime = combineDateAndTime(date, selectedTime); // 시간과 날짜를 조합함
+  const [writeMode, setWriteMode] = useState<boolean>(false); // 상단문구
 
   const {
     selectedRows: s_1,
@@ -166,6 +170,10 @@ export default function BulkMessage() {
   }, [msgType]);
 
   // ----------------- API -----------------
+  const { data: brdMsg, refetch: refetchBrd } = useGetBrdMsg({
+    smsKnd: msgType,
+  });
+  const { mutate: postBrdMsg } = usePostBrd(); // 상단 알림 문구 수정
   const { data: BulkMsgList, refetch } = useGetBulkMsgList(); // 전송대상 테이블 리스트
   const { data: msgSaveList, refetch: refetchMsgSave } = useGetBulkSaveMsgList({
     page: currentPage,
@@ -173,7 +181,7 @@ export default function BulkMessage() {
   }); // 우측 메세지 리스트
   const { data: numberList } = useCrtfcList(); // 발신번호 리스트
 
-  const { mutate: tmpList } = usePostBulkTmpList();
+  const { mutate: tmpList } = usePostBulkTmpList(); //  임시대상 - 임시대상 목록 (복붙데이터 input)
   const { mutate: totalCnt } = usePostBulkChkTotalCnt(); //전송대상 확정인원
   const { data: tmpTotalCnt } = useGetBulkTotalCnt(); // 임시대상 확정인원
 
@@ -480,14 +488,56 @@ export default function BulkMessage() {
     refetch();
   };
 
+  const { loginId } = useAuthStore(["loginId"]);
+  const onWriteBrd = () => {
+    // 이미 수정상태일 경우, 수정함
+    if (writeMode) {
+      postBrdMsg(
+        {
+          body: {
+            sptNo: sptNo,
+            ntcnWords: getValues("brd"),
+            smsKnd: msgType,
+            userId: loginId,
+          },
+        },
+        {
+          onSuccess: (res) => {
+            if (res.data.message === "SUCCESS") {
+              openModal(UpdateCompletedModal, {
+                stack: false,
+                onClose: () => closeModal,
+                onSubmit: () => closeModal,
+                modalId: "delete",
+              });
+            }
+            refetchBrd();
+            setWriteMode(!writeMode);
+          },
+        }
+      );
+    } else {
+      setValue("brd", brdMsg?.data?.contents?.ntcnWords || "");
+      setWriteMode(!writeMode);
+    }
+  };
+
+  useEffect(() => {
+    setValue("brd", brdMsg?.data?.contents?.ntcnWords || "");
+  }, [msgType]);
+
   return (
     <Stack width={"100%"} height={"100%"} gap={1}>
       <GrayBox gap={1} marginBottom={2}>
-        <Typography color="error.main">
-          SMS(단문) 발송 시 URL 주소가 포함될 경우 SKT는 통신사 정책에 의해
-          문자가 스팸처리 됩니다.(KT, LG는 무관함)
-        </Typography>
-        <IconSquareButton>
+        {writeMode ? (
+          <BasicInput {...register("brd")} fullWidth />
+        ) : (
+          <Typography color="error.main">
+            {brdMsg?.data?.contents?.ntcnWords}
+          </Typography>
+        )}
+
+        <IconSquareButton onClick={onWriteBrd}>
           <LuPencil />
         </IconSquareButton>
         <BasicButton sx={{ marginLeft: "auto" }}>
