@@ -22,13 +22,16 @@ import TableSelect from "../../../components/Select/TableSelect";
 import { useTableSelect } from "../../../hooks/useTableSelect";
 import CheckboxTable from "../../../components/Table/CheckboxTable";
 import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
-import { getCumstomerList, getCustmoerDetailTop, getCustomerDetailBottom, getCustomerDetailList, getCustomerGroupHeaderList, getCustomerManagementArea } from "../../../api/CustomerManagement";
+import { customerSingleDelete, customerSingleUpdate, getCumstomerList, getCustmoerDetailTop, getCustomerDetailBottom, getCustomerDetailList, getCustomerGroupHeaderList, getCustomerManagementArea } from "../../../api/CustomerManagement";
 import { useAuthStore } from "../../../stores/authStore";
 import { useSptStore } from "../../../stores/sptStore";
-import { CustomerGroupListHeaderListType, CustomerManagementAreaType } from "../../../types/CustomerManagement";
+import { CustomerDetailListType, CustomerGroupListHeaderListType, CustomerManagementAreaType } from "../../../types/CustomerManagement";
 import { object } from "yup";
 import { useForm } from "react-hook-form";
 import useModal from "../../../hooks/useModal";
+import { UpdateCompletedModal } from "../../../components/Modal/modal/UpdateCompletedModal";
+import { ConfirmDeleteModal } from "../../../components/Modal/modal/ConfirmDeleteModal";
+import { EmptySelectModal } from "../../../components/Modal/modal/EmptySelectModal";
 
 export default function Registration() {
 
@@ -45,9 +48,6 @@ export default function Registration() {
   const [cstmrRmk, setCstmrRmk] = useState("");
   const [addr, setAddr] = useState("");
   const [headers, setHeaders] = useState<{ [key: string]: string }>({});
-
-
-
   //-------------------------왼쪽 테이블 조회
   // 왼쪽 테이블 페이징 기능
   const { currentPage, onChangePage } = usePagination();
@@ -77,12 +77,13 @@ export default function Registration() {
 
   //---------------------------오른쪽 테이블 조회
   //오른쪽 테이블 페이징 기능
-  const { currentPage : detailCurrentPage, onChangePage: onChangePagedetail } = usePagination();
+  const { currentPage: detailCurrentPage, onChangePage: onChangePagedetail } = usePagination();
 
   const { countValues: c_1, selectValue: s_1, handleChange: h_1 } = useTableSelect();
 
   const [coustomerDetailReqData, setCoustomerDetailReqData] = useState({ sptNo: sptNo, groupNo: selectCustomerGroupNum, cstmrNm: searchQuery, page: detailCurrentPage, limit: s_1 })
   const { data: customerDetailList, refetch: refetchCustomerDetailList } = getCustomerDetailList(coustomerDetailReqData);
+  const [customerDetailListData, setCustomerDetailListData] = useState<CustomerDetailListType[]>([]);
 
   const [category, setCategory] = useState("");
 
@@ -113,6 +114,33 @@ export default function Registration() {
   const { data: customerDetailTop, refetch: refetchCustomerDetailTop } = getCustmoerDetailTop(customerDetailReqData);
   const { data: customerDetailBottom, refetch: refetchCustomerDetailBottom } = getCustomerDetailBottom(customerDetailReqData);
   const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함
+
+  const CustomerUpdateReqData = {
+    body: {
+      sptNo: sptNo,
+      groupNo: selectCustomerGroupNum,
+      cstmrNo: customerNum,
+      cstmrNm: cstmrNm,
+      mbtlNo: mbtlNo,
+      telNo: telNo,
+      addr: addr,
+      hder01: headers.hder01 || "",
+      hder02: headers.hder02 || "",
+      hder03: headers.hder03 || "",
+      hder04: headers.hder04 || "",
+      hder05: headers.hder05 || "",
+      hder06: headers.hder06 || "",
+      hder07: headers.hder07 || "",
+      hder08: headers.hder08 || "",
+      hder09: headers.hder09 || "",
+      hder10: headers.hder10 || ""
+    }
+  };
+
+  const { mutate: customerUpdateAPI } = customerSingleUpdate();
+
+  const [customerDeleteReqData, setCustomerDeleteReqData] = useState({ sptNo: sptNo, cstmrNo: customerNum });
+  const { mutate: customerDeleteAPI } = customerSingleDelete();
 
   //기본일 경우 선택한 고객들
   const {
@@ -165,11 +193,6 @@ export default function Registration() {
       sptNo: sptNo,
       groupNo: selectCustomerGroupNum,
     }));
-    setCstmrNm("");
-    setMbtlNo("");
-    setTelNo("");
-    setCstmrRmk("");
-    setAddr("");
     setCustomerNum(""); // groupNo가 변경될 때 customerNum 초기화
   }, [selectCustomerGroupNum]);
 
@@ -182,7 +205,7 @@ export default function Registration() {
       page: detailCurrentPage,
       limit: s_1
     }));
-  },[detailCurrentPage, s_1])
+  }, [detailCurrentPage, s_1])
 
   useEffect(() => {
     if (customerGroupHeaderListData?.data.contents) {
@@ -197,19 +220,12 @@ export default function Registration() {
         groupNo: selectCustomerGroupNum,
         cstmrNo: customerNum
       }));
-    } else {
-      setCustomerNum("");
-      setCustomerDetailReqData((prev) => ({
-        ...prev,
-        groupNo: selectCustomerGroupNum,
-        cstmrNo: ""
-      }));
-    }
-  }, [customerNum]);
 
-  useEffect(() => {
-    console.log("고객 상세 정보:", customerDetailReqData, selectCustomerGroupNum);
-  }, [customerDetailReqData, selectCustomerGroupNum]);
+      // customerNum 변경 시 두 개의 API를 호출
+      //refetchCustomerDetailTop();
+      refetchCustomerDetailBottom();
+    }
+  }, [customerNum]); // 의존성 배열에 customerNum 추가
 
 
   useEffect(() => {
@@ -218,10 +234,21 @@ export default function Registration() {
       setTelNo(customerDetailTop.data.contents.telNo);
       setCstmrRmk(customerDetailTop.data.contents.cstmrRmk);
       setAddr(customerDetailTop.data.contents.addr);
-      setCstmrNm(customerDetailTop.data.contents.cstmrNm)
+      setCstmrNm(customerDetailTop.data.contents.cstmrNm);
+    } else {
+      setMbtlNo("");
+      setTelNo("");
+      setCstmrRmk("");
+      setAddr("");
+      setCstmrNm("");
     }
+  }, [customerDetailTop]); // customerGroupHeaderList 변경 시 초기화
 
-  }, [customerDetailTop, customerDetailBottom]); // customerGroupHeaderList 변경 시 초기화
+  useEffect(() => {
+    if(customerDetailList?.data.contents) {
+      setCustomerDetailListData(customerDetailList.data.contents);
+    }
+  },[customerDetailList])
 
   // 특정 입력값 변경 핸들러
   const handleInputChange = (key: string, value: string) => {
@@ -229,6 +256,96 @@ export default function Registration() {
       ...prev,
       [key]: value,
     }));
+  };
+
+  const handleUpdate = () => {
+    if (selectCustomerGroupNum || customerNum) {
+      console.log("수정 데이터 확인:", CustomerUpdateReqData);
+      customerUpdateAPI(CustomerUpdateReqData, {
+        onSuccess: (response) => {
+          if (response.data.result === "SUCCESS") {
+            console.log("수정완");
+            updateCompletedModal();
+          }
+        }
+      })
+    }
+  };
+
+  const handleSelectCustomer = () => {
+    const customerList = Array.from(solutionCustomerSelectedRows).map((rowId) => {
+      const selectedItem = customerDetailListData.find(
+        (item) => item.cstmrNo === rowId
+      );
+      return {
+        custmNo : selectedItem?.cstmrNo || "",
+        //customerNm: selectedItem?.cstmrNm || "",
+      };
+    });
+
+    console.log("고객번호 확인",customerList);
+  }
+
+  const updateCompletedModal = () => {
+    openModal(UpdateCompletedModal, {
+      modalId: "UpdateCompletedModal",
+      stack: false,
+      onClose: () => closeModal,
+      onSubmit: () => {
+        window.location.reload();
+      },
+    });
+  };
+
+  useEffect(() => {
+    if (customerDetailBottom) {
+      console.log("아래 데이터 확인", customerDetailBottom.data.contents);
+    }
+  }, [customerDetailBottom]);
+
+  const confirmDeleteModal = (sptNo: string, cstmrNo: string) => {
+    openModal(ConfirmDeleteModal, {
+      modalId: "Delete",
+      stack: false,
+      onClose: () => closeModal,
+      onSubmit: () => {
+        handleDelete(sptNo, cstmrNo); // 저장된 userSelectRow를 사용하여 삭제
+      },
+    });
+  };
+
+  const handleDelete = (sptNo: string, cstmrNo: string) => {
+    const reqData = { sptNo, cstmrNo };
+
+    console.log("삭제 데이터 확인:", reqData);
+
+    if (sptNo || cstmrNo) {
+      customerDeleteAPI(reqData, {
+        onSuccess: (response) => {
+          if (response.data.result === "SUCCESS") {
+            console.log("response.data", response.data);
+            refetchCustomerDetailList(); // 성공 시 목록 새로고침
+          }
+        },
+        onError: (error) => {
+          console.error("그룹 삭제 실패:", error);
+        }
+      });
+    } else {
+      //선택된 그룹 또는 고객이 없을경우
+      emptySelectionModal();
+    };
+  };
+
+  const emptySelectionModal = () => {
+    openModal(EmptySelectModal, {
+      modalId: "emptySelectModal",
+      stack: false,
+      onClose: () => closeModal,
+      onSubmit: () => {
+        window.close();
+      },
+    });
   };
 
   return (
@@ -249,30 +366,7 @@ export default function Registration() {
                   }}
                 />
                 <BasicButton sx={{ color: "root.mainBlue", border: 1 }}
-                  onClick={() => {
-                    // openPopup({
-                    //   url: smsSendPopup.url,
-                    //   windowName: smsSendPopup.windowName,
-                    //   windowFeatures: smsSendPopup.windowFeatures,
-                    // });
-                    const selectedCustomers = (customerDetailList?.data.contents || [])
-                      .filter((item) => solutionCustomerSelectedRows.has(item.cstmrNo)) // 선택된 고객 필터링
-                      .map((item) => ({
-                        customerNo: item.cstmrNo,
-                        phoneNum: item.mbtlNo
-                      }));
-
-                    console.log(selectedCustomers);
-
-                    // 고객번호 배열
-                    const customerNos = selectedCustomers.map(item => item.customerNo);
-
-                    // 고객 전화번호 배열
-                    const customerPhoneNums = selectedCustomers.map(item => item.phoneNum);
-
-                    console.log("선택된 고객번호 배열:", customerNos);
-                    console.log("선택된 전화번호 배열:", customerPhoneNums);
-                  }}
+                  onClick={handleSelectCustomer}
                 >
                   SMS 전송
                 </BasicButton>
@@ -386,6 +480,7 @@ export default function Registration() {
                               <CheckboxTable.Td>
                                 <BasicButton onClick={() => {
                                   setCustomerNum(item.cstmrNo);
+                                  //console.log("선택한 고객번호:",item.cstmrNo);
                                 }}>
                                   상세보기
                                 </BasicButton>
@@ -517,8 +612,7 @@ export default function Registration() {
                     {/* height: 24px */}
                     <BasicInput
                       sx={{ minHeight: "24px", width: "60%" }}
-                      placeholder={customerDetailTop?.data.contents.cstmrNm}
-                      value={cstmrNm}
+                      value={cstmrNm ?? ""}
                     />
                   </Box>
                   <Box
@@ -532,7 +626,7 @@ export default function Registration() {
                     {/* height: 24px */}
                     <BasicInput
                       sx={{ minHeight: "24px", width: "60%" }}
-                      value={mbtlNo}
+                      value={mbtlNo ?? ""}
                     />
                   </Box>
                   <Box
@@ -546,7 +640,7 @@ export default function Registration() {
                     {/* height: 24px */}
                     <BasicInput
                       sx={{ minHeight: "24px", width: "60%" }}
-                      value={telNo}
+                      value={telNo ?? ""}
                     />
                   </Box>
                   <Box
@@ -558,7 +652,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>고객정보</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={cstmrRmk} />
+                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={cstmrRmk ?? ""} />
                   </Box>
                   <Box
                     display="flex"
@@ -570,7 +664,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>주소</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={addr} />
+                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={addr ?? ""} />
                   </Box>
                   {customerDetailBottom?.data &&
                     customerGroupHeaderList &&
@@ -589,7 +683,7 @@ export default function Registration() {
                           <LabelTypo>{customerGroupHeaderList[key] || key}</LabelTypo> {/* LabelTypo에 헤더명 출력 */}
                           <BasicInput
                             sx={{ minHeight: "24px" }}
-                            value={customerDetailBottom.data[key] ?? ""} // 해당 hder 값이 없으면 빈 문자열
+                            value={headers[key] ? headers[key] : customerDetailBottom.data.contents[0][key] || ""} // 해당 hder 값이 없으면 빈 문자열
                             onChange={(e) => handleInputChange(key, e.target.value)}
                           />
                         </Box>
@@ -631,9 +725,7 @@ export default function Registration() {
                     {/* height: 24px */}
                     <BasicInput
                       sx={{ minHeight: "24px", width: "60%" }}
-                      placeholder={customerDetailTop?.data.contents.cstmrNm}
-                      value={cstmrNm}
-
+                      value={cstmrNm ?? ""}
                     />
                   </Box>
                   <Box
@@ -645,7 +737,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>휴대전화</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} value={mbtlNo} />
+                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} value={mbtlNo ?? ""} />
                   </Box>
                   <Box
                     display="flex"
@@ -656,7 +748,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>일반전화</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} value={telNo} />
+                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} value={telNo ?? ""} />
                   </Box>
                   <Box
                     display="flex"
@@ -667,7 +759,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>고객정보</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={cstmrRmk} />
+                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={cstmrRmk ?? ""} />
                   </Box>
                   <Box
                     display="flex"
@@ -678,7 +770,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>주소</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={addr} />
+                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={addr ?? ""} />
                   </Box>
                   <Box
                     display="flex"
@@ -718,13 +810,17 @@ export default function Registration() {
                 </GrayBox>
               </>
             )}
-            <GrayBox width={"100%"}>
-              <Stack direction={"row"} width={"100%"} gap={1} justifyContent={"end"}>
-                <BasicButton>추가</BasicButton>
-                <BasicButton>저장</BasicButton>
-                <BasicButton>삭제</BasicButton>
-              </Stack>
-            </GrayBox>
+            {category === "기본" ? (
+              <GrayBox width={"100%"}>
+                <Stack direction={"row"} width={"100%"} gap={1} justifyContent={"end"}>
+                  <BasicButton>추가</BasicButton>
+                  <BasicButton onClick={handleUpdate}>저장</BasicButton>
+                  <BasicButton onClick={() => confirmDeleteModal(sptNo, customerNum)}>삭제</BasicButton>
+                </Stack>
+              </GrayBox>
+            ) : (
+              <></>
+            )}
           </Stack>
         </TableBox>
       </Stack>

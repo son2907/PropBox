@@ -57,6 +57,10 @@ const Sidebar = memo(function Sidebar() {
     navigate("/");
   };
 
+  useEffect(() => {
+    console.log("allMenus",data?.data.contents)
+  },[data])
+
   return (
     <SideMenu fold={fold}>
       <LogoArea>
@@ -85,19 +89,18 @@ const Sidebar = memo(function Sidebar() {
           backgroundColor: "#e5e7eb",
         }}
       />
-      {testMenuList?.map((item, index) => {
+      {allMenus?.map((item, index) => {
         return (
           <Solution
             key={index}
             label={item.label}
-            // icon={item.icon}
             auth={item.auth}
-            isOpen={true}
+            isOpen={item.label !== "시스템관리"} // 시스템관리일 경우 false
             fold={fold}
           >
-            {item.subMenu.map((subData, index) => (
+            {item.subMenu.map((subData, subIndex) => (
               <MenuItem
-                key={index}
+                key={subIndex}
                 label={subData.label}
                 url={subData.url}
                 fold={fold}

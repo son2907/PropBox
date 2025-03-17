@@ -204,3 +204,30 @@ export type CustomerGroupDeleteType = {
     sptNo: string,
     groupNo: string,
 };
+
+//고객관리 고객 개별 수정
+export type CustomerSingleUpdateType = {
+    sptNo: string,
+    groupNo: string,
+    cstmrNo: string,
+    cstmrNm: string,
+    mbtlNo: string,
+    telNo: string,
+    addr: string,
+    hder01: string,
+    hder02: string,
+    hder03: string,
+    hder04: string,
+    hder05: string,
+    hder06: string,
+    hder07: string,
+    hder08: string,
+    hder09: string,
+    hder10: string
+};
+
+//고객관리 고객 개별 삭제
+export type CustomerSingleDeleteType = {
+    sptNo: string,
+    cstmrNo: string,
+}
