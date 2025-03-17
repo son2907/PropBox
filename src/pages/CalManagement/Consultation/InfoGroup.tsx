@@ -122,6 +122,12 @@ export default function InfoGroup({ tabType, selectedDate, setSelectedDate }: Ta
     defaultValues: defaultValue,
   });
 
+  const [isMissedCall, setIsMissedCall] = useState(false); //부재콜 체크박스
+
+  const handleMissedCallChange = (event) => {
+    setIsMissedCall(event.target.checked);
+  };
+
   // 관리지역 select
   const { selectListData, selectValue, handleChange } = useSelect(
     useMemo(() => areaList?.data.contents || [], [areaList?.data.contents]),
@@ -360,7 +366,7 @@ export default function InfoGroup({ tabType, selectedDate, setSelectedDate }: Ta
         areaNo: selectValue, // 입력값
         spcmnt: data.spcmnt, // 입력값
         callYn: fromSocket ? socketCallYn || "" : callYn || "",
-        trsmYn: fromSocket ? socketTrsmYn || "" : trsmYn || "",
+        trsmYn: isMissedCall ? "N" : fromSocket ? socketTrsmYn || "" : trsmYn || "",
         legacySlutnId: isWorUn ? "CS0001" : "TM0001",
         userId: loginId || "",
         telCnsltCnList: telCnsltCnList,
@@ -523,7 +529,7 @@ export default function InfoGroup({ tabType, selectedDate, setSelectedDate }: Ta
                 </IconSquareButton>
                 {tabType ? (
                   <>
-                    <input type="checkbox" />
+                    <input type="checkbox" checked={isMissedCall} onChange={handleMissedCallChange}/>
                     <Typography>부재콜</Typography>
                   </>
                 ) : null}
