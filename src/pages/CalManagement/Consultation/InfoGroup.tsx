@@ -440,7 +440,7 @@ export default function InfoGroup({ tabType, selectedDate, setSelectedDate }: Ta
           boxSizing: "border-box",
         }}
       >
-        <Stack width={"100%"} height={"50%"} paddingBottom={1}>
+        <Stack width={"100%"} height={"33%"} paddingBottom={1}>
           {/* 상단 회색박스 ********************************************** */}
           <GrayBox
             height={"50px"}
@@ -497,7 +497,7 @@ export default function InfoGroup({ tabType, selectedDate, setSelectedDate }: Ta
           </GrayBox>
           <Box display="flex" width={"100%"} padding={0.8} paddingLeft={2}>
             {/* 왼쪽 */}
-            <Stack width={"80%"} gap={1}>
+            <Stack width={"80%"} gap={0.2}>
               <CenteredBox>
                 <LabelTypo fontSize={"16px"}>
                   <Typography color="error.main">*</Typography>
@@ -510,7 +510,7 @@ export default function InfoGroup({ tabType, selectedDate, setSelectedDate }: Ta
                     openPopup(searchPopupInfo);
                   }}
                 >
-                  <IoSearchOutline size={"1em"} />
+                  <IoSearchOutline size={"14px"} />
                 </IconSquareButton>
               </CenteredBox>
               <CenteredBox>
@@ -525,7 +525,7 @@ export default function InfoGroup({ tabType, selectedDate, setSelectedDate }: Ta
                     openPopup(searchPopupInfo);
                   }}
                 >
-                  <IoSearchOutline size={"1em"} />
+                  <IoSearchOutline size={"14px"} />
                 </IconSquareButton>
                 {tabType ? (
                   <>
@@ -548,7 +548,7 @@ export default function InfoGroup({ tabType, selectedDate, setSelectedDate }: Ta
                       onCall({ type: "Mbt" });
                     }}
                   >
-                    <MdPhoneAndroid size={"1rem"} />
+                    <MdPhoneAndroid size={"14px"} />
                   </IconSquareButton>
                 ) : null}
                 <LabelTypo marginLeft={2} fontSize={"16px"}>일반전화</LabelTypo>
@@ -560,7 +560,7 @@ export default function InfoGroup({ tabType, selectedDate, setSelectedDate }: Ta
                       onCall({ type: "tel" });
                     }}
                   >
-                    <IoCallOutline size={"1rem"} />
+                    <IoCallOutline size={"14px"} />
                   </IconSquareButton>
                 ) : null}
               </CenteredBox>
@@ -713,14 +713,14 @@ export default function InfoGroup({ tabType, selectedDate, setSelectedDate }: Ta
             </BasicTable>
           </Box>
         </Box>
-        <Stack gap={1} marginRight={1} marginLeft={1}>
-          <GrayBox height={"40px"} borderRadius={0} sx={{fontSize:"16px"}}>
+        <Stack gap={1} marginRight={1} marginLeft={1} height={"20%"}>
+          <GrayBox height={"50%"} borderRadius={0} sx={{fontSize:"16px"}}>
             특기사항
           </GrayBox>
-          <TextArea height="140px" {...register("spcmnt")} />
+          <TextArea height="100%" {...register("spcmnt")} />
         </Stack>
         <GrayBox
-          height={"40px"}
+          height={"5%"}
           marginTop={1}
           justifyContent={"flex-end"}
           borderRadius={0}

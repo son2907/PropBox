@@ -10,12 +10,13 @@ const BasicInput = forwardRef<HTMLInputElement, InputProps>(
     return (
       <OutlinedInput
         {...rest}
-        size="small"
+        //size="small"
         placeholder={placeholder}
         inputRef={ref}
         sx={{
           backgroundColor: "white",
           ...(rest.sx || {}),
+          height: "30px"
         }}
       />
     );
