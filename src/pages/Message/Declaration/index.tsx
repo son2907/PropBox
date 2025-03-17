@@ -30,12 +30,17 @@ import useModal from "../../../hooks/useModal";
 import { BasicCompletedModl } from "../../../components/Modal/modal/BasicCompletedModl";
 import { DeleteCompleteModal } from "./popup/Modal/DeleteCompleteModal";
 import { MultipleDeleteModal } from "../../../components/Modal/modal/MultipleDeleteModal";
+import { AlertModal } from "./popup/Modal/AlertModal";
 
 export default function DeclarationMessage() {
-  const { selectedRows: ts_1, toggleRowsSelection: tt_1 } =
-    useMultiRowSelection();
+  const {
+    selectedRows: ts_1,
+    toggleRowsSelection: tt_1,
+    resetSelectedRows,
+  } = useMultiRowSelection();
 
   const [mbtlNo, setMbtlNo] = useState("");
+
   const { register, getValues } = useForm({
     defaultValues: {
       mbtlNo: "",
@@ -85,19 +90,23 @@ export default function DeclarationMessage() {
     "groupNm"
   );
 
+  // 왼쪽 테이블 리스트
   const { data: kccListData, refetch: refetchList } = useGetKccList({
     page: l_c,
     limit: lt_s,
     groupNo: s_0,
     mbtlNo: getValues("mbtlNo"),
-  }); // 왼쪽 테이블 리스트
+  });
 
+  // 우측 테이블 리스트
   const { data: kccMsgData, refetch: retetchMsg } = useGetKccMsg({
-    // 우측 테이블 리스트
     page: r_c,
     limit: lt_s,
     mbtlNo: mbtlNo,
   });
+
+  console.log("kccListData:", kccListData);
+  console.log("kccMsgData:", kccMsgData);
 
   const { mutate: postKccReject } = usePostKccReject();
   const { mutate: deleteGroup } = useDeleteKccGroup();
@@ -107,7 +116,12 @@ export default function DeclarationMessage() {
 
   // 등록
   const onPost = () => {
-    if (ts_1.size == 0) return;
+    if (ts_1.size == 0) {
+      openModal(AlertModal, {
+        onClose: () => closeModal,
+      });
+      return;
+    }
 
     const list = filterDataByValues({
       data: kccListData?.data?.contents,
@@ -180,6 +194,9 @@ export default function DeclarationMessage() {
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
+      resetSelectedRows();
+      setMbtlNo("");
+      refetchList();
       retetchMsg();
     }
   };

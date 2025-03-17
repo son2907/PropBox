@@ -52,9 +52,6 @@ export default function Spam() {
         mbtlNo: 스팸문자,
       })),
     };
-
-    console.log("body:", body);
-
     uploadExcel(
       {
         body: body,
@@ -70,6 +67,7 @@ export default function Spam() {
               stack: false,
               onClose: () => closeModal,
             });
+            window.opener.location.reload();
           }
         },
       }
@@ -80,7 +78,7 @@ export default function Spam() {
     openModal(ConfirmMultipleDeletionModal, {
       itemCount: ts_1.size,
       modalId: "deleteMsg",
-      stack: false, //단일 모달 모드
+      stack: false,
       onClose: () => closeModal,
       onSubmit: () => {
         const selectedTableData = filterDataByValues({
@@ -91,8 +89,9 @@ export default function Spam() {
         const filteredTableData = tableData.filter(
           (item) =>
             !new Set(selectedTableData.map((item) => item.id)).has(item.id)
-        ); // 전체 배열에서 선택한 아이템 제거
+        );
         setTableData(filteredTableData);
+        resetSelectedRows();
       },
     });
   };
@@ -105,7 +104,7 @@ export default function Spam() {
           accept=".xlsx, .xls"
           style={{ display: "none" }}
           id="upload-file"
-          ref={fileInputRef} // ref 연결
+          ref={fileInputRef}
           onChange={async (e) => {
             try {
               const { headers, dataWithId } = await ExcelToTable(e);

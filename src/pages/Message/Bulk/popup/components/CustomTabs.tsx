@@ -24,7 +24,7 @@ const CustomTabs: React.FC<CustomTabsProps> = ({
       sx={{
         "& .MuiTab-root": {
           minWidth: "auto",
-          padding: "12px 24px",
+          marginRight: 0.2,
           border: "1px solid #d9d9d9",
           borderBottom: "none",
           borderRadius: "4px 4px 0 0",
@@ -33,7 +33,7 @@ const CustomTabs: React.FC<CustomTabsProps> = ({
           textTransform: "none",
         },
         "& .MuiTab-root.Mui-selected": {
-          backgroundColor: "root.borderPrimary",
+          backgroundColor: "#f1f1f1",
           color: "#000",
           fontWeight: "bold",
         },

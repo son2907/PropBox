@@ -16,8 +16,8 @@ export default function useModal() {
     open(Component, { ...props, stack: props?.stack ?? true });
   };
 
-  const closeModal = (key: string) => {
-    close(key);
+  const closeModal = (modalId: string) => {
+    close(modalId);
   };
 
   return { openModal, closeModal };

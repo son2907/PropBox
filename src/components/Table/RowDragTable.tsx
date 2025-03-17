@@ -165,7 +165,7 @@ const EmptyTable = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr className="bg-white">
           <td className="border-solid flex justify-center border border-b-0 border-t-0 border-gray-300 p-2 text-left last:border-0">
             조회 데이터가 존재하지 않습니다.
           </td>

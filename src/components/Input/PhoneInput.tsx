@@ -66,6 +66,7 @@ const PhoneInput = forwardRef<HTMLInputElement, InputProps>(
 
       setPhoneNum(numericValue);
       if (onChange) {
+        event.target.value = numericValue;
         onChange(event);
       }
     };

@@ -1,62 +1,42 @@
 import { Stack, Typography } from "@mui/material";
-import CenteredBox from "../../Box/CenteredBox";
-import PhoneInput from "../../Input/PhoneInput";
 import { useForm } from "react-hook-form";
-import GrayBox from "../../Box/GrayBox";
-import { BasicButton, IconButton } from "../../Button";
-import ModalBox from "..";
 import { IoMdClose } from "react-icons/io";
-import { useSptStore } from "../../../stores/sptStore";
-import useModal from "../../../hooks/useModal";
-import { BasicCompletedModl } from "./BasicCompletedModl";
-import { useApiRes } from "../../../utils/useApiRes";
-import { UseMutateFunction } from "@tanstack/react-query";
+import { useApiRes } from "../../../../utils/useApiRes";
+import useModal from "../../../../hooks/useModal";
+import { BasicCompletedModl } from "../../../../components/Modal/modal/BasicCompletedModl";
+import ModalBox from "../../../../components/Modal";
+import CenteredBox from "../../../../components/Box/CenteredBox";
+import { BasicButton, IconButton } from "../../../../components/Button";
+import PhoneInput from "../../../../components/Input/PhoneInput";
+import GrayBox from "../../../../components/Box/GrayBox";
+import { useBulkSendMsg } from "../../../../api/messageBulk";
 
 interface TelInputType {
+  msgData: any;
   onClose: () => void;
-  smsKnd: string;
-  mssage: string;
-  trnsmitTxt: string;
-  dsptchNo: string;
-  mutate: UseMutateFunction<any, unknown, { body: any }, unknown>; // mutate를 props로 받음
 }
-export default function TelInput({
-  smsKnd,
-  mssage,
-  trnsmitTxt,
-  dsptchNo,
-  onClose,
-  mutate,
-}: TelInputType) {
+export default function TelInput({ msgData, onClose }: TelInputType) {
   const { register, getValues } = useForm({
     defaultValues: {
       mbtlNo: "",
     },
   });
 
-  const { sptNo } = useSptStore();
   const checkApiFail = useApiRes();
   const { openModal, closeModal } = useModal();
+  const { mutate } = useBulkSendMsg();
 
   const onSend = () => {
-    const body = {
-      sptNo: sptNo,
-      smsKnd: smsKnd,
-      mssage: mssage,
-      trnsmitTxt: trnsmitTxt,
-      mbtlNo: getValues("mbtlNo"),
-      dsptchNo: dsptchNo,
-    };
-    const formData = new FormData();
-    formData.append("param", JSON.stringify(body));
+    const param = JSON.parse(msgData.get("param"));
+    param.mbtlNo = getValues("mbtlNo");
+    msgData.set("param", JSON.stringify(param));
 
     mutate(
       {
-        body: formData,
+        body: msgData,
       },
       {
         onSuccess: (res) => {
-          console.log("발송 결과:", res);
           const result = checkApiFail(res);
           if (result.data.message === "SUCCESS") {
             console.log("발송 성공:", res);

@@ -154,6 +154,7 @@ export default function ResultMessage() {
         msgResultExcel();
       },
       onDetail: () => {
+        console.log("selectResult:", selectResult);
         if (!selectResult) {
           openModal(ExcelAlert, {
             onClose: () => closeModal,
