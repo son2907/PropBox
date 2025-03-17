@@ -127,15 +127,6 @@ export default function SMSSending() {
   });
   const inputRef = useRef<HTMLInputElement>(null); // 파일 담을 ref
 
-  const popup = {
-    url: PathConstants.Message.Preview,
-    windowName: "전송대상 미리보기",
-  };
-
-  const preview = () => {
-    openPopup(popup);
-  };
-
   const { selectListData, selectValue, handleChange } = useSelect(
     crtfcListAPi?.data.contents,
     "cid",
@@ -478,7 +469,6 @@ export default function SMSSending() {
               <Typography>전송 대상 : 1명</Typography>
               <Typography> 수신 거부 대상 1명</Typography>
               <Typography> 확정 대상: 1명</Typography>
-              <BasicButton onClick={preview}>미리보기</BasicButton>
             </CenteredBox>
             <CenteredBox gap={1}>
               <input type="checkbox" {...register("regYn")} />

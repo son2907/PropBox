@@ -20,7 +20,6 @@ import PhoneNumber from "../pages/Message/Auto/popup/PhoneNumber";
 import BulkMessage from "../pages/Message/Bulk";
 import RejectMessage from "../pages/Message/Reject";
 import ResultMessage from "../pages/Message/Result";
-import Preview from "../pages/Message/Bulk/popup/Preview";
 import DeclarationMessage from "../pages/Message/Declaration";
 import Spam from "../pages/Message/Declaration/popup/Spam";
 import GroupCell from "../pages/Message/Declaration/popup/GroupCell";
@@ -241,10 +240,6 @@ export const routes: RouteObject[] = [
     element: <PhoneNumber />,
   },
   {
-    path: PathConstants.Message.Preview,
-    element: <Preview />,
-  },
-  {
     path: PathConstants.Message.Sapm,
     element: <Spam />,
   },
@@ -258,7 +253,9 @@ export const routes: RouteObject[] = [
   },
   {
     path: PathConstants.Message.SMSDetail,
-    element: <SMSDetail msgKnd="" yyyyMm="" idx={0} onClose={() => {}} modalId=""/>,
+    element: (
+      <SMSDetail msgKnd="" yyyyMm="" idx={0} onClose={() => {}} modalId="" />
+    ),
   },
   {
     path: PathConstants.Customer.RegistrationUpload,
@@ -358,6 +355,6 @@ export const routes: RouteObject[] = [
   },
   {
     path: PathConstants.Customer.CustomerSmsSending,
-    element:<CustomerSMSSending/>
+    element: <CustomerSMSSending />,
   },
 ];
