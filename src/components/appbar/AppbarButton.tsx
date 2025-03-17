@@ -58,7 +58,7 @@ export default function AppbarButton({ ...rest }: ButtonProps) {
         color: "appbar.appbarItemTextColor",
         padding: "7px 20px 7px 20px",
         borderRadius: 2,
-        fontSize: "14px",
+        fontSize: "18px",
       }}
       onClick={handleClick}
       onKeyDown={handleKeyDown}

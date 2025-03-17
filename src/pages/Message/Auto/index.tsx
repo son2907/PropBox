@@ -470,7 +470,7 @@ export default function AutoMessage() {
             width={"30%"}
             minWidth={"350px"}
             height={"100%"}
-            gap={5}
+            gap={1}
             border="1px solid #E5E5E5"
             borderRadius="8px"
             padding={2}

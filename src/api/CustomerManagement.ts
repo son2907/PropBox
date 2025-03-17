@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { CustomerDetailBottomResponse, CustomerDetailListResponse, CustomerDetailTopResponse, CustomerGroupDeleteType, CustomerGroupInsertType, CustomerGroupListHeaderListResponse, CustomerGroupListResponseType, CustomerListResponse, CustomerManagementAreaResponse, UpdateGroupHeader } from "../types/CustomerManagement";
+import { CustomerDetailBottomResponse, CustomerDetailListResponse, CustomerDetailTopResponse, CustomerGroupDeleteType, CustomerGroupInsertType, CustomerGroupListHeaderListResponse, CustomerGroupListResponseType, CustomerListResponse, CustomerManagementAreaResponse, CustomerSingleDeleteType, CustomerSingleUpdateType, UpdateGroupHeader } from "../types/CustomerManagement";
 import instance from "../utils/axiosInstance";
 
 const API = {
@@ -29,7 +29,7 @@ const API = {
         return await instance.get<CustomerDetailListResponse>(url)
     },
     //고객관리 고객 상세 조회 - 오른쪽 input (고객이름~주소)
-    getCustmoerDetailTop: async (requestData : {sptNo:string,groupNo:string,cstmrNo:string }) => {
+    getCustmoerDetailTop: async (requestData : {sptNo:string,groupNo:string,cstmrNo :string }) => {
         const url = `/api/custom/detail/top?sptNo=${requestData.sptNo}&groupNo=${requestData.groupNo}&cstmrNo=${requestData.cstmrNo}`;
         return await instance.get<CustomerDetailTopResponse>(url);
     },
@@ -51,6 +51,16 @@ const API = {
     //고객관리 - 고객 그룹 관리 그룹 삭제
     customerGroupDelete: async ({sptNo, groupNo}: CustomerGroupDeleteType) => {
         const url = `/api/custom/group/${sptNo}/${groupNo}`;
+        return await instance.delete(url);
+    },
+    //고객관리 - 고객 개별 수정
+    customerSingleUpdate: async ( requestData : { body : CustomerSingleUpdateType}) => {
+        const url = '/api/custom';
+        return await instance.post(url, requestData.body);
+    },
+    //고객관리 개별 삭제
+    customerSingleDelete: async ({sptNo, cstmrNo}: CustomerSingleDeleteType) => {
+        const url = `/api/custom/delete?sptNo=${sptNo}&cstmrNo=${cstmrNo}`;
         return await instance.delete(url);
     },
 };
@@ -79,6 +89,10 @@ const KEY = {
     customerGroupInsert: () => ['/api/custom/group'],
     //고객관리 - 고객 그룹 관리 그룹 삭제
     customerGroupDelete: () => ["/api/custom/group","delete"],
+    //고객관리 - 고객 개별 수정
+    customerSingleUpdate: () => ['/api/custom'],
+    //고객관리 개별 삭제
+    customerSingleDelete: () => ["/api/custom/delete","delete"],
 };
 
 //고객 관리 그룹 목록 조회
@@ -86,9 +100,9 @@ export const getCustomerGroupList = (sptNo : string) => {
     return useQuery({
         queryKey: KEY.getCustomerGroupList(sptNo),
         queryFn: async () => {
-            console.log("고객 관리 그룹 목록 조회 보낸데이터:", sptNo);
+            //console.log("고객 관리 그룹 목록 조회 보낸데이터:", sptNo);
             const result = await API.getCustomerGroupList(sptNo);
-            console.log("고객 관리 그룹 목록 조회 데이터:", result);
+            //console.log("고객 관리 그룹 목록 조회 데이터:", result);
             return result;
         }, 
         enabled: !!sptNo
@@ -98,11 +112,11 @@ export const getCustomerGroupList = (sptNo : string) => {
 //고객 관리 그룹 헤더 조회
 export const getCustomerGroupHeaderList = (requestData: { sptNo: string; groupNo: string }) => {
     return useQuery({
-        queryKey: KEY.getCustomerGroupHeaderList(requestData), // ✅ KEY를 사용하도록 수정
+        queryKey: KEY.getCustomerGroupHeaderList(requestData),
         queryFn: async () => {
-            console.log("고객 관리 그룹 헤더 조회 보낸 데이터:", requestData);
+            //console.log("고객 관리 그룹 헤더 조회 보낸 데이터:", requestData);
             const result = await API.getCustomerGroupHeaderList(requestData);
-            console.log("고객 관리 그룹 헤더 조회 데이터:", result);
+           //console.log("고객 관리 그룹 헤더 조회 데이터:", result);
             return result;
         },
         enabled: !!requestData.sptNo || !!requestData.groupNo
@@ -128,9 +142,9 @@ export const getCumstomerList = (requestData: { sptNo: string, cstmrNm: string, 
     return useQuery({
         queryKey: KEY.getCumstomerList(requestData),
         queryFn: async () => {
-            console.log("고객 조회 보낸 데이터:", requestData);
+            //console.log("고객 조회 보낸 데이터:", requestData);
             const result = await API.getCumstomerList(requestData);
-            console.log("고객 조회 데이터:",result);
+            //console.log("고객 조회 데이터:",result);
             return result;
         },
         enabled: !!requestData.sptNo
@@ -144,7 +158,7 @@ export const getCustomerDetailList = (requestData: {sptNo: string, groupNo: stri
         queryFn: async () => {
             //console.log("고객 상세 조회 보낸 데이터:", requestData);
             const result = await API.getCustomerDetailList(requestData);
-            //console.log("고객 상세 조회 데이터:",result);
+            //console.log("고객 상세 조회 테이블 데이터:",result);
             return result;
         },
         enabled: !!requestData.groupNo
@@ -156,9 +170,9 @@ export const getCustmoerDetailTop = (requestData : {sptNo:string,groupNo:string,
     return useQuery({
         queryKey: KEY.getCustmoerDetailTop(requestData),
         queryFn: async () => {
-            console.log("고객 상세 조회 보낸 데이터:", requestData);
+            console.log("고객 위쪽 상세 조회 보낸 데이터:", requestData);
             const result = await API.getCustmoerDetailTop(requestData);
-            console.log("고객 상세 조회 데이터:",result);
+            console.log("고객 위쪽 상세 조회 데이터:",result);
             return result;
         },
         enabled: !!requestData.cstmrNo
@@ -170,9 +184,9 @@ export const getCustomerDetailBottom = (requestData : {sptNo:string,groupNo:stri
     return useQuery({
         queryKey: KEY.getCustomerDetailBottom(requestData),
         queryFn: async () => {
-            console.log("아래부분 보낸 데이터:",requestData);
+            //console.log("아래부분 보낸 데이터:",requestData);
             const result = await API.getCustomerDetailBottom(requestData);
-            console.log("아래 데이터:",result);
+            //console.log("아래 데이터:",result);
             return result;
         },
         enabled: !!requestData.cstmrNo
@@ -184,9 +198,9 @@ export const getCustomerManagementArea = (sptNo: string) => {
     return useQuery({
         queryKey: KEY.getCustomerManagementArea(sptNo),
         queryFn: async () => {
-            console.log("고객 관리지역 보낸 데이터:", sptNo);
+            //console.log("고객 관리지역 보낸 데이터:", sptNo);
             const result = await API.getCustomerManagementArea(sptNo);
-            console.log("고객 관리지역 데이터:",result);
+            //console.log("고객 관리지역 데이터:",result);
             return result;
         },
         enabled: !!sptNo,
@@ -212,6 +226,34 @@ export const customerGroupDelete = () => {
     return useMutation({
         mutationKey: KEY.customerGroupDelete(),
         mutationFn: ({sptNo, groupNo}: CustomerGroupDeleteType) => API.customerGroupDelete({sptNo, groupNo}),
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    });
+};
+
+//고객관리 - 고객 개별 수정
+export const customerSingleUpdate = () => {
+    return useMutation({
+        mutationKey: KEY.customerSingleUpdate(),
+        mutationFn: (requestData : { body : CustomerSingleUpdateType}) => API.customerSingleUpdate(requestData),
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    })
+};
+
+//고객관리 개별 삭제
+export const customerSingleDelete = () => {
+    return useMutation({
+        mutationKey: KEY.customerSingleDelete(),
+        mutationFn: ({sptNo, cstmrNo}: CustomerSingleDeleteType) => API.customerSingleDelete({sptNo, cstmrNo}),
         onSuccess: (response) => {
             console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
         },

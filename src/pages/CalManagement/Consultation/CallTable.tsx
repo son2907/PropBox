@@ -148,15 +148,15 @@ export default function CallTable({ tabType, tabChange }: TabType) {
   return (
     <>
       <TabMenus value={tabType} handleChange={tabChange}>
-        <TabMenus.Tab label="전화받기" disableRipple />
-        <TabMenus.Tab label="전화걸기" disableRipple />
+        <TabMenus.Tab label="전화받기" disableRipple sx={{fontSize:"16px"}}/>
+        <TabMenus.Tab label="전화걸기" disableRipple sx={{fontSize:"16px"}}/>
       </TabMenus>
       {/* 전화받기 탭 */}
       <Stack height={"100%"} overflow={"hidden"}>
         <TabPanel value={tabType} index={0}>
           <TabMenus value={takeValue} handleChange={takeChange}>
-            <TabMenus.Tab label="통화콜" disableRipple />
-            <TabMenus.Tab label="부재콜" disableRipple />
+            <TabMenus.Tab label="통화콜" disableRipple sx={{fontSize:"16px"}}/>
+            <TabMenus.Tab label="부재콜" disableRipple sx={{fontSize:"16px"}}/>
           </TabMenus>
           {/*  통화콜, 부재콜 탭에 따라 데이터가 바뀌도록 데이터 바인딩 해야함  */}
 
@@ -189,7 +189,7 @@ export default function CallTable({ tabType, tabChange }: TabType) {
             </TableBox.Inner>
           </TableBox>
 
-          <SearchResult total={100} />
+          <SearchResult total={100}/>
         </TabPanel>
 
         {/* 전화 걸기 탭 */}

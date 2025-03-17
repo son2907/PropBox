@@ -442,7 +442,7 @@ export default function InfoGroup({ tabType }: TabType) {
             marginBottom={1}
             borderRadius={0}
           >
-            <LabelTypo>상담일자</LabelTypo>
+            <LabelTypo fontSize={"16px"}>상담일자</LabelTypo>
             <Box width={"250px"}>
               <Calendar
                 selectedDate={selectedDate}
@@ -465,6 +465,7 @@ export default function InfoGroup({ tabType }: TabType) {
                 onClick={() => {
                   openPopup(statusPopupInfo);
                 }}
+                sx={{fontSize:"16px"}}
               >
                 상담현황
               </BasicButton>
@@ -472,15 +473,17 @@ export default function InfoGroup({ tabType }: TabType) {
                 onClick={() => {
                   window.location.reload();
                 }}
+                sx={{fontSize:"16px"}}
               >
                 추가
               </BasicButton>
-              <BasicButton>삭제</BasicButton>
+              <BasicButton sx={{fontSize:"16px"}}>삭제</BasicButton>
               <BasicButton
                 onClick={() => {
                   const popup = openPopup(smsPopupInfo);
                   setSmsPopup(popup);
                 }}
+                sx={{fontSize:"16px"}}
               >
                 문자
               </BasicButton>
@@ -490,11 +493,11 @@ export default function InfoGroup({ tabType }: TabType) {
             {/* 왼쪽 */}
             <Stack width={"80%"} gap={1}>
               <CenteredBox>
-                <LabelTypo>
+                <LabelTypo fontSize={"16px"}>
                   <Typography color="error.main">*</Typography>
                   상담전화
                 </LabelTypo>
-                <PhoneInput {...register("cnsltTelno")} />
+                <PhoneInput {...register("cnsltTelno")} sx={{fontSize:"16px"}} />
                 <IconSquareButton
                   tabIndex={-1}
                   onClick={() => {
@@ -505,11 +508,11 @@ export default function InfoGroup({ tabType }: TabType) {
                 </IconSquareButton>
               </CenteredBox>
               <CenteredBox>
-                <LabelTypo>
-                  <Typography color="error.main">*</Typography>
+                <LabelTypo fontSize={"16px"}>
+                  <Typography color="error.main" >*</Typography>
                   이름
                 </LabelTypo>
-                <BasicInput {...register("cstmrNm")} />
+                <BasicInput {...register("cstmrNm")} sx={{fontSize:"16px"}}/>
                 <IconSquareButton
                   tabIndex={-1}
                   onClick={() => {
@@ -526,12 +529,12 @@ export default function InfoGroup({ tabType }: TabType) {
                 ) : null}
               </CenteredBox>
               <CenteredBox>
-                <LabelTypo>고객정보</LabelTypo>
-                <BasicInput {...register("cstmrRmk")} />
+                <LabelTypo fontSize={"16px"}>고객정보</LabelTypo>
+                <BasicInput {...register("cstmrRmk")} sx={{fontSize:"16px"}}/>
               </CenteredBox>
               <CenteredBox>
-                <LabelTypo>휴대전화</LabelTypo>
-                <PhoneInput {...register("mbtlNo")} />
+                <LabelTypo fontSize={"16px"}>휴대전화</LabelTypo>
+                <PhoneInput {...register("mbtlNo")} sx={{fontSize:"16px"}}/>
                 {tabType ? (
                   <IconSquareButton
                     tabIndex={-1}
@@ -542,7 +545,7 @@ export default function InfoGroup({ tabType }: TabType) {
                     <MdPhoneAndroid size={"1rem"} />
                   </IconSquareButton>
                 ) : null}
-                <LabelTypo marginLeft={2}>일반전화</LabelTypo>
+                <LabelTypo marginLeft={2} fontSize={"16px"}>일반전화</LabelTypo>
                 <PhoneInput {...register("telNo")} />
                 {tabType ? (
                   <IconSquareButton
@@ -556,11 +559,11 @@ export default function InfoGroup({ tabType }: TabType) {
                 ) : null}
               </CenteredBox>
               <CenteredBox>
-                <LabelTypo>주소</LabelTypo>
+                <LabelTypo fontSize={"16px"}>주소</LabelTypo>
                 <BasicInput sx={{ width: "500px" }} {...register("addr")} />
               </CenteredBox>
               <CenteredBox>
-                <LabelTypo>관리지역</LabelTypo>
+                <LabelTypo fontSize={"16px"}>관리지역</LabelTypo>
                 <Select
                   defaultValue={selectValue}
                   value={selectValue}
@@ -572,46 +575,49 @@ export default function InfoGroup({ tabType }: TabType) {
             </Stack>
 
             {/* 오른쪽 */}
-            <Stack width={"20%"}>
-              <GrayBox
+            <Stack width={"35%"}>
+              <Stack
                 flexDirection={"column"}
                 justifyContent={"center"}
                 width={"100%"}
-                height={"200px"}
+                height={"180px"}
                 borderRadius={"8px"}
                 marginTop={2}
                 marginRight={2}
+                padding={1}
                 gap={0.5}
+                alignItems={"flex-start"} // 왼쪽 정렬 추가
+                bgcolor={"primary.A100"}
               >
-                <CenteredBox>
-                  <LabelTypo>호응도</LabelTypo>
+                <CenteredBox style={{ justifyContent: "flex-start" }}>
+                  <LabelTypo fontSize={"16px"}>호응도</LabelTypo>
                   <BasicInput
-                    sx={{ width: "60px" }}
+                    sx={{ width: "200px" }}
                     {...register("complianceRate")}
                   />
                 </CenteredBox>
                 <CenteredBox>
-                  <LabelTypo>희망평형</LabelTypo>
+                  <LabelTypo fontSize={"16px"}>희망평형</LabelTypo>
                   <BasicInput
-                    sx={{ width: "60px" }}
+                    sx={{ width: "200px" }}
                     {...register("hopeBalance")}
                   />
                 </CenteredBox>
                 <CenteredBox>
-                  <LabelTypo>상담횟수</LabelTypo>
+                  <LabelTypo fontSize={"16px"}>상담횟수</LabelTypo>
                   <BasicInput
-                    sx={{ width: "60px" }}
+                    sx={{ width: "200px" }}
                     {...register("cnsltCnt")}
                   />
                 </CenteredBox>
                 <CenteredBox>
-                  <LabelTypo>수신동의</LabelTypo>
+                  <LabelTypo fontSize={"16px"}>수신동의</LabelTypo>
                   <BasicInput
-                    sx={{ width: "60px" }}
+                    sx={{ width: "200px" }}
                     {...register("rctnRejectXyn")}
                   />
                 </CenteredBox>
-              </GrayBox>
+              </Stack>
             </Stack>
           </Box>
         </Stack>
@@ -627,10 +633,12 @@ export default function InfoGroup({ tabType }: TabType) {
           {/* 상담항목 세부항목 */}
           <GrayBox
             flexDirection={"column"}
-            width={"50%"}
+            width={"100%"}
             height={"100%"}
             gap={1}
             overflow="auto"
+            justifyContent={"start"}
+            alignContent={"start"}
           >
             {cnsltItemData?.data.contents.map((item: any, index: number) => (
               <Box
@@ -644,10 +652,11 @@ export default function InfoGroup({ tabType }: TabType) {
                 sx={{
                   cursor: "pointer",
                 }}
+                width={"100%"}
               >
-                <Typography width={150}>{item.itemNm}</Typography>
+                <Typography width={"20%"} sx={{fontSize:"16px"}}>{item.itemNm}</Typography>
                 <BasicInput
-                  sx={{ minHeight: "24px" }}
+                  sx={{ minHeight: "24px", minWidth: "80%" }}
                   value={
                     detailInfo[item.itemNo]?.detailNm ??
                     cunsltDetailList?.data?.contents?.itemList?.[index]
@@ -661,7 +670,7 @@ export default function InfoGroup({ tabType }: TabType) {
           </GrayBox>
           <Box
             flexDirection={"column"}
-            width={"50%"}
+            width={"100%"}
             height={"100%"}
             overflow="auto"
           >
@@ -699,7 +708,7 @@ export default function InfoGroup({ tabType }: TabType) {
           </Box>
         </Box>
         <Stack gap={1} marginRight={1} marginLeft={1}>
-          <GrayBox height={"40px"} borderRadius={0}>
+          <GrayBox height={"40px"} borderRadius={0} sx={{fontSize:"16px"}}>
             특기사항
           </GrayBox>
           <TextArea height="140px" {...register("spcmnt")} />
@@ -710,7 +719,7 @@ export default function InfoGroup({ tabType }: TabType) {
           justifyContent={"flex-end"}
           borderRadius={0}
         >
-          <BasicButton type="submit">저장</BasicButton>
+          <BasicButton type="submit" sx={{fontSize:"16px"}}>저장</BasicButton>
         </GrayBox>
       </form>
     </>
