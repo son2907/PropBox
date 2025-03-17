@@ -28,7 +28,7 @@ export default function NetworkSetupPop() {
 
   const onCancle = () => {
     setTelInfo("", "");
-    closeModal(modals[modals.length - 1].key);
+    closeModal(modals[modals.length - 1].modalId);
     window.location.replace("/");
   };
 
@@ -42,7 +42,7 @@ export default function NetworkSetupPop() {
       setTelInfo(selectInfo[0].telId, selectInfo[0].telno);
     }
     modals.map((item) => {
-      closeModal(item.key);
+      closeModal(item.modalId);
     });
     window.location.replace("/");
   };
