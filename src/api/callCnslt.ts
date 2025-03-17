@@ -28,10 +28,11 @@ const API = {
   // 전화 받기, 전화 걸기 테이블
   getTelCnsltList: async (
     absnceYn?: string, // 전화받기/걸기구분
-    trsmYn?: string // 통화여부 (선택적)
+    trsmYn?: string, // 통화여부 (선택적)
+    date?:string
   ) => {
     // 쿼리 파라미터를 동적으로 생성
-    const date = getFormattedDate(); // 상담 일자는 반드시 금일
+    //const date = getFormattedDate(); // 상담 일자는 반드시 금일
     // ======================================테스트 날짜======================================
     // const date = 20241223;
     // const date = 20250121;
@@ -182,10 +183,11 @@ const API = {
 
 const KEY = {
   getCnsltItemList: () => ["/sptcnslt/itemlist"],
-  getTelCnsltList: (absnceYn?: string, trsmYn?: string) => [
+  getTelCnsltList: (absnceYn?: string, trsmYn?: string, date?:string) => [
     "/tel/cnslt",
     absnceYn,
     trsmYn,
+    date,
   ],
   getCnsltDetail: (cstmrNo?: string | null, cnsltNo?: string | null) => [
     "/tel/cnslt/hist/detail",
@@ -293,12 +295,13 @@ export const useCnsltItemList = () => {
 // 전화 받기, 전화 걸기 테이블
 export const useTelCnsltList = (
   absnceYn?: string, // 전화받기/걸기구분
-  trsmYn?: string // 통화여부
+  trsmYn?: string, // 통화여부
+  date?:Date //날짜
 ) => {
   return useQuery({
-    queryKey: KEY.getTelCnsltList(absnceYn, trsmYn), // KEY에 매개변수 전달
+    queryKey: KEY.getTelCnsltList(absnceYn, trsmYn,getFormattedDate(date)), // KEY에 매개변수 전달
     queryFn: async () => {
-      return await API.getTelCnsltList(absnceYn, trsmYn);
+      return await API.getTelCnsltList(absnceYn, trsmYn,getFormattedDate(date));
     },
     gcTime: 0,
   });

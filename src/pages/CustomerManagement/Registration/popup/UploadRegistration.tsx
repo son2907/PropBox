@@ -112,10 +112,7 @@ export default function UploadRegistration() {
     const body = {
       testDataList: tableData.map(({ id, ...rest }) => ({
         id,
-        testData: fixedHeaders.reduce((acc, header) => {
-          acc[header] = rest[header]; // 값이 없으면 빈 문자열
-          return acc;
-        }, {}),
+        testData: tableHeader.map((header) => rest[header]),
       })),
     };
 
@@ -157,45 +154,26 @@ export default function UploadRegistration() {
             style={{ display: "none" }}
             id="upload-file"
             ref={fileInputRef} // ref 연결
-            // onChange={async (e) => {
-            //   try {
-            //     const { headers, dataWithId } = await ExcelToTable(e);
-            //     setTableHeader(headers);
-            //     setTableData(dataWithId);
-            //   } catch (error) {
-            //     console.error(error);
-            //   }
-            // }}
             onChange={async (e) => {
               try {
                 const { headers, dataWithId } = await ExcelToTable(e);
-
-                // 고정된 헤더 사용
-                const fixedHeaders = tableHeaderData.map((item) => item.header);
-
-                // 엑셀 데이터의 헤더와 고정된 헤더 매핑
-                const headerMapping = fixedHeaders.map((header) => {
-                  // 엑셀 데이터에서 해당하는 헤더를 찾기
-                  const matchingHeader = headers.find((h) => h === header || h === "adr"); // 예: "adr"이 "주소"에 해당한다고 판단
-                  return matchingHeader || null; // 일치하는 헤더가 없으면 null
-                });
-
-                // 데이터 정렬 (엑셀 데이터 헤더와 맞지 않으면 빈값 "")
+            
+                console.log("엑셀 원본 헤더:", headers);
+                console.log("엑셀 원본 데이터:", dataWithId);
+            
+                // 엑셀 헤더 순서를 그대로 사용
                 const orderedData = dataWithId.map((row) => {
                   const orderedRow = { id: row.id };
-                  fixedHeaders.forEach((header, index) => {
-                    // 엑셀 데이터에 해당 헤더가 있으면 값을, 없으면 ""로 채움
-                    const mappedHeader = headerMapping[index];
-                    if (mappedHeader) {
-                      orderedRow[header] = row[mappedHeader]; // 엑셀 데이터에 값이 있으면 그 값을 사용, 없으면 빈 문자열
-                    } 
+                  headers.forEach((header) => {
+                    orderedRow[header] = row[header] ?? ""; // 값이 없으면 빈 문자열
                   });
                   return orderedRow;
                 });
-
-                // 상태 업데이트
-                setTableHeader(fixedHeaders); // 고정된 헤더 설정
-                setTableData(orderedData); // 정렬된 데이터 설정
+            
+                console.log("변환된 데이터:", orderedData);
+            
+                setTableHeader(headers); // 엑셀 헤더 순서 유지
+                setTableData(orderedData); // 변환된 데이터 적용
               } catch (error) {
                 console.error(error);
               }

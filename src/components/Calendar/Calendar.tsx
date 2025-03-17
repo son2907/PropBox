@@ -53,6 +53,7 @@ export default function Calendar({
             style={{ backgroundColor: "transparent", border: "none" }}
             onClick={decreaseMonth}
             disabled={prevMonthButtonDisabled}
+            type="button"
           >
             {"<"}
           </button>
@@ -86,6 +87,7 @@ export default function Calendar({
             style={{ backgroundColor: "transparent", border: "none" }}
             onClick={increaseMonth}
             disabled={nextMonthButtonDisabled}
+            type="button"
           >
             {">"}
           </button>

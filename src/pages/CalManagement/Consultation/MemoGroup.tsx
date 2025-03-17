@@ -74,8 +74,8 @@ export default function MemoGroup() {
   return (
     <>
       <TabMenus value={value} handleChange={tabChange}>
-        <TabMenus.Tab label="상담이력" disableRipple />
-        <TabMenus.Tab label="메모" disableRipple />
+        <TabMenus.Tab label="상담이력" disableRipple sx={{fontSize:"16px"}}/>
+        <TabMenus.Tab label="메모" disableRipple sx={{fontSize:"16px"}}/>
       </TabMenus>
       <TabPanel value={value} index={0}>
         <Box style={{ height: "300px", marginTop: 1, overflow: "auto" }}>
@@ -104,25 +104,25 @@ export default function MemoGroup() {
         </Box>
         <GrayBox marginBottom={1} gap={1}>
           <HiOutlineDocumentText />
-          <Typography variant="h5">상담상세</Typography>
+          <Typography variant="h5" sx={{fontSize:"16px"}}>상담상세</Typography>
         </GrayBox>
         <Stack overflow={"hidden"} height={"100%"}>
           <Stack gap={1} overflow={"scroll"} height={"100%"}>
-            <Box display={"flex"} alignItems={"center"} padding={1}>
-              <LabelTypo> 상담구분 </LabelTypo>
+            <Box display={"flex"} alignItems={"center"} padding={1} justifyContent={"space-between"}>
+              <LabelTypo sx={{fontSize:"16px"}}> 상담구분 </LabelTypo>
               <BasicInput
                 key={cnsltItemList?.data.contents.callSe}
                 defaultValue={cnsltItemList?.data.contents.callSe}
-                fullWidth
                 readOnly
+                sx={{width: "80%"}}
               />
             </Box>
-            <Box display={"flex"} alignItems={"center"} padding={1}>
-              <LabelTypo> 일시 </LabelTypo>
+            <Box display={"flex"} alignItems={"center"} padding={1} justifyContent={"space-between"}>
+              <LabelTypo sx={{fontSize:"16px"}}> 일시 </LabelTypo>
               <BasicInput
                 key={cnsltItemList?.data.contents.cnsltDtm}
                 defaultValue={cnsltItemList?.data.contents.cnsltDtm}
-                fullWidth
+                sx={{width: "80%"}}
                 readOnly
               />
             </Box>
@@ -131,8 +131,9 @@ export default function MemoGroup() {
               alignItems={"center"}
               padding={1}
               marginBottom={3}
+              justifyContent={"space-between"}
             >
-              <LabelTypo> 특기사항 </LabelTypo>
+              <LabelTypo sx={{fontSize:"16px"}}> 특기사항 </LabelTypo>
               <TextArea
                 readOnly
                 key={cnsltItemList?.data.contents.spcmnt}
