@@ -44,7 +44,7 @@ import { getKoreanTime } from "../../../utils/getKoreanTime";
 import { useSptStore } from "../../../stores/sptStore";
 import PhoneInput from "../../../components/Input/PhoneInput";
 
-export default function InfoGroup({ tabType }: TabType) {
+export default function InfoGroup({ tabType, selectedDate, setSelectedDate }: TabType & { selectedDate: Date; setSelectedDate: (date: Date) => void }) {
   const [smsPopup, setSmsPopup] = useState<any>();
   // 웹소켓
   const webSocket = useWebSocket(WebSocketContext);
@@ -71,7 +71,7 @@ export default function InfoGroup({ tabType }: TabType) {
   } = useCnsltStore();
 
   // 상담 일자
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  //const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   // 선택한 상담 항목
   const [selectDetailItem, setDetailItem] = useState<string>("");

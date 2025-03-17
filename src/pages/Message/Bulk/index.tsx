@@ -528,7 +528,7 @@ export default function BulkMessage() {
 
   return (
     <Stack width={"100%"} height={"100%"} gap={1}>
-      <GrayBox gap={1} marginBottom={2}>
+      <GrayBox gap={1} marginBottom={0}>
         {writeMode ? (
           <BasicInput {...register("brd")} fullWidth />
         ) : (
@@ -550,7 +550,7 @@ export default function BulkMessage() {
         </BasicButton>
       </GrayBox>
 
-      <TableBox gap={2}>
+      <TableBox gap={1}>
         <Stack
           minWidth={"400px"}
           maxWidth={"450px"}
@@ -562,7 +562,7 @@ export default function BulkMessage() {
           padding={2}
         >
           <Typography variant="h3">메시지 작성</Typography>
-          <Stack width={"100%"} height={"100%"} overflow={"auto"} gap={2}>
+          <Stack width={"100%"} height={"100%"} overflow={"auto"} gap={1}>
             <Stack direction={"row"} alignItems={"center"}>
               {/* 라디오 그룹 */}
               <RadioGroup value={msgType} onChange={handleRadioChange} row>

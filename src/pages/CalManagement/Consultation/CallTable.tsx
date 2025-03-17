@@ -15,7 +15,7 @@ import { useCnsltStore } from "../../../stores/CunsltStore";
 import { filterDataByValues } from "../../../utils/filterDataByValues";
 import useDidMountEffect from "../../../hooks/useDidMountEffect";
 
-export default function CallTable({ tabType, tabChange }: TabType) {
+export default function CallTable({ tabType, tabChange, selectedDate }: TabType & { selectedDate: Date }) {
   //  통화콜, 부재콜
   const { value: takeValue, handleChange: takeChange } = useTabs(0);
 
@@ -65,8 +65,11 @@ export default function CallTable({ tabType, tabChange }: TabType) {
         break;
     }
   }
+  useEffect(() => {
+    console.log("날짜확인",selectedDate)
+  },[selectedDate])
 
-  const { data: cnsltData } = useTelCnsltList(callYn, trsmYn);
+  const { data: cnsltData } = useTelCnsltList(callYn, trsmYn,selectedDate);
   const { fromSocket, setCnsltInfo, clear } = useCnsltStore();
 
   useDidMountEffect(() => {
