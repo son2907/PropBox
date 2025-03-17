@@ -113,6 +113,7 @@ export type CnsltItem = {
 
 export interface CnsltItemListResponseType extends ApiResponseType {
   contents: CnsltItem[];
+  totalCnt: number | null;
 }
 
 // 지역

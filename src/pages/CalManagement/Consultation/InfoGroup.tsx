@@ -503,7 +503,7 @@ export default function InfoGroup({ tabType, selectedDate, setSelectedDate }: Ta
                   <Typography color="error.main">*</Typography>
                   상담전화
                 </LabelTypo>
-                <PhoneInput {...register("cnsltTelno")} sx={{fontSize:"16px"}} />
+                <PhoneInput {...register("cnsltTelno")} sx={{fontSize:"16px", height: "30px"}} />
                 <IconSquareButton
                   tabIndex={-1}
                   onClick={() => {
@@ -518,7 +518,7 @@ export default function InfoGroup({ tabType, selectedDate, setSelectedDate }: Ta
                   <Typography color="error.main" >*</Typography>
                   이름
                 </LabelTypo>
-                <BasicInput {...register("cstmrNm")} sx={{fontSize:"16px"}}/>
+                <BasicInput {...register("cstmrNm")} sx={{fontSize:"16px", height: "30px"}}/>
                 <IconSquareButton
                   tabIndex={-1}
                   onClick={() => {
@@ -536,11 +536,11 @@ export default function InfoGroup({ tabType, selectedDate, setSelectedDate }: Ta
               </CenteredBox>
               <CenteredBox>
                 <LabelTypo fontSize={"16px"}>고객정보</LabelTypo>
-                <BasicInput {...register("cstmrRmk")} sx={{fontSize:"16px"}}/>
+                <BasicInput {...register("cstmrRmk")} sx={{fontSize:"16px", height: "30px"}}/>
               </CenteredBox>
               <CenteredBox>
                 <LabelTypo fontSize={"16px"}>휴대전화</LabelTypo>
-                <PhoneInput {...register("mbtlNo")} sx={{fontSize:"16px"}}/>
+                <PhoneInput {...register("mbtlNo")} sx={{fontSize:"16px", height: "30px"}}/>
                 {tabType ? (
                   <IconSquareButton
                     tabIndex={-1}
@@ -552,7 +552,7 @@ export default function InfoGroup({ tabType, selectedDate, setSelectedDate }: Ta
                   </IconSquareButton>
                 ) : null}
                 <LabelTypo marginLeft={2} fontSize={"16px"}>일반전화</LabelTypo>
-                <PhoneInput {...register("telNo")} />
+                <PhoneInput {...register("telNo")} sx={{fontSize:"16px", height: "30px"}}/>
                 {tabType ? (
                   <IconSquareButton
                     tabIndex={-1}
@@ -566,7 +566,7 @@ export default function InfoGroup({ tabType, selectedDate, setSelectedDate }: Ta
               </CenteredBox>
               <CenteredBox>
                 <LabelTypo fontSize={"16px"}>주소</LabelTypo>
-                <BasicInput sx={{ width: "500px" }} {...register("addr")} />
+                <BasicInput sx={{ width: "500px",height: "30px" }} {...register("addr")} />
               </CenteredBox>
               <CenteredBox>
                 <LabelTypo fontSize={"16px"}>관리지역</LabelTypo>

@@ -181,9 +181,9 @@ export default function CallTable({ tabType, tabChange, selectedDate }: TabType 
                           toggleRowSelection(item.seqNo); // row selection 토글
                         }}
                       >
-                        <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
-                        <BasicTable.Td>{item.cnsltTelno}</BasicTable.Td>
-                        <BasicTable.Td>{item.cnsltDttm}</BasicTable.Td>
+                        <BasicTable.Td style={{ minWidth: "100px" }}>{item.cstmrNm}</BasicTable.Td>
+                        <BasicTable.Td style={{ minWidth: "140px" }}>{item.cnsltTelno}</BasicTable.Td>
+                        <BasicTable.Td style={{ minWidth: "160px" }}>{item.cnsltDttm}</BasicTable.Td>
                       </BasicTable.Tr>
                     );
                   })}
@@ -192,7 +192,7 @@ export default function CallTable({ tabType, tabChange, selectedDate }: TabType 
             </TableBox.Inner>
           </TableBox>
 
-          <SearchResult total={100}/>
+          <SearchResult total={cnsltData?.data.totalCnt}/>
         </TabPanel>
 
         {/* 전화 걸기 탭 */}
@@ -259,9 +259,9 @@ export default function CallTable({ tabType, tabChange, selectedDate }: TabType 
                             e.stopPropagation(); // 이벤트 버블링을 막음
                           }}
                         >
-                          <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
-                          <BasicTable.Td>{item.cnsltTelno}</BasicTable.Td>
-                          <BasicTable.Td>{item.cnsltDttm}</BasicTable.Td>
+                          <BasicTable.Td style={{ minWidth: "100px" }}>{item.cstmrNm}</BasicTable.Td>
+                          <BasicTable.Td style={{ minWidth: "140px" }}>{item.cnsltTelno}</BasicTable.Td>
+                          <BasicTable.Td style={{ minWidth: "160px" }}>{item.cnsltDttm}</BasicTable.Td>
                         </BasicTable.Tr>
                       );
                     })}
@@ -270,7 +270,7 @@ export default function CallTable({ tabType, tabChange, selectedDate }: TabType 
               )}
             </TableBox.Inner>
           </TableBox>
-          <SearchResult total={100} />
+          <SearchResult total={cnsltData?.data.totalCnt} />
         </TabPanel>
       </Stack>
     </>

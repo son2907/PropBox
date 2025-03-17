@@ -84,7 +84,7 @@ const PhoneInput = forwardRef<HTMLInputElement, InputProps>(
     return (
       <OutlinedInput
         {...rest}
-        //size="small"
+        size="small"
         placeholder={placeholder}
         inputRef={ref}
         value={phoneNum}
@@ -95,7 +95,6 @@ const PhoneInput = forwardRef<HTMLInputElement, InputProps>(
         sx={{
           backgroundColor: "white",
           ...(rest.sx || {}),
-          height: "30px"
         }}
       />
     );

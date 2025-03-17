@@ -122,8 +122,9 @@ export default function MemoGroup() {
               <BasicInput
                 key={cnsltItemList?.data.contents.cnsltDtm}
                 defaultValue={cnsltItemList?.data.contents.cnsltDtm}
-                fullWidth
+                //fullWidth
                 readOnly
+                sx={{width:"80%"}}
               />
             </Box>
             <Box

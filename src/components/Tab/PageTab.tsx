@@ -20,7 +20,7 @@ const PageTabStyle = styled(Box, {
   shouldForwardProp: (prop) => prop !== "url" && prop !== "nowUrl",
 })<{ url: string; nowUrl: string }>(({ theme, url, nowUrl }) => ({
   border: "1px solid lightgray",
-  padding: "0 0 0 1rem",
+  //padding: "0 0 0 1rem",
   borderBottom: "none",
   borderRadius: "3px",
   marginRight: "5px",
@@ -59,16 +59,17 @@ export default function PageTab({
       url={url}
       nowUrl={nowUrl.pathname}
     >
-      <Icon sx={{ display: "inline-flex" }}>{icon}</Icon>
-      <Typography variant="bodyS" marginLeft={1}>
+      <Icon sx={{ display: "inline-flex", fontSize:"19px", paddingLeft:1 }}>{icon}</Icon>
+      <Typography variant="bodyS" fontSize={"19px"} paddingLeft={1}>
         {tabName}
       </Typography>
       <IconButton
         onClick={(e) => {
           onDelete(url, e); // 이벤트 객체를 함께 전달
         }}
+        sx={{paddingRight:1}}
       >
-        <IoCloseOutline />
+        <IoCloseOutline size={"19px"}/>
       </IconButton>
     </PageTabStyle>
   );

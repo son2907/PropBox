@@ -94,13 +94,14 @@ const Sidebar = memo(function Sidebar() {
           <Solution
             key={index}
             label={item.label}
+            icon={item.icon}
             auth={item.auth}
             isOpen={item.label !== "시스템관리"} // 시스템관리일 경우 false
             fold={fold}
           >
-            {item.subMenu.map((subData, subIndex) => (
+            {item.subMenu.map((subData, index) => (
               <MenuItem
-                key={subIndex}
+                key={index}
                 label={subData.label}
                 url={subData.url}
                 fold={fold}

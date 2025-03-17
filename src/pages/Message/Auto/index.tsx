@@ -179,7 +179,7 @@ export default function AutoMessage() {
     numberList?.data?.contents,
     "cid",
     "cid",
-    numberList?.data?.contents[0]?.cid
+    numberList?.data?.contents[0]?.cid || ""
   );
 
   // 새로고침
