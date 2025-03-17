@@ -29,6 +29,7 @@ import {
   API,
   useDeleteSmsTel,
   useGetCommonCode,
+  useGetPdf,
   useGetSmsBase,
   useGetSmsMng,
   useGetSmsTelList,
@@ -60,6 +61,19 @@ const nKey = "1008015";
 const noneKey = "1008020";
 
 export default function AutoMessage() {
+  const tableData = [
+    { text: "송신시간 ($T)" },
+    { text: "전일까지 인바운드누계($1)" },
+    { text: "전일 인바운드 건수 ($Y)" },
+    { text: "금일 인바운드 건수 ($2)" },
+    { text: "인바운드 총누계 건수 ($3)" },
+    { text: "전일까지 방문상담누계 (#1)" },
+    { text: "전일 방문상담 건수 (#Y)" },
+    { text: "전일 방문상담 건수 (#Y)" },
+    { text: "금일 방문상담 건수 (#2)" },
+    { text: "방문상담 총누계 건수 (#3)" },
+  ];
+
   const defaultValues = {
     autoMessage: "",
     macro: "",
@@ -115,7 +129,9 @@ export default function AutoMessage() {
 
   // <------------------------------- API ------------------------------->
 
-  const { data: basicMessage, refetch: basicRefetch } = useGetSmsBase({
+  const { refetch: downPdf } = useGetPdf();
+
+  const { data: basicMessage } = useGetSmsBase({
     smsSeCd: smsSeCd,
   }); // 자동문자 기본 메세지
   const { data: numberList } = useCrtfcList({ cid: "" }); // 발신번호 리스트
@@ -163,7 +179,7 @@ export default function AutoMessage() {
     numberList?.data?.contents,
     "cid",
     "cid",
-    numberList?.data?.contents[0].cid
+    numberList?.data?.contents[0]?.cid
   );
 
   // 새로고침
@@ -278,8 +294,8 @@ export default function AutoMessage() {
     });
   };
 
-  const onClickAutoBasic = (smsSeCd) => {
-    basicRefetch();
+  // 기본메시지
+  const onClickAutoBasic = (smsSeCd: string) => {
     setSmsSeCd(smsSeCd);
   };
 
@@ -342,14 +358,17 @@ export default function AutoMessage() {
     );
 
     const updatedValues = {
-      autoKey: { autoMessage: message },
-      yKey: { Ymessage: message },
-      nKey: { Nmessage: message },
-      noneKey: { noneMessage: message },
+      "1008005": { autoMessage: message },
+      "1008010": { Ymessage: message },
+      "1008015": { Nmessage: message },
+      "1008020": { noneMessage: message },
     };
 
     reset({ ...getValues(), ...updatedValues[smsSeCd] });
+    setSmsSeCd("");
   }, [smsSeCd, basicMessage]);
+
+  console.log("basicMessage:", basicMessage);
 
   // 매크로 데이터가 불러져오면 매크로 정보만 바인딩 함
   useEffect(() => {
@@ -373,7 +392,7 @@ export default function AutoMessage() {
 
   const openTelModal = ({ smsKnd, mssage, isYnMsg }) => {
     openModal(TelInput, {
-      stack: true, //단일 모달 모드
+      stack: true,
       onClose: () => closeModal,
       smsKnd: smsKnd,
       mssage: mssage,
@@ -455,11 +474,30 @@ export default function AutoMessage() {
     );
   };
 
+  const onClickMacro = (text: string) => {
+    if (getValues("autoMessage") == "") {
+      const pattern = /\([^)]+\)/;
+      const result = text.match(pattern) || "";
+      setValue("autoMessage", result[0]);
+      return;
+    }
+    setValue("autoMessage", `${getValues("autoMessage")} ${text}`);
+  };
+
+  const onOpenPdf = () => {
+    downPdf().then((res) => {
+      checkApiFail(res);
+      if (res.data?.data.result == "SUCCESS") {
+        window.open(res.data?.data.contents);
+      }
+    });
+  };
+
   return (
     <>
       <Stack width={"100%"} height={"100%"} gap={1}>
         <GrayBox gap={1}>
-          <BasicButton sx={{ marginLeft: "auto" }}>
+          <BasicButton sx={{ marginLeft: "auto" }} onClick={onOpenPdf}>
             불법스팸 방지관련법
           </BasicButton>
           <BasicButton onClick={onSaveAll}>저장</BasicButton>
@@ -523,7 +561,7 @@ export default function AutoMessage() {
                     });
                   }}
                 >
-                  실험발송
+                  <Typography>실험발송</Typography>
                 </BasicButton>
               </CenteredBox>
             </Stack>
@@ -566,26 +604,31 @@ export default function AutoMessage() {
                   />
                 </Stack>
               </CenteredBox>
+              <Typography variant="h3">매크로</Typography>
             </Stack>
 
-            <Stack gap={2} margin={1}>
-              <Typography variant="h3">매크로</Typography>
-              <Controller
-                name="macro"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <TextArea
-                    {...field}
-                    height="130px"
-                    resize="none"
-                    placeholder="매크로를 입력하세요"
-                    onChange={(e) => {
-                      field.onChange(e);
-                    }}
-                  />
-                )}
-              />
+            <Stack gap={2} margin={1} overflow={"hidden"}>
+              <TableBox width="100%" height="100%" overflow={"hidden"}>
+                <TableBox.Inner width="100%" height="100%" overflow={"auto"}>
+                  <BasicTable data={tableData}>
+                    <BasicTable.Th>매크로</BasicTable.Th>
+                    <BasicTable.Tbody>
+                      {tableData.map((item, index) => {
+                        return (
+                          <BasicTable.Tr
+                            key={index}
+                            onClick={() => {
+                              onClickMacro(item.text);
+                            }}
+                          >
+                            <BasicTable.Td>{item.text}</BasicTable.Td>
+                          </BasicTable.Tr>
+                        );
+                      })}
+                    </BasicTable.Tbody>
+                  </BasicTable>
+                </TableBox.Inner>
+              </TableBox>
             </Stack>
           </Stack>
 
@@ -680,7 +723,7 @@ export default function AutoMessage() {
                   });
                 }}
               >
-                실험발송
+                <Typography>실험발송</Typography>
               </BasicButton>
               <BasicButton
                 onClick={() => {
@@ -746,7 +789,7 @@ export default function AutoMessage() {
                   });
                 }}
               >
-                실험발송
+                <Typography>실험발송</Typography>
               </BasicButton>
               <BasicButton
                 onClick={() => {
@@ -812,7 +855,7 @@ export default function AutoMessage() {
                   });
                 }}
               >
-                실험발송
+                <Typography>실험발송</Typography>
               </BasicButton>
               <BasicButton
                 onClick={() => {

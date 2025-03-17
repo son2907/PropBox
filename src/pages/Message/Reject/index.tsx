@@ -16,7 +16,7 @@ import CustomAlert from "../../../components/Alert/CustomAlert";
 import {
   useDeletetReject,
   usePostReject,
-  usePutReject,
+  useRejectExcelDownload,
   useRejectList,
 } from "../../../api/messageReject";
 import { useTableSelect } from "../../../hooks/useTableSelect";
@@ -30,7 +30,6 @@ import { BasicCompletedModl } from "../../../components/Modal/modal/BasicComplet
 import { useSptStore } from "../../../stores/sptStore";
 import PhoneInput from "../../../components/Input/PhoneInput";
 import SearchIcon from "../../../assets/images/Search.png";
-import { useRef } from "react";
 
 const DeleteAlert = ({
   onClose,
@@ -61,10 +60,9 @@ const DeleteAlert = ({
 export default function RejectMessage() {
   const { countValues, selectValue, handleChange } = useTableSelect();
   const { currentPage, onChangePage } = usePagination();
-  const searchRef = useRef<HTMLInputElement>(null);
 
   const { selectedRow, toggleRowSelection } =
-    useSingleRowData<GetRejectList>("rejectNo");
+    useSingleRowData<GetRejectList>("mbtlNo");
   const { loginId } = useAuthStore(["loginId"]);
   const { sptNo } = useSptStore();
   const popupInfo = {
@@ -74,27 +72,30 @@ export default function RejectMessage() {
   };
   const { openModal, closeModal } = useModal();
 
+  const { register, reset, getValues, setValue } = useForm({
+    defaultValues: {
+      rejectTelNo: "",
+      rejectResn: "",
+      mbtlNo: "",
+    },
+  });
+
+  // 수신거부 테이블
   const { data: rejectList, refetch: rejectRefetch } = useRejectList({
     page: currentPage,
     limit: selectValue,
-    rejectTelNo: searchRef.current?.value,
+    mbtlNo: getValues("mbtlNo"),
   });
 
   console.log("rejectList:", rejectList);
 
-  const { register, reset, getValues } = useForm({
-    defaultValues: {
-      rejectTelNo: "",
-      rmk: "",
-    },
-  });
-
   useDidMountEffect(() => {
-    if (!selectedRow) return;
-    reset({
-      rejectTelNo: selectedRow.rejectTelNo ?? "",
-      rmk: selectedRow.rmk ?? "",
-    });
+    if (!selectedRow) {
+      reset();
+      return;
+    }
+    setValue("rejectTelNo", selectedRow.mbtlNo);
+    setValue("rejectResn", selectedRow.rejectResn || "");
   }, [selectedRow]);
 
   const searchFn = () => {
@@ -103,50 +104,15 @@ export default function RejectMessage() {
 
   const checkApiFail = useApiRes();
 
-  // 수정
-  const { mutate: put } = usePutReject();
-  const onPut = () => {
-    if (!selectedRow) return;
-    const body = {
-      rejectNo: selectedRow.rejectNo,
-      sptNo: selectedRow.sptNo,
-      rejectTelNo: getValues("rejectTelNo"),
-      useYn: selectedRow.useYn,
-      rmk: getValues("rmk"),
-      userId: loginId || "",
-    };
-    console.log("수정 보내는 정보 : ", body);
-    put(
-      {
-        body: body,
-      },
-      {
-        onSuccess: (res) => {
-          const result = checkApiFail(res);
-          if (result.data.message === "SUCCESS") {
-            console.log("수정 성공 응답:", res);
-            openModal(BasicCompletedModl, {
-              modalId: "complete",
-              stack: false,
-              onClose: () => closeModal,
-            });
-            rejectRefetch();
-          }
-        },
-      }
-    );
-  };
-
-  // 추가
+  // 추가 및 수정
   const { mutate: post } = usePostReject();
   const onPost = () => {
     const body = {
       sptNo: sptNo,
-      rejectTelNo: getValues("rejectTelNo"),
-      rmk: getValues("rmk"),
+      mbtlNo: getValues("rejectTelNo"),
+      rejectResn: getValues("rejectResn"),
       userId: loginId || "",
     };
-    console.log("추가 보내는 정보 : ", body);
     post(
       {
         body: body,
@@ -154,24 +120,29 @@ export default function RejectMessage() {
       {
         onSuccess: (res) => {
           const result = checkApiFail(res);
-          console.log("추가 응답:", res);
+          console.log("추가/수정 응답:", res);
           if (result.data.message === "SUCCESS") {
-            console.log("추가 성공:", res);
+            console.log("추가/수정 성공:", res);
             openModal(BasicCompletedModl, {
               modalId: "complete",
               stack: false,
               onClose: () => closeModal,
             });
             rejectRefetch();
+            reset();
           }
         },
       }
     );
   };
 
-  const onSubmit = () => (selectedRow ? onPut() : onPost());
+  const onSubmit = () => onPost();
 
   const { mutate: delete_ } = useDeletetReject();
+  const { refetch: downExcel } = useRejectExcelDownload({
+    sptNo: sptNo,
+    mbtlNo: getValues("mbtlNo"),
+  });
 
   const handleDelete = () => {
     openModal(DeleteAlert, {
@@ -181,14 +152,12 @@ export default function RejectMessage() {
       onSubmit: () => {
         delete_(
           {
-            rejectNo: selectedRow?.rejectNo || "",
+            mbtlNo: selectedRow?.mbtlNo || "",
           },
           {
             onSuccess: (res) => {
               const result = checkApiFail(res);
-              // console.log("삭제 응답:", res);
               if (result.data.message === "SUCCESS") {
-                // console.log("삭제 성공:", res);
                 openModal(BasicCompletedModl, {
                   modalId: "complete",
                   stack: false,
@@ -203,13 +172,17 @@ export default function RejectMessage() {
     });
   };
 
+  const downloadExcel = () => {
+    downExcel();
+  };
+
   return (
     <Stack width={"100%"} height={"100%"} gap={2}>
       <GrayBox gap={1}>
         <PhoneInput
           endAdornment={<img src={SearchIcon} alt="search-icon" />}
           placeholder="검색"
-          ref={searchRef}
+          {...register("mbtlNo")}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               searchFn();
@@ -226,7 +199,7 @@ export default function RejectMessage() {
         >
           거부일괄추가
         </BasicButton>
-        <BasicButton>엑셀다운로드</BasicButton>
+        <BasicButton onClick={downloadExcel}>엑셀다운로드</BasicButton>
       </GrayBox>
       <TableBox width="100%" gap={2}>
         <Stack
@@ -248,11 +221,11 @@ export default function RejectMessage() {
                   return (
                     <BasicTable.Tr
                       key={index}
-                      isClicked={selectedRow?.rejectNo === item.rejectNo}
+                      isClicked={selectedRow?.mbtlNo === item.mbtlNo}
                       onClick={() => toggleRowSelection(item)}
                     >
-                      <BasicTable.Td>{item.rejectTelNo}</BasicTable.Td>
-                      <BasicTable.Td>{item.rmk}</BasicTable.Td>
+                      <BasicTable.Td>{item.mbtlNo}</BasicTable.Td>
+                      <BasicTable.Td>{item.rejectResn}</BasicTable.Td>
                       <BasicTable.Td>{item.regrNm}</BasicTable.Td>
                       <BasicTable.Td>{item.regDtm}</BasicTable.Td>
                     </BasicTable.Tr>
@@ -287,10 +260,9 @@ export default function RejectMessage() {
                 수신거부 등록정보
               </Typography>
               <Typography>휴대전화</Typography>
-              {/* <PhoneInput {...register("rejectTelNo")} /> */}
-              <BasicInput {...register("rejectTelNo")} />
+              <PhoneInput {...register("rejectTelNo")} />
               <Typography>비고(거부사유)</Typography>
-              <BasicInput {...register("rmk")} />
+              <BasicInput {...register("rejectResn")} />
               <CenteredBox justifyContent={"flex-end"} gap={1} marginTop={3}>
                 <BasicButton onClick={onSubmit}>저장</BasicButton>
                 <BasicButton onClick={handleDelete}>삭제</BasicButton>

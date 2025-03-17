@@ -5,19 +5,17 @@ import { ApiResponseType } from "./apiResponse";
 export type GetRejectListRequestType = {
   page: number;
   limit: number;
-  rejectTelNo?: string;
+  mbtlNo?: string;
 };
 
 export type GetRejectList = {
+  rejectNo: string;
+  sptNo: string | null;
+  mbtlNo: string;
+  rejectResn: string;
+  rmk: string | null;
   regDtm: string;
   regrNm: string;
-  rejectNo: string;
-  sptNo: string;
-  tel070No: string;
-  rejectTelNo: string;
-  rejectCd: string;
-  useYn: string;
-  rmk: string;
 };
 
 export interface GetRejectListResponseType extends ApiResponseType {
@@ -45,7 +43,7 @@ export interface GetRejectSptListResponseType extends ApiResponseType {
 
 // 수신 거부 상세 조회, 수신거부 삭제
 export type GetRejectDetRequestType = {
-  rejectNo: string;
+  mbtlNo: string;
 };
 
 export type GetRejectDet = {
@@ -64,10 +62,27 @@ export interface GetRejectDetResponseType extends ApiResponseType {
 
 // 수신거부 등록 및 수정
 export type PostRejectRequestType = {
-  rejectNo?: string;
   sptNo: string;
-  rejectTelNo: string;
-  useYn?: string;
-  rmk: string;
+  mbtlNo: string;
+  rejectResn: string;
   userId: string;
+};
+
+// 수신거부 엑셀 업로드
+
+export type RejectExcelUpload = {
+  sptNo: string;
+  rejectList: {
+    mbtlNo: string;
+    rejectResn: string;
+    rmk: string;
+  }[];
+  userId: string;
+};
+
+// 엑셀 다운로드
+
+export type RejectExcelDownload = {
+  sptNo: string;
+  mbtlNo?: string;
 };

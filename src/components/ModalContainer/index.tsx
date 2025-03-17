@@ -26,7 +26,7 @@ export default function ModalContainer() {
         )}
         {/* 외부 클릭 차단 */}
         {modals.map((m) => {
-          const { Component, props, key } = m;
+          const { Component, props, modalId } = m;
           const {
             onSubmit = () => {},
             onClose = () => {},
@@ -35,17 +35,17 @@ export default function ModalContainer() {
 
           const handleClose = async () => {
             await onClose?.();
-            close(key);
+            close(modalId);
           };
 
           const handleSubmit = async (_props?: ModalPropsType) => {
             await onSubmit?.(_props);
-            close(key);
+            close(modalId);
           };
 
           return (
             <Component
-              key={key}
+              key={modalId}
               modalId={props.modalId}
               onSubmit={handleSubmit}
               onClose={handleClose}

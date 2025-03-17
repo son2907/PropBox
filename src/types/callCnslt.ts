@@ -178,6 +178,8 @@ export interface GetMsgsaveOneResponseType extends ApiResponseType {
 
 export interface GetMsgsaveListResponseType extends ApiResponseType {
   contents: MsgSaveItem[];
+  totalCnt: number;
+  totalPage: number;
 }
 
 // 한개의 문자에 대한 상세 정보

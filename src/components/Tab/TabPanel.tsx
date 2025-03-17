@@ -1,6 +1,6 @@
-import { Box } from "@mui/material";
+import { Box, BoxProps } from "@mui/material";
 
-interface TabPanelProps {
+interface TabPanelProps extends BoxProps {
   children?: React.ReactNode;
   index: number;
   value: number;

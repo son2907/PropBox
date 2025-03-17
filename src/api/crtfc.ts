@@ -57,7 +57,7 @@ const KEY = {
 };
 
 // 발신번호 목록 조회
-export const useCrtfcList = ({ cid }: CrtfcListRequestType) => {
+export const useCrtfcList = ({ cid }: CrtfcListRequestType = {}) => {
   return useQuery({
     queryKey: KEY.getCrtfcList({ cid }),
     queryFn: async () => {

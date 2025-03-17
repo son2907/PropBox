@@ -131,7 +131,7 @@ const _palette: PaletteOptions = {
   },
   error: {
     main: "#EC221F",
-    light: "#fd5e74",
+    light: "#FFA7A6",
     dark: "#f51837",
     A100: "#ffe4e8",
     "50": "#ffced5",

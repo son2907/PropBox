@@ -30,7 +30,7 @@ const Th: React.FC<TableItemProps & { radius?: boolean }> = ({
 const Td: React.FC<TableItemProps> = ({ children, ...rest }) => {
   return (
     <td
-      className="py-3 px-3 border-tableBorder border-solid border border-b-0 border-t-0 first:border-l-0 last:border-r-0  "
+      className="py-3 px-3 border-tableBorder border-solid border border-b-0 border-t-0 first:border-l-0 last:border-r-0 "
       {...rest}
     >
       {children}

@@ -11,7 +11,7 @@ export type ModalPropsType = {
 
 // 모달의 데이터 타입 정의
 type ModalType = {
-  key: string; // 모달의 고유 키 (중복 방지)
+  modalId: string; // 모달의 고유 키 (중복 방지)
   props: ModalPropsType; // 모달에 전달되는 프로퍼티
   Component: ComponentType<ModalPropsType>; // 렌더링될 React 컴포넌트
 };
@@ -20,7 +20,7 @@ type ModalType = {
 type ModalStoreType = {
   modals: ModalType[]; // 현재 열려 있는 모달들의 배열
   open: (Component: ComponentType<any>, props: ModalPropsType) => void; // 모달 열기 메서드
-  close: (key: string) => void; // 특정 모달 닫기 메서드
+  close: (modalId?: string) => void; // 특정 모달 닫기 메서드
   clear: () => void; // 모든 모달 닫기 메서드
 };
 
@@ -29,10 +29,12 @@ export const useModalStore = create<ModalStoreType>((set, get) => ({
   modals: [], // 초기 상태: 모달 리스트는 빈 배열
   open: (Component: ComponentType<any>, props: ModalPropsType) => {
     const { modals } = get(); // 현재 열려 있는 모달 리스트 가져오기
-    const modal = props.key ? modals.find((m) => m.key === props.key) : null;
+    const modal = props.modalId
+      ? modals.find((m) => m.modalId === props.modalId)
+      : null;
     // key가 제공되었을 경우, 동일한 key를 가진 모달이 이미 열려 있는지 확인
-    const key = props.key || Date.now().toString(); // key가 없으면 현재 시간을 문자열로 사용
-    props.modalId = key; // 모달 ID를 props에 저장
+    const modalId = props.modalId || Date.now().toString(); // key가 없으면 현재 시간을 문자열로 사용
+    props.modalId = modalId; // 모달 ID를 props에 저장
 
     // stack: false인 경우
     if (props.stack === false) {
@@ -42,17 +44,22 @@ export const useModalStore = create<ModalStoreType>((set, get) => ({
         );
         return;
       }
-      set({ modals: [{ Component, props, key }] }); // 기존 모달을 덮어씀
+      set({ modals: [{ Component, props, modalId }] }); // 기존 모달을 덮어씀
       return;
     }
     // stack: true 경우
     if (!modal) {
-      set({ modals: [...modals, { Component, props, key }] });
+      set({ modals: [...modals, { Component, props, modalId }] });
     }
   },
-  close: (key: string) => {
+  close: (modalId?: string) => {
     const { modals } = get(); // 현재 열려 있는 모달 리스트 가져오기
-    set({ modals: modals.filter((m) => m.key !== key) });
+    if (!modalId) {
+      // 최신 모달(마지막 모달) 닫기
+      set({ modals: modals.slice(0, -1) });
+      return;
+    }
+    set({ modals: modals.filter((m) => m.modalId !== modalId) });
     // 주어진 key와 일치하지 않는 모달들만 남김 (특정 모달 닫기)
   },
   clear: () => {

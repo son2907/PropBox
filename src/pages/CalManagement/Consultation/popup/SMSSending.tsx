@@ -313,9 +313,8 @@ export default function SMSSending() {
     };
 
     const formData = new FormData();
-    formData.append("param", JSON.stringify(requestBody)); // JSON 데이터를 string으로 추가
+    formData.append("param", JSON.stringify(requestBody));
     if (file) formData.append("file", file);
-    console.log("requestBody:", requestBody);
 
     sendMsg(
       {
@@ -576,7 +575,7 @@ export default function SMSSending() {
             <BasicButton onClick={onDeleteMsg}>삭제</BasicButton>
           </CenteredBox>
           <Box height={"35%"} width={"100%"} overflow={"auto"}>
-            <BasicTable data={msgList?.data.contents || []}>
+            <BasicTable data={msgList?.data?.contents}>
               <BasicTable.Th>메시지</BasicTable.Th>
 
               <BasicTable.Th> </BasicTable.Th>
@@ -584,7 +583,7 @@ export default function SMSSending() {
               <BasicTable.Th>구분</BasicTable.Th>
 
               <BasicTable.Tbody>
-                {(msgList?.data.contents || []).map((item) => (
+                {msgList?.data?.contents?.map((item) => (
                   <BasicTable.Tr
                     key={item.saveNo}
                     isClicked={sr?.saveNo === item.saveNo}
