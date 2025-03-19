@@ -31,7 +31,6 @@ import { filterDataByValues } from "../../../../utils/filterDataByValues";
 import useModal from "../../../../hooks/useModal";
 import { ConfirmMultipleDeletionModal } from "../../../../components/Modal/modal/ConfirmMultipleDeletionModal";
 import { useSptStore } from "../../../../stores/sptStore";
-import { useState } from "react";
 
 interface FormData {
   eno: string;
@@ -167,59 +166,18 @@ export default function RegisterSenerNumber() {
     }
   }, [checkCrtfc]);
 
-  const [mdl_tkn, setMdlTkn] = useState<string>("");
-  const [cp_CD, setCpCd] = useState<string>("");
-
-  const submit = async () => {
-    const formData = {
-      tc: "kcb.oknm.online.safehscert.popup.cmd.P931_CertChoiceCmd",
-      cp_cd: cp_CD,
-      mdl_tkn: mdl_tkn,
-      target_id: "",
-    };
-    try {
-      const response = await fetch("https://safe.ok-name.co.kr/CommonSvl", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-      const result = await response.json();
-      console.log(result);
-      const popupUrl = `https://safe.ok-name.co.kr/CommonSvl?tc=kcb.oknm.online.safehscert.popup.cmd.P931_CertChoiceCmd&cp_cd=${cp_CD}&mdl_tkn=${mdl_tkn}&target_id=`;
-      window.open(popupUrl, "okcertPopup", "width=500,height=600");
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
   const onVertify = () => {
     okCert().then((res) => {
       console.log("opCert결과:", res);
-      const mdlTkn = res?.data?.data.contents.mdlTkn || "";
-      const rsltCd = res?.data?.data.contents.rsltCd || "";
-      setMdlTkn(mdlTkn);
-      setCpCd(rsltCd);
-      submit();
-      // const popupUrl = `https://safe.ok-name.co.kr/CommonSvl?tc=kcb.oknm.online.safehscert.popup.cmd.P931_CertChoiceCmd&cp_cd=${rsltCd}&mdl_tkn=${mdlTkn}&target_id=`;
-      // window.open(popupUrl, "okcertPopup", "width=500,height=600");
+      const mdlTkn = res?.data?.data.contents.mdlTkn;
+      const rsltCd = res?.data?.data.contents.rsltCd;
+      const popupUrl = `https://safe.ok-name.co.kr/CommonSvl?tc=kcb.oknm.online.safehscert.popup.cmd.P931_CertChoiceCmd&cp_cd=${rsltCd}&mdl_tkn=${mdlTkn}&target_id=`;
+      window.open(popupUrl, "okcertPopup", "width=500,height=600");
     });
   };
 
   return (
     <Stack width={"100%"} height={"100%"}>
-      <form action="https://safe.ok-name.co.kr/CommonSvl" method="post">
-        <input type={"hidden"} name="mdl_tkn" defaultValue={mdl_tkn} />
-        <input type={"hidden"} name="cp_cd" defaultValue={cp_CD} />
-        <input
-          type={"hidden"}
-          name="tc"
-          defaultValue={
-            "kcb.oknm.online.safehscert.popup.cmd.P931_CertChoiceCmd"
-          }
-        />
-      </form>
       <form>
         <div className="hidden" id="cidValue"></div>
         <GrayBox gap={1}>
