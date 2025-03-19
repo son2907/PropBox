@@ -46,6 +46,11 @@ const API = {
     const url = `/api/crtfc/okcert/token?sptNo=${spt}&returnUrl=${returnUrl}`;
     return await instance.get<PassToken>(url);
   },
+  // 인증 여부 확인
+  getOkcertResult: async ({ mdlTkn }: { mdlTkn: string }) => {
+    const url = `/api/crtfc/okcert/result?mdlTkn=${mdlTkn}`;
+    return await instance.get<PassToken>(url);
+  },
 };
 
 const KEY = {
@@ -62,6 +67,7 @@ const KEY = {
   saveCrtfc: () => ["/api/crtfc/cidno/save"],
   deleteCrtfc: () => ["/api/crtfc/cidno/remove"],
   getOkcertToken: ({ returnUrl }) => ["/crtfc/okcert/token", returnUrl],
+  getOkcertResult: ({ mdlTkn }) => ["/api/crtfc/okcert/result", mdlTkn],
 };
 
 // 발신번호 목록 조회
@@ -110,7 +116,6 @@ export const useDeleteCrtfc = () => {
   });
 };
 
-// getOkcertToken
 // 토큰 발급
 export const useOkcertToken = ({ returnUrl }) => {
   return useQuery({
@@ -119,5 +124,17 @@ export const useOkcertToken = ({ returnUrl }) => {
       return await API.getOkcertToken({ returnUrl });
     },
     gcTime: 0,
+  });
+};
+
+// 인증 여부 확인
+export const useOkcertResult = ({ mdlTkn }) => {
+  return useQuery({
+    queryKey: KEY.getOkcertResult({ mdlTkn }),
+    queryFn: async () => {
+      return await API.getOkcertResult({ mdlTkn });
+    },
+    gcTime: 0,
+    enabled: false,
   });
 };

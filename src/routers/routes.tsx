@@ -65,6 +65,7 @@ import SoketGuard from "./guard/SoketGuard";
 import UpdateUSer from "../pages/SysManagement/User/popup/UpdateUser";
 import LocalUpdate from "../pages/SysManagement/Local/popup/LocalModify";
 import CustomerSMSSending from "../pages/CustomerManagement/Registration/popup/CustomerSMSSending";
+import PassReturnPage from "../pages/CalManagement/Consultation/popup/PassReturn";
 
 export const routes: RouteObject[] = [
   {
@@ -75,7 +76,6 @@ export const routes: RouteObject[] = [
         </SoketGuard>
       </AuthGuard>
     ),
-    // 에러 엘리먼트 추가 필요
     children: [
       { path: PathConstants.Home, element: <Launcher /> },
       {
@@ -111,6 +111,10 @@ export const routes: RouteObject[] = [
           {
             path: PathConstants.Call.Information,
             element: <BasicInfo />,
+          },
+          {
+            path: PathConstants.Call.PASS,
+            element: <PassReturnPage />,
           },
         ],
       },
@@ -150,7 +154,6 @@ export const routes: RouteObject[] = [
         children: [
           {
             path: PathConstants.System.Solution,
-            //element: <div>솔루션 및 메뉴 관리</div>,
             element: <SolutionManagement />,
           },
           {

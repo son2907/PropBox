@@ -217,45 +217,18 @@ export default function RegisterSenerNumber() {
     }
   }, [certToken]);
 
-  const [authResult, setAuthResult] = useState({
-    CP_CD: "",
-    TX_SEQ_NO: "",
-    RSLT_CD: "",
-    RSLT_MSG: "",
-    RSLT_NAME: "",
-    RSLT_BIRTHDAY: "",
-    RSLT_SEX_CD: "",
-    RSLT_NTV_FRNR_CD: "",
-    DI: "",
-    CI: "",
-    CI_UPDATE: "",
-    TEL_COM_CD: "",
-    TEL_NO: "",
-    RETURN_MSG: "",
-  });
-
-  // URL에서 파라미터 가져오기
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    setAuthResult({
-      CP_CD: params.get("CP_CD") || "",
-      TX_SEQ_NO: params.get("TX_SEQ_NO") || "",
-      RSLT_CD: params.get("RSLT_CD") || "",
-      RSLT_MSG: params.get("RSLT_MSG") || "",
-      RSLT_NAME: params.get("RSLT_NAME") || "",
-      RSLT_BIRTHDAY: params.get("RSLT_BIRTHDAY") || "",
-      RSLT_SEX_CD: params.get("RSLT_SEX_CD") || "",
-      RSLT_NTV_FRNR_CD: params.get("RSLT_NTV_FRNR_CD") || "",
-      DI: params.get("DI") || "",
-      CI: params.get("CI") || "",
-      CI_UPDATE: params.get("CI_UPDATE") || "",
-      TEL_COM_CD: params.get("TEL_COM_CD") || "",
-      TEL_NO: params.get("TEL_NO") || "",
-      RETURN_MSG: params.get("RETURN_MSG") || "",
-    });
-  }, []);
+    const handleMessage = (event: MessageEvent) => {
+      console.log("모든 응답:", event.data.data);
+      if (event.data.type === "AUTH_SUCCESS") {
+        console.log("본인인증 성공:", event.data.data);
+        // 인증 성공 후 필요한 처리
+      }
+    };
 
-  console.log("authResult:", authResult);
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, []);
 
   return (
     <Stack width={"100%"} height={"100%"}>

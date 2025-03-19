@@ -17,6 +17,7 @@ const PathConstants = {
     TopicRegistration: "/call/analysis/topic-registration",
     Management: "/call/management",
     Information: "/call/information",
+    PASS: "/passAuth",
   },
   Message: {
     Auto: "/message/auto",
@@ -54,7 +55,7 @@ const PathConstants = {
     AuthCode: "/system/authCode",
     Phone: "/system/phone",
     LocalRegistration: "/system/local/localRegistration",
-    LocalUpdate:"/system/local/localUpdate",
+    LocalUpdate: "/system/local/localUpdate",
     PhoneAdd: "/system/phone/phoneAdd",
     DeviceType: "/system/phone/deviceType",
   },
