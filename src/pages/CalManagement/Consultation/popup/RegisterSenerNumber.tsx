@@ -32,6 +32,7 @@ import useModal from "../../../../hooks/useModal";
 import { ConfirmMultipleDeletionModal } from "../../../../components/Modal/modal/ConfirmMultipleDeletionModal";
 import { useSptStore } from "../../../../stores/sptStore";
 import instance from "../../../../utils/axiosInstance";
+import axios from "axios";
 
 interface FormData {
   eno: string;
@@ -201,7 +202,7 @@ export default function RegisterSenerNumber() {
       formData.append("target_id", "");
 
       // 3. POST 요청 보내기
-      const response = await instance.post(
+      const response = await axios.post(
         "https://safe.ok-name.co.kr/CommonSvl",
         formData,
         {
