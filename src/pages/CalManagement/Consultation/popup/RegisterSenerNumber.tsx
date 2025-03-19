@@ -20,6 +20,7 @@ import {
   useCrtfcCheck,
   useCrtfcList,
   useDeleteCrtfc,
+  useOkcertToken,
   usePostCrtfc,
   useSaveCrtfc,
 } from "../../../../api/crtfc";
@@ -65,6 +66,11 @@ export default function RegisterSenerNumber() {
     eno: getValues("eno"),
     cid: getValues("cid"),
   }); // 인증번호 확인
+
+  const { refetch: okCert } = useOkcertToken({
+    returnUrl:
+      "http://211.228.124.210:4080/call/consultation/register-sender-number",
+  });
 
   // 인증 요청
   const onPostCrtfc = (data: FormData) => {
@@ -116,7 +122,6 @@ export default function RegisterSenerNumber() {
 
   const { openModal, closeModal } = useModal();
 
-  // TODO 현재 삭제 api에 이상 있어 수정 필요함
   const onDeleteCrtfcs = () => {
     const data = filterDataByValues({
       data: crtfcListAPi?.data.contents,
@@ -161,12 +166,23 @@ export default function RegisterSenerNumber() {
     }
   }, [checkCrtfc]);
 
+  const onVertify = () => {
+    okCert().then((res) => {
+      console.log("opCert결과:", res);
+      const mdlTkn = res?.data?.data.contents.mdlTkn;
+      const popupUrl = `https://safe.ok-name.co.kr/CommonSvl?tc=kcb.oknm.online.safehscert.popup.cmd.P931_CertChoiceCmd&cp_cd=${sptNo}&mdl_tkn=${mdlTkn}`;
+      window.open(popupUrl, "okcertPopup", "width=500,height=600");
+    });
+  };
+
   return (
     <Stack width={"100%"} height={"100%"}>
       <form>
         <div className="hidden" id="cidValue"></div>
         <GrayBox gap={1}>
-          <BasicButton sx={{ marginRight: "auto" }}>본인인증</BasicButton>
+          <BasicButton sx={{ marginRight: "auto" }} onClick={onVertify}>
+            본인인증
+          </BasicButton>
           <BasicButton onClick={onRerefresh}>새로고침</BasicButton>
           <BasicButton type="button" onClick={handleSubmit(onSaveCrtfc)}>
             저장
