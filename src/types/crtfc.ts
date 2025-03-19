@@ -65,3 +65,13 @@ export type CtrfcRequestType = {
   callId?: string | null; // 발송아이디
   resultCode?: string | null; // 결과코드드
 };
+
+// PASS 토큰 발급 응답 양식
+export interface PassToken extends ApiResponseType {
+  contents: {
+    mdlTkn: string;
+    rsltCd: string;
+    rsltMsg: string;
+    succYn: string;
+  };
+}

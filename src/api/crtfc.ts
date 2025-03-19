@@ -8,6 +8,7 @@ import {
   CrtfcSaveRequestType,
   CrtfcDeleteRequestType,
   CtrfcRequestType,
+  PassToken,
 } from "../types/crtfc";
 import { spt } from "../utils/sptNo";
 
@@ -39,6 +40,12 @@ const API = {
     const url = `/api/crtfc/cidno/remove`;
     return await instance.post(url, requestData.body);
   },
+  // <---------본인인증 API----------->
+  // mdn 토큰 발급
+  getOkcertToken: async ({ returnUrl }: { returnUrl: string }) => {
+    const url = `/api/crtfc/okcert/token?sptNo=${spt}&returnUrl=${returnUrl}`;
+    return await instance.get<PassToken>(url);
+  },
 };
 
 const KEY = {
@@ -54,6 +61,7 @@ const KEY = {
   postCrtfc: () => ["/api/crtfc"],
   saveCrtfc: () => ["/api/crtfc/cidno/save"],
   deleteCrtfc: () => ["/api/crtfc/cidno/remove"],
+  getOkcertToken: ({ returnUrl }) => ["/crtfc/okcert/token", returnUrl],
 };
 
 // 발신번호 목록 조회
@@ -99,5 +107,18 @@ export const useDeleteCrtfc = () => {
     mutationFn: (requstData: { body: CrtfcDeleteRequestType }) =>
       API.deleteCrtfc(requstData),
     mutationKey: KEY.deleteCrtfc(),
+  });
+};
+
+// getOkcertToken
+// 토큰 발급
+export const useOkcertToken = ({ returnUrl }) => {
+  return useQuery({
+    queryKey: KEY.getOkcertToken({ returnUrl }),
+    queryFn: async () => {
+      return await API.getOkcertToken({ returnUrl });
+    },
+    gcTime: 0,
+    enabled: false,
   });
 };
