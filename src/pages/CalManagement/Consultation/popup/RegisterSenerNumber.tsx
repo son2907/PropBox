@@ -74,8 +74,7 @@ export default function RegisterSenerNumber() {
   const [mdl_tkn, setMdlTkn] = useState<string>(""); // PASS 인증 토큰
 
   const { data: certToken } = useOkcertToken({
-    returnUrl:
-      "http://211.228.124.210:4080/call/consultation/register-sender-number",
+    returnUrl: "http://211.228.124.210:4080/passAuth",
   });
 
   // 인증 요청
