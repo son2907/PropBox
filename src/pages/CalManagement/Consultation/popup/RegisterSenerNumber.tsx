@@ -52,7 +52,7 @@ export default function RegisterSenerNumber() {
   const checkApiFail = useApiRes();
 
   const { timeRemaining, startTimer, resetTimer, formatTime } =
-    useCountdownTimer(600); // 10분(600초)로 타이머 설정
+    useCountdownTimer(600);
 
   const cid =
     JSON.parse(document.getElementById("cidValue")?.textContent || "{}")?.cid ||
@@ -74,7 +74,7 @@ export default function RegisterSenerNumber() {
   const [mdl_tkn, setMdlTkn] = useState<string>(""); // PASS 인증 토큰
 
   const { data: certToken } = useOkcertToken({
-    returnUrl: "http://211.228.124.210:4080/passAuth",
+    returnUrl: "http://localhost:5173/passAuth",
   });
 
   // 인증 요청
@@ -203,25 +203,20 @@ export default function RegisterSenerNumber() {
     }
   };
 
-  // const formRef = useRef<HTMLFormElement>(null);
-
-  // const handleSubmit = () => {
-  //   formRef.current?.submit();
-  // };
-
   useEffect(() => {
     if (certToken?.data.code == 200) {
-      console.log("토큰:", certToken);
       setMdlTkn(certToken.data.contents.mdlTkn);
     }
   }, [certToken]);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
-      console.log("모든 응답:", event.data.data);
       if (event.data.type === "AUTH_SUCCESS") {
-        console.log("본인인증 성공:", event.data.data);
-        // 인증 성공 후 필요한 처리
+        reset({
+          enoAble: false,
+          cidAble: false,
+          sjAble: false,
+        });
       }
     };
 

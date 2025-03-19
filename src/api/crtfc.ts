@@ -135,6 +135,5 @@ export const useOkcertResult = ({ mdlTkn }) => {
       return await API.getOkcertResult({ mdlTkn });
     },
     gcTime: 0,
-    enabled: false,
   });
 };
