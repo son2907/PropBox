@@ -119,6 +119,5 @@ export const useOkcertToken = ({ returnUrl }) => {
       return await API.getOkcertToken({ returnUrl });
     },
     gcTime: 0,
-    enabled: false,
   });
 };
