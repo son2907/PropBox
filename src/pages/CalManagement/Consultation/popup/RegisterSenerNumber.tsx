@@ -31,7 +31,7 @@ import { filterDataByValues } from "../../../../utils/filterDataByValues";
 import useModal from "../../../../hooks/useModal";
 import { ConfirmMultipleDeletionModal } from "../../../../components/Modal/modal/ConfirmMultipleDeletionModal";
 import { useSptStore } from "../../../../stores/sptStore";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function RegisterSenerNumber() {
   const { selectedRows, toggleRowsSelection, resetSelectedRows } =
@@ -172,42 +172,42 @@ export default function RegisterSenerNumber() {
     }
   }, [checkCrtfc]);
 
-  // const handleSubmit = () => {
-  //   const popup = window.open("", "certPopup", "width=600,height=600");
-
-  //   if (popup) {
-  //     const form = popup.document.createElement("form");
-  //     form.action = "https://safe.ok-name.co.kr/CommonSvl";
-  //     form.method = "post";
-
-  //     const inputs = [
-  //       { name: "mdl_tkn", value: mdl_tkn },
-  //       { name: "cp_cd", value: "V20450000000" },
-  //       {
-  //         name: "tc",
-  //         value: "kcb.oknm.online.safehscert.popup.cmd.P931_CertChoiceCmd",
-  //       },
-  //       { name: "target_id", value: "" },
-  //     ];
-
-  //     inputs.forEach(({ name, value }) => {
-  //       const input = popup.document.createElement("input");
-  //       input.type = "hidden";
-  //       input.name = name;
-  //       input.value = value;
-  //       form.appendChild(input);
-  //     });
-
-  //     popup.document.body.appendChild(form);
-  //     form.submit();
-  //   }
-  // };
-
-  const formRef = useRef<HTMLFormElement>(null);
-
   const handleSubmit = () => {
-    formRef.current?.submit();
+    const popup = window.open("", "certPopup", "width=600,height=600");
+
+    if (popup) {
+      const form = popup.document.createElement("form");
+      form.action = "https://safe.ok-name.co.kr/CommonSvl";
+      form.method = "post";
+
+      const inputs = [
+        { name: "mdl_tkn", value: mdl_tkn },
+        { name: "cp_cd", value: "V20450000000" },
+        {
+          name: "tc",
+          value: "kcb.oknm.online.safehscert.popup.cmd.P931_CertChoiceCmd",
+        },
+        { name: "target_id", value: "" },
+      ];
+
+      inputs.forEach(({ name, value }) => {
+        const input = popup.document.createElement("input");
+        input.type = "hidden";
+        input.name = name;
+        input.value = value;
+        form.appendChild(input);
+      });
+
+      popup.document.body.appendChild(form);
+      form.submit();
+    }
   };
+
+  // const formRef = useRef<HTMLFormElement>(null);
+
+  // const handleSubmit = () => {
+  //   formRef.current?.submit();
+  // };
 
   useEffect(() => {
     if (certToken?.data.code == 200) {
@@ -231,11 +231,7 @@ export default function RegisterSenerNumber() {
 
   return (
     <Stack width={"100%"} height={"100%"}>
-      <form
-        action="https://safe.ok-name.co.kr/CommonSvl"
-        method="post"
-        ref={formRef}
-      >
+      <form action="https://safe.ok-name.co.kr/CommonSvl" method="post">
         <input type={"hidden"} name="mdl_tkn" defaultValue={mdl_tkn} />
         <input type={"hidden"} name="cp_cd" defaultValue={"V20450000000"} />
         <input
