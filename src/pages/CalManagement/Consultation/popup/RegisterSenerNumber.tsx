@@ -192,22 +192,29 @@ export default function RegisterSenerNumber() {
       }
 
       // 2. POST 요청을 보낼 form 데이터 생성
-      const formData = new FormData();
-      formData.append(
+      // const formData = new FormData();
+      // formData.append(
+      //   "tc",
+      //   "kcb.oknm.online.safehscert.popup.cmd.P931_CertChoiceCmd"
+      // );
+      // formData.append("cp_cd", rsltCd);
+      // formData.append("mdl_tkn", mdlTkn);
+      // // formData.append("target_id", "");
+
+      const params = new URLSearchParams();
+      params.append(
         "tc",
         "kcb.oknm.online.safehscert.popup.cmd.P931_CertChoiceCmd"
       );
-      formData.append("cp_cd", rsltCd);
-      formData.append("mdl_tkn", mdlTkn);
-      formData.append("target_id", "");
+      params.append("cp_cd", rsltCd);
+      params.append("mdl_tkn", mdlTkn);
 
-      // 3. POST 요청 보내기
       const response = await axios.post(
         "https://safe.ok-name.co.kr/CommonSvl",
-        formData,
+        params,
         {
           headers: {
-            "Content-Type": "multipart/form-data", // form-data 형식으로 전송
+            "Content-Type": "application/x-www-form-urlencoded; charset=euc-kr", // 올바른 Content-Type 설정
           },
         }
       );
