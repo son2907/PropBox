@@ -26,6 +26,7 @@ const PassReturnPage = () => {
     }
     window.close();
   }, [data]);
+  return <></>;
 };
 
 export default PassReturnPage;
