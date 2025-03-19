@@ -31,25 +31,22 @@ import { filterDataByValues } from "../../../../utils/filterDataByValues";
 import useModal from "../../../../hooks/useModal";
 import { ConfirmMultipleDeletionModal } from "../../../../components/Modal/modal/ConfirmMultipleDeletionModal";
 import { useSptStore } from "../../../../stores/sptStore";
-import axios from "axios";
-import { useEffect, useRef, useState } from "react";
-
-interface FormData {
-  eno: string;
-  cid: string;
-  sj: string;
-}
+import { useEffect, useState } from "react";
 
 export default function RegisterSenerNumber() {
-  const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
+  const { selectedRows, toggleRowsSelection, resetSelectedRows } =
+    useMultiRowSelection();
 
   const { selectedValue: rv, handleRadioChange: srv } = useRadioGroup("Y");
   const { selectedValue: rv2, handleRadioChange: srv2 } = useRadioGroup("S");
-  const { register, getValues, reset } = useForm({
+  const { register, getValues, reset, watch } = useForm({
     defaultValues: {
       eno: "",
       cid: "",
       sj: "",
+      enoAble: true,
+      cidAble: true,
+      sjAble: true,
     },
   });
   const checkApiFail = useApiRes();
@@ -74,8 +71,9 @@ export default function RegisterSenerNumber() {
     eno: getValues("eno"),
     cid: getValues("cid"),
   }); // 인증번호 확인
+  const [mdl_tkn, setMdlTkn] = useState<string>(""); // PASS 인증 토큰
 
-  const { data: certToken, refetch: okCert } = useOkcertToken({
+  const { data: certToken } = useOkcertToken({
     returnUrl:
       "http://211.228.124.210:4080/call/consultation/register-sender-number",
   });
@@ -94,7 +92,7 @@ export default function RegisterSenerNumber() {
       },
       {
         onSuccess: (res) => {
-          console.log("등록 응답:", res);
+          console.log("인증요청 응답:", res);
           checkApiFail(res);
         },
       }
@@ -162,6 +160,7 @@ export default function RegisterSenerNumber() {
             console.log("삭제 응답:", res);
             checkApiFail(res);
             refetchCrtfc();
+            resetSelectedRows();
           },
         }
       );
@@ -174,70 +173,47 @@ export default function RegisterSenerNumber() {
     }
   }, [checkCrtfc]);
 
-  const onVertify = async () => {
-    try {
-      // 1. okCert() 함수를 호출하여 필요한 데이터 가져오기
-      const res = await okCert();
-      console.log("opCert 결과:", res);
+  const handleSubmit = () => {
+    const popup = window.open("", "certPopup", "width=600,height=600");
 
-      const mdlTkn = res?.data?.data?.contents?.mdlTkn;
-      const rsltCd = res?.data?.data?.contents?.rsltCd;
+    if (popup) {
+      const form = popup.document.createElement("form");
+      form.action = "https://safe.ok-name.co.kr/CommonSvl";
+      form.method = "post";
 
-      if (!mdlTkn || !rsltCd) {
-        throw new Error("필수 데이터가 없습니다.");
-      }
-
-      const params = new URLSearchParams();
-      params.append(
-        "tc",
-        "kcb.oknm.online.safehscert.popup.cmd.P931_CertChoiceCmd"
-      );
-      params.append("cp_cd", rsltCd);
-      params.append("mdl_tkn", mdlTkn);
-
-      const response = await axios.post(
-        "https://safe.ok-name.co.kr/CommonSvl",
-        params,
+      const inputs = [
+        { name: "mdl_tkn", value: mdl_tkn },
+        { name: "cp_cd", value: "V20450000000" },
         {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded; charset=euc-kr", // 올바른 Content-Type 설정
-          },
-        }
-      );
+          name: "tc",
+          value: "kcb.oknm.online.safehscert.popup.cmd.P931_CertChoiceCmd",
+        },
+        { name: "target_id", value: "" },
+      ];
 
-      console.log(response);
-    } catch (error) {
-      console.error("인증 요청 중 오류 발생:", error);
-      alert("인증 요청 중 오류가 발생했습니다. 다시 시도해주세요.");
+      inputs.forEach(({ name, value }) => {
+        const input = popup.document.createElement("input");
+        input.type = "hidden";
+        input.name = name;
+        input.value = value;
+        form.appendChild(input);
+      });
+
+      popup.document.body.appendChild(form);
+      form.submit();
     }
   };
 
-  const [mdl_tkn, setMdlTkn] = useState<string>("");
-  const [cp_CD, setCpCd] = useState<string>("");
-
-  const formRef = useRef<HTMLFormElement>(null);
-
-  const handleSubmit = () => {
-    formRef.current?.submit();
-  };
-
   useEffect(() => {
-    console.log("결과:", certToken);
     if (certToken?.data.code == 200) {
       setMdlTkn(certToken.data.contents.mdlTkn);
-      setCpCd(certToken.data.contents.rsltCd);
     }
   }, [certToken]);
 
   return (
     <Stack width={"100%"} height={"100%"}>
-      <form
-        action="https://safe.ok-name.co.kr/CommonSvl"
-        method="post"
-        ref={formRef}
-      >
+      <form action="https://safe.ok-name.co.kr/CommonSvl" method="post">
         <input type={"hidden"} name="mdl_tkn" defaultValue={mdl_tkn} />
-        <input type={"hidden"} name="cp_cd" defaultValue={cp_CD} />
         <input
           type={"hidden"}
           name="tc"
@@ -305,7 +281,7 @@ export default function RegisterSenerNumber() {
             </RadioGroup>
           </CenteredBox>
           <Typography>제목</Typography>
-          <BasicInput {...register("sj")} />
+          <BasicInput {...register("sj")} disabled={watch("sjAble")} />
           <CenteredBox width={"100%"} gap={2}>
             <Typography>인증방식</Typography>
             <RadioGroup value={rv2} onChange={srv2} row>
@@ -329,7 +305,11 @@ export default function RegisterSenerNumber() {
           />
           <Typography>발신번호</Typography>
           <CenteredBox gap={3}>
-            <BasicInput type="number" {...register("cid")} />
+            <BasicInput
+              type="number"
+              {...register("cid")}
+              disabled={watch("cidAble")}
+            />
             <BasicButton type="button" onClick={onPostCrtfc}>
               인증요청
             </BasicButton>
@@ -337,7 +317,11 @@ export default function RegisterSenerNumber() {
 
           <Typography>인증번호</Typography>
           <CenteredBox gap={3}>
-            <BasicInput type="number" {...register("eno")} />
+            <BasicInput
+              type="number"
+              {...register("eno")}
+              disabled={watch("enoAble")}
+            />
             <BasicButton type="button" onClick={checkCrtfcBtn}>
               인증확인
             </BasicButton>
