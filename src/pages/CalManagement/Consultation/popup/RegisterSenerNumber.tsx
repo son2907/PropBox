@@ -170,7 +170,8 @@ export default function RegisterSenerNumber() {
     okCert().then((res) => {
       console.log("opCert결과:", res);
       const mdlTkn = res?.data?.data.contents.mdlTkn;
-      const popupUrl = `https://safe.ok-name.co.kr/CommonSvl?tc=kcb.oknm.online.safehscert.popup.cmd.P931_CertChoiceCmd&cp_cd=${sptNo}&mdl_tkn=${mdlTkn}`;
+      const rsltCd = res?.data?.data.contents.rsltCd;
+      const popupUrl = `https://safe.ok-name.co.kr/CommonSvl?tc=kcb.oknm.online.safehscert.popup.cmd.P931_CertChoiceCmd&cp_cd=${rsltCd}&mdl_tkn=${mdlTkn}`;
       window.open(popupUrl, "okcertPopup", "width=500,height=600");
     });
   };
