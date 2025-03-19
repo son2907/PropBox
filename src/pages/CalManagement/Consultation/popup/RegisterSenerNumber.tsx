@@ -187,6 +187,8 @@ export default function RegisterSenerNumber() {
       });
       const result = await response.json();
       console.log(result);
+      const popupUrl = `https://safe.ok-name.co.kr/CommonSvl?tc=kcb.oknm.online.safehscert.popup.cmd.P931_CertChoiceCmd&cp_cd=${cp_CD}&mdl_tkn=${mdl_tkn}&target_id=`;
+      window.open(popupUrl, "okcertPopup");
     } catch (error) {
       console.error("Error:", error);
     }
