@@ -31,7 +31,7 @@ const PassReturnPage = () => {
             "*"
           );
         }
-        window.close();
+        // window.close();
       } catch (err) {
         console.error("에러 발생:", err);
       }
