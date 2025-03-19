@@ -31,6 +31,7 @@ import { filterDataByValues } from "../../../../utils/filterDataByValues";
 import useModal from "../../../../hooks/useModal";
 import { ConfirmMultipleDeletionModal } from "../../../../components/Modal/modal/ConfirmMultipleDeletionModal";
 import { useSptStore } from "../../../../stores/sptStore";
+import instance from "../../../../utils/axiosInstance";
 
 interface FormData {
   eno: string;
@@ -166,14 +167,64 @@ export default function RegisterSenerNumber() {
     }
   }, [checkCrtfc]);
 
-  const onVertify = () => {
-    okCert().then((res) => {
-      console.log("opCert결과:", res);
-      const mdlTkn = res?.data?.data.contents.mdlTkn;
-      const rsltCd = res?.data?.data.contents.rsltCd;
-      const popupUrl = `https://safe.ok-name.co.kr/CommonSvl?tc=kcb.oknm.online.safehscert.popup.cmd.P931_CertChoiceCmd&cp_cd=${rsltCd}&mdl_tkn=${mdlTkn}&target_id=`;
-      window.open(popupUrl, "okcertPopup", "width=500,height=600");
-    });
+  // const onVertify = () => {
+  //   okCert().then((res) => {
+  //     console.log("opCert결과:", res);
+  //     const mdlTkn = res?.data?.data.contents.mdlTkn;
+  //     const rsltCd = res?.data?.data.contents.rsltCd;
+  //     const popupUrl = `https://safe.ok-name.co.kr/CommonSvl?tc=kcb.oknm.online.safehscert.popup.cmd.P931_CertChoiceCmd&cp_cd=${rsltCd}&mdl_tkn=${mdlTkn}&target_id=`;
+  //     window.open(popupUrl, "okcertPopup", "width=500,height=600");
+  //   });
+  // };
+
+  const onVertify = async () => {
+    try {
+      // 1. okCert() 함수를 호출하여 필요한 데이터 가져오기
+      const res = await okCert();
+      console.log("opCert 결과:", res);
+
+      const mdlTkn = res?.data?.data?.contents?.mdlTkn;
+      const rsltCd = res?.data?.data?.contents?.rsltCd;
+
+      if (!mdlTkn || !rsltCd) {
+        throw new Error("필수 데이터가 없습니다.");
+      }
+
+      // 2. POST 요청을 보낼 form 데이터 생성
+      const formData = new FormData();
+      formData.append(
+        "tc",
+        "kcb.oknm.online.safehscert.popup.cmd.P931_CertChoiceCmd"
+      );
+      formData.append("cp_cd", rsltCd);
+      formData.append("mdl_tkn", mdlTkn);
+      formData.append("target_id", "");
+
+      // 3. POST 요청 보내기
+      const response = await instance.post(
+        "https://safe.ok-name.co.kr/CommonSvl",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data", // form-data 형식으로 전송
+          },
+        }
+      );
+
+      console.log(response);
+
+      // // 4. 응답 처리
+      // if (response.status === 200) {
+      //   // 팝업 창 열기
+      //   const popupUrl = "https://safe.ok-name.co.kr/CommonSvl";
+      //   window.open(popupUrl, "okcertPopup", "width=500,height=600");
+      // } else {
+      //   throw new Error("POST 요청 실패");
+      // }
+    } catch (error) {
+      console.error("인증 요청 중 오류 발생:", error);
+      alert("인증 요청 중 오류가 발생했습니다. 다시 시도해주세요.");
+    }
   };
 
   return (
