@@ -74,7 +74,7 @@ export default function RegisterSenerNumber() {
   const [mdl_tkn, setMdlTkn] = useState<string>(""); // PASS 인증 토큰
 
   const { data: certToken } = useOkcertToken({
-    returnUrl: "http://localhost:5173/passAuth",
+    returnUrl: `${window.location.origin}/passAuth`,
   });
 
   // 인증 요청
