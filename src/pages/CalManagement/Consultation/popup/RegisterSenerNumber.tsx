@@ -20,6 +20,7 @@ import {
   useCrtfcCheck,
   useCrtfcList,
   useDeleteCrtfc,
+  useGetOkcert,
   useOkcertToken,
   usePostCrtfc,
   useSaveCrtfc,
@@ -76,6 +77,20 @@ export default function RegisterSenerNumber() {
   const { data: certToken } = useOkcertToken({
     returnUrl: `${window.location.origin}/passAuth`,
   });
+
+  const { data: passResult } = useGetOkcert();
+
+  useEffect(() => {
+    if (!passResult) return;
+
+    if (passResult.data.contents.crtfcYn == "Y") {
+      reset({
+        enoAble: false,
+        cidAble: false,
+        sjAble: false,
+      });
+    }
+  }, [passResult]);
 
   // 인증 요청
   const onPostCrtfc = () => {
