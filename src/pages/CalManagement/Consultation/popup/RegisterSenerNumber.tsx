@@ -81,6 +81,7 @@ export default function RegisterSenerNumber() {
   const { data: passResult } = useGetOkcert();
 
   useEffect(() => {
+    console.log("passResult:", passResult);
     if (!passResult) return;
 
     if (passResult.data.contents.crtfcYn == "Y") {
