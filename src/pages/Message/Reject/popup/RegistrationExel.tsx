@@ -128,11 +128,11 @@ export default function RegistrationExel() {
         setTableHeader([
           {
             id: 1,
-            content: "엑셀항목",
+            content: "휴대전화",
           },
           {
             id: 2,
-            content: "칼럼위치",
+            content: "비고(사유)",
           },
         ]);
       },
@@ -153,7 +153,11 @@ export default function RegistrationExel() {
       rejectResn: 비고,
     }));
 
+    const position =
+      tableHeader.findIndex((item) => item.content === "휴대전화") + 1;
+
     const body = {
+      mbtlNoPos: position,
       sptNo: sptNo,
       userId: loginId,
       rejectList: listData,
@@ -167,7 +171,6 @@ export default function RegistrationExel() {
           console.log("업로드 결과:", res);
           const result = checkApiFail(res);
           if (result.data.message === "SUCCESS") {
-            console.log("업로드 성공:", res);
             openModal(BasicCompletedModl, {
               modalId: "excelComplete",
               stack: false,
