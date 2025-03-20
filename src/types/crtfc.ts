@@ -75,3 +75,11 @@ export interface PassToken extends ApiResponseType {
     succYn: string;
   };
 }
+
+// 인증 여부
+
+export interface PASSAble extends ApiResponseType {
+  contents: {
+    crtfcYn: string;
+  };
+}
