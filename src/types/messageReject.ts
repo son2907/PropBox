@@ -72,6 +72,7 @@ export type PostRejectRequestType = {
 
 export type RejectExcelUpload = {
   sptNo: string;
+  mbtlNoPos: number;
   rejectList: {
     mbtlNo: string;
     rejectResn: string;
