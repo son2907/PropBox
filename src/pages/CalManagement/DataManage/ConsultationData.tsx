@@ -1,30 +1,34 @@
-import { Stack } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import GrayBox from "../../../components/Box/GrayBox";
 import { Select } from "../../../components/Select";
-import { selectTestData, tableTestData } from "../../../utils/testData";
-import useSelect from "../../../hooks/useSelect";
 import SearchInput from "../../../components/Input/SearchInput";
 import { BasicButton } from "../../../components/Button";
 import CheckboxTable from "../../../components/Table/CheckboxTable";
 import TableBox from "../../../components/Box/TableBox";
 import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
-import { Pagination } from "../../../components/Pagination";
-import { usePagination } from "../../../hooks/usePagination";
-import TableSelect from "../../../components/Select/TableSelect";
-import CenteredBox from "../../../components/Box/CenteredBox";
 import { openPopup } from "../../../utils/openPopup";
 import PathConstants from "../../../routers/path";
-import { useTableSelect } from "../../../hooks/useTableSelect";
+import { useDataManageExcelDownload } from "../../../api/dataManage";
+import { filterDataByValues } from "../../../utils/filterDataByValues";
+import { useEffect } from "react";
 
-export default function ConsultationData() {
-  const {
-    selectListData: sd_0,
-    selectValue: s_0,
-    handleChange: o_0,
-  } = useSelect(selectTestData, "value", "data");
-
-  const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
-  const { currentPage, onChangePage } = usePagination();
+export default function ConsultationData({
+  register,
+  cnsltListData,
+  cnsltSelectValue,
+  cnsltHandleChange,
+  tableData,
+  setTableData,
+}: {
+  register: any;
+  cnsltListData: any;
+  cnsltSelectValue: any;
+  cnsltHandleChange: any;
+  tableData: any;
+  setTableData: any;
+}) {
+  const { selectedRows, toggleRowsSelection, resetSelectedRows } =
+    useMultiRowSelection();
 
   const uploadInfo = {
     url: PathConstants.Call.UploadConsultation,
@@ -32,20 +36,45 @@ export default function ConsultationData() {
     windowFeatures: "width=1200,height=500,scrollbars=yes,resizable=yes",
   };
 
-  const { countValues, selectValue, handleChange } = useTableSelect();
+  const { mutate: downloadExcel } = useDataManageExcelDownload();
+
+  // 엑셀 다운로드
+  const onExcelDownload = () => {
+    const newData = tableData.data.map(({ idx, ...rest }) => rest);
+    downloadExcel({ body: newData });
+  };
+
+  // 숨기기
+  const onDelete = () => {
+    const data = filterDataByValues({
+      data: tableData.data,
+      key: "idx",
+      values: Array.from(selectedRows),
+    });
+
+    //tableData.data에서 data에 있는 내용을 삭제
+    const result = tableData.data.filter((item) => {
+      return !data.some((d) => d.idx === item.idx);
+    });
+
+    setTableData({ ...tableData, data: result });
+  };
+
+  useEffect(() => {
+    resetSelectedRows();
+  }, [tableData]);
 
   return (
     <Stack width={"100%"} height={"100%"} gap={1}>
       <GrayBox gap={1}>
         <Select
           sx={{ width: "150px" }}
-          selectData={sd_0}
-          value={s_0}
-          onChange={o_0}
+          selectData={cnsltListData}
+          value={cnsltSelectValue}
+          onChange={cnsltHandleChange}
           placeholder="검색 항목 선택"
         />
-        <SearchInput />
-        <BasicButton>조회</BasicButton>
+        <SearchInput {...register("searchKeyword")} />
         <BasicButton
           sx={{ marginLeft: "auto" }}
           onClick={() => {
@@ -56,47 +85,49 @@ export default function ConsultationData() {
             });
           }}
         >
-          엑셀업로드
+          <Typography>엑셀업로드</Typography>
         </BasicButton>
-        <BasicButton>엑셀다운로드</BasicButton>
-        <BasicButton>숨기기</BasicButton>
+        <BasicButton onClick={onExcelDownload}>
+          <Typography>엑셀 다운로드</Typography>
+        </BasicButton>
+        <BasicButton onClick={onDelete}>숨기기</BasicButton>
       </GrayBox>
       <TableBox>
         <TableBox.Inner>
           <CheckboxTable
-            data={tableTestData}
+            data={tableData?.data}
             selectedRows={selectedRows}
             toggleRowsSelection={toggleRowsSelection}
           >
-            {/* 체크한 데이터에 따라 표시 */}
             <CheckboxTable.Thead>
               <CheckboxTable.Tr>
-                <CheckboxTable.Th colSpan={5}>고객이름</CheckboxTable.Th>
+                <CheckboxTable.CheckboxTh keyName="idx" />
+                {tableData?.headers?.map((header) =>
+                  header === "idx" ? null : (
+                    <CheckboxTable.Th key={header}>{header}</CheckboxTable.Th>
+                  )
+                )}
               </CheckboxTable.Tr>
             </CheckboxTable.Thead>
             <CheckboxTable.Tbody>
-              {tableTestData.map((item) => (
-                <CheckboxTable.Tr key={item.id} id={item.id}>
-                  <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                  <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                  <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                  <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                  <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                </CheckboxTable.Tr>
-              ))}
+              {tableData?.data?.map((row, rowIndex) => {
+                return (
+                  <CheckboxTable.Tr key={rowIndex}>
+                    <CheckboxTable.CheckboxTd item={row} keyName="idx" />
+                    {Object.entries(row)
+                      .filter(([key]) => key !== "idx")
+                      .map(([, value], index) => (
+                        <CheckboxTable.Td key={index}>
+                          {String(value)}
+                        </CheckboxTable.Td>
+                      ))}
+                  </CheckboxTable.Tr>
+                );
+              })}
             </CheckboxTable.Tbody>
           </CheckboxTable>
         </TableBox.Inner>
       </TableBox>
-      <CenteredBox padding={2} justifyContent={"space-between"}>
-        <Pagination count={25} page={currentPage} onChange={onChangePage} />
-        <TableSelect
-          total={100}
-          countValues={countValues}
-          selectValue={selectValue}
-          handleChange={handleChange}
-        />
-      </CenteredBox>
     </Stack>
   );
 }

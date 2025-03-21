@@ -4,19 +4,12 @@ import SearchInput from "../../../components/Input/SearchInput";
 import { BasicButton } from "../../../components/Button";
 import TableBox from "../../../components/Box/TableBox";
 import CheckboxTable from "../../../components/Table/CheckboxTable";
-import { tableTestData } from "../../../utils/testData";
-import CenteredBox from "../../../components/Box/CenteredBox";
-import { Pagination } from "../../../components/Pagination";
-import TableSelect from "../../../components/Select/TableSelect";
 import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
-import { usePagination } from "../../../hooks/usePagination";
 import { openPopup } from "../../../utils/openPopup";
 import PathConstants from "../../../routers/path";
-import { useTableSelect } from "../../../hooks/useTableSelect";
 
-export default function CustomerData() {
+export default function CustomerData({ reigister, tableData }) {
   const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
-  const { currentPage, onChangePage } = usePagination();
 
   const popupInfo = {
     url: PathConstants.Call.CreateConsultation,
@@ -24,12 +17,10 @@ export default function CustomerData() {
     windowFeatures: "width=1066,height=1000,scrollbars=yes,resizable=yes",
   };
 
-  const { countValues, selectValue, handleChange } = useTableSelect();
-
   return (
     <Stack width={"100%"} height={"100%"} gap={1}>
       <GrayBox gap={1}>
-        <SearchInput />
+        <SearchInput {...reigister("searchKeywordCust")} />
         <BasicButton
           sx={{ marginLeft: "auto" }}
           onClick={() => {
@@ -48,39 +39,41 @@ export default function CustomerData() {
       <TableBox>
         <TableBox.Inner>
           <CheckboxTable
-            data={tableTestData}
+            data={tableData?.data}
             selectedRows={selectedRows}
             toggleRowsSelection={toggleRowsSelection}
           >
-            {/* 체크한 데이터에 따라 표시 */}
             <CheckboxTable.Thead>
               <CheckboxTable.Tr>
-                <CheckboxTable.Th colSpan={5}>고객이름</CheckboxTable.Th>
+                <CheckboxTable.CheckboxTh keyName="idx" />
+                {tableData?.headers?.map((header) =>
+                  header === "idx" ? null : (
+                    <CheckboxTable.Th key={header}>{header}</CheckboxTable.Th>
+                  )
+                )}
               </CheckboxTable.Tr>
             </CheckboxTable.Thead>
             <CheckboxTable.Tbody>
-              {tableTestData.map((item) => (
-                <CheckboxTable.Tr key={item.id} id={item.id}>
-                  <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                  <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                  <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                  <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                  <CheckboxTable.Td>{item.name}</CheckboxTable.Td>
-                </CheckboxTable.Tr>
-              ))}
+              {tableData?.data?.map((row, rowIndex) => {
+                return (
+                  <CheckboxTable.Tr key={rowIndex}>
+                    <CheckboxTable.CheckboxTd item={row} keyName="idx" />
+                    {Object.entries(row)
+                      .filter(([key]) => key !== "idx")
+                      .map(([_, value], index) => {
+                        return (
+                          <CheckboxTable.Td key={index}>
+                            {String(value)}
+                          </CheckboxTable.Td>
+                        );
+                      })}
+                  </CheckboxTable.Tr>
+                );
+              })}
             </CheckboxTable.Tbody>
           </CheckboxTable>
         </TableBox.Inner>
       </TableBox>
-      <CenteredBox padding={2} justifyContent={"space-between"}>
-        <Pagination count={25} page={currentPage} onChange={onChangePage} />
-        <TableSelect
-          total={100}
-          countValues={countValues}
-          selectValue={selectValue}
-          handleChange={handleChange}
-        />
-      </CenteredBox>
     </Stack>
   );
 }
