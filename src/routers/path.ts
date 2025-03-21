@@ -1,3 +1,5 @@
+import CustomerPreview from "../pages/CustomerManagement/Registration/popup/CustomerPreview";
+
 const PathConstants = {
   Home: "/",
   Login: "/login",
@@ -36,6 +38,7 @@ const PathConstants = {
     RegistrationUpload: "/customer/registration/registration-upload",
     CustomerGroupManagement: "/customer/registration/customergroup-management",
     CustomerSmsSending: "/customer/registration/customer-sms-sending",
+    CustomerPreview: "/customer/registration/customer-preview",
   },
   System: {
     Solution: "/system/solution",

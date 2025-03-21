@@ -44,6 +44,8 @@ import { BasicDeleteConfirmModal } from "../../../../components/Modal/modal/Basi
 import TimePicker from "../../../../components/TimePicker";
 import { getFormatTime } from "../../../../utils/getFormatTime";
 import { WarningModal } from "../../../../components/Modal/modal/WarningModal";
+import { transmissionCount } from "../../../../api/CustomerManagement";
+import { CustomerSmsTotalCountListType, CustomerSmsTotalCountType } from "../../../../types/CustomerManagement";
 
 interface Register {
   sj: string;
@@ -57,17 +59,14 @@ interface Register {
 }
 
 export default function CustomerSMSSending() {
-
   // 팝업 페이지에서 파라미터 파싱
+  const selectedCstmrNos = JSON.parse(localStorage.getItem("selectedCstmrNos") || "[]");
+  //url에 파싱된 데이터 가져오기
   const queryParams = new URLSearchParams(window.location.search);
-  const userNo = queryParams.get("userNo");
-  const sptNoCustomer = queryParams.get("sptNo");
-  const slutnIdParam = queryParams.get("slutnId");
+  const groupNo = queryParams.get("groupNo");
+  console.log("선택된 고객 번호:", groupNo);
 
-  // slutnId 문자열을 배열로 변환
-  const slutnIds = slutnIdParam ? slutnIdParam.split(",") : [];
-
-  console.log("팝업으로 가져온 데이터:", { userNo, sptNoCustomer, slutnIds });
+  //tab1: 확정, 2: 중복, 3: 오류 4:수신거부
 
   const [custmrNo, setCustmrNo] = useState<any>("");
   const [cnsltTelno, setCnsltTelno] = useState<any>("");
@@ -83,13 +82,39 @@ export default function CustomerSMSSending() {
   // 우측 상단 테이블
   const { data: msgList, refetch: msgListRefetch } = useMsgList();
   // 매크로 테이블
-  const { data: macroList } = useMacroList({ cstmrNo: custmrNo });
+  const { data: macroList } = useMacroList({ cstmrNo: selectedCstmrNos[0].custmNo });
   // 메세지 저장
   const { mutate: postMsg } = usePostMsg();
   // 메세지 삭제
   const { mutate: deleteMsg } = useDeleteMsg();
   // 메세지 전송
   const { mutate: sendMsg } = useSendMsg();
+  // 전송확인대상 인원수 확인
+  const transmissionCountAPI = transmissionCount();
+  const [smsCount, setSmsCount] = useState<CustomerSmsTotalCountListType>();
+
+  useEffect(() => {
+    const reqData: CustomerSmsTotalCountType = {
+      sptNo: sptNo || "",
+      groupNo: groupNo || "",
+      tabFlag: "",
+      cstmrList: selectedCstmrNos.map(data => data.custmNo)
+    };
+
+    console.log("보낼 데이터 확인:", reqData);
+
+    transmissionCountAPI.mutate(
+      { body: reqData },
+      {
+        onSuccess: (response) => {
+          if (response.data.message === "SUCCESS") {
+            console.log("response.data", response.data.contents);
+            setSmsCount(response.data.contents);
+          }
+        },
+      }
+    )
+  }, [])
 
   useEffect(() => {
     window.opener.postMessage({ type: "REQUEST_INITIAL_DATA" }, "*");
@@ -139,14 +164,16 @@ export default function CustomerSMSSending() {
   });
   const inputRef = useRef<HTMLInputElement>(null); // 파일 담을 ref
 
-  // const popup = {
-  //   url: PathConstants.Message.Preview,
-  //   windowName: "전송대상 미리보기",
-  // };
+  //514*600
+  const popup = {
+    url: PathConstants.Customer.CustomerPreview,
+    windowName: "전송대상 미리보기",
+    windowFeatures: "width=514,height=594,scrollbars=yes,resizable=yes"
+  };
 
-  // const preview = () => {
-  //   openPopup(popup);
-  // };
+  const preview = (sptNo: string, groupNo: string) => {
+    openPopup(popup);
+  };
 
   const { selectListData, selectValue, handleChange } = useSelect(
     crtfcListAPi?.data.contents,
@@ -488,10 +515,16 @@ export default function CustomerSMSSending() {
               </IconButton>
             </CenteredBox>
             <CenteredBox justifyContent={"space-between"}>
-              <Typography>전송 대상 : 1명</Typography>
-              <Typography> 수신 거부 대상 1명</Typography>
-              <Typography> 확정 대상: 1명</Typography>
-              <BasicButton>미리보기</BasicButton>
+              <Typography>전송 대상 : {selectedCstmrNos.length}명</Typography>
+              <Typography> 수신 거부 대상 {smsCount?.totalCnt4}명</Typography>
+              <Typography> 확정 대상: {smsCount?.totalCnt1}명</Typography>
+              <BasicButton onClick={() => {
+                openPopup({
+                  url: `${popup.url}?groupNo=${groupNo}`,
+                  windowName: popup.windowName,
+                  windowFeatures: popup.windowFeatures,
+                });
+              }}>미리보기</BasicButton>
             </CenteredBox>
             <CenteredBox gap={1}>
               <input type="checkbox" {...register("regYn")} />

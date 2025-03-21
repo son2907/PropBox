@@ -106,10 +106,13 @@ const API = {
     telno?: string;
     cstmrNm?: string;
   }) => {
-    let url = `/api/tel/cnslt/findCustom?sptNo=${spt}`;
+    let url = `/api/tel/cnslt/findCustom/list?sptNo=${spt}`;
     if (telno) url += `&telno=${telno}`;
     if (cstmrNm) url += `&cstmrNm=${cstmrNm}`;
-    return await instance.get(url);
+    const result = await instance.get(url);
+    console.log("보낸url",url);
+    console.log("받은데이터:",result);
+    return result;
   },
   // 상담현황 팝업 조회
   getReportList: async () => {

@@ -36,7 +36,8 @@ export default function SearchCustomer() {
   const saveCustomer = () => {
     if (selectedRow) {
       window.opener.postMessage(selectedRow, "*");
-      window.close();
+      console.log("넘겨주는 데이터:",selectedRow, "*")
+      //window.close();
     }
   };
 
@@ -90,7 +91,7 @@ export default function SearchCustomer() {
             <BasicTable.Th>집전화</BasicTable.Th>
             <BasicTable.Tbody>
               {data?.data.contents &&
-                [data?.data.contents]?.map((item: any, index: any) => {
+                (data?.data.contents).map((item: any, index: any) => {
                   return (
                     <BasicTable.Tr
                       key={index}

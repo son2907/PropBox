@@ -65,6 +65,7 @@ import SoketGuard from "./guard/SoketGuard";
 import UpdateUSer from "../pages/SysManagement/User/popup/UpdateUser";
 import LocalUpdate from "../pages/SysManagement/Local/popup/LocalModify";
 import CustomerSMSSending from "../pages/CustomerManagement/Registration/popup/CustomerSMSSending";
+import CustomerPreview from "../pages/CustomerManagement/Registration/popup/CustomerPreview";
 
 export const routes: RouteObject[] = [
   {
@@ -356,5 +357,9 @@ export const routes: RouteObject[] = [
   {
     path: PathConstants.Customer.CustomerSmsSending,
     element: <CustomerSMSSending />,
+  },
+  {
+    path: PathConstants.Customer.CustomerPreview,
+    element: <CustomerPreview body={{}} msgData={{}}/>,
   },
 ];

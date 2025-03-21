@@ -123,6 +123,7 @@ export type CustomerDetailTopType = {
     telNo: string,
     cstmrRmk: string,
     addr: string,
+    areaNm: string,
     regDtm: string,
     validMbtlNo: string,
     dupMbtlNo: string,
@@ -230,4 +231,42 @@ export type CustomerSingleUpdateType = {
 export type CustomerSingleDeleteType = {
     sptNo: string,
     cstmrNo: string,
-}
+};
+
+//고객관리 - 문자메시지 - 전송대상 미리보기 인원수
+export type CustomerSmsTotalCountType = {
+    sptNo: string,
+    groupNo: string,
+    tabFlag: string,
+    cstmrList: string[]
+};
+
+//고객관리 - 문자메시지팝업 - 전송대상미리보기 인원수 Response
+export type CustomerSmsTotalCountListType = {
+    sptNo: string,
+    groupNo: string,
+    totalCnt1: string,
+    totalCnt2: string,
+    totalCnt3: string,
+    totalCnt4: string
+};
+export interface CustomerSmsTotalCountListResponse extends ApiResponseType {
+    code: number;
+    result: string;
+    message: string;
+    totalCnt: number | null;
+    totalPage: number,
+    contents: CustomerSmsTotalCountListType;
+    params: null;
+    errorCode: null;
+    accessToken: null;
+    refreshToken: null;
+};
+
+//고객관리 - 미리보기 
+export type CustomerPreviewTotalCountType = {
+    sptNo: string,
+    groupNo: string,
+    tabFlag: string,
+    cstmrList: string[]
+};

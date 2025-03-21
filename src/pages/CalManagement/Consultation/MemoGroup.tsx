@@ -44,6 +44,10 @@ export default function MemoGroup() {
   );
 
   useEffect(() => {
+    console.log("보내주는데이터확인:",histListData)
+  },[])
+
+  useEffect(() => {
     resetSelection();
   }, [histListData]);
 
