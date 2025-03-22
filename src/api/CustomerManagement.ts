@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { CustomerDetailBottomResponse, CustomerDetailListResponse, CustomerDetailTopResponse, CustomerGroupDeleteType, CustomerGroupInsertType, CustomerGroupListHeaderListResponse, CustomerGroupListResponseType, CustomerListResponse, CustomerManagementAreaResponse, CustomerSingleDeleteType, CustomerSingleUpdateType, UpdateGroupHeader } from "../types/CustomerManagement";
+import { CustomerDetailBottomResponse, CustomerDetailListResponse, CustomerDetailTopResponse, CustomerGroupDeleteType, CustomerGroupInsertType, CustomerGroupListHeaderListResponse, CustomerGroupListResponseType, CustomerListResponse, CustomerManagementAreaResponse, CustomerPreviewTotalCountType, CustomerSingleDeleteType, CustomerSingleUpdateType, CustomerSmsTotalCountType, CustomserExcelUploadHeaderPositionType, UpdateGroupHeader } from "../types/CustomerManagement";
 import instance from "../utils/axiosInstance";
 
 const API = {
@@ -63,6 +63,26 @@ const API = {
         const url = `/api/custom/delete?sptNo=${sptNo}&cstmrNo=${cstmrNo}`;
         return await instance.delete(url);
     },
+    //고객관리 문자전송 전송대상 count
+    transmissionCount: async (requestData: {body:CustomerSmsTotalCountType}) => {
+        const url = '/api/custom/sms/tmptabscnt';
+        return await instance.post(url,requestData.body);
+    },
+    // 고객 미리보기 - 확정인원 목록
+    confirmedCustomerList: async (requestData: {body: CustomerPreviewTotalCountType}) => {
+        const url = '/api/custom/sms/tmp';
+        return await instance.post(url,requestData.body);
+    },
+    //고객관리 - 문자전송 - 전송대상 미리보기 - 중복인원
+    duplicateCustomerList: async (requestData:{body : CustomerPreviewTotalCountType}) => {
+        const url = '/api/custom/sms/tmp';
+        return await instance.post(url,requestData.body);
+    },
+    //고객 엑셀 업로드 헤더 위치 저장
+    customserExcelUploadHeaderPosition: async (requestData : {body : CustomserExcelUploadHeaderPositionType}) => {
+        const url = '/api/custom/group/grouppos';
+        return await instance.post(url,requestData.body);
+    },
 };
 
 const KEY = {
@@ -93,6 +113,12 @@ const KEY = {
     customerSingleUpdate: () => ['/api/custom'],
     //고객관리 개별 삭제
     customerSingleDelete: () => ["/api/custom/delete","delete"],
+    //고객관리 문자전송 전송대상 count
+    transmissionCount: () => ['/api/custom/sms/tmpcnt'],
+    // 고객 미리보기 - 확정인원 목록
+    confirmedCustomerList: () => ['/api/custom/sms/tmp'],
+    //고객 엑셀 업로드 헤더 위치 저장
+    customserExcelUploadHeaderPosition: () => ['/api/custom/group/grouppos'],
 };
 
 //고객 관리 그룹 목록 조회
@@ -156,9 +182,9 @@ export const getCustomerDetailList = (requestData: {sptNo: string, groupNo: stri
     return useQuery({
         queryKey: KEY.getCustomerDetailList(requestData),
         queryFn: async () => {
-            //console.log("고객 상세 조회 보낸 데이터:", requestData);
+            console.log("고객 상세 조회 보낸 데이터:", requestData);
             const result = await API.getCustomerDetailList(requestData);
-            //console.log("고객 상세 조회 테이블 데이터:",result);
+            console.log("고객 상세 조회 테이블 데이터:",result);
             return result;
         },
         enabled: !!requestData.groupNo
@@ -254,6 +280,90 @@ export const customerSingleDelete = () => {
     return useMutation({
         mutationKey: KEY.customerSingleDelete(),
         mutationFn: ({sptNo, cstmrNo}: CustomerSingleDeleteType) => API.customerSingleDelete({sptNo, cstmrNo}),
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    });
+};
+
+//고객관리 문자전송 전송대상 count
+export const transmissionCount = () => {
+    return useMutation({
+        mutationKey: KEY.transmissionCount(),
+        mutationFn: (requestData: {body:CustomerSmsTotalCountType}) => API.transmissionCount(requestData),
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    })
+};
+
+//고객관리 - 문자전송 - 전송대상 미리보기 - 확정인원
+export const confirmedCustomerList = () => {
+    return useMutation({
+        mutationKey: KEY.confirmedCustomerList(),
+        mutationFn: (requestData: {body: CustomerPreviewTotalCountType}) => API.confirmedCustomerList(requestData),
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    })
+};
+
+// 고객 미리보기 - 중복인원원 목록
+export const duplicateCustomerList = () => {
+    return useMutation({
+        mutationKey: KEY.confirmedCustomerList(),
+        mutationFn: (requestData: {body: CustomerPreviewTotalCountType}) => API.confirmedCustomerList(requestData),
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    }); 
+};
+
+// 고객 미리보기 - 형식오류 목록
+export const errorCustomerList = () => {
+    return useMutation({
+        mutationKey: KEY.confirmedCustomerList(),
+        mutationFn: (requestData: {body: CustomerPreviewTotalCountType}) => API.confirmedCustomerList(requestData),
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    });
+};
+
+// 고객 미리보기 - 수신거부 목록
+export const rejectCustomerList = () => {
+    return useMutation({
+        mutationKey: KEY.confirmedCustomerList(),
+        mutationFn: (requestData: {body: CustomerPreviewTotalCountType}) => API.confirmedCustomerList(requestData),
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    });
+};
+
+//고객 엑셀 업로드 헤더 위치 저장
+export const customserExcelUploadHeaderPosition = () => {
+    return useMutation({
+        mutationKey: KEY.customserExcelUploadHeaderPosition(),
+        mutationFn: (requestData : {body : CustomserExcelUploadHeaderPositionType}) => API.customserExcelUploadHeaderPosition(requestData),
         onSuccess: (response) => {
             console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
         },

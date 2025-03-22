@@ -9,7 +9,7 @@ import { Select } from "../../../components/Select";
 import { selectTestData } from "../../../utils/testData";
 import useSelect from "../../../hooks/useSelect";
 import CustomerInfo from "./CustomerInfo";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import PathConstants from "../../../routers/path";
 import { openPopup } from "../../../utils/openPopup";
 import TableBox from "../../../components/Box/TableBox";
@@ -47,6 +47,7 @@ export default function Registration() {
   const [telNo, setTelNo] = useState("");
   const [cstmrRmk, setCstmrRmk] = useState("");
   const [addr, setAddr] = useState("");
+  const [areaNm, setAreaNm] = useState("");
   const [headers, setHeaders] = useState<{ [key: string]: string }>({});
   //-------------------------왼쪽 테이블 조회
   // 왼쪽 테이블 페이징 기능
@@ -75,6 +76,8 @@ export default function Registration() {
     }))
   }, [searchQuery, currentPage,]);
 
+
+
   //---------------------------오른쪽 테이블 조회
   //오른쪽 테이블 페이징 기능
   const { currentPage: detailCurrentPage, onChangePage: onChangePagedetail } = usePagination();
@@ -86,6 +89,11 @@ export default function Registration() {
   const [customerDetailListData, setCustomerDetailListData] = useState<CustomerDetailListType[]>([]);
 
   const [category, setCategory] = useState("");
+
+  useEffect(() => {
+    console.log("그룹번호:", selectCustomerGroupNum);
+    console.log("그룹데이터:", coustomerDetailReqData);
+  }, [selectCustomerGroupNum]);
 
   //헤더 조회
   const [headerListReqData, setHeaderListReqData] = useState({ sptNo: sptNo, groupNo: selectCustomerGroupNum });
@@ -102,18 +110,22 @@ export default function Registration() {
     }
   }, [customerArea]);
 
-  //관리지역역
-  const { selectListData, selectValue, handleChange } = useSelect(
-    customerAreaData,
-    "areaNo",
-    "areaNm"
-  );
 
+
+  const [selectAreaNm, setSelectAreaNm] = useState("");
+  const [selectAreaNo, setSelectAreaNo] = useState("");
   const [customerNum, setCustomerNum] = useState("")
   const [customerDetailReqData, setCustomerDetailReqData] = useState({ sptNo: sptNo, groupNo: selectCustomerGroupNum, cstmrNo: customerNum });
   const { data: customerDetailTop, refetch: refetchCustomerDetailTop } = getCustmoerDetailTop(customerDetailReqData);
   const { data: customerDetailBottom, refetch: refetchCustomerDetailBottom } = getCustomerDetailBottom(customerDetailReqData);
   const { selectedRow, toggleRowSelection } = useSingleRowSelection(); // 행 단일 선택, 배경색 변함
+
+  //관리지역
+  const { selectListData, selectValue, handleChange } = useSelect(
+    useMemo(() => customerArea?.data.contents || [], [customerArea?.data.contents]),
+    "areaNo", // 현장 번호
+    "areaNm", // 현장명
+  );
 
   const CustomerUpdateReqData = {
     body: {
@@ -235,6 +247,7 @@ export default function Registration() {
       setCstmrRmk(customerDetailTop.data.contents.cstmrRmk);
       setAddr(customerDetailTop.data.contents.addr);
       setCstmrNm(customerDetailTop.data.contents.cstmrNm);
+      setAreaNm(customerDetailTop.data.contents.addr);
     } else {
       setMbtlNo("");
       setTelNo("");
@@ -245,10 +258,10 @@ export default function Registration() {
   }, [customerDetailTop]); // customerGroupHeaderList 변경 시 초기화
 
   useEffect(() => {
-    if(customerDetailList?.data.contents) {
+    if (customerDetailList?.data.contents) {
       setCustomerDetailListData(customerDetailList.data.contents);
     }
-  },[customerDetailList])
+  }, [customerDetailList])
 
   // 특정 입력값 변경 핸들러
   const handleInputChange = (key: string, value: string) => {
@@ -272,18 +285,30 @@ export default function Registration() {
     }
   };
 
-  const handleSelectCustomer = () => {
+  //
+  const handleSelectCustomer = (sptNo: string, groupNo: string) => {
     const customerList = Array.from(solutionCustomerSelectedRows).map((rowId) => {
       const selectedItem = customerDetailListData.find(
         (item) => item.cstmrNo === rowId
       );
       return {
-        custmNo : selectedItem?.cstmrNo || "",
+        custmNo: selectedItem?.cstmrNo || "",
         //customerNm: selectedItem?.cstmrNm || "",
       };
     });
 
-    console.log("고객번호 확인",customerList);
+    console.log("고객번호 확인", customerList);
+    localStorage.setItem("selectedCstmrNos", JSON.stringify(customerList));
+
+    if (selectCustomerGroupNum && customerList) {
+      openPopup({
+        url: `${smsSendPopup.url}?sptNo=${sptNo}&groupNo=${groupNo}`,
+        windowName: smsSendPopup.windowName,
+        windowFeatures: smsSendPopup.windowFeatures,
+      });
+    } else {
+      emptySelectionModal();
+    }
   }
 
   const updateCompletedModal = () => {
@@ -366,7 +391,7 @@ export default function Registration() {
                   }}
                 />
                 <BasicButton sx={{ color: "root.mainBlue", border: 1 }}
-                  onClick={handleSelectCustomer}
+                  onClick={() => { handleSelectCustomer(sptNo, selectCustomerGroupNum) }}
                 >
                   SMS 전송
                 </BasicButton>
@@ -509,8 +534,8 @@ export default function Registration() {
                     <TableBox.Inner style={{ overflowX: "auto", whiteSpace: "nowrap" }}>
                       <CheckboxTable
                         data={customerDetailList?.data?.contents || []}
-                        selectedRows={nomalCustomerSelectedRows}
-                        toggleRowsSelection={toggleNomalCustomerRowsSelection}
+                        selectedRows={solutionCustomerSelectedRows}
+                        toggleRowsSelection={toggleSolutionCustomerRowsSelection}
 
                       >
                         <CheckboxTable.Thead>
@@ -570,8 +595,8 @@ export default function Registration() {
                     <GrayBox gap={1} justifyContent={"space-between"}>
                       <Pagination
                         count={customerDetailList?.data?.totalPage || 1}
-                        page={currentPage}
-                        onChange={onChangePage}
+                        page={detailCurrentPage}
+                        onChange={onChangePagedetail}
                       />
                       <TableSelect
                         total={customerDetailList?.data?.totalCnt || 0}
@@ -783,14 +808,31 @@ export default function Registration() {
                     {/* height: 24px */}
                     <Select
                       value={selectValue}
-                      onChange={handleChange}
-                      selectData={selectListData}
+                      onChange={(e) => {
+                        const newValue = e.target.value; // 선택된 값 (areaNm)
+
+                        handleChange(e); // selectValue 상태 업데이트 (useSelect 훅 내부에서 처리)
+
+                        const selectedOption = customerAreaData.find(
+                          (item) => item.areaNm === newValue
+                        ); // 선택된 옵션 객체
+
+                        if (selectedOption) {
+                          console.log(`관리지역 변경: ${selectedOption.areaNo}`); // 콘솔 출력
+                          setSelectAreaNm(selectedOption.areaNm); // 선택한 지역명 상태 저장
+                          setSelectAreaNo(selectedOption.areaNo); // 선택한 지역번호 상태 저장
+                        }
+                      }}
+                      selectData={customerAreaData.map((item) => ({
+                        value: item.areaNm, // 실제 선택 값
+                        data: item.areaNm, // 기존 label 대신 data 사용
+                      }))}
                       sx={{
-                        width: "80%",
                         "& .MuiSelect-select": {
-                          backgroundColor: "primary.light", // 선택 박스만 흰색으로
+                          backgroundColor: "primary.light",
                         },
                       }}
+                      placeholder={areaNm || ""}
                     />
                   </Box>
                   {customerDetailBottom?.data.contents.map((item, index) => (

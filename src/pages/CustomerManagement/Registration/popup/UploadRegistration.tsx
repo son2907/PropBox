@@ -12,6 +12,8 @@ import { ExcelToTable } from "../../../../utils/ExcelToTable";
 import useModal from "../../../../hooks/useModal";
 import { ConfirmMultipleDeletionModal } from "../../../../components/Modal/modal/ConfirmMultipleDeletionModal";
 import { filterDataByValues } from "../../../../utils/filterDataByValues";
+import { customserExcelUploadHeaderPosition } from "../../../../api/CustomerManagement";
+import { useSptStore } from "../../../../stores/sptStore";
 
 interface Data {
   id: string;
@@ -20,7 +22,8 @@ interface Data {
 
 //고객 정보 엑셀 업로드드
 export default function UploadRegistration() {
-
+  //api를 호출하기위해 sptNo 불러오기
+  const { sptNo } = useSptStore();
   //고정 헤더 정리
   const [tableHeaderData, setTableHeaderData] = useState([
     {
@@ -101,13 +104,17 @@ export default function UploadRegistration() {
   const [tableHeader, setTableHeader] = useState<any[]>([]);
   const [tableData, setTableData] = useState<any>([]);
 
+  const { mutate: customserExcelUploadHeaderPositionAPI } = customserExcelUploadHeaderPosition();
+
   //업로드하기
   const onClickUpload = () => {
     const file = fileInputRef.current?.files?.[0];
-    if (!file) return;
+    //if (!file) return;
 
     // 고정된 헤더 사용
     const fixedHeaders = tableHeaderData.map((item) => item.header);
+
+    const getHeaderIndex = (headerName) => fixedHeaders.indexOf(headerName);
 
     const body = {
       testDataList: tableData.map(({ id, ...rest }) => ({
@@ -118,6 +125,29 @@ export default function UploadRegistration() {
 
     console.log("엑셀데이터좀 보자", body);
     console.log("현재 헤더:", fixedHeaders);
+
+    //엑셀 헤더 위치 저장
+    const positionReqData = {
+      sptNo: sptNo || "",
+      cstmrNm: getHeaderIndex("고객이름"),
+      mbtlNo: getHeaderIndex("휴대전화"),
+      telNo: getHeaderIndex("일반전화"),
+      cstmrRmk: getHeaderIndex("고객정보"),
+      hder01: getHeaderIndex("기본정보1"),
+      hder02: getHeaderIndex("기본정보2"),
+      hder03: getHeaderIndex("기본정보3"),
+      hder04: getHeaderIndex("기본정보4"),
+      hder05: getHeaderIndex("기본정보5"),
+      hder06: getHeaderIndex("기본정보6"),
+      hder07: getHeaderIndex("기본정보7"),
+      hder08: getHeaderIndex("기본정보8"),
+      hder09: getHeaderIndex("기본정보9"),
+      hder10: getHeaderIndex("기본정보10"),
+      userId: "", // userId 값이 있다고 가정
+    };
+
+    console.log("헤더위치확인:",positionReqData)
+    //customserExcelUploadHeaderPositionAPI()
   };
 
   //선택한 열 제거
@@ -157,10 +187,10 @@ export default function UploadRegistration() {
             onChange={async (e) => {
               try {
                 const { headers, dataWithId } = await ExcelToTable(e);
-            
+
                 console.log("엑셀 원본 헤더:", headers);
                 console.log("엑셀 원본 데이터:", dataWithId);
-            
+
                 // 엑셀 헤더 순서를 그대로 사용
                 const orderedData = dataWithId.map((row) => {
                   const orderedRow = { id: row.id };
@@ -169,9 +199,9 @@ export default function UploadRegistration() {
                   });
                   return orderedRow;
                 });
-            
+
                 console.log("변환된 데이터:", orderedData);
-            
+
                 setTableHeader(headers); // 엑셀 헤더 순서 유지
                 setTableData(orderedData); // 변환된 데이터 적용
               } catch (error) {
