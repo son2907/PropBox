@@ -53,6 +53,11 @@ export default function ConsultationSearch({ searchCunlst }) {
 
   const searchData = () => {
     const search = getCheckedData();
+    console.log("search", search);
+    if (search.length === 0) {
+      alert("항목을 선택해주세요.");
+      return;
+    }
 
     const body = {
       sptNo: sptNo,

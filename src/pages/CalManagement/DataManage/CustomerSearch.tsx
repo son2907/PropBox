@@ -1,7 +1,7 @@
 import { Stack, Typography } from "@mui/material";
 import CenteredBox from "../../../components/Box/CenteredBox";
 import Calendar from "../../../components/Calendar/Calendar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Select } from "../../../components/Select";
 import useSelect from "../../../hooks/useSelect";
 import { BasicButton } from "../../../components/Button";
@@ -46,7 +46,7 @@ export default function CustomerSearch({ searchCust }) {
   } = useSelect(
     [
       { itemNo: "none", itemNm: "선택안함" },
-      ...(custItems?.data?.contents?.contents || []),
+      ...(custItems?.data?.contents || []),
     ],
     "itemNo",
     "itemNm",
@@ -62,7 +62,7 @@ export default function CustomerSearch({ searchCust }) {
   } = useSelect(
     [
       { detailNo: "none", detailNm: "선택안함" },
-      ...(detailItems?.data?.contents?.contents || []),
+      ...(detailItems?.data?.contents || []),
     ],
     "detailNo",
     "detailNm",
@@ -72,16 +72,23 @@ export default function CustomerSearch({ searchCust }) {
   const { sptNo } = useSptStore();
 
   const onSearch = () => {
-    const body = {
-      sptNo: sptNo,
+    const body: Record<string, any> = {
+      sptNo,
       fromDate: getFormattedDate(startDate),
       toDate: getFormattedDate(endDate),
       callYn: s_0,
-      itemNo: s_1 == "none" ? "" : s_1,
-      detailNo: s_2 == "none" ? "" : s_2,
     };
+
+    if (s_1 !== "none" && s_2 !== "none") {
+      body.itemNo = s_1;
+    }
+
+    if (s_2 !== "none") {
+      body.detailNo = s_2;
+    }
     searchCust({ body });
   };
+
   return (
     <Stack width={"100%"} gap={2}>
       <CenteredBox gap={1}>
