@@ -1,30 +1,93 @@
 import { Stack, Typography } from "@mui/material";
 import CenteredBox from "../../../components/Box/CenteredBox";
 import Calendar from "../../../components/Calendar/Calendar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Select } from "../../../components/Select";
-import { selectTestData } from "../../../utils/testData";
 import useSelect from "../../../hooks/useSelect";
 import { BasicButton } from "../../../components/Button";
+import {
+  useGetCustItems,
+  useGetCustItemsDetail,
+} from "../../../api/dataManage";
+import { useSptStore } from "../../../stores/sptStore";
+import { getFormattedDate } from "../../../utils/getFormattedDate";
 
-export default function CustomerSearch() {
+const selectCunsltList = [
+  {
+    value: "N",
+    data: "받기",
+  },
+  {
+    value: "Y",
+    data: "걸기",
+  },
+  {
+    value: "A",
+    data: "전체",
+  },
+];
+
+export default function CustomerSearch({ searchCust }) {
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(new Date());
+
+  const { data: custItems } = useGetCustItems();
+
   const {
     selectListData: sd_0,
     selectValue: s_0,
     handleChange: o_0,
-  } = useSelect(selectTestData, "value", "data");
+  } = useSelect(selectCunsltList, "value", "data", "N");
+
   const {
     selectListData: sd_1,
     selectValue: s_1,
     handleChange: o_1,
-  } = useSelect(selectTestData, "value", "data");
+  } = useSelect(
+    [
+      { itemNo: "none", itemNm: "선택안함" },
+      ...(custItems?.data?.contents || []),
+    ],
+    "itemNo",
+    "itemNm",
+    "none"
+  );
+
+  const { data: detailItems } = useGetCustItemsDetail({ itemNo: s_1 });
+
   const {
     selectListData: sd_2,
     selectValue: s_2,
     handleChange: o_2,
-  } = useSelect(selectTestData, "value", "data");
+  } = useSelect(
+    [
+      { detailNo: "none", detailNm: "선택안함" },
+      ...(detailItems?.data?.contents || []),
+    ],
+    "detailNo",
+    "detailNm",
+    "none"
+  );
+
+  const { sptNo } = useSptStore();
+
+  const onSearch = () => {
+    const body: Record<string, any> = {
+      sptNo,
+      fromDate: getFormattedDate(startDate),
+      toDate: getFormattedDate(endDate),
+      callYn: s_0,
+    };
+
+    if (s_1 !== "none" && s_2 !== "none") {
+      body.itemNo = s_1;
+    }
+
+    if (s_2 !== "none") {
+      body.detailNo = s_2;
+    }
+    searchCust({ body });
+  };
 
   return (
     <Stack width={"100%"} gap={2}>
@@ -56,7 +119,9 @@ export default function CustomerSearch() {
         <Select selectData={sd_2} value={s_2} onChange={o_2} />
       </CenteredBox>
       <CenteredBox justifyContent={"center"}>
-        <BasicButton sx={{ width: "250px" }}>조회</BasicButton>
+        <BasicButton sx={{ width: "250px" }} onClick={onSearch}>
+          조회
+        </BasicButton>
       </CenteredBox>
     </Stack>
   );
