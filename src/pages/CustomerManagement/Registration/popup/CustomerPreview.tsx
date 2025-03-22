@@ -24,7 +24,7 @@ import { SendMsgConfirm } from "../../../Message/Bulk/popup/SendMsgConfirm";
 import CustomTabs from "../../../Message/Bulk/popup/components/CustomTabs";
 import { useSptStore } from "../../../../stores/sptStore";
 import { confirmedCustomerList, duplicateCustomerList, errorCustomerList, rejectCustomerList, transmissionCount } from "../../../../api/CustomerManagement";
-import { CustomerSmsTotalCountListType, CustomerSmsTotalCountType } from "../../../../types/CustomerManagement";
+import { CustomerPreviewListType, CustomerSmsTotalCountListType, CustomerSmsTotalCountType } from "../../../../types/CustomerManagement";
 
 export default function CustomerPreview({ body, msgData }) {
   //api를 호출하기위해 sptNo 불러오기
@@ -37,13 +37,7 @@ export default function CustomerPreview({ body, msgData }) {
   console.log("선택된 고객 번호:", groupNo);
 
   const { value: tabValue, handleChange } = useTabs(0);
-  const [tableData, setTableData] = useState([
-    {
-      mbtlNo: "",
-      cstmrNm: "",
-      groupNm: "",
-    },
-  ]);
+  const [tableData, setTableData] = useState<CustomerPreviewListType[]>([]);
 
   const [totalData, setTotalData] = useState({
     totalCnt1: "",
@@ -68,7 +62,7 @@ export default function CustomerPreview({ body, msgData }) {
       cstmrList: selectedCstmrNos.map(data => data.custmNo)
     };
 
-    console.log("보낼 데이터 확인:", reqData);
+    //console.log("보낼 데이터 확인:", reqData);
 
     transmissionCountAPI.mutate(
       { body: reqData },
@@ -83,7 +77,8 @@ export default function CustomerPreview({ body, msgData }) {
     )
   }, []);
 
-  const { mutate: base } = transmissionCount(); // 확정 인원 목록
+  const { mutate: base } = confirmedCustomerList(); // 확정 인원 목록
+
   const { mutate: duplicate } = duplicateCustomerList(); // 중복 인원 목록
   const { mutate: error } = errorCustomerList(); // 형식 오류 인원 목록
   const { mutate: reject } = rejectCustomerList(); // 수신 거부 인원 목록
@@ -101,7 +96,7 @@ export default function CustomerPreview({ body, msgData }) {
       sptNo: sptNo,
       groupNo: groupNo || "", // groupNo가 없을 경우 빈 문자열 처리
       tabFlag: "", // 공백 문자열
-      cstmrList: selectedCstmrNos, // 선택된 고객 목록
+      cstmrList: selectedCstmrNos.map(item => item.custmNo), // 선택된 고객 목록
     };
 
     base(
@@ -112,6 +107,7 @@ export default function CustomerPreview({ body, msgData }) {
         onSuccess: (res) => {
           if (res.data.code == 200) {
             setTableData(res.data.contents);
+            console.log("데이터확인:",res.data.contents);
           }
         },
       }
@@ -125,6 +121,7 @@ export default function CustomerPreview({ body, msgData }) {
         onSuccess: (res) => {
           if (res.data.code == 200) {
             setTotalData(res.data.contents);
+            console.log("데이터확인:",res.data.contents);
           }
         },
       }
@@ -133,19 +130,24 @@ export default function CustomerPreview({ body, msgData }) {
 
   useEffect(() => {
     let func = duplicate;
+    let tabFlagValue = "1"; // 기본값 설정
 
     switch (tabValue) {
       case 1:
         func = duplicate;
+        tabFlagValue = "2"; // 기본값 설정
         break;
       case 2:
         func = error;
+        tabFlagValue = "3";
         break;
       case 3:
         func = reject;
+        tabFlagValue = "4";
         break;
       default:
         func = base;
+        tabFlagValue = "1";
         break;
     }
 
@@ -157,9 +159,11 @@ export default function CustomerPreview({ body, msgData }) {
     } = {
       sptNo: sptNo,
       groupNo: groupNo || "", // groupNo가 없을 경우 빈 문자열 처리
-      tabFlag: "", // 공백 문자열
-      cstmrList: selectedCstmrNos, // 선택된 고객 목록
+      tabFlag: tabFlagValue, // 공백 문자열
+      cstmrList: selectedCstmrNos.map(item => item.custmNo), // 선택된 고객 목록
     };
+
+    console.log("보낼데이터 확인:",body);
 
     func(
       {
@@ -169,6 +173,7 @@ export default function CustomerPreview({ body, msgData }) {
         onSuccess: (res) => {
           if (res.data.code == 200) {
             setTableData(res.data.contents);
+            console.log("데이터확인:",res.data.contents);
           } else {
             checkApiFail(res);
           }
@@ -239,7 +244,6 @@ export default function CustomerPreview({ body, msgData }) {
                     <BasicTable.Tr key={index}>
                       <BasicTable.Td>{item.mbtlNo}</BasicTable.Td>
                       <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
-                      <BasicTable.Td>{item.groupNm}</BasicTable.Td>
                     </BasicTable.Tr>
                   );
                 })}

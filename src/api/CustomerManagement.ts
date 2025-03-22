@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { CustomerDetailBottomResponse, CustomerDetailListResponse, CustomerDetailTopResponse, CustomerGroupDeleteType, CustomerGroupInsertType, CustomerGroupListHeaderListResponse, CustomerGroupListResponseType, CustomerListResponse, CustomerManagementAreaResponse, CustomerPreviewTotalCountType, CustomerSingleDeleteType, CustomerSingleUpdateType, CustomerSmsTotalCountType, UpdateGroupHeader } from "../types/CustomerManagement";
+import { CustomerDetailBottomResponse, CustomerDetailListResponse, CustomerDetailTopResponse, CustomerGroupDeleteType, CustomerGroupInsertType, CustomerGroupListHeaderListResponse, CustomerGroupListResponseType, CustomerListResponse, CustomerManagementAreaResponse, CustomerPreviewTotalCountType, CustomerSingleDeleteType, CustomerSingleUpdateType, CustomerSmsTotalCountType, CustomserExcelUploadHeaderPositionType, UpdateGroupHeader } from "../types/CustomerManagement";
 import instance from "../utils/axiosInstance";
 
 const API = {
@@ -78,7 +78,11 @@ const API = {
         const url = '/api/custom/sms/tmp';
         return await instance.post(url,requestData.body);
     },
-    
+    //고객 엑셀 업로드 헤더 위치 저장
+    customserExcelUploadHeaderPosition: async (requestData : {body : CustomserExcelUploadHeaderPositionType}) => {
+        const url = '/api/custom/group/grouppos';
+        return await instance.post(url,requestData.body);
+    },
 };
 
 const KEY = {
@@ -113,6 +117,8 @@ const KEY = {
     transmissionCount: () => ['/api/custom/sms/tmpcnt'],
     // 고객 미리보기 - 확정인원 목록
     confirmedCustomerList: () => ['/api/custom/sms/tmp'],
+    //고객 엑셀 업로드 헤더 위치 저장
+    customserExcelUploadHeaderPosition: () => ['/api/custom/group/grouppos'],
 };
 
 //고객 관리 그룹 목록 조회
@@ -344,6 +350,20 @@ export const rejectCustomerList = () => {
     return useMutation({
         mutationKey: KEY.confirmedCustomerList(),
         mutationFn: (requestData: {body: CustomerPreviewTotalCountType}) => API.confirmedCustomerList(requestData),
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    });
+};
+
+//고객 엑셀 업로드 헤더 위치 저장
+export const customserExcelUploadHeaderPosition = () => {
+    return useMutation({
+        mutationKey: KEY.customserExcelUploadHeaderPosition(),
+        mutationFn: (requestData : {body : CustomserExcelUploadHeaderPositionType}) => API.customserExcelUploadHeaderPosition(requestData),
         onSuccess: (response) => {
             console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
         },
