@@ -73,8 +73,8 @@ const Td: React.FC<TableItemProps> = ({ children, ...rest }) => {
   );
 };
 
-const Tr: React.FC<TableItemProps & { highlightSelection?: boolean }> = React.memo(
-  ({ children, highlightSelection = false, ...rest }) => {
+const Tr: React.FC<TableItemProps & { highlightSelection?: boolean }> =
+  React.memo(({ children, highlightSelection = false, ...rest }) => {
     const { selectedRows } = useTableContext();
     const [click, setClick] = useState(false);
     const isSelected = rest?.item && selectedRows.has(rest.item.id);
@@ -86,15 +86,15 @@ const Tr: React.FC<TableItemProps & { highlightSelection?: boolean }> = React.me
           rest?.onClick?.();
         }}
         style={{
-          backgroundColor: highlightSelection && isSelected ? "#F1F1F1" : "white",
+          backgroundColor:
+            highlightSelection && isSelected ? "#F1F1F1" : "white",
         }}
         {...rest}
       >
         {children}
       </tr>
     );
-  }
-);
+  });
 
 const Tbody: React.FC<TableItemProps> = ({ children, ...rest }) => {
   return <tbody {...rest}>{children}</tbody>;
@@ -128,7 +128,7 @@ const CheckboxTd = ({ item, keyName }: CheckboxTdProps) => {
   const { selectedRows, toggleRowsSelection } = useTableContext();
 
   return (
-    <Td>
+    <Td className="checkbox-header text-center">
       <input
         type="checkbox"
         checked={selectedRows.has(item[keyName])}
@@ -143,45 +143,57 @@ const Checkbox: React.FC<{ checked: boolean; onChange: () => void }> =
     return <input type="checkbox" checked={checked} onChange={onChange} />;
   });
 
-  const CheckboxTable: React.FC<TableProps> & {
-    Thead: typeof Thead;
-    Th: typeof Th;
-    CheckboxTh: typeof CheckboxTh;
-    Tr: typeof Tr;
-    Td: typeof Td;
-    Tbody: typeof Tbody;
-    CheckboxTd: typeof CheckboxTd;
-    EmptyTable: typeof EmptyTable;
-  } = ({ data, selectedRows, toggleRowsSelection, highlightSelection = false, children }) => {
-    return (
-      <>
-        {!data || data.length === 0 ? (
-          <EmptyTable />
-        ) : (
-          <TableProvider
-            data={data}
-            selectedRows={selectedRows}
-            toggleRowsSelection={toggleRowsSelection}
-          >
-            <table className="w-full border-gray-300 border-collapse ">
-              {React.Children.map(children, (child) => {
-                if ((child as React.ReactElement<any>).type === CheckboxTable.Thead) {
-                  return child;
-                }
-                return null;
-              })}
-              {React.Children.map(children, (child) => {
-                if ((child as React.ReactElement<any>).type === CheckboxTable.Tbody) {
-                  return React.cloneElement(child as React.ReactElement<any>, { highlightSelection });
-                }
-                return null;
-              })}
-            </table>
-          </TableProvider>
-        )}
-      </>
-    );
-  };
+const CheckboxTable: React.FC<TableProps> & {
+  Thead: typeof Thead;
+  Th: typeof Th;
+  CheckboxTh: typeof CheckboxTh;
+  Tr: typeof Tr;
+  Td: typeof Td;
+  Tbody: typeof Tbody;
+  CheckboxTd: typeof CheckboxTd;
+  EmptyTable: typeof EmptyTable;
+} = ({
+  data,
+  selectedRows,
+  toggleRowsSelection,
+  highlightSelection = false,
+  children,
+}) => {
+  return (
+    <>
+      {!data || data.length === 0 ? (
+        <EmptyTable />
+      ) : (
+        <TableProvider
+          data={data}
+          selectedRows={selectedRows}
+          toggleRowsSelection={toggleRowsSelection}
+        >
+          <table className="w-full border-gray-300 border-collapse ">
+            {React.Children.map(children, (child) => {
+              if (
+                (child as React.ReactElement<any>).type === CheckboxTable.Thead
+              ) {
+                return child;
+              }
+              return null;
+            })}
+            {React.Children.map(children, (child) => {
+              if (
+                (child as React.ReactElement<any>).type === CheckboxTable.Tbody
+              ) {
+                return React.cloneElement(child as React.ReactElement<any>, {
+                  highlightSelection,
+                });
+              }
+              return null;
+            })}
+          </table>
+        </TableProvider>
+      )}
+    </>
+  );
+};
 
 CheckboxTable.EmptyTable = EmptyTable;
 CheckboxTable.Thead = Thead;

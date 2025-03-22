@@ -33,8 +33,8 @@ const ListItem = forwardRef<HTMLInputElement, ItemProps>(
         }
         // 중간 항목일 때
         else {
-          box.style.borderTop = isChecked ? "1px solid gray" : "none";
-          box.style.borderBottom = isChecked ? "1px solid gray" : "none";
+          // box.style.borderTop = isChecked ? "1px solid gray" : "none";
+          // box.style.borderBottom = isChecked ? "1px solid gray" : "none";
         }
 
         box.style.backgroundColor = isChecked ? "#CBE0FF" : "transparent";
@@ -78,7 +78,7 @@ export default function CheckboxList({
       }}
     >
       {data.map((item, index) => (
-        <Box key={item.id} sx={{overflow: "auto"}}>
+        <Box key={item.id} sx={{ overflow: "auto" }}>
           <ListItem
             ref={(el) => (refArray[index] = el)}
             value={item.id}
