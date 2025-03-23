@@ -12,18 +12,19 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { useRef } from "react";
+import { useReactToPrint } from "react-to-print";
 
 export default function Graph({ graphData }) {
-  const handlePrint = () => {
-    window.print();
-  };
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
 
   return (
     <Stack width={"100%"} height={"100%"} gap={1}>
       <GrayBox justifyContent={"flex-end"} gap={1}>
-        <BasicButton onClick={handlePrint}>출력</BasicButton>
+        <BasicButton onClick={() => reactToPrintFn()}>출력</BasicButton>
       </GrayBox>
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" ref={contentRef}>
         <BarChart
           width={500}
           height={300}
