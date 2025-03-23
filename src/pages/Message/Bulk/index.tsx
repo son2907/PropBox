@@ -526,6 +526,8 @@ export default function BulkMessage() {
     setValue("brd", brdMsg?.data?.contents?.ntcnWords || "");
   }, [msgType]);
 
+  const [editingIndex, setEditingIndex] = useState<number | null>(null); // Track the editing index
+
   return (
     <Stack width={"100%"} height={"100%"} gap={1}>
       <GrayBox gap={1} marginBottom={0}>
@@ -852,12 +854,51 @@ export default function BulkMessage() {
                         } else if (item.validMbtlNo == "N") {
                           backgroundColor = "#FFA7A6"; // 형식 오류: 빨간색
                         }
+
                         return (
                           <BasicTable.Tr key={index}>
-                            <BasicTable.Td style={{ backgroundColor }}>
-                              {item.mbtlNo}
+                            <BasicTable.Td
+                              style={{ backgroundColor }}
+                              onDoubleClick={() => setEditingIndex(index)}
+                            >
+                              {editingIndex === index ? (
+                                <BasicInput
+                                  defaultValue={item.mbtlNo}
+                                  onBlur={() => setEditingIndex(null)}
+                                  onChange={(e) => {
+                                    const updatedTable = [...temporaryTable];
+                                    updatedTable[index] = {
+                                      ...updatedTable[index],
+                                      mbtlNo: e.target.value,
+                                    };
+                                    setTemporaryTable(updatedTable);
+                                  }}
+                                />
+                              ) : (
+                                item.mbtlNo
+                              )}
                             </BasicTable.Td>
-                            <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
+
+                            <BasicTable.Td
+                              onDoubleClick={() => setEditingIndex(index)}
+                            >
+                              {editingIndex === index ? (
+                                <BasicInput
+                                  defaultValue={item.cstmrNm}
+                                  onBlur={() => setEditingIndex(null)}
+                                  onChange={(e) => {
+                                    const updatedTable = [...temporaryTable];
+                                    updatedTable[index] = {
+                                      ...updatedTable[index],
+                                      cstmrNm: e.target.value,
+                                    };
+                                    setTemporaryTable(updatedTable);
+                                  }}
+                                />
+                              ) : (
+                                item.cstmrNm
+                              )}
+                            </BasicTable.Td>
                           </BasicTable.Tr>
                         );
                       })}
