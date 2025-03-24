@@ -47,9 +47,8 @@ const Th: React.FC<TableItemProps & { radius?: boolean }> = ({
   return (
     <th
       {...rest}
-      className={`border-solid bg-tableHeader border border-tableBorder border-t-0 first:border-l-0 last:border-r-0 text-center whitespace-nowrap py-3 sticky top-0 z-10 ${
-        radius ? "first:rounded-tl-lg last:rounded-tr-lg" : ""
-      }`}
+      className={`border-solid bg-tableHeader border border-tableBorder border-t-0 first:border-l-0 last:border-r-0 text-center whitespace-nowrap py-3 sticky top-0 z-10 ${radius ? "first:rounded-tl-lg last:rounded-tr-lg" : ""
+        }`}
     >
       {children}
     </th>
@@ -154,26 +153,26 @@ const Tbody: React.FC<{ children: ReactNode }> = ({ children }) => {
   return <tbody>{children}</tbody>;
 };
 
-const EmptyTable = () => {
-  return (
-    <table className="table-auto  w-full  border-collapse">
-      <thead>
-        <tr>
-          <th className="border-solid bg-tableHeader border border-tableBorder border-t-0 first:border-l-0 last:border-r-0 text-center whitespace-nowrap py-3 sticky top-0 z-10">
-            조회 데이터가 존재하지 않습니다.
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr className="bg-white">
-          <td className="border-solid flex justify-center border border-b-0 border-t-0 border-gray-300 p-2 text-left last:border-0">
-            조회 데이터가 존재하지 않습니다.
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  );
-};
+// const EmptyTable = () => {
+//   return (
+//     <table className="table-auto  w-full  border-collapse">
+//       <thead>
+//         <tr>
+//           <th className="border-solid bg-tableHeader border border-tableBorder border-t-0 first:border-l-0 last:border-r-0 text-center whitespace-nowrap py-3 sticky top-0 z-10">
+//             조회 데이터가 존재하지 않습니다.
+//           </th>
+//         </tr>
+//       </thead>
+//       <tbody>
+//         <tr className="bg-white">
+//           <td className="border-solid flex justify-center border border-b-0 border-t-0 border-gray-300 p-2 text-left last:border-0">
+//             조회 데이터가 존재하지 않습니다.
+//           </td>
+//         </tr>
+//       </tbody>
+//     </table>
+//   );
+// };
 
 const Checkbox: React.FC<{ checked: boolean; onChange: () => void }> =
   React.memo(({ checked, onChange }) => {
@@ -186,7 +185,7 @@ const RowDragTable: React.FC<TableProps> & {
   Tr: typeof SortableRow;
   Td: typeof Td;
   Tbody: typeof Tbody;
-  EmptyTable: typeof EmptyTable;
+  //EmptyTable: typeof EmptyTable;
   CheckboxTd: typeof CheckboxTd;
 } = ({
   checkbox = false,
@@ -197,49 +196,46 @@ const RowDragTable: React.FC<TableProps> & {
   keyName,
   children,
 }) => {
-  const sensors = useSensors(
-    useSensor(MouseSensor, {
-      activationConstraint: { distance: 10 },
-    })
-  );
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    if (active.id !== over?.id) {
-      setData((prevData) => {
-        const oldIndex = prevData.findIndex(
-          (item) => item[keyName] === active.id
-        );
-        const newIndex = prevData.findIndex(
-          (item) => item[keyName] === over?.id
-        );
-
-        return arrayMove(prevData, oldIndex, newIndex);
-      });
-    }
-  };
-
-  const TableWrapper: React.FC<{ children: ReactNode }> = ({ children }) => {
-    return selectedRows && toggleRowsSelection ? (
-      <TableProvider
-        selectedRows={selectedRows}
-        toggleRowsSelection={toggleRowsSelection}
-        checkbox={checkbox} // 체크박스 체크 여부
-        data={data} // 테이블 데이터
-      >
-        {children}
-      </TableProvider>
-    ) : (
-      <>{children}</>
+    const sensors = useSensors(
+      useSensor(MouseSensor, {
+        activationConstraint: { distance: 10 },
+      })
     );
-  };
 
-  return (
-    <>
-      {!data || data.length === 0 ? (
-        <EmptyTable />
+    const handleDragEnd = (event: DragEndEvent) => {
+      const { active, over } = event;
+
+      if (active.id !== over?.id) {
+        setData((prevData) => {
+          const oldIndex = prevData.findIndex(
+            (item) => item[keyName] === active.id
+          );
+          const newIndex = prevData.findIndex(
+            (item) => item[keyName] === over?.id
+          );
+
+          return arrayMove(prevData, oldIndex, newIndex);
+        });
+      }
+    };
+
+    const TableWrapper: React.FC<{ children: ReactNode }> = ({ children }) => {
+      return selectedRows && toggleRowsSelection ? (
+        <TableProvider
+          selectedRows={selectedRows}
+          toggleRowsSelection={toggleRowsSelection}
+          checkbox={checkbox} // 체크박스 체크 여부
+          data={data} // 테이블 데이터
+        >
+          {children}
+        </TableProvider>
       ) : (
+        <>{children}</>
+      );
+    };
+
+    return (
+      <>
         <TableWrapper>
           <DndContext
             sensors={sensors}
@@ -255,9 +251,9 @@ const RowDragTable: React.FC<TableProps> & {
                   {React.Children.map(children, (child) => {
                     if (
                       (child as React.ReactElement<any>).type ===
-                        RowDragTable.Th ||
+                      RowDragTable.Th ||
                       (child as React.ReactElement<any>).type ===
-                        RowDragTable.CheckboxTh
+                      RowDragTable.CheckboxTh
                     ) {
                       return child;
                     }
@@ -265,29 +261,37 @@ const RowDragTable: React.FC<TableProps> & {
                   })}
                 </tr>
               </thead>
-              <SortableContext
-                items={data.map((item) => item[keyName])} // keyName으로 동적 참조
-                strategy={verticalListSortingStrategy}
-              >
-                {React.Children.map(children, (child) => {
-                  if (
-                    (child as React.ReactElement<any>).type ===
-                    RowDragTable.Tbody
-                  ) {
-                    return child;
-                  }
-                  return null;
-                })}
-              </SortableContext>
+              {!data || data.length === 0 ? (
+                <tbody>
+                  <tr>
+                    <td className="border-solid flex justify-center border border-b-0 border-t-0 border-gray-300 p-2 text-left py-2 px-2 last:border-0">
+                    </td>
+                  </tr>
+                </tbody>
+              ) : (
+                <SortableContext
+                  items={data.map((item) => item[keyName])} // keyName으로 동적 참조
+                  strategy={verticalListSortingStrategy}
+                >
+                  {React.Children.map(children, (child) => {
+                    if (
+                      (child as React.ReactElement<any>).type ===
+                      RowDragTable.Tbody
+                    ) {
+                      return child;
+                    }
+                    return null;
+                  })}
+                </SortableContext>
+              )}
             </table>
           </DndContext>
         </TableWrapper>
-      )}
-    </>
-  );
-};
+      </>
+    );
+  };
 
-RowDragTable.EmptyTable = EmptyTable;
+//RowDragTable.EmptyTable = EmptyTable;
 RowDragTable.Th = Th;
 RowDragTable.CheckboxTh = CheckboxTh;
 RowDragTable.Tr = SortableRow;

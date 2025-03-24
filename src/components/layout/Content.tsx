@@ -56,9 +56,7 @@ export default function Content({ children }: ContentProps) {
 
   return (
     <>
-      <div style={{ padding: "10px" }}>
-        <Typography variant="h3">{currentMenuLabel}</Typography>
-      </div>
+      
       <div
         style={{
           display: "flex",

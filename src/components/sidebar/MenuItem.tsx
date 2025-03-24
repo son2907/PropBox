@@ -13,7 +13,12 @@ export default function MenuItem({ label, url, fold }: MenuType) {
   };
   return (
     <ListItemButton
-      sx={{ pl: 7, paddingBottom: 0.5, paddingTop: 0.5 }}
+      sx={{
+        pl: 7,
+        paddingBottom: 0.5,
+        paddingTop: 0.5,
+        display: fold ? "none" : "flex", // fold가 true일 때 숨김
+      }}
       onClick={onClick}
     >
       {!fold && <ListItemText primary={label} />}

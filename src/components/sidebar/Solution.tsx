@@ -12,6 +12,8 @@ import { SolutionType } from "../../types/menu";
 interface SolutionProps extends SolutionType {
   children: React.ReactNode;
   fold: boolean;
+  style?: React.CSSProperties; // 스타일 속성 추
+  onClick?: () => void; // onClick을 옵셔널로 추가
 }
 
 const SolutionList = styled(List)(({ theme }) => ({
@@ -43,6 +45,7 @@ const SolutionIcon = styled(ListItemIcon, {
 
 export default function Solution({
   children,
+  onClick, // onClick을 받음
   ...solutionProps
 }: SolutionProps) {
   const { label, icon, isOpen = false, auth, fold } = solutionProps;
@@ -50,7 +53,10 @@ export default function Solution({
   const [open, setOpen] = React.useState(isOpen);
 
   const handleClick = () => {
-    setOpen(!open);
+    setOpen(!open); // open 상태 변경
+    if (onClick) {
+      onClick(); // 부모로부터 전달된 onClick 실행
+    }
   };
 
   return (

@@ -245,7 +245,7 @@ export default function DeclarationMessage() {
         >
           <TableBox.Inner>
             <CheckboxTable
-              data={kccListData?.data?.contents}
+              data={kccListData?.data?.contents || []}
               selectedRows={ts_1}
               toggleRowsSelection={tt_1}
             >

@@ -38,40 +38,45 @@ export default function CustomerData({ reigister, tableData }) {
       </GrayBox>
       <TableBox>
         <TableBox.Inner>
-          <CheckboxTable
-            data={tableData?.data}
-            selectedRows={selectedRows}
-            toggleRowsSelection={toggleRowsSelection}
-          >
-            <CheckboxTable.Thead>
-              <CheckboxTable.Tr>
-                <CheckboxTable.CheckboxTh keyName="idx" />
-                {tableData?.headers?.map((header) =>
-                  header === "idx" ? null : (
-                    <CheckboxTable.Th key={header}>{header}</CheckboxTable.Th>
-                  )
-                )}
-              </CheckboxTable.Tr>
-            </CheckboxTable.Thead>
-            <CheckboxTable.Tbody>
-              {tableData?.data?.map((row, rowIndex) => {
-                return (
-                  <CheckboxTable.Tr key={rowIndex}>
-                    <CheckboxTable.CheckboxTd item={row} keyName="idx" />
-                    {Object.entries(row)
-                      .filter(([key]) => key !== "idx")
-                      .map(([_, value], index) => {
-                        return (
-                          <CheckboxTable.Td key={index}>
-                            {String(value)}
-                          </CheckboxTable.Td>
-                        );
-                      })}
-                  </CheckboxTable.Tr>
-                );
-              })}
-            </CheckboxTable.Tbody>
-          </CheckboxTable>
+          {tableData?.data ? (
+            <CheckboxTable
+              data={tableData?.data}
+              selectedRows={selectedRows}
+              toggleRowsSelection={toggleRowsSelection}
+
+            >
+              <CheckboxTable.Thead>
+                <CheckboxTable.Tr>
+                  <CheckboxTable.CheckboxTh keyName="idx" />
+                  {tableData?.headers?.map((header) =>
+                    header === "idx" ? null : (
+                      <CheckboxTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%" }} key={header}>{header}</CheckboxTable.Th>
+                    )
+                  )}
+                </CheckboxTable.Tr>
+              </CheckboxTable.Thead>
+              <CheckboxTable.Tbody>
+                {tableData?.data?.map((row, rowIndex) => {
+                  return (
+                    <CheckboxTable.Tr key={rowIndex}>
+                      <CheckboxTable.CheckboxTd item={row} keyName="idx" />
+                      {Object.entries(row)
+                        .filter(([key]) => key !== "idx")
+                        .map(([_, value], index) => {
+                          return (
+                            <CheckboxTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }} key={index}>
+                              {String(value)}
+                            </CheckboxTable.Td>
+                          );
+                        })}
+                    </CheckboxTable.Tr>
+                  );
+                })}
+              </CheckboxTable.Tbody>
+            </CheckboxTable>
+          ) : (
+            <></>
+          )}
         </TableBox.Inner>
       </TableBox>
     </Stack>

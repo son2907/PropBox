@@ -38,6 +38,7 @@ const LogoArea = styled(Box)(() => ({
 
 const Sidebar = memo(function Sidebar() {
   const [fold, setFold] = useState<boolean>(false);
+  const [menuFold, setMenuFold] = useState<boolean>(false);
   const { allMenus, setAllMenuData } = useMenuStore();
   const { accessToken } = useAuthStore(["accessToken"]);
   const { isSuccess, data } = api.MenuList.useMenuList();
@@ -58,8 +59,8 @@ const Sidebar = memo(function Sidebar() {
   };
 
   useEffect(() => {
-    console.log("allMenus",data?.data.contents)
-  },[data])
+    console.log("allMenus", data?.data.contents)
+  }, [data])
 
   return (
     <SideMenu fold={fold}>
@@ -96,8 +97,14 @@ const Sidebar = memo(function Sidebar() {
             label={item.label}
             icon={item.icon}
             auth={item.auth}
-            isOpen={item.label !== "시스템관리"} // 시스템관리일 경우 false
+            isOpen={!fold && item.label !== "시스템관리"} // fold가 true이면 자동으로 접힘
             fold={fold}
+            style={{
+              width: fold ? "0px" : "100%", // 접힐 때 너비 0으로 설정
+              overflow: "hidden",
+              transition: "width 0.3s ease", // 애니메이션 추가
+            }}
+            onClick={() => setFold(false)} // 클릭 시 사이드바 열기
           >
             {item.subMenu.map((subData, index) => (
               <MenuItem
@@ -105,6 +112,7 @@ const Sidebar = memo(function Sidebar() {
                 label={subData.label}
                 url={subData.url}
                 fold={fold}
+                
               />
             ))}
           </Solution>

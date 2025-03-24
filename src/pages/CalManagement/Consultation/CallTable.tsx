@@ -166,9 +166,9 @@ export default function CallTable({ tabType, tabChange, selectedDate }: TabType 
           <TableBox>
             <TableBox.Inner>
               <BasicTable data={cnsltData?.data.contents}>
-                <BasicTable.Th>이름</BasicTable.Th>
-                <BasicTable.Th>상담전화</BasicTable.Th>
-                <BasicTable.Th>상담일시</BasicTable.Th>
+                <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>이름</BasicTable.Th>
+                <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>상담전화</BasicTable.Th>
+                <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>상담일시</BasicTable.Th>
                 <BasicTable.Tbody>
                   {cnsltData?.data.contents.map((item: any, index: any) => {
                     return (
@@ -181,9 +181,9 @@ export default function CallTable({ tabType, tabChange, selectedDate }: TabType 
                           toggleRowSelection(item.seqNo); // row selection 토글
                         }}
                       >
-                        <BasicTable.Td style={{ minWidth: "100px" }}>{item.cstmrNm}</BasicTable.Td>
-                        <BasicTable.Td style={{ minWidth: "140px" }}>{item.cnsltTelno}</BasicTable.Td>
-                        <BasicTable.Td style={{ minWidth: "160px" }}>{item.cnsltDttm}</BasicTable.Td>
+                        <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.cstmrNm}</BasicTable.Td>
+                        <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.cnsltTelno}</BasicTable.Td>
+                        <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.cnsltDttm}</BasicTable.Td>
                       </BasicTable.Tr>
                     );
                   })}
@@ -219,8 +219,8 @@ export default function CallTable({ tabType, tabChange, selectedDate }: TabType 
                 // callOptionValue 가 0이면 대기, 1이면 부재, 2면 통화콜
                 callOptionValue == 0 && (
                   <BasicTable data={cnsltData?.data.contents}>
-                    <BasicTable.Th>이름</BasicTable.Th>
-                    <BasicTable.Th>주제</BasicTable.Th>
+                    <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>이름</BasicTable.Th>
+                    <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>주제</BasicTable.Th>
                     <BasicTable.Tbody>
                       {cnsltData?.data.contents.map((item, index) => {
                         return (
@@ -233,8 +233,8 @@ export default function CallTable({ tabType, tabChange, selectedDate }: TabType 
                               e.stopPropagation(); // 이벤트 버블링을 막음
                             }}
                           >
-                            <BasicTable.Td>{item.cstmrNm}</BasicTable.Td>
-                            <BasicTable.Td>{item.themaNm}</BasicTable.Td>
+                            <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.cstmrNm}</BasicTable.Td>
+                            <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.themaNm}</BasicTable.Td>
                           </BasicTable.Tr>
                         );
                       })}
@@ -244,9 +244,9 @@ export default function CallTable({ tabType, tabChange, selectedDate }: TabType 
               }
               {(callOptionValue === 1 || callOptionValue === 2) && (
                 <BasicTable data={cnsltData?.data.contents}>
-                  <BasicTable.Th>이름</BasicTable.Th>
-                  <BasicTable.Th>상담전화</BasicTable.Th>
-                  <BasicTable.Th>상담일시</BasicTable.Th>
+                  <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>이름</BasicTable.Th>
+                  <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>상담전화</BasicTable.Th>
+                  <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>상담일시</BasicTable.Th>
                   <BasicTable.Tbody>
                     {cnsltData?.data.contents.map((item: any, index: any) => {
                       return (
@@ -259,9 +259,9 @@ export default function CallTable({ tabType, tabChange, selectedDate }: TabType 
                             e.stopPropagation(); // 이벤트 버블링을 막음
                           }}
                         >
-                          <BasicTable.Td style={{ minWidth: "100px" }}>{item.cstmrNm}</BasicTable.Td>
-                          <BasicTable.Td style={{ minWidth: "140px" }}>{item.cnsltTelno}</BasicTable.Td>
-                          <BasicTable.Td style={{ minWidth: "160px" }}>{item.cnsltDttm}</BasicTable.Td>
+                          <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.cstmrNm}</BasicTable.Td>
+                          <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.cnsltTelno}</BasicTable.Td>
+                          <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.cnsltDttm}</BasicTable.Td>
                         </BasicTable.Tr>
                       );
                     })}

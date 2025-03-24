@@ -32,6 +32,7 @@ const DeleteBtnInput = forwardRef<HTMLInputElement, InputProps>(
           endAdornment={
             <InputAdornment position="end">
               <button
+                type="button"
                 onClick={btnfn ? btnfn : handleClear}
                 style={{
                   border: "none",

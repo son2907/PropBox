@@ -24,7 +24,8 @@ export default function AppbarButton({ ...rest }: ButtonProps) {
   };
 
   const handleClick = () => {
-    if (telStore.telno == "") setTel();
+    //if (telStore.telno == "") 
+      setTel();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {

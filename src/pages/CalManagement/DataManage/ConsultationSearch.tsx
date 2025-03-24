@@ -88,7 +88,7 @@ export default function ConsultationSearch({ searchCunlst }) {
       </Stack>
       <Stack height={"60%"}>
         <CheckboxList
-          data={checkList}
+          data={checkList || []}
           refArray={checkListRef.current}
           dividerIds={["1"]}
         />
