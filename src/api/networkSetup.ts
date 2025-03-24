@@ -107,7 +107,7 @@ export const getUserCompanyList = (requestData: { userNo: string, cmpNm: string 
         queryFn: async () => {
             console.log("사용자 전화기 갯수 목록 보낸 데이터:",requestData)
             const result = await API.getUserCompanyList(requestData);
-            console.log("받은데이터 : ", result);
+            console.log("1번 테이블 받은데이터 : ", result);
             return result;
         }
     })
@@ -120,7 +120,7 @@ export const getComapnyLocalList = (requestData: { userNo: string, sptNm: string
         queryKey: KEY.getComapnyLocalList(requestData),
         queryFn: async () => {
             const result = await API.getComapnyLocalList(requestData);
-            //console.log("2번테이블 받은데이터 : ", result);
+            console.log("2번테이블 받은데이터 : ", result);
             return result;
         },
         enabled: !!requestData.userNo
@@ -172,7 +172,7 @@ export const getSptPermissionPhoneList = (requestData: { sptNo: string, cntrctBg
     return useQuery({
         queryKey: KEY.getSptPermissionPhoneList(requestData),
         queryFn: async () => {
-            console.log("3번째 테이블 보낸값값:", requestData);
+            //console.log("3번째 테이블 보낸값값:", requestData);
             const result = await API.getSptPermissionPhoneList(requestData);
             console.log("3번째 테이블 데이터:", result);
             return result;
@@ -236,7 +236,7 @@ export const getMemNonPermissionList = (requestData: { sptNo: string, commnSeNo:
     return useQuery({
         queryKey: KEY.getMemNonPermissionList(requestData),
         queryFn: async () => {
-            console.log("7번째 테이블 데이터 조회 보낸데이터:", requestData);
+            //console.log("7번째 테이블 데이터 조회 보낸데이터:", requestData);
             const result = await API.getMemNonPermissionList(requestData);
             console.log("7번째 테이블 데이터:", result);
             return result;
@@ -250,9 +250,9 @@ export const getMemPermissionPhoneList = (requestData: { userNo: string, commnSe
     return useQuery({
         queryKey: KEY.getMemPermissionPhoneList(requestData),
         queryFn: async () => {
-            //console.log("6번째 테이블 데이터 조회 보낸데이터:", requestData);
+            console.log("6번째 테이블 데이터 조회 보낸데이터:", requestData);
             const result = await API.getMemPermissionPhoneList(requestData);
-            //console.log("6번째 테이블 데이터:", result);
+            console.log("6번째 테이블 데이터:", result);
             return result;
         }
     })

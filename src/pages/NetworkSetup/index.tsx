@@ -821,8 +821,8 @@ export default function NetworkSetup() {
                       </CheckboxTable.Thead>
 
                       <CheckboxTable.Tbody>
-                        {(sptNonPermissionPhoneList?.data.contents || []).map((item) => (
-                          <CheckboxTable.Tr key={item.telId} id={item.telId}>
+                        {(sptNonPermissionPhoneList?.data.contents || []).map((item, index) => (
+                          <CheckboxTable.Tr key={index} id={item.telId}>
                             <CheckboxTable.CheckboxTd
                               item={item}
                               keyName="telId"
