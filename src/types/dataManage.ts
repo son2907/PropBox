@@ -96,3 +96,18 @@ export type cnsltDataResponseType = {
     data: cnsltDataType[];
   };
 };
+
+//고객 데이터 엑셀 다운로드
+export type CustomerDataExcelDownloadType = {
+  sptNo: string,
+  fromDate: string,
+  toDate: string,
+  callYn: string,
+  itemNo: string,
+  detailNo: string,
+  addCond: string,
+  itemNos: string[],
+  page: 0,
+  limit: 0,
+  offset: 0
+};

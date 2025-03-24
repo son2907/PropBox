@@ -15,7 +15,7 @@ const API = {
     },
     //구성원 메뉴 권한 등록 및 수정 팝업 - 미권한 메뉴 조회
     getNonPermissionMenuList: async (sptNo: string) => {
-        const url = `api/spt/constnt/lisnenolist/${sptNo}`;
+        const url = `/api/spt/constnt/lisnenolist/${sptNo}`;
         return await instance.get<NonPermissionMenuListResponse>(url);
     },
     //구성원 메뉴 권한 등록 및 수정 팝업 - 권한메뉴 조회
@@ -35,12 +35,12 @@ const API = {
     },
     //구성원 권한 복사 팝업 - 목록 조회
     permissionMenuCopyList: async (requestData: { sptNo: string, userNo: string, userNm: string, rspofcCd: string }) => {
-        const url = `api/spt/constnt/list/${requestData.sptNo}/${requestData.userNo}?userNm=${requestData.userNm}&rspofcCd=${requestData.rspofcCd}`;
+        const url = `/api/spt/constnt/list/${requestData.sptNo}/${requestData.userNo}?userNm=${requestData.userNm}&rspofcCd=${requestData.rspofcCd}`;
         return await instance.get<PermissionMenuListResponse>(url);
     },
     //구성원 권한 복사 팝업 - 권한 복사
     permissionMenuCopy: async (requestData: { body: PermissionMenuCopyType }) => {
-        const url = 'api/spt/constnt/lisne/copy';
+        const url = '/api/spt/constnt/lisne/copy';
         return await instance.post(url, requestData.body);
     },
     //구성원 권한 회수
@@ -102,6 +102,7 @@ export const getNonPermissionMuneList = (sptNo: string) => {
         queryKey: KEY.getNonPermissionMenuList(sptNo),
         queryFn: async () => {
             const result = await API.getNonPermissionMenuList(sptNo);
+            console.log("미권한 조회:",result);
             return result;
         }
     })

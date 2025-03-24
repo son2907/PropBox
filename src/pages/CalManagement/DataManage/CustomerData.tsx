@@ -7,6 +7,7 @@ import CheckboxTable from "../../../components/Table/CheckboxTable";
 import { useMultiRowSelection } from "../../../hooks/useMultiRowSelection";
 import { openPopup } from "../../../utils/openPopup";
 import PathConstants from "../../../routers/path";
+import { useDataManageExcelDownload } from "../../../api/dataManage";
 
 export default function CustomerData({ reigister, tableData }) {
   const { selectedRows, toggleRowsSelection } = useMultiRowSelection();
@@ -15,6 +16,14 @@ export default function CustomerData({ reigister, tableData }) {
     url: PathConstants.Call.CreateConsultation,
     windowName: "상담생성",
     windowFeatures: "width=1066,height=1000,scrollbars=yes,resizable=yes",
+  };
+
+  const { mutate: downloadExcel } = useDataManageExcelDownload();
+
+  // 엑셀 다운로드
+  const onExcelDownload = () => {
+    const newData = tableData.data.map(({ idx, ...rest }) => rest);
+    downloadExcel({ body: newData });
   };
 
   return (
@@ -33,7 +42,7 @@ export default function CustomerData({ reigister, tableData }) {
         >
           상담생성
         </BasicButton>
-        <BasicButton>엑셀 다운로드</BasicButton>
+        <BasicButton onClick={onExcelDownload}>엑셀 다운로드</BasicButton>
         <BasicButton>숨기기</BasicButton>
       </GrayBox>
       <TableBox>

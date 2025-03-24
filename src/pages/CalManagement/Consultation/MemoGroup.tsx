@@ -92,10 +92,10 @@ export default function MemoGroup() {
                     isClicked={selectedRow?.cnsltNo === item.cnsltNo} // 전체 데이터 객체를 비교
                     onClick={() => toggleRowSelection(item)} // 데이터 자체를 전달
                   >
-                    <BasicTable.Td style={{ minWidth: "100px" }}>{item.callYn}</BasicTable.Td>
-                    <BasicTable.Td style={{ minWidth: "150px" }}>{item.cnsltDt}</BasicTable.Td>
-                    <BasicTable.Td style={{ minWidth: "200px" }}>{item.spcmnt}</BasicTable.Td>
-                    <BasicTable.Td style={{ minWidth: "200px" }}>상담내용</BasicTable.Td>
+                    <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.callYn}</BasicTable.Td>
+                    <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.cnsltDt}</BasicTable.Td>
+                    <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.spcmnt}</BasicTable.Td>
+                    <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>상담내용</BasicTable.Td>
                   </BasicTable.Tr>
                 );
               })}

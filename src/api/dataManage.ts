@@ -4,6 +4,7 @@ import { spt } from "../utils/sptNo";
 import {
   cnsltDataRequestType,
   CustDataRequestType,
+  CustomerDataExcelDownloadType,
   OutItemsDetailResponseType,
   OutItemsResponseType,
 } from "../types/dataManage";
@@ -51,6 +52,15 @@ export const API = {
     DownloadExcel({ response });
     return response;
   },
+  //고객데이터 - 엑셀 다운로드
+  customerDataExcelDownload: async (requestData: {body : CustomerDataExcelDownloadType}) => {
+    const url = '/api/tel/cnslt/data/cust/exceldownload';
+    const response = await instance.post(url,requestData.body, {
+      responseType: "blob",
+    });
+    DownloadExcel({ response });
+    return response;
+  },
 };
 
 const KEY = {
@@ -66,6 +76,7 @@ const KEY = {
     itemNo,
     spt,
   ],
+  customerDataExcelDownload: () => ["/api/tel/cnslt/data/cust/exceldownload"],
 };
 
 // 출력항목 조회
@@ -125,4 +136,18 @@ export const useDataManageExcelDownload = () => {
     mutationFn: (requestData: { body: any }) =>
       API.dataManageExcelDownload(requestData),
   });
+};
+
+//고객데이터 - 엑셀 다운로드
+export const customerDataExcelDownload = () => {
+  return useMutation({
+    mutationKey: KEY.customerDataExcelDownload(),
+    mutationFn: (requestData: {body : CustomerDataExcelDownloadType}) => API.customerDataExcelDownload(requestData),
+    onSuccess: (response) => {
+      console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+  },
+  onError: (error) => {
+      console.error("API 호출 실패. 에러:", error); // 에러 로깅
+  },
+  })
 };
