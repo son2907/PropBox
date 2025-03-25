@@ -463,7 +463,7 @@ export default function InfoGroup({
             borderRadius={0}
           >
             <LabelTypo fontSize={"16px"}>상담일자</LabelTypo>
-            <Box width={"250px"}>
+            <Box width={"120px"}>
               <Calendar
                 selectedDate={selectedDate}
                 setSelectedDate={setSelectedDate}
@@ -497,7 +497,7 @@ export default function InfoGroup({
               >
                 추가
               </BasicButton>
-              <BasicButton sx={{ fontSize: "16px" }}>삭제</BasicButton>
+              <BasicButton sx={{ fontSize: "16px" }} >삭제</BasicButton>
               <BasicButton
                 onClick={() => {
                   const popup = openPopup(smsPopupInfo);
@@ -519,7 +519,7 @@ export default function InfoGroup({
                 </LabelTypo>
                 <PhoneInput
                   {...register("cnsltTelno")}
-                  sx={{ fontSize: "16px", height: "30px" }}
+                  sx={{ fontSize: "14px", height: "30px", width: "130px" }}
                 />
                 <IconSquareButton
                   tabIndex={-1}
@@ -537,7 +537,7 @@ export default function InfoGroup({
                 </LabelTypo>
                 <BasicInput
                   {...register("cstmrNm")}
-                  sx={{ fontSize: "16px", height: "30px" }}
+                  sx={{ fontSize: "16px", height: "30px", width: "130px" }}
                 />
                 <IconSquareButton
                   tabIndex={-1}
@@ -569,7 +569,7 @@ export default function InfoGroup({
                 <LabelTypo fontSize={"16px"}>휴대전화</LabelTypo>
                 <PhoneInput
                   {...register("mbtlNo")}
-                  sx={{ fontSize: "16px", height: "30px" }}
+                  sx={{ fontSize: "14px", height: "30px", width: "130px" }}
                 />
                 {tabType ? (
                   <IconSquareButton
@@ -586,7 +586,7 @@ export default function InfoGroup({
                 </LabelTypo>
                 <PhoneInput
                   {...register("telNo")}
-                  sx={{ fontSize: "16px", height: "30px" }}
+                  sx={{ fontSize: "14px", height: "30px", width: "130px" }}
                 />
                 {tabType ? (
                   <IconSquareButton
@@ -600,9 +600,9 @@ export default function InfoGroup({
                 ) : null}
               </CenteredBox>
               <CenteredBox>
-                <LabelTypo fontSize={"16px"}>주소</LabelTypo>
+                <LabelTypo fontSize={"14px"}>주소</LabelTypo>
                 <BasicInput
-                  sx={{ width: "500px", height: "30px" }}
+                  sx={{ width: "345px", height: "30px" }}
                   {...register("addr")}
                 />
               </CenteredBox>
@@ -619,7 +619,7 @@ export default function InfoGroup({
             </Stack>
 
             {/* 오른쪽 */}
-            <Stack width={"35%"}>
+            <Stack width={"20%"}>
               <Stack
                 flexDirection={"column"}
                 justifyContent={"center"}
@@ -636,28 +636,28 @@ export default function InfoGroup({
                 <CenteredBox style={{ justifyContent: "flex-start" }}>
                   <LabelTypo fontSize={"16px"}>호응도</LabelTypo>
                   <NoneBorderInput
-                    sx={{ width: "200px" }}
+                    sx={{ width: "60%" }}
                     {...register("complianceRate")}
                   />
                 </CenteredBox>
                 <CenteredBox>
                   <LabelTypo fontSize={"16px"}>희망평형</LabelTypo>
                   <NoneBorderInput
-                    sx={{ width: "200px" }}
+                    sx={{ width: "60%" }}
                     {...register("hopeBalance")}
                   />
                 </CenteredBox>
                 <CenteredBox>
                   <LabelTypo fontSize={"16px"}>상담횟수</LabelTypo>
                   <NoneBorderInput
-                    sx={{ width: "200px" }}
+                    sx={{ width: "60%" }}
                     {...register("cnsltCnt")}
                   />
                 </CenteredBox>
                 <CenteredBox>
                   <LabelTypo fontSize={"16px"}>수신동의</LabelTypo>
                   <NoneBorderInput
-                    sx={{ width: "200px" }}
+                    sx={{ width: "60%" }}
                     {...register("rctnRejectXyn")}
                   />
                 </CenteredBox>
