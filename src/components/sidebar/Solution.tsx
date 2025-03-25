@@ -18,7 +18,8 @@ interface SolutionProps extends SolutionType {
 
 const SolutionList = styled(List)(({ theme }) => ({
   width: "100%",
-  backgroundColor: theme.palette.sidebar.menuBg,
+  backgroundColor: "#323337",
+  color: "#ffffff",
 }));
 
 // shouldForwardProp을 사용하여 oepn이 DOM에 전달되지 않도록 설정
@@ -28,8 +29,8 @@ const MainMenu = styled(ListItemButton, {
   borderRadius: "10px",
   backgroundColor:
     open && auth
-      ? theme.palette.sidebar.menuItemActiveBg
-      : theme.palette.sidebar.menuBg,
+      ? "#009EFF"
+      : "#009EFF",
   padding: 0,
   margin: "0px 12px 6px 12px",
 }));
@@ -37,7 +38,7 @@ const MainMenu = styled(ListItemButton, {
 const SolutionIcon = styled(ListItemIcon, {
   shouldForwardProp: (prop) => prop !== "auth",
 })<{ auth: boolean }>(({ theme, auth }) => ({
-  color: auth ? "#22A7F5" : theme.palette.root.coolGray400,
+  color: auth ? "#009EFF" : theme.palette.root.coolGray400,
   paddingLeft: 1,
   minWidth: 40,
   fontSize: "20px",

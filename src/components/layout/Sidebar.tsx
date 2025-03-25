@@ -23,6 +23,7 @@ const SideMenu = styled(Box, {
   alignItems: "center",
   transition: "width 0.3s ease", // width 애니메이션 추가
   borderRight: "2px solid #e5e7eb",
+  color: "#ffffff",
 }));
 
 const LogoArea = styled(Box)(() => ({
@@ -34,6 +35,7 @@ const LogoArea = styled(Box)(() => ({
   gap: 10,
   padding: "0 10px 0 10px",
   cursor: "pointer",
+  color: "#ffffff",
 }));
 
 const Sidebar = memo(function Sidebar() {
@@ -63,7 +65,7 @@ const Sidebar = memo(function Sidebar() {
   }, [data])
 
   return (
-    <SideMenu fold={fold}>
+    <SideMenu fold={fold} style={{backgroundColor: "#323337", color: "#ffffff"}}>
       <LogoArea>
         {fold ? (
           <></>
@@ -87,7 +89,7 @@ const Sidebar = memo(function Sidebar() {
           height: "1px",
           border: "none",
           color: "#e5e7eb",
-          backgroundColor: "#e5e7eb",
+          backgroundColor: "#323337",
         }}
       />
       {allMenus?.map((item, index) => {
@@ -103,8 +105,10 @@ const Sidebar = memo(function Sidebar() {
               width: fold ? "0px" : "100%", // 접힐 때 너비 0으로 설정
               overflow: "hidden",
               transition: "width 0.3s ease", // 애니메이션 추가
+              color: "#ffffff"
             }}
             onClick={() => setFold(false)} // 클릭 시 사이드바 열기
+            
           >
             {item.subMenu.map((subData, index) => (
               <MenuItem

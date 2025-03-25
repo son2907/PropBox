@@ -18,6 +18,7 @@ export default function MenuItem({ label, url, fold }: MenuType) {
         paddingBottom: 0.5,
         paddingTop: 0.5,
         display: fold ? "none" : "flex", // fold가 true일 때 숨김
+        color: "#ffffff", // 텍스트 색상을 흰색으로 설정
       }}
       onClick={onClick}
     >
