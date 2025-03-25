@@ -17,7 +17,7 @@ const AppBarArea = styled(Box)(({ theme }) => ({
   minHeight: `${appBarHeight}px`,
   justifyContent: "space-between",
   alignItems: "center",
-  backgroundColor: theme.palette.appbar.appbarBg,
+  backgroundColor: "#009EFF",
   borderBottom: "1px solid",
   borderColor: theme.palette.appbar.appbarBorderColor,
   position: "relative",

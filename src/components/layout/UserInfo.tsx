@@ -61,11 +61,11 @@ export default function UserInfo() {
   return (
     <CenteredBox height={"100%"} fontSize={"x-large"} gap={1}>
       {/* IconButton 클릭 시 메뉴 보이기 */}
-      <IconButton color="primary" size="large" onClick={toggleMenu}>
-        <MdOutlineSupportAgent />
+      <IconButton size="large" onClick={toggleMenu}>
+        <MdOutlineSupportAgent color="white" />
       </IconButton>
 
-      <Typography color="primary.main" onClick={openPasswordCheck}>
+      <Typography color="white" onClick={openPasswordCheck}>
         {userNm} {mbtlNo}
       </Typography>
 
@@ -80,7 +80,7 @@ export default function UserInfo() {
       />
 
       <IconButton onClick={onLogout} color="primary">
-        <TbLogout />
+        <TbLogout color="white" />
       </IconButton>
 
       {/* 메뉴 리스트 토글 */}
