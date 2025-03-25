@@ -11,6 +11,7 @@ import { transformMenuData } from "../../utils/transformMenuData";
 import { useMenuStore } from "../../stores/menuStore";
 import { IconList } from "./MenuIconList";
 import { testMenuList } from "../../utils/testData";
+import { HiMenu } from "react-icons/hi";
 
 const SideMenu = styled(Box, {
   shouldForwardProp: (prop) => prop !== "fold", // fold 속성을 DOM으로 전달하지 않음
@@ -40,7 +41,7 @@ const LogoArea = styled(Box)(() => ({
 
 const Sidebar = memo(function Sidebar() {
   const [fold, setFold] = useState<boolean>(false);
-  const [menuFold, setMenuFold] = useState<boolean>(false);
+  // const [menuFold, setMenuFold] = useState<boolean>(false);
   const { allMenus, setAllMenuData } = useMenuStore();
   const { accessToken } = useAuthStore(["accessToken"]);
   const { isSuccess, data } = api.MenuList.useMenuList();
@@ -61,11 +62,14 @@ const Sidebar = memo(function Sidebar() {
   };
 
   useEffect(() => {
-    console.log("allMenus", data?.data.contents)
-  }, [data])
+    console.log("allMenus", data?.data.contents);
+  }, [data]);
 
   return (
-    <SideMenu fold={fold} style={{backgroundColor: "#323337", color: "#ffffff"}}>
+    <SideMenu
+      fold={fold}
+      style={{ backgroundColor: "#323337", color: "#ffffff" }}
+    >
       <LogoArea>
         {fold ? (
           <></>
@@ -76,11 +80,7 @@ const Sidebar = memo(function Sidebar() {
             style={{ width: "130px", height: "fit-content" }}
           />
         )}
-        <img
-          src={Menu}
-          onClick={onClick}
-          style={{ cursor: "pointer", width: "20px" }}
-        />
+        <HiMenu fontSize={"28px"} color="white" onClick={onClick} />
       </LogoArea>
       <hr
         style={{
@@ -105,10 +105,9 @@ const Sidebar = memo(function Sidebar() {
               width: fold ? "0px" : "100%", // 접힐 때 너비 0으로 설정
               overflow: "hidden",
               transition: "width 0.3s ease", // 애니메이션 추가
-              color: "#ffffff"
+              color: "#ffffff",
             }}
             onClick={() => setFold(false)} // 클릭 시 사이드바 열기
-            
           >
             {item.subMenu.map((subData, index) => (
               <MenuItem
@@ -116,7 +115,6 @@ const Sidebar = memo(function Sidebar() {
                 label={subData.label}
                 url={subData.url}
                 fold={fold}
-                
               />
             ))}
           </Solution>
