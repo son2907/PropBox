@@ -15,7 +15,11 @@ export default function CallConsultation() {
     <>
       {/* 좌측 전화받기/전화걸기, 통화콜/부재콜 테이블 */}
       <Stack width={"20%"} marginRight={1} height={"100%"}>
-        <CallTable tabType={callValue} tabChange={callChange} selectedDate={selectedDate} />
+        <CallTable
+          tabType={callValue}
+          tabChange={callChange}
+          selectedDate={selectedDate}
+        />
       </Stack>
 
       {/* 중간 상담 정보  */}
@@ -26,7 +30,12 @@ export default function CallConsultation() {
         border="1px solid #E5E5E5"
         borderRadius="8px"
       >
-        <InfoGroup tabType={callValue} tabChange={callChange} selectedDate={selectedDate} setSelectedDate={setSelectedDate}  />
+        <InfoGroup
+          tabType={callValue}
+          tabChange={callChange}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+        />
       </Stack>
 
       <Stack width={"20%"} bgcolor={"white"} marginLeft={1} height={"100%"}>

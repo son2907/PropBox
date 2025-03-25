@@ -1,11 +1,9 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import PageTab from "../Tab/PageTab";
 import { useMenuStore } from "../../stores/menuStore";
 import { useLocation, useNavigate } from "react-router-dom";
 import PathConstants from "../../routers/path";
 import { IconList } from "./MenuIconList";
-import { HiRefresh } from "react-icons/hi";
-import IconSquareButton from "../Button/IconSquareButton";
 import { useEffect } from "react";
 
 interface ContentProps {
@@ -16,10 +14,6 @@ export default function Content({ children }: ContentProps) {
 
   const navigate = useNavigate();
   const location = useLocation();
-
-  const currentMenuLabel = allMenus.find((menu) =>
-    menu.subMenu.some((item) => item.url === location.pathname)
-  )?.label;
 
   const onDelete = (url: string, e: React.SyntheticEvent) => {
     closeMenu(url);
@@ -47,16 +41,20 @@ export default function Content({ children }: ContentProps) {
   // 새로고침 시 현재 페이지만 탭에 추가
   useEffect(() => {
     if (location.pathname == PathConstants.Home) return;
-    const currentMenuLabel = allMenus.find((menu) =>
+    const currentMenu = allMenus.find((menu) =>
       menu.subMenu.some((item) => item.url === location.pathname)
+    );
+
+    const currentMenuLabel = currentMenu?.subMenu.find(
+      (item) => item.url === location.pathname
     )?.label;
+
     if (!currentMenuLabel) return;
     addMenu(currentMenuLabel, location.pathname);
   }, [allMenus]);
 
   return (
     <>
-      
       <div
         style={{
           display: "flex",
@@ -79,16 +77,6 @@ export default function Content({ children }: ContentProps) {
             />
           );
         })}
-        <Box marginLeft={"auto"}>
-          <IconSquareButton
-            color="primary"
-            onClick={() => {
-              navigate(0);
-            }}
-          >
-            <HiRefresh />
-          </IconSquareButton>
-        </Box>
       </div>
       <Box
         display={"flex"}

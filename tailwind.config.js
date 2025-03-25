@@ -5,7 +5,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        tableHeader: "#F1F1F1",
+        tableHeader: "#E1F1FF",
         tableBorder: "#E5E5E5",
       },
     },

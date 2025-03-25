@@ -6,7 +6,6 @@ interface TableProps {
   data: { [key: string]: any }[] | undefined;
   selectedRows: Set<string>;
   toggleRowsSelection: (id: string) => void;
-  highlightSelection?: boolean; // 선택한 행 강조 여부
   children: ReactNode;
 }
 
@@ -28,8 +27,9 @@ const Th: React.FC<TableItemProps & { radius?: boolean }> = ({
   return (
     <th
       {...rest}
-      className={`border-solid bg-tableHeader border border-tableBorder border-t-0 first:border-l-0 last:border-r-0 text-center whitespace-nowrap py-3 sticky top-0 z-10 ${radius ? "first:rounded-tl-lg last:rounded-tr-lg" : ""
-        }`}
+      className={`border-solid bg-tableHeader border border-tableBorder border-t-0 first:border-l-0 last:border-r-0 text-center whitespace-nowrap py-3 sticky top-0 z-10 ${
+        radius ? "first:rounded-tl-lg last:rounded-tr-lg" : ""
+      }`}
     >
       {children}
     </th>
@@ -72,28 +72,21 @@ const Td: React.FC<TableItemProps> = ({ children, ...rest }) => {
   );
 };
 
-const Tr: React.FC<TableItemProps & { highlightSelection?: boolean }> =
-  React.memo(({ children, highlightSelection = false, ...rest }) => {
-    const { selectedRows } = useTableContext();
-    const [click, setClick] = useState(false);
-    const isSelected = rest?.item && selectedRows.has(rest.item.id);
+const Tr: React.FC<TableItemProps> = React.memo(({ children, ...rest }) => {
+  const [click, setClick] = useState(false);
 
-    return (
-      <tr
-        onClick={() => {
-          setClick(!click);
-          rest?.onClick?.();
-        }}
-        style={{
-          backgroundColor:
-            highlightSelection && isSelected ? "#F1F1F1" : "white",
-        }}
-        {...rest}
-      >
-        {children}
-      </tr>
-    );
-  });
+  return (
+    <tr
+      onClick={() => {
+        setClick(!click);
+        rest?.onClick?.();
+      }}
+      {...rest}
+    >
+      {children}
+    </tr>
+  );
+});
 
 const Tbody: React.FC<TableItemProps> = ({ children, ...rest }) => {
   return <tbody {...rest}>{children}</tbody>;
@@ -151,55 +144,44 @@ const CheckboxTable: React.FC<TableProps> & {
   Tbody: typeof Tbody;
   CheckboxTd: typeof CheckboxTd;
   //EmptyTable: typeof EmptyTable;
-} = ({
-  data,
-  selectedRows,
-  toggleRowsSelection,
-  highlightSelection = false,
-  children,
-}) => {
-    return (
-      <>
-        <TableProvider
-          data={data}
-          selectedRows={selectedRows}
-          toggleRowsSelection={toggleRowsSelection}
-        >
-          <table className="w-full border-gray-300 border-collapse ">
-            {React.Children.map(children, (child) => {
+} = ({ data, selectedRows, toggleRowsSelection, children }) => {
+  return (
+    <>
+      <TableProvider
+        data={data}
+        selectedRows={selectedRows}
+        toggleRowsSelection={toggleRowsSelection}
+      >
+        <table className="w-full border-gray-300 border-collapse ">
+          {React.Children.map(children, (child) => {
+            if (
+              (child as React.ReactElement<any>).type === CheckboxTable.Thead
+            ) {
+              return child;
+            }
+            return null;
+          })}
+          {!data || data.length > 0 ? (
+            React.Children.map(children, (child) => {
               if (
-                (child as React.ReactElement<any>).type === CheckboxTable.Thead
+                (child as React.ReactElement<any>).type === CheckboxTable.Tbody
               ) {
-                return child;
+                return React.cloneElement(child as React.ReactElement<any>);
               }
               return null;
-            })}
-            {!data || data.length > 0 ? (
-              React.Children.map(children, (child) => {
-                if (
-                  (child as React.ReactElement<any>).type === CheckboxTable.Tbody
-                ) {
-                  return React.cloneElement(child as React.ReactElement<any>, {
-                    highlightSelection,
-                  });
-                }
-                return null;
-              })
-
-            ) : (
-              <tbody>
-                <tr>
-                  <td className="border-solid flex justify-center border border-b-0 border-t-0 border-gray-300 p-2 text-left py-2 px-2 last:border-0">
-                  </td>
-                </tr>
-              </tbody>
-            )}
-          </table>
-        </TableProvider>
-
-      </>
-    );
-  };
+            })
+          ) : (
+            <tbody>
+              <tr>
+                <td className="border-solid flex justify-center border border-b-0 border-t-0 border-gray-300 p-2 text-left py-2 px-2 last:border-0"></td>
+              </tr>
+            </tbody>
+          )}
+        </table>
+      </TableProvider>
+    </>
+  );
+};
 
 //CheckboxTable.EmptyTable = EmptyTable;
 CheckboxTable.Thead = Thead;
