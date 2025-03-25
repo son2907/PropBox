@@ -170,7 +170,12 @@ export default function MemoGroup() {
               marginBottom={3}
               justifyContent={"space-between"}
             >
-              <LabelTypo variant="h5" fontSize={"16px"} fontWeight={"bold"}>
+              <LabelTypo
+                variant="h5"
+                fontSize={"16px"}
+                fontWeight={"bold"}
+                marginRight={2}
+              >
                 특기사항
               </LabelTypo>
               <NoneBorderInput
@@ -192,7 +197,12 @@ export default function MemoGroup() {
                     paddingBottom={1}
                     key={index}
                   >
-                    <Typography width={150} variant="h5" fontWeight={"bold"}>
+                    <Typography
+                      width={150}
+                      variant="h5"
+                      fontSize={"16px"}
+                      fontWeight={"bold"}
+                    >
                       {item.itemNm}
                     </Typography>
                     <NoneBorderInput

@@ -3,14 +3,12 @@ import MenuItem from "../sidebar/MenuItem";
 import { Box, styled } from "@mui/material";
 import { memo, useEffect, useState } from "react";
 import Logo from "../../assets/images/logo.png";
-import Menu from "../../assets/svg/hambuger.svg";
 import { useNavigate } from "react-router-dom";
 import api from "../../api";
 import { useAuthStore } from "../../stores/authStore";
 import { transformMenuData } from "../../utils/transformMenuData";
 import { useMenuStore } from "../../stores/menuStore";
 import { IconList } from "./MenuIconList";
-import { testMenuList } from "../../utils/testData";
 import { HiMenu } from "react-icons/hi";
 
 const SideMenu = styled(Box, {

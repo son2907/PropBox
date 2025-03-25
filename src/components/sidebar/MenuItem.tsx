@@ -31,7 +31,7 @@ export default function MenuItem({ label, url, fold }: MenuType) {
     // 사용 예시
     <Menu active={isActive} disableRipple onClick={onClick}>
       {!fold && (
-        <Typography variant="body1" color="white" marginLeft={6}>
+        <Typography variant="body1" color="white" marginLeft={4.3}>
           <svg
             stroke="currentColor"
             fill="currentColor"
