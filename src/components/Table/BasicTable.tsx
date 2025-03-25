@@ -18,8 +18,9 @@ const Th: React.FC<TableItemProps & { radius?: boolean }> = ({
   return (
     <th
       {...rest}
-      className={`border-solid bg-tableHeader border border-tableBorder border-t-0 first:border-l-0 last:border-r-0 text-center whitespace-nowrap py-3 sticky top-0 z-10 ${radius ? "first:rounded-tl-lg last:rounded-tr-lg" : ""
-        }`}
+      className={`border-solid bg-tableHeader border border-tableBorder border-t-0 first:border-l-0 last:border-r-0 text-center whitespace-nowrap py-3 sticky top-0 z-10 ${
+        radius ? "first:rounded-tl-lg last:rounded-tr-lg" : ""
+      }`}
     >
       {children}
     </th>
@@ -44,7 +45,7 @@ const Tr: React.FC<
     <tr
       onClick={onClick}
       style={{
-        backgroundColor: isClicked ? "#F1F1F1" : "white",
+        backgroundColor: isClicked ? "#F2F6FF" : "white",
         borderRadius: "8px",
       }}
       {...rest}
@@ -102,8 +103,7 @@ const BasicTable: React.FC<TableProps> & {
         {!data || data.length === 0 ? (
           <tbody>
             <tr>
-              <td className="border-solid flex justify-center border border-b-0 border-t-0 border-gray-300 p-2 text-left py-2 px-2 last:border-0">
-              </td>
+              <td className="border-solid flex justify-center border border-b-0 border-t-0 border-gray-300 p-2 text-left py-2 px-2 last:border-0"></td>
             </tr>
           </tbody>
         ) : (
@@ -115,7 +115,6 @@ const BasicTable: React.FC<TableProps> & {
           })
         )}
       </table>
-
     </>
   );
 };

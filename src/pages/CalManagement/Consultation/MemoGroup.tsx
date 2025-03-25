@@ -1,7 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
 import GrayBox from "../../../components/Box/GrayBox";
 import { BasicButton } from "../../../components/Button";
-import BasicInput from "../../../components/Input/BasicInput";
 import useTabs from "../../../hooks/useTabs";
 import TabPanel from "../../../components/Tab/TabPanel";
 import BasicTable from "../../../components/Table/BasicTable";
@@ -20,6 +19,7 @@ import { useAuthStore } from "../../../stores/authStore";
 import { HiOutlineDocumentText } from "react-icons/hi";
 import { useSptStore } from "../../../stores/sptStore";
 import { useSingleRowData } from "../../../hooks/useTest";
+import NoneBorderInput from "../../../components/Input/NoneBorderInput";
 
 export default function MemoGroup() {
   const { value, handleChange: tabChange } = useTabs(0);
@@ -74,8 +74,12 @@ export default function MemoGroup() {
   return (
     <>
       <TabMenus value={value} handleChange={tabChange}>
-        <TabMenus.Tab label="상담이력" disableRipple sx={{fontSize:"16px"}}/>
-        <TabMenus.Tab label="메모" disableRipple sx={{fontSize:"16px"}}/>
+        <TabMenus.Tab
+          label="상담이력"
+          disableRipple
+          sx={{ fontSize: "16px" }}
+        />
+        <TabMenus.Tab label="메모" disableRipple sx={{ fontSize: "16px" }} />
       </TabMenus>
       <TabPanel value={value} index={0}>
         <Box style={{ height: "300px", marginTop: 1, overflow: "auto" }}>
@@ -92,10 +96,26 @@ export default function MemoGroup() {
                     isClicked={selectedRow?.cnsltNo === item.cnsltNo} // 전체 데이터 객체를 비교
                     onClick={() => toggleRowSelection(item)} // 데이터 자체를 전달
                   >
-                    <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.callYn}</BasicTable.Td>
-                    <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.cnsltDt}</BasicTable.Td>
-                    <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.spcmnt}</BasicTable.Td>
-                    <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>상담내용</BasicTable.Td>
+                    <BasicTable.Td
+                      style={{ whiteSpace: "nowrap", maxWidth: "100%" }}
+                    >
+                      {item.callYn}
+                    </BasicTable.Td>
+                    <BasicTable.Td
+                      style={{ whiteSpace: "nowrap", maxWidth: "100%" }}
+                    >
+                      {item.cnsltDt}
+                    </BasicTable.Td>
+                    <BasicTable.Td
+                      style={{ whiteSpace: "nowrap", maxWidth: "100%" }}
+                    >
+                      {item.spcmnt}
+                    </BasicTable.Td>
+                    <BasicTable.Td
+                      style={{ whiteSpace: "nowrap", maxWidth: "100%" }}
+                    >
+                      상담내용
+                    </BasicTable.Td>
                   </BasicTable.Tr>
                 );
               })}
@@ -104,27 +124,43 @@ export default function MemoGroup() {
         </Box>
         <GrayBox marginBottom={1} gap={1}>
           <HiOutlineDocumentText />
-          <Typography variant="h5" sx={{fontSize:"16px"}}>상담상세</Typography>
+          <Typography variant="h5" fontSize={"16px"}>
+            상담상세
+          </Typography>
         </GrayBox>
         <Stack overflow={"hidden"} height={"100%"}>
           <Stack gap={1} overflow={"scroll"} height={"100%"}>
-            <Box display={"flex"} alignItems={"center"} padding={1} justifyContent={"space-between"}>
-              <LabelTypo sx={{fontSize:"16px"}}> 상담구분 </LabelTypo>
-              <BasicInput
+            <Box
+              display={"flex"}
+              alignItems={"center"}
+              padding={1}
+              justifyContent={"space-between"}
+            >
+              <LabelTypo fontSize={"16px"} variant="h5" fontWeight={"bold"}>
+                상담구분
+              </LabelTypo>
+              <NoneBorderInput
                 key={cnsltItemList?.data.contents.callSe}
                 defaultValue={cnsltItemList?.data.contents.callSe}
                 readOnly
-                sx={{width: "80%"}}
+                sx={{ width: "80%" }}
               />
             </Box>
-            <Box display={"flex"} alignItems={"center"} padding={1} justifyContent={"space-between"}>
-              <LabelTypo sx={{fontSize:"16px"}}> 일시 </LabelTypo>
-              <BasicInput
+            <Box
+              display={"flex"}
+              alignItems={"center"}
+              padding={1}
+              justifyContent={"space-between"}
+            >
+              <LabelTypo fontSize={"16px"} variant="h5" fontWeight={"bold"}>
+                일시
+              </LabelTypo>
+              <NoneBorderInput
                 key={cnsltItemList?.data.contents.cnsltDtm}
                 defaultValue={cnsltItemList?.data.contents.cnsltDtm}
                 //fullWidth
                 readOnly
-                sx={{width:"80%"}}
+                sx={{ width: "80%" }}
               />
             </Box>
             <Box
@@ -134,11 +170,20 @@ export default function MemoGroup() {
               marginBottom={3}
               justifyContent={"space-between"}
             >
-              <LabelTypo sx={{fontSize:"16px"}}> 특기사항 </LabelTypo>
-              <TextArea
-                readOnly
+              <LabelTypo
+                variant="h5"
+                fontSize={"16px"}
+                fontWeight={"bold"}
+                marginRight={2}
+              >
+                특기사항
+              </LabelTypo>
+              <NoneBorderInput
                 key={cnsltItemList?.data.contents.spcmnt}
                 value={cnsltItemList?.data.contents.spcmnt}
+                readOnly
+                fullWidth
+                sx={{ height: "70px" }}
               />
             </Box>
             {cnsltItemList?.data.contents.itemList.map(
@@ -152,8 +197,15 @@ export default function MemoGroup() {
                     paddingBottom={1}
                     key={index}
                   >
-                    <Typography width={150}>{item.itemNm}</Typography>
-                    <BasicInput
+                    <Typography
+                      width={150}
+                      variant="h5"
+                      fontSize={"16px"}
+                      fontWeight={"bold"}
+                    >
+                      {item.itemNm}
+                    </Typography>
+                    <NoneBorderInput
                       key={item.detailNm}
                       defaultValue={item.detailNm}
                       readOnly

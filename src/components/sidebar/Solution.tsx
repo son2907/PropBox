@@ -2,11 +2,10 @@ import * as React from "react";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import { styled } from "@mui/material";
+import { styled, Typography } from "@mui/material";
 import { SolutionType } from "../../types/menu";
 
 interface SolutionProps extends SolutionType {
@@ -16,30 +15,30 @@ interface SolutionProps extends SolutionType {
   onClick?: () => void; // onClick을 옵셔널로 추가
 }
 
-const SolutionList = styled(List)(({ theme }) => ({
+const SolutionList = styled(List)(() => ({
   width: "100%",
-  backgroundColor: theme.palette.sidebar.menuBg,
+  backgroundColor: "#323337",
+  color: "#ffffff",
 }));
 
 // shouldForwardProp을 사용하여 oepn이 DOM에 전달되지 않도록 설정
 const MainMenu = styled(ListItemButton, {
   shouldForwardProp: (prop) => prop !== "open" && prop !== "auth",
-})<{ open: boolean; auth: boolean }>(({ theme, open, auth }) => ({
-  borderRadius: "10px",
-  backgroundColor:
-    open && auth
-      ? theme.palette.sidebar.menuItemActiveBg
-      : theme.palette.sidebar.menuBg,
-  padding: 0,
-  margin: "0px 12px 6px 12px",
+})<{ open: boolean; auth: boolean }>(() => ({
+  backgroundColor: "#009EFF",
+  padding: "8px 8px 8px 12px",
+  color: "white",
+  "&:hover": {
+    backgroundColor: "#009EFF", // 기존 배경색과 동일하게 설정
+  },
 }));
 
 const SolutionIcon = styled(ListItemIcon, {
   shouldForwardProp: (prop) => prop !== "auth",
-})<{ auth: boolean }>(({ theme, auth }) => ({
-  color: auth ? "#22A7F5" : theme.palette.root.coolGray400,
+})<{ auth: boolean }>(() => ({
+  color: "white",
   paddingLeft: 1,
-  minWidth: 40,
+  minWidth: 30,
   fontSize: "20px",
 }));
 
@@ -63,7 +62,11 @@ export default function Solution({
     <SolutionList>
       <MainMenu open={open} auth={auth} onClick={handleClick}>
         <SolutionIcon auth={auth}>{icon}</SolutionIcon>
-        {!fold && <ListItemText sx={{ pl: 0.5 }} primary={label} />}
+        {!fold && (
+          <Typography fontSize={"16px"} color="white" marginRight={"auto"}>
+            {label}
+          </Typography>
+        )}
         {!fold && (open && auth ? <ExpandLess /> : <ExpandMore />)}
       </MainMenu>
       {auth && (

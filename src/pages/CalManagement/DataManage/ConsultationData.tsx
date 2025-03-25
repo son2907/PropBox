@@ -40,7 +40,15 @@ export default function ConsultationData({
 
   // 엑셀 다운로드
   const onExcelDownload = () => {
+    const idxRemove = tableData.headers.filter((key) => key !== "idx");
+    const headerObj = idxRemove.reduce((acc, cur) => {
+      acc[cur] = cur;
+      return acc;
+    }, {});
+
     const newData = tableData.data.map(({ idx, ...rest }) => rest);
+    newData.unshift(headerObj);
+    //console.log("확인:", { body: newData });
     downloadExcel({ body: newData });
   };
 
@@ -56,13 +64,17 @@ export default function ConsultationData({
     const result = tableData.data.filter((item) => {
       return !data.some((d) => d.idx === item.idx);
     });
-
+    console.log("확인",result);
     setTableData({ ...tableData, data: result });
   };
 
   useEffect(() => {
     resetSelectedRows();
   }, [tableData]);
+
+  useEffect(() => {
+    console.log("헤더확인:", tableData);
+  }, [])
 
   return (
     <Stack width={"100%"} height={"100%"} gap={1}>
@@ -105,7 +117,7 @@ export default function ConsultationData({
                   <CheckboxTable.CheckboxTh keyName="idx" />
                   {tableData?.headers?.map((header) =>
                     header === "idx" ? null : (
-                      <CheckboxTable.Th key={header}>{header}</CheckboxTable.Th>
+                      <CheckboxTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%" }} key={header}>{header}</CheckboxTable.Th>
                     )
                   )}
                 </CheckboxTable.Tr>
@@ -118,7 +130,7 @@ export default function ConsultationData({
                       {Object.entries(row)
                         .filter(([key]) => key !== "idx")
                         .map(([, value], index) => (
-                          <CheckboxTable.Td key={index}>
+                          <CheckboxTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }} key={index}>
                             {String(value)}
                           </CheckboxTable.Td>
                         ))}
