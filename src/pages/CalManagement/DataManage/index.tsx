@@ -102,7 +102,11 @@ export default function DataManage() {
             setTableData={setCnsltResult}
           />
         ) : value === 1 ? (
-          <CustomerData reigister={register} tableData={custResult} />
+          <CustomerData
+            reigister={register}
+            tableData={custResult}
+            setTableData={setCustResult}
+          />
         ) : null}
       </Stack>
     </>
