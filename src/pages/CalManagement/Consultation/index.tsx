@@ -24,7 +24,7 @@ export default function CallConsultation() {
 
       {/* 중간 상담 정보  */}
       <Stack
-        width={"60%"}
+        width={"50%"}
         height={"100%"}
         minWidth={"763px"}
         border="1px solid #E5E5E5"
@@ -38,7 +38,7 @@ export default function CallConsultation() {
         />
       </Stack>
 
-      <Stack width={"20%"} bgcolor={"white"} marginLeft={1} height={"100%"}>
+      <Stack width={"30%"} bgcolor={"white"} marginLeft={1} height={"100%"}>
         <MemoGroup />
       </Stack>
     </>
