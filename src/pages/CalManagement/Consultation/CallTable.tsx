@@ -165,12 +165,12 @@ export default function CallTable({ tabType, tabChange, selectedDate }: TabType 
 
           <TableBox>
             <TableBox.Inner>
-              <BasicTable data={cnsltData?.data.contents}>
+              <BasicTable data={cnsltData?.data.contents || []}>
                 <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>이름</BasicTable.Th>
                 <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>상담전화</BasicTable.Th>
                 <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>상담일시</BasicTable.Th>
                 <BasicTable.Tbody>
-                  {cnsltData?.data.contents.map((item: any, index: any) => {
+                  {(cnsltData?.data.contents || []).map((item: any, index: any) => {
                     return (
                       <BasicTable.Tr
                         key={index}
@@ -192,7 +192,7 @@ export default function CallTable({ tabType, tabChange, selectedDate }: TabType 
             </TableBox.Inner>
           </TableBox>
 
-          <SearchResult total={cnsltData?.data.totalCnt}/>
+          <SearchResult total={cnsltData?.data.totalCnt || 0}/>
         </TabPanel>
 
         {/* 전화 걸기 탭 */}
@@ -218,11 +218,11 @@ export default function CallTable({ tabType, tabChange, selectedDate }: TabType 
               {
                 // callOptionValue 가 0이면 대기, 1이면 부재, 2면 통화콜
                 callOptionValue == 0 && (
-                  <BasicTable data={cnsltData?.data.contents}>
+                  <BasicTable data={cnsltData?.data.contents || []}>
                     <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>이름</BasicTable.Th>
                     <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>주제</BasicTable.Th>
                     <BasicTable.Tbody>
-                      {cnsltData?.data.contents.map((item, index) => {
+                      {(cnsltData?.data.contents || []).map((item, index) => {
                         return (
                           <BasicTable.Tr
                             key={index}
@@ -243,12 +243,12 @@ export default function CallTable({ tabType, tabChange, selectedDate }: TabType 
                 )
               }
               {(callOptionValue === 1 || callOptionValue === 2) && (
-                <BasicTable data={cnsltData?.data.contents}>
+                <BasicTable data={cnsltData?.data.contents || []}>
                   <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>이름</BasicTable.Th>
                   <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>상담전화</BasicTable.Th>
                   <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>상담일시</BasicTable.Th>
                   <BasicTable.Tbody>
-                    {cnsltData?.data.contents.map((item: any, index: any) => {
+                    {(cnsltData?.data.contents || []).map((item: any, index: any) => {
                       return (
                         <BasicTable.Tr
                           key={index}
@@ -270,7 +270,7 @@ export default function CallTable({ tabType, tabChange, selectedDate }: TabType 
               )}
             </TableBox.Inner>
           </TableBox>
-          <SearchResult total={cnsltData?.data.totalCnt} />
+          <SearchResult total={cnsltData?.data.totalCnt || 0} />
         </TabPanel>
       </Stack>
     </>
