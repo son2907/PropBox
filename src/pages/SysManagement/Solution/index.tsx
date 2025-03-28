@@ -658,6 +658,7 @@ export default function SolutionManagement() {
                   id: item.slutnId,
                 }))}
                 setData={setSolutionList}
+                
               >
                 <RowDragTable.Th>솔루션ID</RowDragTable.Th>
                 <RowDragTable.Th>솔루션이름</RowDragTable.Th>

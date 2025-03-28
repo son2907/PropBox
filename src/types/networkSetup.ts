@@ -223,3 +223,43 @@ export type MemberPermissionPhoneType = {
     nowUseYn: string,
     userId: string
 };
+
+//장치 구분 추가
+export type InsertDeviceSectionType = {
+    commnSeNm: string,
+    host: string,
+    useYn: string,
+    rmk: string,
+    userId: string,
+};
+
+//장치 구분 수정
+export type UpdateDeviceSectionType = {
+    commnSeNo: string,
+    commnSeNm: string,
+    host: string,
+    useYn: string,
+    delYn: string,
+    rmk: string,
+    userId: string,
+};
+
+//장치 구분 삭제
+// export type DeleteDeviceSectionType = {
+
+// };
+
+//장치 구분 상세조회
+export type DetailDeviceSectionType = {
+    telId: string,
+    telno: string,
+    commnSeNo: string,
+    commnSeNm: string,
+    lxtnNo: string,
+    id: string,
+    pwdNo: string,
+    useYn: string,
+    rmk: string,
+    userId: string
+};
+

@@ -130,8 +130,24 @@ const SortableRow = ({
       {...attributes}
       {...rest}
     >
-      <td style={{ cursor: "grab" }} {...listeners}>
-        <VscThreeBars />
+      <td
+        style={{
+          cursor: "grab",
+          height: "100%",
+          padding: 0, 
+        }}
+        {...listeners}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center", 
+            justifyContent: "center",
+            height: "100%",
+          }}
+        >
+          <VscThreeBars/>
+        </div>
       </td>
       {children}
     </tr>
@@ -141,7 +157,7 @@ const SortableRow = ({
 const Td: React.FC<{ children: ReactNode }> = ({ children, ...rest }) => {
   return (
     <td
-      className="py-3 px-3 border-tableBorder border-solid border border-b-0 border-t-0 first:border-l-0 last:border-r-0  "
+      className="py-3 px-3 border-tableBorder border-solid border border-b-0 border-t-0 first:border-l-0 last:border-r-0 alignItems-center"
       {...rest}
     >
       {children}
@@ -152,27 +168,6 @@ const Td: React.FC<{ children: ReactNode }> = ({ children, ...rest }) => {
 const Tbody: React.FC<{ children: ReactNode }> = ({ children }) => {
   return <tbody>{children}</tbody>;
 };
-
-// const EmptyTable = () => {
-//   return (
-//     <table className="table-auto  w-full  border-collapse">
-//       <thead>
-//         <tr>
-//           <th className="border-solid bg-tableHeader border border-tableBorder border-t-0 first:border-l-0 last:border-r-0 text-center whitespace-nowrap py-3 sticky top-0 z-10">
-//             조회 데이터가 존재하지 않습니다.
-//           </th>
-//         </tr>
-//       </thead>
-//       <tbody>
-//         <tr className="bg-white">
-//           <td className="border-solid flex justify-center border border-b-0 border-t-0 border-gray-300 p-2 text-left last:border-0">
-//             조회 데이터가 존재하지 않습니다.
-//           </td>
-//         </tr>
-//       </tbody>
-//     </table>
-//   );
-// };
 
 const Checkbox: React.FC<{ checked: boolean; onChange: () => void }> =
   React.memo(({ checked, onChange }) => {
@@ -245,7 +240,7 @@ const RowDragTable: React.FC<TableProps> & {
             <table className="table-auto w-full border-gray-300 border-collapse">
               <thead>
                 <tr>
-                  <Th>
+                  <Th style={{ alignItems: "center", justifyContent: "center" }}>
                     <LuArrowDownUp />
                   </Th>
                   {React.Children.map(children, (child) => {

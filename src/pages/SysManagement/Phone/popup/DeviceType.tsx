@@ -25,13 +25,32 @@ import Calendar from "../../../../components/Calendar/Calendar";
 import useToggleButtton from "../../../../hooks/useToggleButton";
 import PasswordInput from "../../../../components/Input/PasswordInput";
 import { BsGear } from "react-icons/bs";
+import { getDeviceSection, getDeviceSectionDetail, insertDeviceSection, updateDeviceSection } from "../../../../api/networkSetup";
+import { useAuthStore } from "../../../../stores/authStore";
+import useModal from "../../../../hooks/useModal";
+import { FailModal } from "../../../../components/Modal/modal/FailModal";
+import { DetailDeviceSectionType } from "../../../../types/networkSetup";
 
 interface Data {
   id: string;
   [key: string]: any;
 }
 
+//장치구분 목록록
 export default function DeviceType() {
+  const { openModal, closeModal } = useModal(); //모달
+  const { data: deviceSection, refetch: refetchDeviceSection } = getDeviceSection();
+  const [selectCommnseNo, setSelectCommnseNo] = useState("");
+  const { data: deviceSectionDetailData, refetch: refetchDeviceSectionDetail } = getDeviceSectionDetail(selectCommnseNo);
+  const { mutate: insertDeviceSectionAPI } = insertDeviceSection();  //통신장치 등록
+  const { mutate: updateDeviceSectionAPI } = updateDeviceSection(); //통신장치 수정
+  const [deviceSectionDetail, setDeviceSectionDetail] = useState<DetailDeviceSectionType>();
+
+  const { loginId } = useAuthStore(["loginId"]);
+  const [commnSeNm, setCommnSeNm] = useState("");
+  const [host, setHost] = useState("");
+  const [useYn, setUseYn] = useState(true);
+
   const {
     selectListData: sd_0,
     selectValue: s_0,
@@ -70,6 +89,37 @@ export default function DeviceType() {
   const bRef1 = useRef<HTMLInputElement>(null); //
   const bRef2 = useRef<HTMLInputElement>(null); // HTMLInputElement로 타입 지정
 
+  //장치구분 추가
+  const handleAddDeviceSection = () => {
+    const insertDeviceSectionReqData = {
+      body: {
+        commnSeNm: commnSeNm,
+        host: host,
+        useYn: useYn === true ? "Y" : "N",
+        rmk: "",
+        userId: loginId,
+      }
+    };
+
+    console.log("insertDeviceSectionReqData", insertDeviceSectionReqData);
+
+    insertDeviceSectionAPI(insertDeviceSectionReqData, {
+      onSuccess: (response) => {
+        if (response.data.result === "SUCCESS") {
+          refetchDeviceSection();
+        }
+      },
+      onError: (error) => {
+        console.error("삭제 실패:", error);
+        openModal(FailModal, {
+          modalId: "apiFail",
+          stack: false,
+          onClose: () => closeModal,
+        });
+      },
+    })
+  }
+
   return (
     <Stack
       width={"100%"}
@@ -80,24 +130,30 @@ export default function DeviceType() {
       <Stack height={"100%"} gap={2}>
         <TableBox height="75%">
           <TableBox.Inner>
-            <BasicTable data={tableTestData}>
+            <BasicTable data={deviceSection?.data.contents || []}>
               <BasicTable.Th>장치구분이름</BasicTable.Th>
               <BasicTable.Th>호스트</BasicTable.Th>
               <BasicTable.Th>사용여부</BasicTable.Th>
               <BasicTable.Th>삭제</BasicTable.Th>
               <BasicTable.Tbody>
-                {tableTestData.map((item, index) => {
+                {(deviceSection?.data.contents || []).map((item, index) => {
                   return (
                     <BasicTable.Tr
                       key={index}
-                      isClicked={selectedRow.has(item.id)}
-                      onClick={() => toggleRowSelection(item.id)}
+                      isClicked={selectCommnseNo === item.commnSeNo}
+                      onClick={() => {
+                        if(selectCommnseNo === item.commnSeNo) {
+                          setSelectCommnseNo("");
+                        } else {
+                          setSelectCommnseNo(item.commnSeNo);
+                        }
+                      }}
                     >
-                      <BasicTable.Td>{item.name}</BasicTable.Td>
-                      <BasicTable.Td>{item.age}</BasicTable.Td>
-                      <BasicTable.Td>{item.job}</BasicTable.Td>
-                      <BasicTable.Td>
-                        <IconButton color="error">
+                      <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%", padding: "4px 8px", lineHeight: "1.2" }}>{item.commnSeNm}</BasicTable.Td>
+                      <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%", padding: "4px 8px", lineHeight: "1.2" }}>{item.host}</BasicTable.Td>
+                      <BasicTable.Td style={{ textAlign: "center", whiteSpace: "nowrap", maxWidth: "100%", padding: "4px 8px", lineHeight: "1.2" }}>{item.useYn}</BasicTable.Td>
+                      <BasicTable.Td style={{ display: "flex", alignItems: "center", justifyContent: "center", whiteSpace: "nowrap", maxWidth: "100%", padding: "4px 8px", lineHeight: "1.2" }}>
+                        <IconButton color="error" onClick={() => {}}>
                           <RiDeleteBinLine />
                         </IconButton>
                       </BasicTable.Td>
@@ -128,7 +184,13 @@ export default function DeviceType() {
             </Stack>
             <Stack direction={"row"} alignItems={"center"} gap={8}>
               <Typography>사용여부</Typography>
-              <ToggleButton checked={toggle} onChange={setToggle} label="" />
+              <ToggleButton
+                checked={useYn}
+                onChange={(e) => {
+                  const newValue = e.target.checked;
+                  setUseYn(newValue);
+                }}
+                label="" />
             </Stack>
             <Stack
               gap={1}

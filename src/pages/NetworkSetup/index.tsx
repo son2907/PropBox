@@ -1042,7 +1042,7 @@ export default function NetworkSetup() {
                       <BasicTable.Th>구분</BasicTable.Th>
                       <BasicTable.Th>전화번호</BasicTable.Th>
                       <BasicTable.Th>할당여부</BasicTable.Th>
-                      <BasicTable.Th>할당된현장이름</BasicTable.Th>
+                      <BasicTable.Th>구성원명</BasicTable.Th>
                       <BasicTable.Tbody>
                         {(memNonPermissionPhoneData?.data?.contents || []).map((item, index) => {
                           return (
@@ -1064,7 +1064,7 @@ export default function NetworkSetup() {
                               <BasicTable.Td>{item.commnSeNm}</BasicTable.Td>
                               <BasicTable.Td>{item.telNo}</BasicTable.Td>
                               <BasicTable.Td>{item.constntYN}</BasicTable.Td>
-                              <BasicTable.Td>{item.sptNo}</BasicTable.Td>
+                              <BasicTable.Td>{item.constntNm}</BasicTable.Td>
                             </BasicTable.Tr>
                           );
                         })}

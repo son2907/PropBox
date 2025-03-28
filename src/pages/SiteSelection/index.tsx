@@ -53,7 +53,7 @@ export default function SiteSelection() {
   }, [selectedSite]);
 
   return (
-    <ModalBox width={"350px"}>
+    <ModalBox width={"350px"} height={"500px"}>
       <Stack
         width="100%"
         height="100%"

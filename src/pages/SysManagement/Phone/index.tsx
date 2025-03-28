@@ -298,7 +298,7 @@ export default function PhoneSetting() {
 
   //저장 누르면 실행 = 저장 또는 수정
   const onSubmit = useCallback((data: any) => {
-    
+
     console.log("업데이트입니까:", isUpdate); // 최신 값 출력 확인
 
     const inertPhoneReqData: PhoneInsertType = {
@@ -342,7 +342,7 @@ export default function PhoneSetting() {
         );
         return;
       };
-    } else if(isUpdate === false) {
+    } else if (isUpdate === false) {
       console.log("보낼 데이터 확인 : ", inertPhoneReqData);
       if (!data.telno || !data.lxtnNo || !data.id || !data.pwdNo) {
         emptyDataModal();
@@ -361,7 +361,7 @@ export default function PhoneSetting() {
       }
     }
 
-  }, [isUpdate,deviceSectionDataKey,deviceSectionDataValue]);
+  }, [isUpdate, deviceSectionDataKey, deviceSectionDataValue]);
 
   return (
     <form style={{ height: "100%", width: "100%" }} onSubmit={handleSubmit(onSubmit)}>
@@ -552,40 +552,42 @@ export default function PhoneSetting() {
                   flexDirection="column" // 세로 방향 설정
                   flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
                   justifyContent="flex-start" // 가로 방향 왼쪽 정렬
-                  width="60%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
+                  width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
                   gap={1}
                   alignItems="flex-start"
                 >
                   <LabelTypo width={"100%"}>전화기이름</LabelTypo>
                   {/* height: 24px */}
-                  <Select
-                    value={selectValue} // 선택한 값 유지
-                    onChange={(e) => {
-                      const newValue = e.target.value; // 선택된 값 (commnSeNm)
-                      const selectedOption = deviceSectionData.find(
-                        (item) => item.commnSeNm === newValue
-                      );
+                  <Box width={"60%"}>
+                    <Select
+                      value={selectValue} // 선택한 값 유지
+                      onChange={(e) => {
+                        const newValue = e.target.value; // 선택된 값 (commnSeNm)
+                        const selectedOption = deviceSectionData.find(
+                          (item) => item.commnSeNm === newValue
+                        );
 
-                      if (selectedOption) {
-                        console.log("구분값 변경:", selectedOption.commnSeNm);
-                        console.log(`구분값 키 변경: ${selectedOption.commnSeNo}`); // cd 콘솔 출력
-                        setDeviceSectionDataKey(selectedOption.commnSeNo);
-                        setDeviceSectionDataValue(selectedOption.commnSeNm);
-                        handleChange(e); // selectValue를 업데이트
-                      }
-                    }}
-                    selectData={deviceSectionData.map((item) => ({
-                      value: item.commnSeNm,
-                      data: item.commnSeNm,
-                    }))}
-                    sx={{
-                      width: "100%",
-                      "& .MuiSelect-select": {
-                        backgroundColor: "primary.light", // 선택 박스만 흰색으로
-                      },
-                    }}
-                    placeholder={deviceSectionDataValue ? deviceSectionDataValue : "항목 선택"}
-                  />
+                        if (selectedOption) {
+                          console.log("구분값 변경:", selectedOption.commnSeNm);
+                          console.log(`구분값 키 변경: ${selectedOption.commnSeNo}`); // cd 콘솔 출력
+                          setDeviceSectionDataKey(selectedOption.commnSeNo);
+                          setDeviceSectionDataValue(selectedOption.commnSeNm);
+                          handleChange(e); // selectValue를 업데이트
+                        }
+                      }}
+                      selectData={deviceSectionData.map((item) => ({
+                        value: item.commnSeNm,
+                        data: item.commnSeNm,
+                      }))}
+                      sx={{
+                        width: "100%",
+                        "& .MuiSelect-select": {
+                          backgroundColor: "primary.light", // 선택 박스만 흰색으로
+                        },
+                      }}
+                      placeholder={deviceSectionDataValue ? deviceSectionDataValue : "항목 선택"}
+                    />
+                  </Box>
                 </Box>
                 <Box
                   display="flex"
@@ -650,7 +652,7 @@ export default function PhoneSetting() {
                 <Stack direction={"row"} gap={1} justifyContent={"end"} alignContent={"end"} marginTop={1} width={"100%"}>
                   <BasicButton onClick={handleAdd}>추가</BasicButton>
                   <BasicButton type="submit">저장</BasicButton>
-                  <BasicButton > 삭제 </BasicButton>
+                  <BasicButton type="button"> 삭제 </BasicButton>
                 </Stack>
               </GrayBox>
             </Stack>

@@ -23,6 +23,8 @@ const SideMenu = styled(Box, {
   transition: "width 0.3s ease", // width 애니메이션 추가
   borderRight: "2px solid #e5e7eb",
   color: "#ffffff",
+  overflow:"auto",
+  padding: 10,
 }));
 
 const LogoArea = styled(Box)(() => ({
@@ -101,7 +103,7 @@ const Sidebar = memo(function Sidebar() {
             fold={fold}
             style={{
               width: fold ? "0px" : "100%", // 접힐 때 너비 0으로 설정
-              overflow: "hidden",
+              //overflow: "auto",
               transition: "width 0.3s ease", // 애니메이션 추가
               color: "#ffffff",
             }}

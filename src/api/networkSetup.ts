@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { CompanyLocalListResponse, DeviceSectionListResponse, InsertPhone, MemberNonPermissionPhoneType, MemberPermissionPhoneType, MemeberLocalListResponse, MemNonPermissionListResponse, MemPermissionListResponse, SptNonPermissionPhoneListResponse, SptNonPermissionPhoneType, SptPermissionPhoneListResponse, SptPermissionPhoneType, UserCompanyListResponse } from "../types/networkSetup";
+import { CompanyLocalListResponse, DetailDeviceSectionType, DeviceSectionListResponse, InsertDeviceSectionType, InsertPhone, MemberNonPermissionPhoneType, MemberPermissionPhoneType, MemeberLocalListResponse, MemNonPermissionListResponse, MemPermissionListResponse, SptNonPermissionPhoneListResponse, SptNonPermissionPhoneType, SptPermissionPhoneListResponse, SptPermissionPhoneType, UpdateDeviceSectionType, UserCompanyListResponse } from "../types/networkSetup";
 import instance from "../utils/axiosInstance";
 
 const API = {
@@ -59,14 +59,29 @@ const API = {
         return await instance.put(url, requestData.body);
     },
     //6번에서 7번으로 권한 이동
-    memNonPermissionPhone: async (requestData: {body: MemberNonPermissionPhoneType})=>{
+    memNonPermissionPhone: async (requestData: { body: MemberNonPermissionPhoneType }) => {
         const url = '/api/tel/Constnt/remove';
         return await instance.post(url, requestData.body);
     },
     //7번에서 6번으로 권한이동
-    memPermissionPhone: async (requestData: {body: MemberPermissionPhoneType}) => {
+    memPermissionPhone: async (requestData: { body: MemberPermissionPhoneType }) => {
         const url = '/api/tel/Constnt';
         return await instance.post(url, requestData.body);
+    },
+    //장치 구분 추가
+    insertDeviceSection: async (requestData: { body: InsertDeviceSectionType }) => {
+        const url = '/api/tel/commnse';
+        return await instance.post(url, requestData.body);
+    },
+    //장치 구분 수정
+    updateDeviceSection: async (requestData: { body: UpdateDeviceSectionType }) => {
+        const url = '/api/tel/commnse';
+        return await instance.put(url, requestData.body);
+    },
+    //장치 구분 상세
+    getDeviceSectionDetail: async (commnseNo: string) => {
+        const url = `/api/tel/commnse/${commnseNo}`;
+        return await instance.get<DetailDeviceSectionType>(url);
     },
 }
 
@@ -92,11 +107,15 @@ const KEY = {
     //통신환경설정 7번 테이블 리스트
     getMemNonPermissionList: (requestData: { sptNo: string, commnSeNo: string, telNo: string }) => [`/api/tel/Constnt/phone/list/${requestData.sptNo}?commnSeNo=${requestData.commnSeNo}&telNo=${requestData.telNo}`],
     //통신환경설정 6번째 테이블 리스트
-    getMemPermissionPhoneList : (requestData: { userNo: string, commnSeNo: string, cntrctBgnde: string }) => [`/api/tel/Constnt/list/${requestData.userNo}?commnSeNo=${requestData.commnSeNo}&cntrctBgnde=${requestData.cntrctBgnde}`],
+    getMemPermissionPhoneList: (requestData: { userNo: string, commnSeNo: string, cntrctBgnde: string }) => [`/api/tel/Constnt/list/${requestData.userNo}?commnSeNo=${requestData.commnSeNo}&cntrctBgnde=${requestData.cntrctBgnde}`],
     //6번에서 7번으로 권한 이동
     memNonPermissionPhone: () => ['/api/tel/Constnt/remove'],
     //7번에서 6번으로 권한이동
     memPermissionPhone: () => [`/api/tel/Constnt`],
+    //장치 구분 추가
+    insertDeviceSection: () => ['/api/tel/commnse'],
+    //장치 구분 상세
+    getDeviceSectionDetail: (commnseNo: string) => [`/api/tel/commnse/${commnseNo}`],
 }
 
 //사용자 아이디 및 회사 조회
@@ -105,7 +124,7 @@ export const getUserCompanyList = (requestData: { userNo: string, cmpNm: string 
     return useQuery({
         queryKey: KEY.getUserCompanyList(requestData),
         queryFn: async () => {
-            console.log("사용자 전화기 갯수 목록 보낸 데이터:",requestData)
+            console.log("사용자 전화기 갯수 목록 보낸 데이터:", requestData)
             const result = await API.getUserCompanyList(requestData);
             console.log("1번 테이블 받은데이터 : ", result);
             return result;
@@ -161,7 +180,6 @@ export const getDeviceSection = () => {
         queryKey: KEY.deviceSection(),
         queryFn: async () => {
             const result = await API.deviceSection();
-            //console.log("받은데이터 : ", result);
             return result;
         }
     })
@@ -261,8 +279,8 @@ export const getMemPermissionPhoneList = (requestData: { userNo: string, commnSe
 //6번에서 7번으로 권한 이동
 export const memNonPermissionPhone = () => {
     return useMutation({
-        mutationKey : KEY.memNonPermissionPhone(),
-        mutationFn: async (requestData: {body: MemberNonPermissionPhoneType}) => {
+        mutationKey: KEY.memNonPermissionPhone(),
+        mutationFn: async (requestData: { body: MemberNonPermissionPhoneType }) => {
             const result = await API.memNonPermissionPhone(requestData);
             return result;
         },
@@ -278,8 +296,8 @@ export const memNonPermissionPhone = () => {
 //7번에서 9번으로 권한 이동
 export const memPermissionPhone = () => {
     return useMutation({
-        mutationKey : KEY.memPermissionPhone(),
-        mutationFn: async (requestData: {body: MemberPermissionPhoneType}) => {
+        mutationKey: KEY.memPermissionPhone(),
+        mutationFn: async (requestData: { body: MemberPermissionPhoneType }) => {
             const result = await API.memPermissionPhone(requestData);
             return result;
         },
@@ -290,4 +308,49 @@ export const memPermissionPhone = () => {
             console.error("API 호출 실패. 에러:", error); // 에러 로깅
         },
     })
+};
+
+//장치 구분 추가
+export const insertDeviceSection = () => {
+    return useMutation({
+        mutationKey: KEY.insertDeviceSection(),
+        mutationFn: async (requestData: { body: InsertDeviceSectionType }) => {
+            const result = await API.insertDeviceSection(requestData);
+            return result;
+        },
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    });
+};
+
+//장치 구분 수정
+export const updateDeviceSection = () => {
+    return useMutation({
+        mutationFn: async (requestData: { body: UpdateDeviceSectionType }) => {
+            const result = await API.updateDeviceSection(requestData);
+            return result;
+        },
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    });
+};
+
+//장치 구분 상세
+export const getDeviceSectionDetail = (commnseNo: string) => {
+    return useQuery({
+        queryKey: KEY.getDeviceSectionDetail(commnseNo),
+        queryFn: async () => {
+            const result = await API.getDeviceSectionDetail(commnseNo);
+            return result;
+        },
+        enabled: !!commnseNo
+    });
 };
