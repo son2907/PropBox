@@ -80,10 +80,10 @@ export default function MemoGroup() {
       <TabPanel value={value} index={0}>
         <Box style={{ height: "300px", marginTop: 1, overflow: "auto" }}>
           <BasicTable data={histListData?.data.contents}>
-            <BasicTable.Th>구분</BasicTable.Th>
-            <BasicTable.Th>일자</BasicTable.Th>
-            <BasicTable.Th>특기사항</BasicTable.Th>
-            <BasicTable.Th>상담내용</BasicTable.Th>
+            <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%",padding: "4px 8px" }}>구분</BasicTable.Th>
+            <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%",padding: "4px 8px" }}>일자</BasicTable.Th>
+            <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%",padding: "4px 8px" }}>특기사항</BasicTable.Th>
+            <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%",padding: "4px 8px" }}>상담내용</BasicTable.Th>
             <BasicTable.Tbody>
               {histListData?.data.contents.map((item: any, index: any) => {
                 return (
@@ -92,10 +92,10 @@ export default function MemoGroup() {
                     isClicked={selectedRow?.cnsltNo === item.cnsltNo} // 전체 데이터 객체를 비교
                     onClick={() => toggleRowSelection(item)} // 데이터 자체를 전달
                   >
-                    <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.callYn}</BasicTable.Td>
-                    <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.cnsltDt}</BasicTable.Td>
-                    <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.spcmnt}</BasicTable.Td>
-                    <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>상담내용</BasicTable.Td>
+                    <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%",padding: "4px 8px", lineHeight: "1.2" }}>{item.callYn}</BasicTable.Td>
+                    <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%",padding: "4px 8px", lineHeight: "1.2" }}>{item.cnsltDt}</BasicTable.Td>
+                    <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%",padding: "4px 8px", lineHeight: "1.2" }}>{item.spcmnt}</BasicTable.Td>
+                    <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%",padding: "4px 8px", lineHeight: "1.2" }}>상담내용</BasicTable.Td>
                   </BasicTable.Tr>
                 );
               })}

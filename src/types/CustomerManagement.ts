@@ -215,6 +215,7 @@ export type CustomerSingleUpdateType = {
     mbtlNo: string,
     telNo: string,
     addr: string,
+    cstmrRmk: string,
     hder01: string,
     hder02: string,
     hder03: string,

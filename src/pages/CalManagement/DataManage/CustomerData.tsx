@@ -10,6 +10,8 @@ import PathConstants from "../../../routers/path";
 import { useDataManageExcelDownload } from "../../../api/dataManage";
 import { useEffect } from "react";
 import { filterDataByValues } from "../../../utils/filterDataByValues";
+import useModal from "../../../hooks/useModal";
+import { EmptySelectModal } from "../../../components/Modal/modal/EmptySelectModal";
 
 export default function CustomerData({
   reigister,
@@ -21,6 +23,7 @@ export default function CustomerData({
   setTableData: any;
 }) {
   const { selectedRows, toggleRowsSelection, resetSelectedRows } = useMultiRowSelection();
+  const { openModal, closeModal } = useModal();
 
   const popupInfo = {
     url: PathConstants.Call.CreateConsultation,
@@ -52,7 +55,7 @@ export default function CustomerData({
       key: "idx",
       values: Array.from(selectedRows),
     });
-    
+
     //tableData.data에서 data에 있는 내용을 삭제
     const result = tableData.data.filter((item) => {
       return !data.some((d) => d.idx === item.idx);
@@ -66,9 +69,51 @@ export default function CustomerData({
   }, [tableData]);
 
   useEffect(() => {
-    console.log("선택된 행:", selectedRows);
-  }, [selectedRows]);
-  
+    console.log("tableData:", tableData);
+  }, [])
+
+  const handleSelectData = () => {
+    const selectDataList = Array.from(selectedRows).map((rowId) => {
+      const selectedItem = (tableData.data).find(
+        (item) => item.idx === rowId
+      );
+      return {
+        idx: selectedItem.idx,
+        cstmrNm: selectedItem.cstmrNm,
+        mbtlNo: selectedItem.mbtlNo,
+        telNo: selectedItem.telNo,
+        cstmrRmk: selectedItem.cstmrRmk,
+        addr: selectedItem.addr,
+      };
+    });
+
+    console.log("선택한 데이터:", selectDataList.length);
+    localStorage.setItem("selectDataList", JSON.stringify(selectDataList));
+
+    if (selectDataList.length === 0) {
+      //alert("선택된 데이터가 없습니다.");
+      emptySelectionModal();
+      return;
+    } else {
+      openPopup({
+        url: popupInfo.url,
+        windowName: popupInfo.windowName,
+        windowFeatures: popupInfo.windowFeatures,
+      });
+    };
+  };
+
+  const emptySelectionModal = () => {
+    openModal(EmptySelectModal, {
+      modalId: "emptySelectModal",
+      stack: false,
+      onClose: () => closeModal,
+      onSubmit: () => {
+        window.close();
+      },
+    });
+  };
+
 
   return (
     <Stack width={"100%"} height={"100%"} gap={1}>
@@ -76,13 +121,7 @@ export default function CustomerData({
         <SearchInput {...reigister("searchKeywordCust")} />
         <BasicButton
           sx={{ marginLeft: "auto" }}
-          onClick={() => {
-            openPopup({
-              url: popupInfo.url,
-              windowName: popupInfo.windowName,
-              windowFeatures: popupInfo.windowFeatures,
-            });
-          }}
+          onClick={() => { handleSelectData() }}
         >
           상담생성
         </BasicButton>
@@ -96,7 +135,6 @@ export default function CustomerData({
               data={tableData?.data}
               selectedRows={selectedRows}
               toggleRowsSelection={toggleRowsSelection}
-
             >
               <CheckboxTable.Thead>
                 <CheckboxTable.Tr>

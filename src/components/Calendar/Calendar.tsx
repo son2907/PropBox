@@ -58,7 +58,7 @@ export default function Calendar({
             {"<"}
           </button>
           <select
-            style={{ border: "none", fontSize: "11px" }}
+            style={{ border: "none", fontSize: "14px" }}
             value={date.getFullYear()}
             onChange={({ target: { value } }) => changeYear(Number(value))}
           >

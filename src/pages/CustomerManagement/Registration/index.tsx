@@ -136,6 +136,7 @@ export default function Registration() {
       mbtlNo: mbtlNo,
       telNo: telNo,
       addr: addr,
+      cstmrRmk: cstmrRmk,
       hder01: headers.hder01 || "",
       hder02: headers.hder02 || "",
       hder03: headers.hder03 || "",
@@ -271,8 +272,9 @@ export default function Registration() {
     }));
   };
 
+  //수정 또는 등록록
   const handleUpdate = () => {
-    if (selectCustomerGroupNum || customerNum) {
+    if (selectCustomerGroupNum) {
       console.log("수정 데이터 확인:", CustomerUpdateReqData);
       customerUpdateAPI(CustomerUpdateReqData, {
         onSuccess: (response) => {
@@ -285,7 +287,7 @@ export default function Registration() {
     }
   };
 
-  //
+  //선택된 고객들 모두에게 문자를 보내야하므로 선택된 고객들의 번호를 배열로 저장
   const handleSelectCustomer = (sptNo: string, groupNo: string) => {
     const customerList = Array.from(solutionCustomerSelectedRows).map((rowId) => {
       const selectedItem = customerDetailListData.find(
@@ -372,6 +374,58 @@ export default function Registration() {
       },
     });
   };
+
+  //초기화
+  const handleReset = () => {
+    setCstmrNm("");
+    setMbtlNo("");
+    setTelNo("");
+    setCstmrRmk("");
+    setAddr("");
+    setAreaNm("");
+    setHeaders({});
+  };
+
+  //{
+//   "sptNo":"현장번호",
+//   "groupNo":"그룹번호",
+//   "conditionUpload": {
+//   "cstmrNm":1 , => 고객명
+//   "mbtlNo":2, => 휴대전화
+//   "telNo":3, => 일반전화
+//   "cstmrRmk":4, => 고객정보
+//   "addr":5, => 주소
+//   "hder01":"", => 헤더
+//   "hder02":"",
+//   "hder03":"",
+//   "hder04":"",
+//   "hder05":"",
+//   "hder06":"",
+//   "hder07":"",
+//   "hder08":"",
+//   "hder09":"",
+//   "hder10":"",
+//   },
+//   "data":[
+//             {
+//   "cstmrNm":"홍길동" ,
+//   "mbtlNo":"0101245678",
+//   "telNo":"",
+//   "cstmrRmk":"고객정보",
+//   "addr":5,
+//   "hder01":7,
+//   "hder02":8,
+//   "hder03":9,
+//   "hder04":10,
+//   "hder05":11,
+//   "hder06":12,
+//   "hder07":13,
+//   "hder08":14,
+//   "hder09":15,
+//   "hder10":16			
+//             }
+//   ]
+// }
 
   return (
     <>
@@ -582,6 +636,8 @@ export default function Registration() {
                                 <BasicButton
                                   onClick={() => {
                                     setCustomerNum(item.cstmrNo);
+                                    refetchCustomerDetailTop();
+                                    refetchCustomerDetailBottom();
                                   }}
                                 >
                                   상세보기
@@ -638,6 +694,7 @@ export default function Registration() {
                     <BasicInput
                       sx={{ minHeight: "24px", width: "60%" }}
                       value={cstmrNm ?? ""}
+                      onChange={(e) => setCstmrNm(e.target.value)}
                     />
                   </Box>
                   <Box
@@ -652,6 +709,7 @@ export default function Registration() {
                     <BasicInput
                       sx={{ minHeight: "24px", width: "60%" }}
                       value={mbtlNo ?? ""}
+                      onChange={(e) => setMbtlNo(e.target.value)}
                     />
                   </Box>
                   <Box
@@ -666,6 +724,7 @@ export default function Registration() {
                     <BasicInput
                       sx={{ minHeight: "24px", width: "60%" }}
                       value={telNo ?? ""}
+                      onChange={(e) => setTelNo(e.target.value)}
                     />
                   </Box>
                   <Box
@@ -677,7 +736,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>고객정보</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={cstmrRmk ?? ""} />
+                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={cstmrRmk ?? ""} onChange={(e) => setCstmrRmk(e.target.value)}/>
                   </Box>
                   <Box
                     display="flex"
@@ -689,7 +748,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>주소</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={addr ?? ""} />
+                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={addr ?? ""} onChange={(e) => setAddr(e.target.value)}/>
                   </Box>
                   {customerDetailBottom?.data &&
                     customerGroupHeaderList &&
@@ -751,6 +810,7 @@ export default function Registration() {
                     <BasicInput
                       sx={{ minHeight: "24px", width: "60%" }}
                       value={cstmrNm ?? ""}
+                      readOnly
                     />
                   </Box>
                   <Box
@@ -762,7 +822,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>휴대전화</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} value={mbtlNo ?? ""} />
+                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} value={mbtlNo ?? ""} readOnly/>
                   </Box>
                   <Box
                     display="flex"
@@ -773,7 +833,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>일반전화</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} value={telNo ?? ""} />
+                    <BasicInput sx={{ minHeight: "24px", width: "60%" }} value={telNo ?? ""} readOnly/>
                   </Box>
                   <Box
                     display="flex"
@@ -784,7 +844,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>고객정보</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={cstmrRmk ?? ""} />
+                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={cstmrRmk ?? ""} readOnly/>
                   </Box>
                   <Box
                     display="flex"
@@ -795,7 +855,7 @@ export default function Registration() {
                   >
                     <LabelTypo width={"100%"}>주소</LabelTypo>
                     {/* height: 24px */}
-                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={addr ?? ""} />
+                    <BasicInput sx={{ minHeight: "24px", width: "100%" }} value={addr ?? ""} readOnly/>
                   </Box>
                   <Box
                     display="flex"
@@ -833,6 +893,7 @@ export default function Registration() {
                         },
                       }}
                       placeholder={areaNm || ""}
+                      readOnly
                     />
                   </Box>
                   {customerDetailBottom?.data.contents.map((item, index) => (
@@ -846,7 +907,7 @@ export default function Registration() {
                       gap={1}
                     >
                       <LabelTypo>{item.itemNm}</LabelTypo>
-                      <BasicInput sx={{ minHeight: "24px" }} value={item.detailNm} readOnly />
+                      <BasicInput sx={{ minHeight: "24px" }} value={item.detailNm} disabled />
                     </Box>
                   ))}
                 </GrayBox>
@@ -855,7 +916,7 @@ export default function Registration() {
             {category === "기본" ? (
               <GrayBox width={"100%"}>
                 <Stack direction={"row"} width={"100%"} gap={1} justifyContent={"end"}>
-                  <BasicButton>추가</BasicButton>
+                  <BasicButton onClick={handleReset}>추가</BasicButton>
                   <BasicButton onClick={handleUpdate}>저장</BasicButton>
                   <BasicButton onClick={() => confirmDeleteModal(sptNo, customerNum)}>삭제</BasicButton>
                 </Stack>

@@ -111,3 +111,45 @@ export type CustomerDataExcelDownloadType = {
   limit: 0,
   offset: 0
 };
+
+// 데이터관리 - 고객데이터 - 상담사 조회
+export type LocalMemberListType = {
+  cnsltnt: string,
+  cnsltntNM: string
+};
+export interface LocalMemberListResponseType extends ApiResponseType {
+  contents: LocalMemberListType[];
+};
+
+//데이터관리 - 고객관리 - 주제 리스트 조회
+export type SubjectListType = {
+  sptNo: string,
+  themaNo: string,
+  themaNm: string,
+  useYn: string,
+  delYn: string,
+  userId: string
+};
+export interface SubjectListResponseType extends ApiResponseType {
+  contents: SubjectListType[];
+};
+
+//데이터관리 - 고객관리 - 상담생성 - 상담주제등록 - 상담 주제 수정
+export type SubjectUpdateType = {
+  sptNo: string,
+  themaNo: string,
+  themaNm: string,
+  useYn: string,
+  delYn: string,
+  userId: string,
+};
+
+//고객데이터 - 상담생성 - 상담주제등록 - 상담주제 삭제
+export type SubjectDeleteType = {
+  sptNo: string,
+  themaNo: string,
+  themaNm: string,
+  useYn: string,
+  delYn: string,
+  userId: string,
+}
