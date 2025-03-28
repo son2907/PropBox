@@ -517,7 +517,7 @@ export default function PhoneSetting() {
               </TableBox.Inner>
             </Stack>
             <Stack width={"100%"} height={"40%"}>
-              <GrayBox width={"100%"} height={"100%"} overflow={"auto"} flexDirection={"column"}>
+              <GrayBox width={"100%"} height={"100%"} overflow={"auto"} flexDirection={"column"} alignItems={"flex-start"} justifyContent={"flex-start"}>
                 <Box justifyContent={"start"} width={"100%"} marginBottom={1}>
                   <Typography fontSize={"24px"} fontWeight={"bold"}>
                     상세정보
@@ -552,8 +552,9 @@ export default function PhoneSetting() {
                   flexDirection="column" // 세로 방향 설정
                   flexGrow={1} // 전체 높이를 균등하게 나누기 위해 추가
                   justifyContent="flex-start" // 가로 방향 왼쪽 정렬
-                  width="100%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
+                  width="60%" // Box가 GrayBox의 전체 너비를 차지하도록 설정
                   gap={1}
+                  alignItems="flex-start"
                 >
                   <LabelTypo width={"100%"}>전화기이름</LabelTypo>
                   {/* height: 24px */}
@@ -578,7 +579,7 @@ export default function PhoneSetting() {
                       data: item.commnSeNm,
                     }))}
                     sx={{
-                      width: "60%",
+                      width: "100%",
                       "& .MuiSelect-select": {
                         backgroundColor: "primary.light", // 선택 박스만 흰색으로
                       },

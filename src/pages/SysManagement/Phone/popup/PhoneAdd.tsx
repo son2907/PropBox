@@ -124,7 +124,7 @@ export default function PhoneAdd() {
       rmk: getValues("rmk") || "",
       userId: loginId || "",
     };
-
+    console.log("보낼 데이터 확인 : ", phoneInsertReqData);
     if (
       !data.telno ||
       !deviceSectionDataKey ||

@@ -5,8 +5,12 @@ import {
   cnsltDataRequestType,
   CustDataRequestType,
   CustomerDataExcelDownloadType,
+  LocalMemberListResponseType,
   OutItemsDetailResponseType,
   OutItemsResponseType,
+  SubjectDeleteType,
+  SubjectListResponseType,
+  SubjectUpdateType,
 } from "../types/dataManage";
 import DownloadExcel from "../utils/download";
 
@@ -53,13 +57,34 @@ export const API = {
     return response;
   },
   //고객데이터 - 엑셀 다운로드
-  customerDataExcelDownload: async (requestData: {body : CustomerDataExcelDownloadType}) => {
+  customerDataExcelDownload: async (requestData: { body: CustomerDataExcelDownloadType }) => {
     const url = '/api/tel/cnslt/data/cust/exceldownload';
-    const response = await instance.post(url,requestData.body, {
+    const response = await instance.post(url, requestData.body, {
       responseType: "blob",
     });
     DownloadExcel({ response });
     return response;
+  },
+  // 데이터관리 - 고객데이터 - 상담사 조회
+  getLocalMemberList: async () => {
+    const url = `/api/tel/cnslt/cnsltnt/${spt}`;
+    const response = await instance.get<LocalMemberListResponseType>(url);
+    return response;
+  },
+  //데이터관리 - 고객관리 - 주제 리스트 조회
+  getSubjectList: async () => {
+    const url = `/api/sptcnsltthema/${spt}`;
+    return await instance.get<SubjectListResponseType>(url);
+  },
+  //고객데이터 - 상담생성 - 상담주제등록 - 상담주제 수정
+  updateSubject: async (requestData: { body: SubjectUpdateType }) => {
+    const url = '/api/sptcnsltthema';
+    return await instance.post(url, requestData.body);
+  },
+  //고객데이터 - 상담생성 - 상담주제등록 - 상담주제 삭제
+  deleteSubject: async (requestData: { body: SubjectUpdateType }) => {
+    const url = '/api/sptcnsltthema/remove';
+    return await instance.post(url, requestData.body);
   },
 };
 
@@ -77,6 +102,14 @@ const KEY = {
     spt,
   ],
   customerDataExcelDownload: () => ["/api/tel/cnslt/data/cust/exceldownload"],
+  // 데이터관리 - 고객데이터 - 상담사 조회
+  getLocalMemberList: () => ["/api/tel/cnslt/cnsltnt", spt],
+  //데이터관리 - 고객관리 - 주제 리스트 조회
+  getSubjectList: () => [`/api/sptcnsltthema/${spt}`],
+  //고객데이터 - 상담생성 - 상담주제등록 - 상담주제 수정
+  updateSubject: () => [`/api/sptcnsltthema`],
+  //고객데이터 - 상담생성 - 상담주제등록 - 상담주제 삭제
+  deleteSubject: () => ['/api/sptcnsltthema/remove'],
 };
 
 // 출력항목 조회
@@ -142,12 +175,56 @@ export const useDataManageExcelDownload = () => {
 export const customerDataExcelDownload = () => {
   return useMutation({
     mutationKey: KEY.customerDataExcelDownload(),
-    mutationFn: (requestData: {body : CustomerDataExcelDownloadType}) => API.customerDataExcelDownload(requestData),
+    mutationFn: (requestData: { body: CustomerDataExcelDownloadType }) => API.customerDataExcelDownload(requestData),
     onSuccess: (response) => {
       console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
-  },
-  onError: (error) => {
+    },
+    onError: (error) => {
       console.error("API 호출 실패. 에러:", error); // 에러 로깅
-  },
-  })
+    },
+  });
+};
+
+// 데이터관리 - 고객데이터 - 상담사 조회
+export const getLocalMemberList = () => {
+  return useQuery({
+    queryKey: KEY.getLocalMemberList(),
+    queryFn: async () => await API.getLocalMemberList(),
+  });
+};
+
+//데이터관리 - 고객관리 - 주제 리스트 조회
+export const getSubjectList = () => {
+  return useQuery({
+    queryKey: KEY.getSubjectList(),
+    queryFn: async () => await API.getSubjectList(),
+  });
+};
+
+//고객데이터 - 상담생성 - 상담주제등록 - 상담주제 수정
+export const updateSubject = () => {
+  return useMutation({
+    mutationKey: KEY.updateSubject(),
+    mutationFn: (requestData: { body: SubjectUpdateType }) => API.updateSubject(requestData),
+    onSuccess: (response) => {
+      console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+    },
+    onError: (error) => {
+      console.error("API 호출 실패. 에러:", error); // 에러 로깅
+    },
+  });
+};
+
+//고객데이터 - 상담생성 - 상담주제등록 - 상담주제 삭제
+export const deleteSubject = () => {
+  return useMutation({
+    mutationKey: KEY.deleteSubject(),
+    mutationFn: (requestData: { body: SubjectDeleteType }) => API.deleteSubject(requestData),
+    onSuccess: (response) => {
+      console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+    },
+    onError: (error) => {
+      console.error("API 호출 실패. 에러:", error); // 에러 로깅
+    },
+  });
 };

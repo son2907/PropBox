@@ -102,9 +102,7 @@ export default function SolutionManagement() {
 
   //라이선스 방식 데이터
   const { isSuccess, data } = api.LicenseMethod.useLicenseMethod();
-  const [licenseMethodData, setLicenseMethodData] = useState<
-    licenseMethodType[]
-  >([]);
+  const [licenseMethodData, setLicenseMethodData] = useState<licenseMethodType[]>([]);
 
   const selectData = [
     { value: "Y", data: "사용" },

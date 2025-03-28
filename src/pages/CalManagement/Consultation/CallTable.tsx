@@ -166,9 +166,9 @@ export default function CallTable({ tabType, tabChange, selectedDate }: TabType 
           <TableBox>
             <TableBox.Inner>
               <BasicTable data={cnsltData?.data.contents || []}>
-                <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>이름</BasicTable.Th>
-                <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>상담전화</BasicTable.Th>
-                <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>상담일시</BasicTable.Th>
+                <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%",padding: "4px 8px" }}>이름</BasicTable.Th>
+                <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%",padding: "4px 8px" }}>상담전화</BasicTable.Th>
+                <BasicTable.Th style={{ whiteSpace: "nowrap", maxWidth: "100%",padding: "4px 8px" }}>상담일시</BasicTable.Th>
                 <BasicTable.Tbody>
                   {(cnsltData?.data.contents || []).map((item: any, index: any) => {
                     return (
@@ -180,10 +180,11 @@ export default function CallTable({ tabType, tabChange, selectedDate }: TabType 
                           e.stopPropagation(); // 이벤트 버블링을 막음
                           toggleRowSelection(item.seqNo); // row selection 토글
                         }}
+                        style={{ height: "auto" }} // 높이 자동 조정
                       >
-                        <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.cstmrNm}</BasicTable.Td>
-                        <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.cnsltTelno}</BasicTable.Td>
-                        <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.cnsltDttm}</BasicTable.Td>
+                        <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%",padding: "4px 8px", lineHeight: "1.2" }}>{item.cstmrNm}</BasicTable.Td>
+                        <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%",padding: "4px 8px", lineHeight: "1.2" }}>{item.cnsltTelno}</BasicTable.Td>
+                        <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%",padding: "4px 8px", lineHeight: "1.2" }}>{item.cnsltDttm}</BasicTable.Td>
                       </BasicTable.Tr>
                     );
                   })}
@@ -233,8 +234,8 @@ export default function CallTable({ tabType, tabChange, selectedDate }: TabType 
                               e.stopPropagation(); // 이벤트 버블링을 막음
                             }}
                           >
-                            <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.cstmrNm}</BasicTable.Td>
-                            <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.themaNm}</BasicTable.Td>
+                            <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%",padding: "4px 8px", lineHeight: "1.2" }}>{item.cstmrNm}</BasicTable.Td>
+                            <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%",padding: "4px 8px", lineHeight: "1.2" }}>{item.themaNm}</BasicTable.Td>
                           </BasicTable.Tr>
                         );
                       })}
@@ -259,9 +260,9 @@ export default function CallTable({ tabType, tabChange, selectedDate }: TabType 
                             e.stopPropagation(); // 이벤트 버블링을 막음
                           }}
                         >
-                          <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.cstmrNm}</BasicTable.Td>
-                          <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.cnsltTelno}</BasicTable.Td>
-                          <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%" }}>{item.cnsltDttm}</BasicTable.Td>
+                          <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%",padding: "4px 8px", lineHeight: "1.2" }}>{item.cstmrNm}</BasicTable.Td>
+                          <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%",padding: "4px 8px", lineHeight: "1.2" }}>{item.cnsltTelno}</BasicTable.Td>
+                          <BasicTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%",padding: "4px 8px", lineHeight: "1.2" }}>{item.cnsltDttm}</BasicTable.Td>
                         </BasicTable.Tr>
                       );
                     })}

@@ -60,12 +60,12 @@ const API = {
     },
     //6번에서 7번으로 권한 이동
     memNonPermissionPhone: async (requestData: {body: MemberNonPermissionPhoneType})=>{
-        const url = 'api/tel/Constnt/remove';
+        const url = '/api/tel/Constnt/remove';
         return await instance.post(url, requestData.body);
     },
     //7번에서 6번으로 권한이동
     memPermissionPhone: async (requestData: {body: MemberPermissionPhoneType}) => {
-        const url = 'api/tel/Constnt';
+        const url = '/api/tel/Constnt';
         return await instance.post(url, requestData.body);
     },
 }
@@ -84,7 +84,7 @@ const KEY = {
     //통신환경설정 3번째 테이블 리스트
     getSptPermissionPhoneList: (requestData: { sptNo: string, cntrctBgnde: string }) => [`/api/tel/spt/selected/list/${requestData.sptNo}?cntrctBgnde=${requestData.cntrctBgnde}`],
     //통신환경설정 4번째 테이블 리스트
-    getSptNonPermissionPhoneList: (requestData: { userNo: string, commnSeNo: string, telNo: string }) => [`api/tel/spt/isspt/list/${requestData.userNo}?commnSeNo=${requestData.commnSeNo}&telNo=${requestData.telNo}`],
+    getSptNonPermissionPhoneList: (requestData: { userNo: string, commnSeNo: string, telNo: string }) => [`/api/tel/spt/isspt/list/${requestData.userNo}?commnSeNo=${requestData.commnSeNo}&telNo=${requestData.telNo}`],
     //통신환경설정 4번테이블에서 3번테이블로 전화기 등록
     sptPermissionPhone: () => [`/api/tel/spt/phone`],
     //통신환경설정 3번테이블에서 4번테이블로 전화기 등록
@@ -94,9 +94,9 @@ const KEY = {
     //통신환경설정 6번째 테이블 리스트
     getMemPermissionPhoneList : (requestData: { userNo: string, commnSeNo: string, cntrctBgnde: string }) => [`/api/tel/Constnt/list/${requestData.userNo}?commnSeNo=${requestData.commnSeNo}&cntrctBgnde=${requestData.cntrctBgnde}`],
     //6번에서 7번으로 권한 이동
-    memNonPermissionPhone: () => ['api/tel/Constnt/remove'],
+    memNonPermissionPhone: () => ['/api/tel/Constnt/remove'],
     //7번에서 6번으로 권한이동
-    memPermissionPhone: () => [`api/tel/Constnt`],
+    memPermissionPhone: () => [`/api/tel/Constnt`],
 }
 
 //사용자 아이디 및 회사 조회
