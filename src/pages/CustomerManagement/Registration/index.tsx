@@ -907,7 +907,7 @@ export default function Registration() {
                       gap={1}
                     >
                       <LabelTypo>{item.itemNm}</LabelTypo>
-                      <BasicInput sx={{ minHeight: "24px" }} value={item.detailNm} disabled />
+                      <BasicInput sx={{ minHeight: "24px" }} value={item.detailNm} readOnly />
                     </Box>
                   ))}
                 </GrayBox>
