@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { CompanyLocalListResponse, DetailDeviceSectionType, DeviceSectionListResponse, InsertDeviceSectionType, InsertPhone, MemberNonPermissionPhoneType, MemberPermissionPhoneType, MemeberLocalListResponse, MemNonPermissionListResponse, MemPermissionListResponse, SptNonPermissionPhoneListResponse, SptNonPermissionPhoneType, SptPermissionPhoneListResponse, SptPermissionPhoneType, UpdateDeviceSectionType, UserCompanyListResponse } from "../types/networkSetup";
+import { CompanyLocalListResponse, DeleteDeviceSectionType, DetailDeviceSectionType, DeviceSectionListResponse, InsertDeviceSectionType, InsertPhone, MemberNonPermissionPhoneType, MemberPermissionPhoneType, MemeberLocalListResponse, MemNonPermissionListResponse, MemPermissionListResponse, SptNonPermissionPhoneListResponse, SptNonPermissionPhoneType, SptPermissionPhoneListResponse, SptPermissionPhoneType, UpdateDeviceSectionType, UserCompanyListResponse } from "../types/networkSetup";
 import instance from "../utils/axiosInstance";
 
 const API = {
@@ -83,6 +83,11 @@ const API = {
         const url = `/api/tel/commnse/${commnseNo}`;
         return await instance.get<DetailDeviceSectionType>(url);
     },
+    //장치 구분 삭제
+    deleteDeviceSection: async (commnSeNo : string) => {
+        const url = `/api/tel/commnse/remove/${commnSeNo}`;
+        return await instance.post(url);
+    },
 }
 
 const KEY = {
@@ -116,6 +121,8 @@ const KEY = {
     insertDeviceSection: () => ['/api/tel/commnse'],
     //장치 구분 상세
     getDeviceSectionDetail: (commnseNo: string) => [`/api/tel/commnse/${commnseNo}`],
+    //장치 구분 삭제
+    deleteDeviceSection: () => ['/api/tel/commnse'],
 }
 
 //사용자 아이디 및 회사 조회
@@ -353,4 +360,18 @@ export const getDeviceSectionDetail = (commnseNo: string) => {
         },
         enabled: !!commnseNo
     });
+};
+
+//장치 구분 삭제
+export const deleteDeviceSection = () => {
+    return useMutation({
+        mutationKey: KEY.deleteDeviceSection(),
+        mutationFn: async (commnseNo: string) => await API.deleteDeviceSection(commnseNo),
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    })
 };

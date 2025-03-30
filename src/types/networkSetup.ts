@@ -245,9 +245,10 @@ export type UpdateDeviceSectionType = {
 };
 
 //장치 구분 삭제
-// export type DeleteDeviceSectionType = {
-
-// };
+export type DeleteDeviceSectionType = {
+    commnSeNo: string,
+    userId: string
+};
 
 //장치 구분 상세조회
 export type DetailDeviceSectionType = {

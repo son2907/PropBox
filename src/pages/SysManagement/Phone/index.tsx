@@ -30,7 +30,7 @@ import useToggleButtton from "../../../hooks/useToggleButton";
 import TextArea from "../../../components/TextArea/TextArea";
 import useModal from "../../../hooks/useModal";
 import { useAuthStore } from "../../../stores/authStore";
-import { getAllPhoneList, getPhoneDetail, getUserPhoneCount, getUserPhoneList, insertUserPhone, updatePhone, userUnsertPhone } from "../../../api/phoneManagement";
+import { deletePhone, getAllPhoneList, getPhoneDetail, getUserPhoneCount, getUserPhoneList, insertUserPhone, updatePhone, userUnsertPhone } from "../../../api/phoneManagement";
 import { useForm } from "react-hook-form";
 import { getDeviceSection, insertPhone } from "../../../api/networkSetup";
 import { DeviceSectionListType } from "../../../types/networkSetup";
@@ -39,6 +39,10 @@ import { InsertCompletedModal } from "../../../components/Modal/modal/InsertComp
 import PhoneInput from "../../../components/Input/PhoneInput";
 import { PhoneDetailType, PhoneInsertType, PhoneUpdateType } from "../../../types/phoneManagement";
 import { UpdateCompletedModal } from "../../../components/Modal/modal/UpdateCompletedModal";
+import { AssignedPhoneModal } from "../../../components/Modal/modal/AssignedPhoneModal";
+import { DeleteCompletedModal } from "../../../components/Modal/modal/DeleteCompletedModal";
+import { FailModal } from "../../../components/Modal/modal/FailModal";
+import { ConfirmDeleteModal } from "../../../components/Modal/modal/ConfirmDeleteModal";
 
 export default function PhoneSetting() {
 
@@ -64,6 +68,7 @@ export default function PhoneSetting() {
   } = useMultiRowSelection();
 
   const [date, setDate] = useState<Date>(new Date());
+  const { mutate: deletePhoneAPI } = deletePhone();
 
   //사용자이름 검색
   const [searchQuery, setSearchQuery] = useState({ userNm: "" });
@@ -83,11 +88,8 @@ export default function PhoneSetting() {
   const { data: phoneDetail, refetch: refetchPhoneDetail } = getPhoneDetail(selectDetailNo);
 
   //장치구분
-  const { data: deviceSection, refetch: refetchDeviceSection } =
-    getDeviceSection();
-  const [deviceSectionData, setDeviceSection] = useState<
-    DeviceSectionListType[]
-  >([]);
+  const { data: deviceSection, refetch: refetchDeviceSection } = getDeviceSection();
+  const [deviceSectionData, setDeviceSection] = useState<DeviceSectionListType[]>([]);
   const [deviceSectionDataKey, setDeviceSectionDataKey] = useState("");
   const [deviceSectionDataValue, setDeviceSectionDataValue] = useState("");
 
@@ -188,9 +190,6 @@ export default function PhoneSetting() {
     )
   };
 
-
-
-
   //   수신동의 고객 select
   const {
     selectListData: sd_1,
@@ -275,7 +274,7 @@ export default function PhoneSetting() {
         window.close();
         // 이전 창 새로 고침
         if (window.opener) {
-          window.opener.location.reload();
+          refetchAllPhoneList();
         }
       },
     });
@@ -362,6 +361,94 @@ export default function PhoneSetting() {
     }
 
   }, [isUpdate, deviceSectionDataKey, deviceSectionDataValue]);
+
+  useEffect(() => {
+    //데이터 검사
+    console.log("allPhoneList 값:", allPhoneList?.data.contents); // isUpdate 값 확인
+  }, [allPhoneList]);
+
+  useEffect(() => {
+    const selectUserPhoneData = Array.from(unsertedPhoneSelectedRows).map(
+      (selectedId: string) => {
+        const selectedItem = allPhoneList?.data.contents.find(
+          (item) => item.telId === selectedId
+        );
+        return {
+          userNo: selectUserNo,
+          telId: selectedItem?.telId || "",
+          useYn: selectedItem?.userYn || "",
+        };
+      }
+    );
+
+    console.log("선택된 데이터의 상세확인:", selectUserPhoneData);
+
+    // 이미 할당된 전화기일 경우우
+    if (selectUserPhoneData.some((item) => item.useYn === "Y")) {
+      assignedPhoneModal();
+    }
+  }, [unsertedPhoneSelectedRows]);
+
+  //이미 할당된 전화기일 경우 이미 할당된 전화기라는걸 알려주는 모달 출력력
+  const assignedPhoneModal = () => {
+    openModal(AssignedPhoneModal, {
+      modalId: "AssignedPhoneModal",
+      stack: false,
+      onClose: () => closeModal,
+      onSubmit: () => {
+        refetchAllPhoneList();
+        unsertedPhoneSelectedRows.forEach((id) => toggleunsertedPhoneRowsSelection(id));
+      },
+    });
+  };
+
+  //전화기 삭제
+  const handleDelete = () => {
+    if (selectDetailNo === "") {
+      emptyDataModal();
+      return;
+    } else {
+      console.log("삭제할 데이터 확인 : ", selectDetailNo);
+      deletePhoneAPI(selectDetailNo, {
+        onSuccess: (response) => {
+          if (response.data.result === "SUCCESS") {
+            deleteCompletedModal();
+          }
+        },
+        onError: (error) => {
+          console.error("실패:", error);
+          openModal(FailModal, {
+            modalId: "apiFail",
+            stack: false,
+            onClose: () => closeModal,
+          });
+        },
+      })
+    }
+  };
+
+  const SolutionconfirmDeleteModal = () => {
+    openModal(ConfirmDeleteModal, {
+      modalId: "noticeDelete",
+      stack: false, //단일 모달 모드
+      onClose: () => closeModal,
+      onSubmit: () => {
+        handleDelete();
+      },
+    });
+  };
+
+  const deleteCompletedModal = () => {
+    openModal(DeleteCompletedModal, {
+      modalId: "deleteCompleted",
+      stack: false,
+      onClose: () => closeModal,
+      onSubmit: () => {
+        refetchAllPhoneList();
+        //handleAdd();
+      },
+    });
+  };
 
   return (
     <form style={{ height: "100%", width: "100%" }} onSubmit={handleSubmit(onSubmit)}>
@@ -489,6 +576,7 @@ export default function PhoneSetting() {
                       <CheckboxTable.Th>아이디</CheckboxTable.Th>
                       <CheckboxTable.Th>비밀번호</CheckboxTable.Th>
                       <CheckboxTable.Th>전화번호</CheckboxTable.Th>
+                      <CheckboxTable.Th>할당여부부</CheckboxTable.Th>
                       <CheckboxTable.Th>상세보기</CheckboxTable.Th>
                     </CheckboxTable.Tr>
                   </CheckboxTable.Thead>
@@ -499,16 +587,23 @@ export default function PhoneSetting() {
                           item={item}
                           keyName="telId"
                         />
-                        <CheckboxTable.Td>{item.telId}</CheckboxTable.Td>
-                        <CheckboxTable.Td>{item.commnSeNm}</CheckboxTable.Td>
-                        <CheckboxTable.Td>{item.id}</CheckboxTable.Td>
-                        <CheckboxTable.Td>{item.pwdNo}</CheckboxTable.Td>
-                        <CheckboxTable.Td>{item.telNo}</CheckboxTable.Td>
+                        <CheckboxTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%", padding: "4px 8px", lineHeight: "1.2" }}>{item.telId}</CheckboxTable.Td>
+                        <CheckboxTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%", padding: "4px 8px", lineHeight: "1.2" }}>{item.commnSeNm}</CheckboxTable.Td>
+                        <CheckboxTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%", padding: "4px 8px", lineHeight: "1.2" }}>{item.id}</CheckboxTable.Td>
+                        <CheckboxTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%", padding: "4px 8px", lineHeight: "1.2" }}>{item.pwdNo}</CheckboxTable.Td>
+                        <CheckboxTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%", padding: "4px 8px", lineHeight: "1.2" }}>{item.telNo}</CheckboxTable.Td>
+                        <CheckboxTable.Td style={{ whiteSpace: "nowrap", maxWidth: "100%", padding: "4px 8px", lineHeight: "1.2" }}>{item.userYn}</CheckboxTable.Td>
                         <CheckboxTable.Td>
-                          <BasicButton onClick={() => {
-                            setSelectDetailNo(item.telId ?? "");
-                            setIsUpdate(true);
-                          }}>상세보기</BasicButton>
+                          <BasicButton
+                            onClick={() => {
+                              setSelectDetailNo(item.telId ?? "");
+                              setIsUpdate(true);
+                            }}
+                            sx={{
+                              backgroundColor: selectDetailNo === item.telId ? "primary.A100" : "transparent",
+                              whiteSpace: "nowrap",
+                            }}
+                          >상세보기</BasicButton>
                         </CheckboxTable.Td>
                       </CheckboxTable.Tr>
                     ))}
@@ -652,7 +747,7 @@ export default function PhoneSetting() {
                 <Stack direction={"row"} gap={1} justifyContent={"end"} alignContent={"end"} marginTop={1} width={"100%"}>
                   <BasicButton onClick={handleAdd}>추가</BasicButton>
                   <BasicButton type="submit">저장</BasicButton>
-                  <BasicButton type="button"> 삭제 </BasicButton>
+                  <BasicButton type="button" onClick={SolutionconfirmDeleteModal}> 삭제 </BasicButton>
                 </Stack>
               </GrayBox>
             </Stack>

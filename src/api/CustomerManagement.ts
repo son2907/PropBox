@@ -212,7 +212,7 @@ export const getCustomerDetailBottom = (requestData : {sptNo:string,groupNo:stri
         queryFn: async () => {
             //console.log("아래부분 보낸 데이터:",requestData);
             const result = await API.getCustomerDetailBottom(requestData);
-            //console.log("아래 데이터:",result);
+            console.log("아래 데이터:",result);
             return result;
         },
         enabled: !!requestData.cstmrNo

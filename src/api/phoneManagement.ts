@@ -42,7 +42,12 @@ const API = {
     userUnsertPhone: async (requestData: {body : UserUnsertPhoneType}) => {
         const url = '/api/tel/user/remove/selected';
         return await instance.put(url, requestData.body);
-    }
+    },
+    //전화기 삭제
+    deletePhone: async (telId : string) => {
+        const url = `/api/tel/remove/${telId}`;
+        return await instance.post(url);
+    },
 }
 
 const KEY = {
@@ -68,6 +73,8 @@ const KEY = {
     insertUserPhone: () => ['/api/tel/user'],
     //사용자 전화기 회수
     userUnsertPhone: () => ['/api/tel/user/remove/selected'],
+    //전화기 삭제
+    deletePhone: () => [`/api/tel/remove/`]
 }
 
 //모든 사용자의 전화기 수
@@ -100,7 +107,7 @@ export const getAllPhoneList = (telNo: string) => {
         queryFn: async () => {
             const result = await API.getAllPhoneList(telNo);
             return result;
-        }
+        },
     })
 };
 
@@ -164,6 +171,20 @@ export const userUnsertPhone = () => {
     return useMutation({
         mutationKey: KEY.userUnsertPhone(),
         mutationFn: (requestData: {body : UserUnsertPhoneType}) => API.userUnsertPhone(requestData),
+        onSuccess: (response) => {
+            console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
+        },
+        onError: (error) => {
+            console.error("API 호출 실패. 에러:", error); // 에러 로깅
+        },
+    })
+};
+
+//전화기 삭제
+export const deletePhone = () => {
+    return useMutation({
+        mutationKey: KEY.deletePhone(),
+        mutationFn: async (telId : string) => await API.deletePhone(telId),
         onSuccess: (response) => {
             console.log("API 호출 성공. 응답 데이터:", response.data); // 성공 응답 로깅
         },

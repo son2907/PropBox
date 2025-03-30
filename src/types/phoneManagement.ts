@@ -46,7 +46,8 @@ export type AllPhoneListType = {
     commnSeNm: string,
     id: string,
     pwdNo: string,
-    telNo: string
+    telNo: string,
+    userYn: string,
 };
 export interface AllPhoneListResponse extends ApiResponseType {
     code: number;

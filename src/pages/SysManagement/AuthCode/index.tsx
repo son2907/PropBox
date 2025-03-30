@@ -77,8 +77,8 @@ export default function AuthCode() {
           <TableBox.Inner>
             <BasicTable data={authCodeListData?.data.contents || []}>
               <BasicTable.Th>발신전화번호</BasicTable.Th>
-              <BasicTable.Th>상담전화</BasicTable.Th>
-              <BasicTable.Th>상담일시</BasicTable.Th>
+              <BasicTable.Th>인증번호</BasicTable.Th>
+              <BasicTable.Th>요청일시</BasicTable.Th>
               <BasicTable.Tbody>
                 {(authCodeListData?.data.contents || []).map((item, index) => {
                   return (
